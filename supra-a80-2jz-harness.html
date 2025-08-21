@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SVK | Custom Harness</title>
+  <link rel="icon" type="image/png" href="images/svk-logo.png">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Montserrat', sans-serif;
+      background: linear-gradient(180deg, #0a0a1a, #1a002b);
+      color: #fff;
+    }
+
+    /* Header */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      background: rgba(10, 0, 30, 0.95);
+      border-bottom: 2px solid #ff0099;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.75rem;
+      color: #00f7ff;
+      text-shadow: 0 0 6px #ff00ff;
+    }
+
+    nav {
+      position: relative;
+    }
+
+    .nav-links {
+      list-style: none;
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: #00fff7;
+      font-weight: bold;
+      transition: color 0.3s ease;
+    }
+
+    .nav-links a:hover {
+      color: #ffcc00;
+    }
+
+    /* Hamburger button */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      cursor: pointer;
+    }
+
+    .hamburger span {
+      height: 3px;
+      width: 25px;
+      background: #fff;
+      margin: 4px;
+      border-radius: 2px;
+    }
+
+    /* Container */
+    .container {
+      background: rgba(0, 0, 0, 0.85);
+      padding: 2rem;
+      border-radius: 16px;
+      box-shadow: 0 0 30px rgba(255, 0, 128, 0.4);
+      max-width: 500px;
+      margin: 6rem auto 3rem auto;
+      border: 2px solid #ff007f;
+    }
+
+    h1 {
+      color: #ff007f;
+      text-align: center;
+      margin-bottom: 1rem;
+      font-size: 1.8rem;
+    }
+
+    label {
+      display: block;
+      margin-top: 1rem;
+      color: #ffcc00;
+    }
+
+    select {
+      width: 100%;
+      padding: 0.5rem;
+      background: #2c2c2c;
+      color: #00fff7;
+      border: 1px solid #ff007f;
+      border-radius: 8px;
+      margin-top: 0.5rem;
+      font-size: 1rem;
+    }
+
+    .total {
+      margin-top: 1.5rem;
+      font-size: 1.2rem;
+      color: #00ffd0;
+    }
+
+    .button {
+      display: block;
+      width: 100%;
+      padding: 0.75rem;
+      margin-top: 1.5rem;
+      background: #ff007f;
+      color: white;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      font-size: 1rem;
+    }
+
+    .button:hover {
+      background: #ff4da6;
+    }
+
+    /* Responsive Styling */
+    @media (max-width: 768px) {
+      header {
+        padding: 1rem;
+      }
+
+      .nav-links {
+        display: none;
+        position: absolute;
+        top: 60px;
+        right: 0;
+        background: rgba(10, 0, 30, 0.95);
+        flex-direction: column;
+        width: 200px;
+        padding: 1rem;
+        border-left: 2px solid #ff0099;
+      }
+
+      .nav-links.show {
+        display: flex;
+      }
+
+      .hamburger {
+        display: flex;
+      }
+
+      .container {
+        margin: 4rem 1rem;
+        padding: 1.5rem;
+      }
+
+      h1 {
+        font-size: 1.5rem;
+      }
+
+      select, .button {
+        font-size: 0.95rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .logo {
+        font-size: 1.5rem;
+      }
+
+      .container {
+        margin: 3rem 1rem;
+        padding: 1rem;
+      }
+
+      h1 {
+        font-size: 1.3rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="logo">SVK</div>
+    <nav>
+      <div class="hamburger" onclick="toggleMenu()">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="connectors.html">Connectors</a></li>
+        <li><a href="wire-harnesses.html">Wire Harnesses</a></li>
+		<li><a href="3dparts.html">3D Parts</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <div class="container">
+    <h1>Supra 1993-2002 2JZ Harness</h1>
+  <div class="contact-info">
+    <p>
+      Please send an email to 
+      <a href="mailto:svk.works.inc@gmail.com">svk.works.inc@gmail.com</a> 
+      for getting a custom quote. You can get a rough estimate with the calculator below.
+    </p>
+  </div>
+    <label for="engine">Engine</label>
+    <select id="engine">
+      <option value="0">2JZ-GTE</option>
+	  <option value="0">2JZ-GTE VVT-i</option>
+	  <option value="0">2JZ-GE</option>
+	  <option value="0">2JZ-GE VVT-i</option>
+    </select>
+
+    <label for="ecu">ECU</label>
+    <select id="ecu">
+      <option value="0">Select ECU</option>
+      <option value="800">Haltech Elite</option>
+	  <option value="800">MAXXECU</option>
+      <option value="950">AEM Infinity</option>
+      <option value="1100">Link G4X</option>
+    </select>
+
+    <label for="transmission">Transmission</label>
+    <select id="transmission">
+      <option value="0">Select Transmission</option>
+      <option value="300">R154</option>
+      <option value="450">CD009</option>
+	  <option value="450">8HP BMW/Dodge</option>
+      <option value="600">V160</option>
+    </select>
+
+    <label for="injectors">Injector Connector</label>
+    <select id="injectors">
+      <option value="0">Select Injectors</option>
+      <option value="200">OEM 2JZ</option>
+      <option value="350">EV1</option>
+      <option value="500">ID</option>
+    </select>
+
+    <label for="intake">Intake Manifold</label>
+    <select id="intake">
+      <option value="0">Select Option</option>
+      <option value="150">OEM VVT-i</option>
+      <option value="250">OEM Non VVT-i</option>
+	  <option value="250">Aftermarket Intake Manifold</option>
+    </select>
+	
+    <label for="throttle">Throttle Body</label>
+    <select id="fan">
+      <option value="0">Select Option</option>
+      <option value="150">OEM TPS</option>
+      <option value="250">Drive By Wire (Bosch, VQ, Toyota)</option>
+    </select>
+
+    <label for="ignition">Ignition System</label>
+    <select id="ignition">
+      <option value="0">Select Option</option>
+      <option value="200">OEM</option>
+      <option value="300">Nissan GTR R35 Coils</option>
+	  <option value="300">GM Coils</option>
+	  <option value="300">Audi R8 Coils</option>
+	  <option value="300">Toyota 1ZZ Coils</option>
+    </select>
+
+    <label for="year">Supra Year</label>
+    <select id="year">
+      <option value="0">93-95</option>
+      <option value="200">1996</option>
+      <option value="300">1997+</option>
+    </select>
+	
+	<label for="chassis">Chassis</label>
+    <select id="chassis">
+      <option value="0">TT Six Speed Manual</option>
+      <option value="200">TT Auto</option>
+      <option value="300">NA 5 Speed Manual</option>
+	  <option value="300">NA Auto</option>
+    </select>
+	
+    <div class="total">TOTAL: $<span id="total">0</span></div>
+    <button class="button" onclick="calculateTotal()">PURCHASE</button>
+  </div>
+
+  <script>
+    function calculateTotal() {
+      const fields = ["ecu", "transmission", "injectors", "fan", "ignition"];
+      let total = 0;
+      fields.forEach(id => {
+        total += parseInt(document.getElementById(id).value);
+      });
+      document.getElementById('total').textContent = total;
+    }
+
+    function toggleMenu() {
+      document.getElementById("nav-links").classList.toggle("show");
+    }
+  </script>
+</body>
+</html>
