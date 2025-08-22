@@ -229,6 +229,54 @@
         font-size: 0.85rem;
       }
     }
+
+    .item-grid-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-top: 1.25rem;
+}
+
+.item-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem;
+  background: rgba(255, 0, 153, 0.12);
+  border: 2px solid #00f7ff;
+  border-radius: 10px;
+  text-decoration: none;
+  color: #fff;
+  font-weight: 600;
+  transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+}
+
+.item-tile:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 0 12px #ff00ff;
+  border-color: #ff00ff;
+}
+
+.item-tile img {
+  width: 100%;
+  max-width: 160px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 6px;
+  margin-bottom: 0.5rem;
+}
+
+.item-tile span {
+  margin-top: 0.4rem;
+  font-size: 0.95rem;
+}
+
+.item-price {
+  margin-top: 0.3rem;
+  font-size: 0.9rem;
+  font-weight: bold;
+  color: #ffcc00;
+}
   </style>
 </head>
 <body>
@@ -249,9 +297,44 @@
     </nav>
   </header>
 
-  <section class="products">
-    <h1>Website Under Construction</h1>
+<h2 style="text-align:center; margin: 1rem 0; color:#ff00ff; font-family:'Orbitron',sans-serif;">
+  Connectors
+</h2>
 
-  </script>
+<div class="item-grid-4">
+  <!-- Chassis: Supra Body Plugs -->
+  <a class="item-tile" href="supra-body-plug-ea1.html">
+    <img src="images/supra-body-plug-ea1.jpg" alt="Supra Body Plug EA1">
+    <span>Supra MK4 Body Plug EA1 Fusebox</span>
+    <div class="item-price">$29.99</div>
+  </a>
+
+  <a class="item-tile" href="supra-body-plug-ea2.html">
+    <img src="images/supra-body-plug-ea2.jpg" alt="Supra Body Plug EA2">
+    <span>Supra MK4 Body Plug EA2</span>
+    <div class="item-price">$32.99</div>
+  </a>
+
+  <a class="item-tile" href="supra-body-plug-ea3.html">
+    <img src="images/supra-body-plug-ea3.jpg" alt="Supra Body Plug EA3">
+    <span>Supra MK4 Body Plug EA3</span>
+    <div class="item-price">$34.99</div>
+  </a>
+
+  <!-- Engine: Connectors -->
+  <a class="item-tile" href="water-connector.html">
+    <img src="images/water-connector.jpg" alt="Water Connector">
+    <span>2JZ Water Temp Gauge Connector</span>
+    <div class="item-price">$24.99</div>
+  </a>
+
+  <a class="item-tile" href="coolant-connector.html">
+    <img src="images/coolant-connector.jpg" alt="Coolant Connector">
+    <span>2JZ Engine Coolant Connector</span>
+    <div class="item-price">$27.99</div>
+  </a>
+</div>
+
+
 </body>
 </html>
