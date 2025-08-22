@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SVK | Supra A80 2JZ Harness</title>
+  <title>SVK | Custom Harness</title>
   <link rel="icon" type="image/png" href="images/svk-logo.png">
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
   <style>
@@ -200,6 +200,19 @@
         <li><a href="connectors.html">Connectors</a></li>
         <li><a href="wire-harnesses.html">Wire Harnesses</a></li>
 		<li><a href="3dparts.html">3D Parts</a></li>
+				<li><a href="cart.html" style="color:#ffcc00; text-decoration:none; font-weight:bold; position:relative;">
+		  Cart 🛒 <span id="cartCount" style="
+			background:#ff00ff;
+			color:#fff;
+			font-size:0.8rem;
+			font-weight:bold;
+			padding:2px 6px;
+			border-radius:50%;
+			position:absolute;
+			top:-10px;
+			right:-20px;
+		  ">0</span>
+		</a></li>
       </ul>
     </nav>
   </header>
@@ -215,78 +228,76 @@
   </div>
     <label for="engine">Engine</label>
     <select id="engine">
-      <option value="1500">2JZ-GTE</option>
-	  <option value="1500">2JZ-GTE VVT-i</option>
-	  <option value="1500">2JZ-GE</option>
-	  <option value="1500">2JZ-GE VVT-i</option>
+      <option value="0">2JZ-GTE</option>
+	  <option value="0">2JZ-GTE VVT-i</option>
+	  <option value="0">2JZ-GE</option>
+	  <option value="0">2JZ-GE VVT-i</option>
     </select>
 
     <label for="ecu">ECU</label>
     <select id="ecu">
       <option value="0">Select ECU</option>
-      <option value="500">Haltech Elite</option>
-	  <option value="500">MAXXECU</option>
-      <option value="500">AEM Infinity</option>
-      <option value="500">Link G4X</option>
+      <option value="800">Haltech Elite</option>
+	  <option value="800">MAXXECU</option>
+      <option value="950">AEM Infinity</option>
+      <option value="1100">Link G4X</option>
     </select>
 
     <label for="transmission">Transmission</label>
     <select id="transmission">
       <option value="0">Select Transmission</option>
-      <option value="0">R154</option>
-      <option value="0">CD009</option>
-	  <option value="200">8HP BMW/Dodge</option>
-      <option value="0">V160</option>
+      <option value="300">R154</option>
+      <option value="450">CD009</option>
+	  <option value="450">8HP BMW/Dodge</option>
+      <option value="600">V160</option>
     </select>
 
     <label for="injectors">Injector Connector</label>
     <select id="injectors">
       <option value="0">Select Injectors</option>
-      <option value="100">OEM 2JZ</option>
-      <option value="100">EV1</option>
-      <option value="100">ID</option>
+      <option value="200">OEM 2JZ</option>
+      <option value="350">EV1</option>
+      <option value="500">ID</option>
     </select>
 
     <label for="intake">Intake Manifold</label>
     <select id="intake">
       <option value="0">Select Option</option>
       <option value="150">OEM VVT-i</option>
-      <option value="150">OEM Non VVT-i</option>
+      <option value="250">OEM Non VVT-i</option>
 	  <option value="250">Aftermarket Intake Manifold</option>
     </select>
 	
     <label for="throttle">Throttle Body</label>
     <select id="fan">
       <option value="0">Select Option</option>
-      <option value="0">OEM TPS</option>
+      <option value="150">OEM TPS</option>
       <option value="250">Drive By Wire (Bosch, VQ, Toyota)</option>
     </select>
 
     <label for="ignition">Ignition System</label>
     <select id="ignition">
       <option value="0">Select Option</option>
-      <option value="0">OEM</option>
-      <option value="200">Nissan GTR R35 Coils</option>
-	  <option value="200">GM Coils</option>
-	  <option value="200">Audi R8 Coils</option>
-	  <option value="200">Toyota 1ZZ Coils</option>
+      <option value="200">OEM</option>
+      <option value="300">Nissan GTR R35 Coils</option>
+	  <option value="300">GM Coils</option>
+	  <option value="300">Audi R8 Coils</option>
+	  <option value="300">Toyota 1ZZ Coils</option>
     </select>
 
     <label for="year">Supra Year</label>
     <select id="year">
-	  <option value="0">Select Option</option>
       <option value="0">93-95</option>
-      <option value="0">1996</option>
-      <option value="0">1997+</option>
+      <option value="200">1996</option>
+      <option value="300">1997+</option>
     </select>
 	
 	<label for="chassis">Chassis</label>
     <select id="chassis">
-	  <option value="0">Select Option</option>
       <option value="0">TT Six Speed Manual</option>
-      <option value="0">TT Auto</option>
-      <option value="0">NA 5 Speed Manual</option>
-	  <option value="0">NA Auto</option>
+      <option value="200">TT Auto</option>
+      <option value="300">NA 5 Speed Manual</option>
+	  <option value="300">NA Auto</option>
     </select>
 	
     <div class="total">TOTAL: $<span id="total">0</span></div>
@@ -307,5 +318,7 @@
       document.getElementById("nav-links").classList.toggle("show");
     }
   </script>
+  
+  <script src="cart.js"></script>
 </body>
 </html>

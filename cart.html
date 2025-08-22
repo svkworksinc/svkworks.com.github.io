@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Cart | SVK</title>
+  <style>
+    body { font-family: 'Montserrat', sans-serif; background:#0a0a1a; color:#fff; margin:0; padding:2rem;}
+    h1 { font-family: 'Orbitron', sans-serif; color:#ff00ff; }
+    table { width:100%; border-collapse: collapse; margin-top:2rem; }
+    th, td { padding:1rem; border-bottom:1px solid #333; text-align:left; }
+    th { color:#00f7ff; }
+    img { width:60px; border-radius:6px; }
+    input[type="number"] {
+      width: 60px; padding:0.3rem;
+      background:#0a0a1a; color:#fff; border:1px solid #ff00ff; border-radius:4px;
+      text-align:center;
+    }
+    .remove-btn {
+      background:#ff3333; color:#fff; border:none;
+      padding:0.4rem 0.8rem; border-radius:6px; cursor:pointer;
+      transition:.3s;
+    }
+    .remove-btn:hover { background:#cc0000; }
+    .total { text-align:right; font-size:1.2rem; margin-top:1.5rem; color:#ffcc00; }
+    .checkout-btn {
+      display:inline-block; margin-top:1rem;
+      background:#ff00ff; padding:0.75rem 1.5rem; border-radius:8px; color:#fff;
+      text-decoration:none; font-weight:bold; transition:.3s;
+    }
+    .checkout-btn:hover { background:#00f7ff; color:#0a0a1a; }
+
+    /* Header */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      background: rgba(10, 0, 30, 0.95);
+      border-bottom: 2px solid #ff0099;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .logo {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.8rem;
+      color: #00f7ff;
+      text-shadow: 0 0 6px #ff00ff;
+    }
+
+    nav {
+      position: relative;
+    }
+
+    .nav-links {
+      list-style: none;
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: #00fff7;
+      font-weight: bold;
+      transition: color 0.3s ease;
+    }
+
+    .nav-links a:hover {
+      color: #ffcc00;
+    }
+
+    /* Hamburger */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      cursor: pointer;
+    }
+
+    .hamburger span {
+      height: 3px;
+      width: 25px;
+      background: #fff;
+      margin: 4px;
+      border-radius: 2px;
+      transition: all 0.3s ease;
+    }
+
+    /* Section */
+    .products {
+      padding: 2rem 1rem;
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    .products h1 {
+      font-family: 'Orbitron', sans-serif;
+      text-align: center;
+      font-size: 2.5rem;
+      margin-bottom: 2rem;
+      color: #ff00ff;
+      text-shadow: 0 0 12px #00f7ff;
+    }
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .product-card {
+      background: rgba(255, 0, 153, 0.1);
+      border: 2px solid #00f7ff;
+      border-radius: 12px;
+      overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .product-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 0 20px #ff00ff;
+    }
+
+    .product-card img {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+    }
+
+    .product-info {
+      padding: 1rem;
+    }
+
+    .product-info h2 {
+      font-size: 1.4rem;
+      margin: 0 0 0.5rem;
+      color: #00f7ff;
+      text-shadow: 0 0 6px #ff00ff;
+    }
+
+    .product-info p {
+      font-size: 1rem;
+      color: #ccc;
+      margin-bottom: 1rem;
+    }
+
+    .product-info button {
+      width: 100%;
+      background: #ff00ff;
+      border: none;
+      color: white;
+      padding: 0.8rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.3s ease;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1rem;
+    }
+
+    .product-info button:hover {
+      background: #00f7ff;
+      color: #0a0a1a;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+        position: absolute;
+        top: 60px;
+        right: 0;
+        background: rgba(10, 0, 30, 0.95);
+        flex-direction: column;
+        width: 220px;
+        padding: 1rem;
+        border-left: 2px solid #ff0099;
+      }
+
+      .nav-links.show {
+        display: flex;
+      }
+
+      .hamburger {
+        display: flex;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo">SVK</div>
+    <nav>
+      <div class="hamburger" onclick="toggleMenu()">
+        <span></span><span></span><span></span>
+      </div>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="connectors.html">Connectors</a></li>
+        <li><a href="wire-harnesses.html">Wire Harnesses</a></li>
+		<li><a href="3dparts.html">3D Parts</a></li>
+				<li><a href="cart.html" style="color:#ffcc00; text-decoration:none; font-weight:bold; position:relative;">
+		  Cart 🛒 <span id="cartCount" style="
+			background:#ff00ff;
+			color:#fff;
+			font-size:0.8rem;
+			font-weight:bold;
+			padding:2px 6px;
+			border-radius:50%;
+			position:absolute;
+			top:-10px;
+			right:-20px;
+		  ">0</span>
+		</a></li>
+      </ul>
+      </ul>
+    </nav>
+  </header>
+
+  <h1>Your Cart 🛒</h1>
+  <table id="cartTable">
+    <thead>
+      <tr>
+        <th>Item</th>
+        <th></th>
+        <th>Price</th>
+        <th>Qty</th>
+        <th>Subtotal</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+  <div class="total" id="cartTotal"></div>
+  <a href="checkout.html" class="checkout-btn">Proceed to Checkout</a>
+
+  <script>
+    function loadCart() {
+      let cart = JSON.parse(localStorage.getItem("cart")) || [];
+      const tbody = document.querySelector("#cartTable tbody");
+      const totalDiv = document.getElementById("cartTotal");
+      tbody.innerHTML = "";
+      let total = 0;
+
+      cart.forEach((item, index) => {
+        const subtotal = item.price * item.quantity;
+        total += subtotal;
+
+        tbody.innerHTML += `
+          <tr>
+            <td><img src="${item.image}" alt="${item.name}"></td>
+            <td>${item.name}</td>
+            <td>$${item.price.toFixed(2)}</td>
+            <td>
+              <input type="number" min="1" value="${item.quantity}" onchange="updateQuantity(${index}, this.value)">
+            </td>
+            <td>$${subtotal.toFixed(2)}</td>
+            <td><button class="remove-btn" onclick="removeItem(${index})">Remove</button></td>
+          </tr>
+        `;
+      });
+
+      totalDiv.innerText = "Total: $" + total.toFixed(2);
+    }
+
+    function updateQuantity(index, newQty) {
+      let cart = JSON.parse(localStorage.getItem("cart")) || [];
+      cart[index].quantity = parseInt(newQty);
+      localStorage.setItem("cart", JSON.stringify(cart));
+      loadCart();
+    }
+
+    function removeItem(index) {
+      let cart = JSON.parse(localStorage.getItem("cart")) || [];
+      cart.splice(index, 1);
+      localStorage.setItem("cart", JSON.stringify(cart));
+      loadCart();
+    }
+
+    loadCart();
+  </script>
+  
+  <script src="cart.js"></script>
+</body>
+</html>
