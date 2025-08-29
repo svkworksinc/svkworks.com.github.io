@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SVK - Connectors</title>
+  <link rel="icon" type="image/png" href="../images/svk-logo.png">
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Orbitron:wght@500&display=swap" rel="stylesheet">
+  <script>
+    let cartCount = 0;
+    function addToCart() {
+      cartCount++;
+      document.getElementById("cart-count").textContent = cartCount;
+    }
+
+    function toggleMenu() {
+      const nav = document.getElementById('nav-links');
+      nav.classList.toggle('active');
+    }
+  </script>
+</head>
+<body>
+  <!-- Header -->
+  <header class="site-header">
+    <div class="logo">
+      <a href="../index.html">
+        <img src="../images/svklogo.png" alt="SVK Logo">
+      </a>
+    </div>
+    <nav class="nav-menu">
+      <div id="nav-links">
+        <a href="../wiringharnesses/wiring-harnesses.html">Wiring Harnesses</a>
+        <a href="../connectors/connectors.html">Connectors</a>
+        <a href="../3dparts/3d-parts.html">3D Parts</a>
+        <a href="../services/services.html">Services</a>
+        <a href="../references/references.html">References</a>
+      </div>
+      <div class="cart">
+        <span class="cart-icon">🛒</span>
+        <span id="cart-count">0</span>
+      </div>
+      <div class="hamburger" onclick="toggleMenu()">☰</div>
+    </nav>
+  </header>
+
+  <!-- Product Grid Section -->
+  <section class="products">
+    <h2>Wiring Harnesses</h2>
+    <div class="product-grid tight-grid">
+      <!-- Product 1 -->
+      <div class="product-card">
+        <img src="../connectors/connector-images/Supra MK4 2JZ AC Connector.jpg" alt="2JZ AC">
+        <h3>2JZ AC Connector - 4 Pin</h3>
+        <p class="price">$450.00</p>
+        <a href="https://www.example.com">
+          <button>Click for more details</button>
+        </a>
+      </div>
+      <!-- Product 2 -->
+      <div class="product-card">
+        <img src="../connectors/connector-images/Supra MK4 2JZ Oil Pressure Connector.jpg" alt="2JZ Oil Pressure">
+        <h3>2JZ Oil Pressure - 1 Pin</h3>
+        <p class="price">$400.00</p>
+        <a href="https://www.example.com">
+          <button>Click for more details</button>
+        </a>
+      </div>
+      <!-- Product 3 -->
+      <div class="product-card">
+        <img src="../connectors/connector-images/Supra MK4 Chassis Fusebox Connector 3 Pin.jpg" alt="Supra 3 Pin Fusebox">
+        <h3>Supra MK4 Chassis Fusebox Connector 3 Pin</h3>
+        <p class="price">$500.00</p>
+        <a href="https://www.example.com">
+          <button>Click for more details</button>
+        </a>
+      </div>
+      <!-- Product 4 -->
+      <div class="product-card">
+        <img src="../connectors/connector-images/Supra MK4 Chassis Fusebox Connector 8 Pin.jpg" alt="Supra 8 Pin Fusebox">
+        <h3>Supra MK4 Chassis Fusebox Connector 8 Pin</h3>
+        <p class="price">$650.00</p>
+        <a href="https://www.example.com">
+          <button>Click for more details</button>
+        </a>
+      </div>
+
+      <!-- Product 5 -->
+      <div class="product-card">
+        <img src="../connectors/connector-images/Supra MK4 JZA80 - Chassis 16 Pin.jpg" alt="Supra MK4 JZA80 - Chassis 16 Pin">
+        <h3>Supra MK4 JZA80 - Chassis 16 Pin</h3>
+        <p class="price">$650.00</p>
+        <a href="https://www.example.com">
+          <button>Click for more details</button>
+        </a>
+      </div>
+
+      <!-- Product 6 -->
+      <div class="product-card">
+        <img src="../connectors/connector-images/Supra MK4 JZA80 - Chassis 20 Pin.jpg" alt="Supra MK4 JZA80 - Chassis 20 Pin">
+        <h3>Supra MK4 JZA80 - Chassis 20 Pin</h3>
+        <p class="price">$650.00</p>
+        <a href="https://www.example.com">
+          <button>Click for more details</button>
+        </a>
+      </div>
+
+      <!-- Product 6 -->
+      <div class="product-card">
+        <img src="../connectors/connector-images/Supra MK4 JZA80 - Chassis 38 Pin.jpg" alt="Supra MK4 JZA80 - Chassis 38 Pin">
+        <h3>Supra MK4 JZA80 - Chassis 38 Pin</h3>
+        <p class="price">$650.00</p>
+        <a href="https://www.example.com">
+          <button>Click for more details</button>
+        </a>
+      </div>
+
+      <!-- Product 6 -->
+      <div class="product-card">
+        <img src="../connectors/connector-images/Supra MK4 JZA80 - Chassis Set 16p 20p 38p.jpg" alt="Supra MK4 JZA80 - Chassis Set 16p 20p 38p">
+        <h3>Supra MK4 JZA80 - Chassis Set 16p 20p 38p</h3>
+        <p class="price">$650.00</p>
+        <a href="https://www.example.com">
+          <button>Click for more details</button>
+        </a>
+      </div>
+
+      <!-- Product 6 -->
+      <div class="product-card">
+        <img src="../connectors/connector-images/Supra MK4 Starter Connector.jpg" alt="Supra MK4 Starter Connector">
+        <h3>Supra MK4 Starter Connector</h3>
+        <p class="price">$650.00</p>
+        <a href="https://www.example.com">
+          <button>Click for more details</button>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <p>&copy; 2025 SVK Works. All rights reserved.</p>
+  </footer>
+</body>
+</html>
