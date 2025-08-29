@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SVK - Under Construction</title>
+  <link rel="icon" type="image/png" href="../images/svk-logo.png">
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Orbitron:wght@500&display=swap" rel="stylesheet">
+  <script>
+    function toggleMenu() {
+      const nav = document.getElementById('nav-links');
+      nav.classList.toggle('active');
+    }
+  </script>
+</head>
+<body>
+  <!-- Header -->
+  <header class="site-header">
+    <div class="logo">
+      <a href="../index.html">
+        <img src="../images/svklogo.png" alt="SVK Logo">
+      </a>
+    </div>
+    <nav class="nav-menu">
+      <div id="nav-links">
+        <a href="../index.html">Home</a>
+        <a href="./wiringharnesses/wiring-harnesses.html">Wiring Harnesses</a>
+        <a href="./connectors/connectors.html">Connectors</a>
+        <a href="./3dparts/3dparts.html">3D Parts</a>
+        <a href="./services/services.html">Services</a>
+        <a href="./references/references.html">References</a>
+      </div>
+      <div class="cart">
+        <span class="cart-icon">🛒</span>
+        <span id="cart-count">0</span>
+      </div>
+      <div class="hamburger" onclick="toggleMenu()">☰</div>
+    </nav>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <h1>🚧 Under Construction 🚧</h1>
+    <p>Our shop is revving up… but this page is still in the pit lane!</p>
+  </section>
+
+  <!-- Main Section -->
+  <section class="main-cards">
+    <h2>Coming Soon!</h2>
+    <p style="text-align:center; margin-top:1.5rem; color:#ff00cc; font-weight:bold;">
+      We're working hard under the hood. Check back soon, and don't stall!
+    </p>
+  </section>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <p>&copy; 2025 SVK Works. All rights reserved.</p>
+  </footer>
+</body>
+</html>
