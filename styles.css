@@ -479,3 +479,62 @@ body {
     font-size: 0.85rem;
   }
 }
+
+.social-contact {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-left: 1rem;
+}
+
+.social-icon {
+  width: 28px;
+  height: 28px;
+  transition: transform 0.2s ease;
+}
+
+.social-icon:hover {
+  transform: scale(1.1);
+}
+
+.email-link {
+  color: #00eaff;
+  font-weight: bold;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.email-link:hover {
+  color: #ff00cc;
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  .site-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .social-contact {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.4rem;
+    margin: 0.5rem 0 0.5rem 0;
+  }
+
+  .social-icon {
+    width: 24px;
+    height: 24px;
+  }
+
+  .email-link {
+    font-size: 0.9rem;
+  }
+
+  .nav-menu {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
