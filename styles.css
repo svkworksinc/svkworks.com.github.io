@@ -433,3 +433,49 @@ body {
   transform: scale(1.03);
   box-shadow: 0 0 15px #00eaff;
 }
+
+.social-contact {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-left: 1rem;
+}
+
+.social-icon {
+  width: 28px;
+  height: 28px;
+  transition: transform 0.2s ease;
+}
+
+.social-icon:hover {
+  transform: scale(1.1);
+}
+
+.email-link {
+  color: #00eaff;
+  font-weight: bold;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.email-link:hover {
+  color: #ff00cc;
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  .social-contact {
+    flex-wrap: wrap;
+    margin-left: 0;
+    gap: 0.5rem;
+  }
+
+  .social-icon {
+    width: 24px;
+    height: 24px;
+  }
+
+  .email-link {
+    font-size: 0.85rem;
+  }
+}

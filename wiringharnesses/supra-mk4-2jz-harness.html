@@ -57,43 +57,79 @@
       <div class="calculator-section">
         <h3>Standalone Setup Calculator</h3>
         <div class="calculator">
-          <label for="ecu">ECU</label>
-          <select id="ecu">
-            <option value="0">Select ECU</option>
-            <option value="800">Haltech Elite</option>
-            <option value="950">AEM Infinity</option>
-            <option value="1100">Link G4X</option>
-          </select>
+        <label for="engine">Engine</label>
+        <select id="engine">
+          <option value="0">2JZ-GTE</option>
+          <option value="0">2JZ-GTE VVT-i</option>
+          <option value="0">2JZ-GE</option>
+          <option value="0">2JZ-GE VVT-i</option>
+        </select>
 
-          <label for="transmission">Transmission</label>
-          <select id="transmission">
-            <option value="0">Select Transmission</option>
-            <option value="300">R154</option>
-            <option value="450">CD009</option>
-            <option value="600">V160</option>
-          </select>
+        <label for="ecu">ECU</label>
+        <select id="ecu">
+          <option value="0">Select ECU</option>
+          <option value="200">Haltech Elite</option>
+          <option value="200">MAXXECU</option>
+          <option value="200">AEM Infinity</option>
+          <option value="200">Link G4X</option>
+        </select>
 
-          <label for="injectors">Injector Connector</label>
-          <select id="injectors">
-            <option value="0">Select Injectors</option>
-            <option value="200">OEM 2JZ</option>
-            <option value="350">EV1</option>
-            <option value="500">ID</option>
-          </select>
+        <label for="transmission">Transmission</label>
+        <select id="transmission">
+          <option value="0">Select Transmission</option>
+          <option value="40">R154</option>
+          <option value="40">CD009</option>
+          <option value="100">8HP BMW/Dodge</option>
+          <option value="40">V160</option>
+        </select>
 
-          <label for="intake">Intake Manifold</label>
-          <select id="intake">
-            <option value="0">Select Option</option>
-            <option value="150">OEM VVT-i</option>
-            <option value="250">Aftermarket</option>
-          </select>
+        <label for="injectors">Injector Connector</label>
+        <select id="injectors">
+          <option value="0">Select Injectors</option>
+          <option value="30">OEM 2JZ</option>
+          <option value="30">EV1</option>
+          <option value="30">ID</option>
+        </select>
 
-          <label for="ignition">Ignition System</label>
-          <select id="ignition">
-            <option value="0">Select Option</option>
-            <option value="200">OEM</option>
-            <option value="300">Aftermarket Coils</option>
-          </select>
+        <label for="intake">Intake Manifold</label>
+        <select id="intake">
+          <option value="0">Select Option</option>
+          <option value="0">OEM VVT-i</option>
+          <option value="0">OEM Non VVT-i</option>
+          <option value="100">Aftermarket Intake Manifold</option>
+        </select>
+      
+        <label for="throttle">Throttle Body</label>
+        <select id="fan">
+          <option value="0">Select Option</option>
+          <option value="0">OEM TPS</option>
+          <option value="0">Drive By Wire (Bosch, VQ, Toyota)</option>
+        </select>
+
+        <label for="ignition">Ignition System</label>
+        <select id="ignition">
+          <option value="0">Select Option</option>
+          <option value="200">OEM</option>
+          <option value="300">Nissan GTR R35 Coils</option>
+          <option value="300">GM Coils</option>
+          <option value="300">Audi R8 Coils</option>
+          <option value="300">Toyota 1ZZ Coils</option>
+        </select>
+
+        <label for="year">Supra Year</label>
+        <select id="year">
+          <option value="0">93-95</option>
+          <option value="0">1996</option>
+          <option value="0">1997+</option>
+        </select>
+      
+      <label for="chassis">Chassis</label>
+        <select id="chassis">
+          <option value="1000">TT Six Speed Manual</option>
+          <option value="1000">TT Auto</option>
+          <option value="1000">NA 5 Speed Manual</option>
+          <option value="1000">NA Auto</option>
+        </select>
 
           <div class="total">Estimated Total: $<span id="total">0</span></div>
           <button class="button" onclick="calculateTotal()">PURCHASE</button>
