@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SVK | Supra MK4 2JZ Harness</title>
+  <link rel="icon" type="image/png" href="images/svk-logo.png">
+  <link rel="stylesheet" href="stylessupra.css">
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Orbitron:wght@500&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- Header -->
+  <header class="site-header">
+    <div class="logo">
+      <a href="../index.html">
+        <img src="../images/svklogo.png" alt="SVK Logo">
+      </a>
+    </div>
+    <nav class="nav-menu">
+      <div id="nav-links">
+        <a href="../wiringharnesses/wiring-harnesses.html">Wiring Harnesses</a>
+        <a href="../connectors/connectors.html">Connectors</a>
+        <a href="../3dparts/3d-parts.html">3D Parts</a>
+        <a href="../services/services.html">Services</a>
+        <a href="../references/references.html">References</a>
+      </div>
+      <div class="cart">
+        <span class="cart-icon">🛒</span>
+        <span id="cart-count">0</span>
+      </div>
+      <div class="hamburger" onclick="toggleMenu()">☰</div>
+    </nav>
+  </header>
+
+  <!-- Product Showcase -->
+  <main class="products">
+    <section class="product-detail">
+      <div class="product-showcase">
+        <div class="product-image">
+          <img src="../wiringharnesses/wireharnesses-images/supraharness.webp" alt="Supra MK4 2JZ Harness">
+        </div>
+        <div class="product-description">
+          <h2>Supra MK4 2JZ Engine Harness</h2>
+          <p>Custom high-performance wiring harness built for the Supra MK4 2JZ engine. Perfect for standalone ECUs, injectors, sensors, and complete engine setups.</p>
+          <ul>
+            <li>Main & sub-harnesses included</li>
+            <li>High-quality connectors</li>
+            <li>Pre-installed fuse blocks</li>
+            <li>Compatible with aftermarket ECUs</li>
+          </ul>
+          <button>Contact us for an order</button>
+        </div>
+      </div>
+
+      <!-- Calculator Section -->
+      <div class="calculator-section">
+        <h3>Standalone Setup Calculator</h3>
+        <div class="calculator">
+          <label for="ecu">ECU</label>
+          <select id="ecu">
+            <option value="0">Select ECU</option>
+            <option value="800">Haltech Elite</option>
+            <option value="950">AEM Infinity</option>
+            <option value="1100">Link G4X</option>
+          </select>
+
+          <label for="transmission">Transmission</label>
+          <select id="transmission">
+            <option value="0">Select Transmission</option>
+            <option value="300">R154</option>
+            <option value="450">CD009</option>
+            <option value="600">V160</option>
+          </select>
+
+          <label for="injectors">Injector Connector</label>
+          <select id="injectors">
+            <option value="0">Select Injectors</option>
+            <option value="200">OEM 2JZ</option>
+            <option value="350">EV1</option>
+            <option value="500">ID</option>
+          </select>
+
+          <label for="intake">Intake Manifold</label>
+          <select id="intake">
+            <option value="0">Select Option</option>
+            <option value="150">OEM VVT-i</option>
+            <option value="250">Aftermarket</option>
+          </select>
+
+          <label for="ignition">Ignition System</label>
+          <select id="ignition">
+            <option value="0">Select Option</option>
+            <option value="200">OEM</option>
+            <option value="300">Aftermarket Coils</option>
+          </select>
+
+          <div class="total">Estimated Total: $<span id="total">0</span></div>
+          <button class="button" onclick="calculateTotal()">PURCHASE</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    &copy; 2025 SVK Works. All rights reserved.
+  </footer>
+
+  <script>
+    function toggleMenu() {
+      document.getElementById("nav-links").classList.toggle("active");
+    }
+
+    function calculateTotal() {
+      const fields = ["ecu","transmission","injectors","intake","ignition"];
+      let total = 0;
+      fields.forEach(id => {
+        total += parseInt(document.getElementById(id).value) || 0;
+      });
+      document.getElementById("total").textContent = total;
+    }
+  </script>
+</body>
+</html>
