@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SVK | Supra MK3 Harness</title>
+  <link rel="icon" type="image/png" href="images/svk-logo.png">
+  <link rel="stylesheet" href="stylessupra.css">
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Orbitron:wght@500&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- Header -->
+  <header class="site-header">
+    <div class="logo">
+      <a href="../index.html">
+        <img src="../images/svklogo.png" alt="SVK Logo">
+      </a>
+    </div>
+    <nav class="nav-menu">
+      <div id="nav-links">
+        <a href="../wiringharnesses/wiring-harnesses.html">Wiring Harnesses</a>
+        <a href="../connectors/connectors.html">Connectors</a>
+        <a href="../3dparts/3d-parts.html">3D Parts</a>
+        <a href="../services/services.html">Services</a>
+        <a href="../references/references.html">References</a>
+        <a href="../about.html">About</a>
+      </div>
+      <div class="cart">
+        <span class="cart-icon">🛒</span>
+        <span id="cart-count">0</span>
+      </div>
+      <div class="hamburger" onclick="toggleMenu()">☰</div>
+    </nav>
+  </header>
+
+  <!-- Product Showcase -->
+  <main class="products">
+    <section class="product-detail">
+      <div class="product-showcase">
+        <div class="product-image">
+          <img src="../wiringharnesses/wireharnesses-images/Supra Harness.jpg" alt="Supra MK3 Harness">
+        </div>
+        <div class="product-description">
+          <h2>Supra MK3 Engine Harness - 1JZ 2JZ 1UZ</h2>
+          <p>Custom high-performance wiring harness built for the Supra MK3. Perfect for standalone ECUs, injectors, sensors, and complete engine setups.
+            Available options for engines: 1JZ, 2JZ and 1UZ. Note: I highly recommend that you opt for a relay box that I can provide. 
+          </p>
+          <ul>
+            <li>Main & sub-harnesses included</li>
+            <li>High-quality connectors</li>
+            <li>Pre-installed fuse blocks</li>
+            <li>Compatible with aftermarket ECUs</li>
+            <li>12v Fusebox with 4 or 6 relays</li>
+          </ul>
+          <button>Email or send message on instagram for details</button>
+        </div>
+      </div>
+
+      <!-- Calculator Section -->
+       <!--
+      <div class="calculator-section">
+        <h3>Standalone Setup Calculator</h3>
+        <div class="calculator">
+        <label for="engine">Engine</label>
+        <select id="engine">
+          <option value="0">2JZ-GTE</option>
+          <option value="0">2JZ-GTE VVT-i</option>
+          <option value="0">2JZ-GE</option>
+          <option value="0">2JZ-GE VVT-i</option>
+        </select>
+
+        <label for="ecu">ECU</label>
+        <select id="ecu">
+          <option value="0">Select ECU</option>
+          <option value="200">Haltech Elite</option>
+          <option value="200">MAXXECU</option>
+          <option value="200">AEM Infinity</option>
+          <option value="200">Link G4X</option>
+        </select>
+
+        <label for="transmission">Transmission</label>
+        <select id="transmission">
+          <option value="0">Select Transmission</option>
+          <option value="40">R154</option>
+          <option value="40">CD009</option>
+          <option value="100">8HP BMW/Dodge</option>
+          <option value="40">V160</option>
+        </select>
+
+        <label for="injectors">Injector Connector</label>
+        <select id="injectors">
+          <option value="0">Select Injectors</option>
+          <option value="30">OEM 2JZ</option>
+          <option value="30">EV1</option>
+          <option value="30">ID</option>
+        </select>
+
+        <label for="intake">Intake Manifold</label>
+        <select id="intake">
+          <option value="0">Select Option</option>
+          <option value="0">OEM VVT-i</option>
+          <option value="0">OEM Non VVT-i</option>
+          <option value="100">Aftermarket Intake Manifold</option>
+        </select>
+      
+        <label for="throttle">Throttle Body</label>
+        <select id="fan">
+          <option value="0">Select Option</option>
+          <option value="0">OEM TPS</option>
+          <option value="0">Drive By Wire (Bosch, VQ, Toyota)</option>
+        </select>
+
+        <label for="ignition">Ignition System</label>
+        <select id="ignition">
+          <option value="0">Select Option</option>
+          <option value="200">OEM</option>
+          <option value="300">Nissan GTR R35 Coils</option>
+          <option value="300">GM Coils</option>
+          <option value="300">Audi R8 Coils</option>
+          <option value="300">Toyota 1ZZ Coils</option>
+        </select>
+
+        <label for="year">Supra Year</label>
+        <select id="year">
+          <option value="0">93-95</option>
+          <option value="0">1996</option>
+          <option value="0">1997+</option>
+        </select>
+      
+      <label for="chassis">Chassis</label>
+        <select id="chassis">
+          <option value="1000">TT Six Speed Manual</option>
+          <option value="1000">TT Auto</option>
+          <option value="1000">NA 5 Speed Manual</option>
+          <option value="1000">NA Auto</option>
+        </select>
+
+          <div class="total">Estimated Total: $<span id="total">0</span></div>
+          <button class="button" onclick="calculateTotal()">PURCHASE</button>
+        </div>
+      </div>
+    -->
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    &copy; 2025 SVK Works. All rights reserved.
+  </footer>
+
+  <script>
+    function toggleMenu() {
+      document.getElementById("nav-links").classList.toggle("active");
+    }
+
+    function calculateTotal() {
+      const fields = ["ecu","transmission","injectors","intake","ignition"];
+      let total = 0;
+      fields.forEach(id => {
+        total += parseInt(document.getElementById(id).value) || 0;
+      });
+      document.getElementById("total").textContent = total;
+    }
+  </script>
+</body>
+</html>
