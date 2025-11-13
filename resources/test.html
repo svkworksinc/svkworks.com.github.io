@@ -3,22 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SVK - 3D Parts</title>
+  <title>SVK - resources</title>
   <link rel="icon" type="image/png" href="../images/svk-logo.png">
   <link rel="stylesheet" href="../styles.css">
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Orbitron:wght@500&display=swap" rel="stylesheet">
-  <script>
-    let cartCount = 0;
-    function addToCart() {
-      cartCount++;
-      document.getElementById("cart-count").textContent = cartCount;
-    }
-
-    function toggleMenu() {
-      const nav = document.getElementById('nav-links');
-      nav.classList.toggle('active');
-    }
-  </script>
 </head>
 <body>
   <!-- Header -->
@@ -37,26 +25,13 @@
         <a href="../resources/resources.html">resources</a>
         <a href="../about.html">About</a>
       </div>
-      <div class="cart">
-        <span class="cart-icon">🛒</span>
-        <span id="cart-count">0</span>
-      </div>
       <div class="hamburger" onclick="toggleMenu()">☰</div>
     </nav>
   </header>
 
-  <!-- Product Grid Section -->
+  <!-- resources Section -->
   <section class="products">
-    <h2>3D Printed Parts</h2>
-    <div class="product-grid tight-grid">
-      <!-- Product 1 -->
-      <div class="product-card">
-        <img src="../3dparts/3dparts-images/supraCupHolder.jpg" alt="Supra Cup Holder">
-        <h3>Supra MK4 Cup Holder</h3>
-        <p class="price">$35.00</p>
-        </a>
-      </div>
-    </div>
+
   </section>
 
   <!-- Footer -->
