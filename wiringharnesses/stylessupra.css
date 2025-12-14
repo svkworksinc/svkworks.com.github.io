@@ -254,3 +254,19 @@ body {
     padding: 1rem;
   }
 }
+
+.calculator input,
+.calculator textarea {
+  width: 100%;
+  padding: 0.6rem;
+  margin-top: 0.5rem;
+  background: #111;
+  color: #00eaff;
+  border: 1px solid #ff00cc;
+  border-radius: 8px;
+  font-family: 'Orbitron', sans-serif;
+}
+
+.calculator textarea {
+  resize: vertical;
+}

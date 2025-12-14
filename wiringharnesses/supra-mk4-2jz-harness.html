@@ -4,213 +4,224 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SVK | Supra MK4 2JZ Harness</title>
-  <link rel="icon" type="image/png" href="images/svk-logo.png">
+
+  <link rel="icon" type="image/png" href="../images/svk-logo.png">
   <link rel="stylesheet" href="stylessupra.css">
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Orbitron:wght@500&display=swap" rel="stylesheet">
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-RPE47LV27L"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
 
-  gtag('config', 'G-RPE47LV27L');
-</script>
-
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-RPE47LV27L"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-RPE47LV27L');
+  </script>
 </head>
+
 <body>
-  <!-- Header -->
-  <header class="site-header">
-    <div class="logo">
-      <a href="../index.html">
-        <img src="../images/svklogo.png" alt="SVK Logo">
-      </a>
+
+<!-- HEADER -->
+<header class="site-header">
+  <div class="logo">
+    <a href="../index.html">
+      <img src="../images/svklogo.png" alt="SVK Logo">
+    </a>
+  </div>
+
+  <nav class="nav-menu">
+    <div id="nav-links">
+      <a href="../wiringharnesses/wiring-harnesses.html">Wiring Harnesses</a>
+      <a href="../connectors/connectors.html">Connectors</a>
+      <a href="../3dparts/3d-parts.html">3D Parts</a>
+      <a href="../services/services.html">Services</a>
+      <a href="../resources/resources.html">Resources</a>
+      <a href="../about.html">About</a>
     </div>
-    <nav class="nav-menu">
-      <div id="nav-links">
-        <a href="../wiringharnesses/wiring-harnesses.html">Wiring Harnesses</a>
-        <a href="../connectors/connectors.html">Connectors</a>
-        <a href="../3dparts/3d-parts.html">3D Parts</a>
-        <a href="../services/services.html">Services</a>
-        <a href="../resources/resources.html">Resources</a>
-        <a href="../about.html">About</a>
-      </div>
-      <div class="cart">
-        <span class="cart-icon">🛒</span>
-        <span id="cart-count">0</span>
-      </div>
-      <div class="hamburger" onclick="toggleMenu()">☰</div>
-    </nav>
-  </header>
 
-  <!-- Product Showcase -->
-  <main class="products">
-    <section class="product-detail">
-      <div class="product-showcase">
-        <div class="product-image">
-          <img src="../wiringharnesses/wireharnesses-images/Supra Harness.jpg" alt="Supra MK4 2JZ Harness">
-        </div>
-        <div class="product-description">
-          <h2>Supra MK4 2JZ Engine Harness</h2>
-          <p>Custom high-performance wiring harness built for the Supra MK4 2JZ engine. Perfect for standalone ECUs, injectors, sensors, and complete engine setups.</p>
-          <ul>
-            <li>Main & sub-harnesses included</li>
-            <li>High-quality connectors</li>
-            <li>Pre-installed fuse blocks</li>
-            <li>Compatible with aftermarket ECUs</li>
-          </ul>
-          <button>Email info@svkworks.com or send message on instagram for details</button>
-        </div>
-      </div>
-
-
-
-
-  <section class="calculator-section">
-  <h3 style="color: rgb(255, 255, 255);">Harness Cost Calculator</h3>
-
-  <div class="calculator">
-    
-    <label>Original Chassis</label>
-    <select class="price-option">
-      <option value="0">TT Manual Six Speed</option>
-      <option value="20">TT Auto</option>
-      <option value="0">NA Manual 5 Speed</option>
-      <option value="20">NA Auto</option>
-    </select>
-
-    <label>ECU / Standalone</label>
-    <select class="price-option">
-      <option value="0">Select ECU</option>
-      <option value="150">Haltech Elite 2500 (+$150)</option>
-      <option value="150">ECUMaster EMU Black (+150)</option>
-      <option value="150">Link G4X (+$150)</option>
-      <option value="220">MaxxECU (+220)</option>
-      <option value="170">FuelTech FT550 (+$170)</option>
-      <option value="450">Dual ECU Setup: Stock ECU Runs Auto Transmission(+450)</option>
-      <option value="150">ECUMaster EMU Pro (+200)</option>
-    </select>
-
-    <label>Engine</label>
-    <select class="price-option">
-      <option value="0">2JZ-GTE Non VVT-i</option>
-      <option value="20">2JZ-GTE VVT-i</option>
-      <option value="0">2JZ-GE Non VVT-i (Will need a cam trigger kit)</option>
-      <option value="20">2JZ-GE VVT-i</option>
-    </select>
-
-    <label>Transmission</label>
-    <select class="price-option">
-      <option value="0">Select Transmission</option>
-      <option value="0">R154</option>
-      <option value="0">W58</option>
-      <option value="35">V160 (+35)</option>
-      <option value="350">ZF8HP - Must select MaxxECU - Included Shifter Wiring too (+350)</option>
-      <option value="35">CD009 + ($35)</option>
-      <option value="35">T56 + ($35)</option>
-      <option value="0">Stock Auto - Must Select Dual ECU Setup or EMU Pro</option>
-      <option value="0">Custom Setup</option>
-    </select>
-
-    <label>Injectors</label>
-    <select class="price-option">
-      <option value="0">Select Injector Type</option>
-      <option value="0">Fuel Injector Clinic (FIC)</option>
-      <option value="0">Injector Dynamics (ID)</option>
-      <option value="0">Stock 2JZ</option>
-      <option value="0">Denso</option>
-      <option value="0">Injector Not Listed</option>
-    </select>
-
-    <label>Coils</label>
-    <select class="price-option">
-      <option value="0">Select Coil Type</option>
-      <option value="0">Stock</option>
-      <option value="120">VR38 / R35 (+$120)</option>
-      <option value="120">IGN1A (+$160)</option>
-      <option value="120">1NZ/1ZZ Yaris Coils (+$120)</option>
-      <option value="120">Audi R8 Coils ($120)</option>
-    </select>
-
-        <label>Wideband Sensor</label>
-    <select class="price-option">
-      <option value="0">Select Wideband Type</option>
-      <option value="40">Bosch LSU 4.2 (+$40)</option>
-      <option value="40">Bosch LSU 4.9 (+$40)</option>
-      <option value="0">Other (Please Specificy in Email)</option>
-    </select>
-
-
-    <label>IACV / TPS / DBW</label>
-    <select class="price-option">
-      <option value="0">Select IACV/TPS or if you're going DBW</option>
-      <option value="0">OEM VVT-i TPS and IACV (+$50)</option>
-      <option value="0">OEM Non-VVTi Throttle Body and TPS (+$50)</option>
-      <option value="120">Aftermarket TPS and IACV (+120)</option>
-      <option value="200">Bosch DBW and Pedal (+$200)</option>
-    </select>
-
-    <label>AC</label>
-    <select class="price-option">
-      <option value="0">Select AC</option>
-      <option value="0">No</option>
-      <option value="30">Yes (+$30)</option>
-    </select>
-
-
-
-    <label>Fuel Pump Setup</label>
-    <select class="price-option">
-      <option value="0">Select Fuel System</option>
-      <option value="0">Stock</option>
-      <option value="120">Relay Kit for Upgraded Fuel Pump (+$120) Highly Recommended</option>
-    </select>
-
-    <label>Flexfuel Sensor</label>
-    <select class="price-option">
-      <option value="0">No</option>
-      <option value="30">Yes (+$30)</option>
-    </select>
-
-    <label>Fuel Pressure / Oil Pressure - Temp Sensors</label>
-    <select class="price-option">
-      <option value="0">Select How Many Sensors to add (sensors can be provided upon request)</option>
-      <option value="30">1 (+30)</option>
-      <option value="60">2 (+60)</option>
-      <option value="90">3 (+90)</option>
-      <option value="120">4 (+120)</option>
-    </select>
-
-    <div class="total">
-      Estimated Total: $<span id="total">0</span>
+    <div class="cart">
+      <span class="cart-icon">🛒</span>
+      <span id="cart-count">0</span>
     </div>
-    </div>
-    </section>
 
+    <div class="hamburger" onclick="toggleMenu()">☰</div>
+  </nav>
+</header>
 
- 
-  </main>
+<!-- MAIN -->
+<main class="products">
+<section class="product-detail">
 
-  <footer class="site-footer">
-    &copy; 2025 SVK Works. All rights reserved.
-  </footer>
+<!-- PRODUCT INFO -->
+<div class="product-showcase">
+  <div class="product-image">
+    <img src="../wiringharnesses/wireharnesses-images/Supra Harness.jpg" alt="Supra MK4 2JZ Harness">
+  </div>
+
+  <div class="product-description">
+    <h2>Supra MK4 2JZ Engine Harness</h2>
+    <p>
+      Custom-built engine wiring harness designed for MK4 Supra 2JZ platforms.
+      Built in-house, one at a time, for standalone ECUs and modern engine management.
+    </p>
+    <ul>
+      <li>OEM-style fit and routing</li>
+      <li>Standalone ECU ready</li>
+      <li>High-quality automotive-grade wiring</li>
+      <li>Future expandability in mind</li>
+    </ul>
+    <button>Email info@svkworks.com or DM on Instagram</button>
+  </div>
+</div>
+
+<!-- CALCULATOR -->
+<section class="calculator-section">
+<h3>Harness Cost Calculator</h3>
+
+<div class="calculator">
+
+<!-- OPTIONS -->
+<label>Original Chassis</label>
+<select class="price-option">
+  <option value="0">TT Manual</option>
+  <option value="20">TT Auto (+20)</option>
+  <option value="0">NA Manual</option>
+  <option value="20">NA Auto (+20)</option>
+</select>
+
+<label>ECU / Standalone</label>
+<select class="price-option">
+  <option value="0">Select ECU</option>
+  <option value="150">Haltech Elite 2500 (+150)</option>
+  <option value="150">ECUMaster EMU Black (+150)</option>
+  <option value="150">Link G4X (+150)</option>
+  <option value="220">MaxxECU (+220)</option>
+  <option value="170">FuelTech FT550 (+170)</option>
+  <option value="450">Dual ECU (Auto Trans) (+450)</option>
+</select>
+
+<label>Engine</label>
+<select class="price-option">
+  <option value="0">2JZ-GTE Non VVT-i</option>
+  <option value="20">2JZ-GTE VVT-i (+20)</option>
+  <option value="0">2JZ-GE Non VVT-i</option>
+  <option value="20">2JZ-GE VVT-i (+20)</option>
+</select>
+
+<label>Transmission</label>
+<select class="price-option">
+  <option value="0">R154 / W58</option>
+  <option value="35">V160 (+35)</option>
+  <option value="35">CD009 (+35)</option>
+  <option value="35">T56 (+35)</option>
+  <option value="350">ZF8HP (+350)</option>
+</select>
+
+<label>Coils</label>
+<select class="price-option">
+  <option value="0">Stock</option>
+  <option value="120">VR38 / R35 (+120)</option>
+  <option value="120">Yaris / 1NZ (+120)</option>
+  <option value="120">Audi R8 (+120)</option>
+</select>
+
+<label>Drive-By-Wire / IACV</label>
+<select class="price-option">
+  <option value="0">OEM Throttle</option>
+  <option value="120">Aftermarket TPS/IACV (+120)</option>
+  <option value="200">Bosch DBW (+200)</option>
+</select>
+
+<label>Fuel System</label>
+<select class="price-option">
+  <option value="0">Stock</option>
+  <option value="120">Fuel Pump Relay Kit (+120)</option>
+</select>
+
+<label>Flex Fuel</label>
+<select class="price-option">
+  <option value="0">No</option>
+  <option value="30">Yes (+30)</option>
+</select>
+
+<label>Sensors (Fuel / Oil / Temp)</label>
+<select class="price-option">
+  <option value="0">None</option>
+  <option value="30">1 Sensor (+30)</option>
+  <option value="60">2 Sensors (+60)</option>
+  <option value="90">3 Sensors (+90)</option>
+</select>
+
+<!-- CUSTOMER INFO -->
+<label>Your Name</label>
+<input type="text" id="customer-name" placeholder="Your name">
+
+<label>Your Email</label>
+<input type="email" id="customer-email" placeholder="your@email.com">
+
+<label>Notes / Vehicle Info</label>
+<textarea id="customer-notes" rows="4" placeholder="Year, turbo setup, special requests"></textarea>
+
+<!-- TOTAL -->
+<div class="total">
+  Estimated Total: $<span id="total">1500</span>
+</div>
+
+<button class="button" onclick="emailOrder()">Email This Build</button>
+
+</div>
+</section>
+
+</section>
+</main>
+
+<footer class="site-footer">
+  &copy; 2025 SVK Works. All rights reserved.
+</footer>
 
 <script>
-  const options = document.querySelectorAll('.price-option');
-  const totalDisplay = document.getElementById('total');
-  const BASE_PRICE = 1100;
+const BASE_PRICE = 1500;
+const options = document.querySelectorAll(".price-option");
+const totalDisplay = document.getElementById("total");
 
-  function calculateTotal() {
-    let total = BASE_PRICE;
-    options.forEach(option => {
-      total += parseInt(option.value) || 0;
-    });
-    totalDisplay.textContent = total;
+function calculateTotal() {
+  let total = BASE_PRICE;
+  options.forEach(o => total += parseInt(o.value) || 0);
+  totalDisplay.textContent = total;
+}
+
+options.forEach(o => o.addEventListener("change", calculateTotal));
+calculateTotal();
+
+function emailOrder() {
+  const name = document.getElementById("customer-name").value || "Not provided";
+  const email = document.getElementById("customer-email").value;
+  const notes = document.getElementById("customer-notes").value || "None";
+
+  if (!email.includes("@")) {
+    alert("Please enter a valid email so I can reply.");
+    return;
   }
 
-  options.forEach(option => {
-    option.addEventListener('change', calculateTotal);
+  let body = `SVK Harness Build Request\n\nBase Price: $${BASE_PRICE}\n\nSelections:\n`;
+
+  options.forEach(o => {
+    const label = o.previousElementSibling.textContent;
+    const text = o.options[o.selectedIndex].text;
+    body += `- ${label}: ${text}\n`;
   });
+
+  body += `\nEstimated Total: $${totalDisplay.textContent}\n\n`;
+  body += `Customer:\nName: ${name}\nEmail: ${email}\nNotes: ${notes}`;
+
+  const mailto = `mailto:info@svkworks.com?subject=SVK Harness Build Request&body=${encodeURIComponent(body)}`;
+  window.location.href = mailto;
+}
+
+function toggleMenu() {
+  document.getElementById("nav-links").classList.toggle("active");
+}
 </script>
+
 </body>
 </html>
