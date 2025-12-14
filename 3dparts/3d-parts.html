@@ -8,12 +8,6 @@
   <link rel="stylesheet" href="../styles.css">
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Orbitron:wght@500&display=swap" rel="stylesheet">
   <script>
-    let cartCount = 0;
-    function addToCart() {
-      cartCount++;
-      document.getElementById("cart-count").textContent = cartCount;
-    }
-
     function toggleMenu() {
       const nav = document.getElementById('nav-links');
       nav.classList.toggle('active');
@@ -47,10 +41,7 @@
         <a href="../resources/resources.html">Resources</a>
         <a href="../about.html">About</a>
       </div>
-      <div class="cart">
-        <span class="cart-icon">🛒</span>
-        <span id="cart-count">0</span>
-      </div>
+
       <div class="hamburger" onclick="toggleMenu()">☰</div>
     </nav>
   </header>
