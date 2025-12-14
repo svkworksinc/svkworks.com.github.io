@@ -241,6 +241,26 @@ body {
   }
 }
 
+@media (max-width: 768px) {
+  .nav-menu #nav-links {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: rgba(0,0,0,0.95);
+    flex-direction: column;
+    width: 220px;
+    display: none;          /* 👈 HIDDEN BY DEFAULT */
+    padding: 1rem;
+    border: 1px solid #ff00cc;
+    border-radius: 8px;
+    z-index: 1000;
+  }
+  .nav-menu #nav-links.active {
+    display: flex;          /* 👈 ONLY SHOW WHEN ACTIVE */
+  }
+
+}
+
 @media (max-width: 480px) {
   .product-detail {
     padding: 0 0.5rem;
