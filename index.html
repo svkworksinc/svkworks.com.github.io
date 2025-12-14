@@ -8,12 +8,6 @@
   <link rel="stylesheet" href="styles.css">
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Orbitron:wght@500&display=swap" rel="stylesheet">
   <script>
-    let cartCount = 0;
-    function addToCart() {
-      cartCount++;
-      document.getElementById("cart-count").textContent = cartCount;
-    }
-
     function toggleMenu() {
       const nav = document.getElementById('nav-links');
       nav.classList.toggle('active');
@@ -59,10 +53,7 @@
         <a href="./resources/resources.html">Resources</a>
         <a href="../about.html">About</a>
       </div>
-      <div class="cart">
-        <span class="cart-icon">🛒</span>
-        <span id="cart-count">0</span>
-      </div>
+
       <div class="hamburger" onclick="toggleMenu()">☰</div>
     </nav>
   </header>
@@ -101,32 +92,6 @@
     </div>
   </section>
 
-  <!--
-   Products Section
-  <section class="products">
-    <h2>Our Products</h2>
-    <div class="product-grid">
-      <div class="product-card">
-        <img src="https://via.placeholder.com/250x150?text=Wiring+Harness" alt="Wiring Harness">
-        <h3>Performance Wiring Harness</h3>
-        <p>$120.00</p>
-        <button onclick="addToCart()">Add to Cart</button>
-      </div>
-      <div class="product-card">
-        <img src="https://via.placeholder.com/250x150?text=Connector" alt="Connector">
-        <h3>High-Quality Connector</h3>
-        <p>$15.00</p>
-        <button onclick="addToCart()">Add to Cart</button>
-      </div>
-      <div class="product-card">
-        <img src="https://via.placeholder.com/250x150?text=3D+Part" alt="3D Part">
-        <h3>Custom 3D Part</h3>
-        <p>$60.00</p>
-        <button onclick="addToCart()">Add to Cart</button>
-      </div>
-    </div>
-  </section>
--->
   <!-- Footer -->
   <footer class="site-footer">
     <p>&copy; 2025 SVK Works. All rights reserved.</p>

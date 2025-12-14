@@ -442,8 +442,8 @@ body {
 }
 
 .social-icon {
-  width: 28px;
-  height: 28px;
+  width: 12px;
+  height: 12px;
   transition: transform 0.2s ease;
 }
 
@@ -471,8 +471,8 @@ body {
   }
 
   .social-icon {
-    width: 24px;
-    height: 24px;
+    width: 12px;
+    height: 12px;
   }
 
   .email-link {
