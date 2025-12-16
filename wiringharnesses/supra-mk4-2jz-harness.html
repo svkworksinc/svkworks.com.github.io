@@ -113,7 +113,7 @@
       <option value="20">2JZ-GE VVT-i</option>
       <option value="20">1JZ-GTE VVT-i</option>
       <option value="0">1JZ-GTE Non VVT-i</option>
-      <option value="40">1UZ VVT-i or 3UZ VVT-i</option>
+      <option value="100">1UZ VVT-i or 3UZ VVT-i</option>
       <option value="0">Other (Please Specify in Email)</option>
     </select>
 
@@ -126,8 +126,8 @@
       <option value="350">ZF8HP - Must select MaxxECU - Included Shifter Wiring too (+350)</option>
       <option value="35">CD009 + ($35)</option>
       <option value="35">T56 + ($35)</option>
-      <option value="0">Stock Auto - Must Select Dual ECU Setup or EMU Pro</option>
-      <option value="0">Custom Setup</option>
+      <option value="0">Stock Auto - Must Select Dual ECU Setup or EMU Pro under ECU / Standalone</option>
+      <option value="0">Custom Setup (Please Specify in Email)</option>
     </select>
 
     <label>Injectors</label>
@@ -177,13 +177,6 @@
       <option value="30">Yes (+$30)</option>
     </select>
 
-    <label>Relay Box Provision</label>
-    <select class="price-option">
-      <option value="0">Select if you want a relay box</option>
-      <option value="0">No</option>
-      <option value="150">Yes (+$150)</option>
-    </select>
-
     <label>Fuel Pump Setup</label>
     <select class="price-option">
       <option value="0">Select Fuel System</option>
@@ -208,32 +201,32 @@
     </select>
 
 
-<!-- CUSTOMER INFO -->
-<label>Your Name</label>
-<input type="text" id="customer-name" placeholder="Your name">
+    <!-- CUSTOMER INFO -->
+    <label>Your Name</label>
+    <input type="text" id="customer-name" placeholder="Your name">
 
-<label>Your Email</label>
-<input type="email" id="customer-email" placeholder="your@email.com">
+    <label>Your Email</label>
+    <input type="email" id="customer-email" placeholder="your@email.com">
 
-<label>Notes / Vehicle Info</label>
-<textarea id="customer-notes" rows="4" placeholder="Year, turbo setup, special requests"></textarea>
+    <label>Notes / Vehicle Info</label>
+    <textarea id="customer-notes" rows="4" placeholder="Year, turbo setup, special requests"></textarea>
 
-<!-- TOTAL -->
-<div class="total">
-  Estimated Total: $<span id="total">1500</span>
-</div>
+    <!-- TOTAL -->
+    <div class="total">
+      Estimated Total: $<span id="total">1500</span>
+    </div>
 
-<button class="button" onclick="emailOrder()">Email This Build</button>
+    <button class="button" onclick="emailOrder()">Email This Build</button>
 
-</div>
-</section>
+    </div>
+    </section>
 
-</section>
-</main>
+    </section>
+    </main>
 
-<footer class="site-footer">
-  &copy; 2025 SVK Works. All rights reserved.
-</footer>
+    <footer class="site-footer">
+      &copy; 2025 SVK Works. All rights reserved.
+    </footer>
 
 <script>
 const BASE_PRICE = 1300;

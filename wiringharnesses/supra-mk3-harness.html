@@ -92,6 +92,7 @@
       <option value="170">FuelTech FT550 (+$170)</option>
       <option value="450">Dual ECU Setup: Stock ECU Runs Auto Transmission(+450)</option>
       <option value="150">ECUMaster EMU Pro (+200)</option>
+      <option value="0">Other (Please Specify in Email)</option>
     </select>
 
     <label>Engine</label>
@@ -118,7 +119,7 @@
       <option value="35">CD009 + ($35)</option>
       <option value="35">T56 + ($35)</option>
       <option value="0">Stock Auto - Must Select Dual ECU Setup or EMU Pro</option>
-      <option value="0">Custom Setup</option>
+      <option value="0">Other (Please Specify in Email)</option>
     </select>
 
     <label>Injectors</label>
@@ -128,7 +129,7 @@
       <option value="0">Injector Dynamics (ID)</option>
       <option value="0">Stock 2JZ</option>
       <option value="0">Denso</option>
-      <option value="0">Injector Not Listed</option>
+      <option value="0">Other (Please Specify in Email)</option>
     </select>
 
     <label>Coils</label>
@@ -139,6 +140,7 @@
       <option value="120">IGN1A (+$160)</option>
       <option value="120">1NZ/1ZZ Yaris Coils (+$120)</option>
       <option value="120">Audi R8 Coils ($120)</option>
+      <option value="0">Other (Please Specify in Email)</option>
     </select>
 
         <label>Wideband Sensor</label>
@@ -158,6 +160,7 @@
       <option value="120">Aftermarket TPS and IACV (+120)</option>
       <option value="200">Bosch DBW and Pedal (+$200)</option>
       <option value="200">Only for 1UZ/3UZ - OEM DBW and Pedal (+200)</option>
+      <option value="0">Other (Please Specify in Email)</option>
     </select>
 
     <label>AC</label>
@@ -167,14 +170,12 @@
       <option value="30">Yes (+$30)</option>
     </select>
 
-    <label>Relay</label>
+    <label>Relay Box Provision</label>
     <select class="price-option">
-      <option value="0">Select AC</option>
+      <option value="0">Select if you want a relay box</option>
       <option value="0">No</option>
-      <option value="30">Yes (+$30)</option>
+      <option value="150">Yes (+$150)</option>
     </select>
-
-
 
     <label>Fuel Pump Setup</label>
     <select class="price-option">
@@ -198,39 +199,75 @@
       <option value="120">4 (+120)</option>
     </select>
 
+    <!-- CUSTOMER INFO -->
+    <label>Your Name</label>
+    <input type="text" id="customer-name" placeholder="Your name">
+
+    <label>Your Email</label>
+    <input type="email" id="customer-email" placeholder="your@email.com">
+
+    <label>Notes / Vehicle Info</label>
+    <textarea id="customer-notes" rows="4" placeholder="Year, turbo setup, special requests"></textarea>
+
+    <!-- TOTAL -->
     <div class="total">
-      Estimated Total: $<span id="total">0</span>
+      Estimated Total: $<span id="total">1500</span>
     </div>
+
+    <button class="button" onclick="emailOrder()">Email This Build</button>
+
     </div>
     </section>
-  </main>
 
-  <footer class="site-footer">
-    &copy; 2025 SVK Works. All rights reserved.
-  </footer>
+    </section>
+    </main>
 
-  <script>
-    function toggleMenu() {
-      document.getElementById("nav-links").classList.toggle("active");
-    }
-  </script>
+    <footer class="site-footer">
+      &copy; 2025 SVK Works. All rights reserved.
+    </footer>
 
-  <script>
-  const options = document.querySelectorAll('.price-option');
-  const totalDisplay = document.getElementById('total');
-  const BASE_PRICE = 1100;
+<script>
+const BASE_PRICE = 1300;
+const options = document.querySelectorAll(".price-option");
+const totalDisplay = document.getElementById("total");
 
-  function calculateTotal() {
-    let total = BASE_PRICE;
-    options.forEach(option => {
-      total += parseInt(option.value) || 0;
-    });
-    totalDisplay.textContent = total;
+function calculateTotal() {
+  let total = BASE_PRICE;
+  options.forEach(o => total += parseInt(o.value) || 0);
+  totalDisplay.textContent = total;
+}
+
+options.forEach(o => o.addEventListener("change", calculateTotal));
+calculateTotal();
+
+function emailOrder() {
+  const name = document.getElementById("customer-name").value || "Not provided";
+  const email = document.getElementById("customer-email").value;
+  const notes = document.getElementById("customer-notes").value || "None";
+
+  if (!email.includes("@")) {
+    alert("Please enter a valid email so I can reply.");
+    return;
   }
 
-  options.forEach(option => {
-    option.addEventListener('change', calculateTotal);
+  let body = `SVK Harness Build Request\n\nBase Price: $${BASE_PRICE}\n\nSelections:\n`;
+
+  options.forEach(o => {
+    const label = o.previousElementSibling.textContent;
+    const text = o.options[o.selectedIndex].text;
+    body += `- ${label}: ${text}\n`;
   });
+
+  body += `\nEstimated Total: $${totalDisplay.textContent}\n\n`;
+  body += `Customer:\nName: ${name}\nEmail: ${email}\nNotes: ${notes}`;
+
+  const mailto = `mailto:info@svkworks.com?subject=SVK Harness Build Request&body=${encodeURIComponent(body)}`;
+  window.location.href = mailto;
+}
+
+function toggleMenu() {
+  document.getElementById("nav-links").classList.toggle("active");
+}
 </script>
 </body>
 </html>
