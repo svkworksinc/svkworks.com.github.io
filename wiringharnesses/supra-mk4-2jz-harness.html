@@ -71,81 +71,142 @@
 
 <!-- CALCULATOR -->
 <section class="calculator-section">
-<h3>Harness Cost Calculator</h3>
+<h3 style="color: rgb(255, 255, 255);">Harness Cost Calculator</h3>
 
 <div class="calculator">
 
 <!-- OPTIONS -->
-<label>Original Chassis</label>
-<select class="price-option">
-  <option value="0">TT Manual</option>
-  <option value="20">TT Auto (+20)</option>
-  <option value="0">NA Manual</option>
-  <option value="20">NA Auto (+20)</option>
-</select>
+    <label></label>
+    <label>Driver Side</label>
+    <select class="price-option">
+      <option value="0">Select LHD or RHD</option>
+      <option value="0">RHD</option>
+      <option value="0">LHD</option>
+    </select>
 
-<label>ECU / Standalone</label>
-<select class="price-option">
-  <option value="0">Select ECU</option>
-  <option value="150">Haltech Elite 2500 (+150)</option>
-  <option value="150">ECUMaster EMU Black (+150)</option>
-  <option value="150">Link G4X (+150)</option>
-  <option value="220">MaxxECU (+220)</option>
-  <option value="170">FuelTech FT550 (+170)</option>
-  <option value="450">Dual ECU (Auto Trans) (+450)</option>
-</select>
+    <label>Original Chassis</label>
+    <select class="price-option">
+      <option value="0">Turbo 6 Speed</option>
+      <option value="0">Turbo Auto</option>
+      <option value="0">NA 5 Speed</option>
+      <option value="0">NA Auto</option>
+    </select>
 
-<label>Engine</label>
-<select class="price-option">
-  <option value="0">2JZ-GTE Non VVT-i</option>
-  <option value="20">2JZ-GTE VVT-i (+20)</option>
-  <option value="0">2JZ-GE Non VVT-i</option>
-  <option value="20">2JZ-GE VVT-i (+20)</option>
-</select>
+    <label>ECU / Standalone</label>
+    <select class="price-option">
+      <option value="0">Select ECU</option>
+      <option value="150">Haltech Elite 2500 (+$150)</option>
+      <option value="150">ECUMaster EMU Black (+150)</option>
+      <option value="150">Link G4X (+$150)</option>
+      <option value="220">MaxxECU (+220)</option>
+      <option value="170">FuelTech FT550 (+$170)</option>
+      <option value="450">Dual ECU Setup: Stock ECU Runs Auto Transmission(+450)</option>
+      <option value="150">ECUMaster EMU Pro (+200)</option>
+      <option value="0">Other (Please Specify in Email)</option>
+    </select>
 
-<label>Transmission</label>
-<select class="price-option">
-  <option value="0">R154 / W58</option>
-  <option value="35">V160 (+35)</option>
-  <option value="35">CD009 (+35)</option>
-  <option value="35">T56 (+35)</option>
-  <option value="350">ZF8HP (+350)</option>
-</select>
+    <label>Engine</label>
+    <select class="price-option">
+      <option value="0">2JZ-GTE Non VVT-i</option>
+      <option value="20">2JZ-GTE VVT-i</option>
+      <option value="0">2JZ-GE Non VVT-i (Will need a cam trigger kit)</option>
+      <option value="20">2JZ-GE VVT-i</option>
+      <option value="20">1JZ-GTE VVT-i</option>
+      <option value="0">1JZ-GTE Non VVT-i</option>
+      <option value="40">1UZ VVT-i or 3UZ VVT-i</option>
+      <option value="0">Other (Please Specify in Email)</option>
+    </select>
 
-<label>Coils</label>
-<select class="price-option">
-  <option value="0">Stock</option>
-  <option value="120">VR38 / R35 (+120)</option>
-  <option value="120">Yaris / 1NZ (+120)</option>
-  <option value="120">Audi R8 (+120)</option>
-</select>
+    <label>Transmission</label>
+    <select class="price-option">
+      <option value="0">Select Transmission</option>
+      <option value="0">R154</option>
+      <option value="0">W58</option>
+      <option value="35">V160 (+35)</option>
+      <option value="350">ZF8HP - Must select MaxxECU - Included Shifter Wiring too (+350)</option>
+      <option value="35">CD009 + ($35)</option>
+      <option value="35">T56 + ($35)</option>
+      <option value="0">Stock Auto - Must Select Dual ECU Setup or EMU Pro</option>
+      <option value="0">Custom Setup</option>
+    </select>
 
-<label>Drive-By-Wire / IACV</label>
-<select class="price-option">
-  <option value="0">OEM Throttle</option>
-  <option value="120">Aftermarket TPS/IACV (+120)</option>
-  <option value="200">Bosch DBW (+200)</option>
-</select>
+    <label>Injectors</label>
+    <select class="price-option">
+      <option value="0">Select Injector Type</option>
+      <option value="0">Fuel Injector Clinic (FIC)</option>
+      <option value="0">Injector Dynamics (ID)</option>
+      <option value="0">Stock 2JZ</option>
+      <option value="0">Denso</option>
+      <option value="0">Other (Please Specify in Email)</option>
+    </select>
 
-<label>Fuel System</label>
-<select class="price-option">
-  <option value="0">Stock</option>
-  <option value="120">Fuel Pump Relay Kit (+120)</option>
-</select>
+    <label>Coils</label>
+    <select class="price-option">
+      <option value="0">Select Coil Type</option>
+      <option value="60">Stock + ($60)</option>
+      <option value="120">VR38 / R35 (+$120)</option>
+      <option value="120">IGN1A (+$160)</option>
+      <option value="120">1NZ/1ZZ Yaris Coils (+$120)</option>
+      <option value="120">Audi R8 Coils ($120)</option>
+      <option value="0">Other (Please Specify in Email)</option>
+    </select>
 
-<label>Flex Fuel</label>
-<select class="price-option">
-  <option value="0">No</option>
-  <option value="30">Yes (+30)</option>
-</select>
+        <label>Wideband Sensor</label>
+    <select class="price-option">
+      <option value="0">Select Wideband Type</option>
+      <option value="40">Bosch LSU 4.2 (+$40)</option>
+      <option value="40">Bosch LSU 4.9 (+$40)</option>
+      <option value="0">Other (Please Specify in Email)</option>
+    </select>
 
-<label>Sensors (Fuel / Oil / Temp)</label>
-<select class="price-option">
-  <option value="0">None</option>
-  <option value="30">1 Sensor (+30)</option>
-  <option value="60">2 Sensors (+60)</option>
-  <option value="90">3 Sensors (+90)</option>
-</select>
+
+    <label>IACV / TPS / DBW</label>
+    <select class="price-option">
+      <option value="0">Select IACV/TPS or if you're going DBW</option>
+      <option value="50">OEM VVT-i TPS and IACV (+$50)</option>
+      <option value="50">OEM Non-VVTi Throttle Body and TPS (+$50)</option>
+      <option value="120">Aftermarket TPS and IACV (+120)</option>
+      <option value="200">Bosch DBW and Pedal (+$200)</option>
+      <option value="0">Other (Please Specify in Email)</option>
+    </select>
+
+    <label>AC</label>
+    <select class="price-option">
+      <option value="0">Select AC</option>
+      <option value="0">No</option>
+      <option value="30">Yes (+$30)</option>
+    </select>
+
+    <label>Relay Box Provision</label>
+    <select class="price-option">
+      <option value="0">Select if you want a relay box</option>
+      <option value="0">No</option>
+      <option value="150">Yes (+$150)</option>
+    </select>
+
+    <label>Fuel Pump Setup</label>
+    <select class="price-option">
+      <option value="0">Select Fuel System</option>
+      <option value="0">Stock</option>
+      <option value="120">Relay Kit for Upgraded Fuel Pump (+$120) Highly Recommended</option>
+    </select>
+
+    <label>Flexfuel Sensor</label>
+    <select class="price-option">
+      <option value="0">No</option>
+      <option value="30">Yes (+$30)</option>
+    </select>
+
+    <label>Fuel Pressure / Oil Pressure - Temp Sensors</label>
+    <select class="price-option">
+      <option value="0">Select How Many Sensors to add (sensors can be provided upon request)</option>
+      <option value="30">None</option>
+      <option value="30">1 (+30)</option>
+      <option value="60">2 (+60)</option>
+      <option value="90">3 (+90)</option>
+      <option value="120">4 (+120)</option>
+    </select>
+
 
 <!-- CUSTOMER INFO -->
 <label>Your Name</label>
