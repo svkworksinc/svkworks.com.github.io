@@ -316,8 +316,143 @@ body {
    RESPONSIVE
 ====================================================== */
 @media (max-width: 1024px) {
+
+  .hamburger {
+    display: block;
+  }
+
+  .nav-menu #nav-links {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: rgba(0,0,0,0.9);
+    flex-direction: column;
+    width: 200px;
+    display: none;
+    padding: 1rem;
+    border: 1px solid #ff00cc;
+    border-radius: 8px;
+  }
+
+  .nav-menu #nav-links.active {
+    display: flex;
+  }
+
+  .hero h1 {
+    font-size: 1.8rem;
+  }
+
+  .hero p {
+    font-size: 1rem;
+  }
+
   .product-grid.tight-grid {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.3rem;
+  }
+
+  .product-card {
+    padding: 0.5rem;
+  }
+
+  .product-card img {
+    height: auto;           /* 👈 stop forcing height */
+    max-height: 77px;      /* optional visual limit */
+    object-fit: contain;    /* 👈 NO CROPPING */
+  }
+
+  .product-card h3 {
+    font-size: 0.7rem;
+  }
+
+  .product-card .description {
+    font-size: 0.5rem;
+    line-height: 1;
+    min-height: unset;
+  }
+
+  .product-card .price {
+    font-size: 0.5rem;
+  }
+
+  .product-card button {
+    font-size: 0.3rem;
+    padding: 0.3rem 0.5rem;
+  }
+  .main-cards h2 {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .hamburger {
+    display: block;
+  }
+
+  .nav-menu #nav-links {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: rgba(0,0,0,0.9);
+    flex-direction: column;
+    width: 200px;
+    display: none;
+    padding: 1rem;
+    border: 1px solid #ff00cc;
+    border-radius: 8px;
+  }
+
+  .nav-menu #nav-links.active {
+    display: flex;
+  }
+
+  .hero h1 {
+    font-size: 1.8rem;
+  }
+
+  .hero p {
+    font-size: 1rem;
+  }
+
+  .product-grid.tight-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.6rem;
+  }
+
+  .product-card {
+    padding: 0.6rem;
+  }
+
+  .product-card img {
+    height: auto;           /* 👈 stop forcing height */
+    max-height: 90px;      /* optional visual limit */
+    object-fit: contain;    /* 👈 NO CROPPING */
+  }
+
+  .product-card h3 {
+    font-size: 0.7rem;
+  }
+
+  .product-card p {
+    font-size: 0.7rem;
+  }
+
+  .product-card .description {
+    font-size: 0.5rem;
+    line-height: 1;
+    min-height: unset;
+  }
+
+  .product-card .price {
+    font-size: 0.5rem;
+  }
+
+  .product-card button {
+    font-size: 0.35rem;
+    padding: 0.4rem 0.6rem;
+  }
+  .main-cards h2 {
+    font-size: 1.5rem;
   }
 }
 
