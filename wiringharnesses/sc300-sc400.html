@@ -3,83 +3,101 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SVK | Supra MK3 Harness</title>
-  <link rel="icon" type="image/png" href="images/svk-logo.png">
+  <title>SVK | SC300 SC400 Soarer Engine Harness</title>
+
+  <link rel="icon" type="image/png" href="../images/svk-logo.png">
   <link rel="stylesheet" href="stylessupra.css">
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Orbitron:wght@500&display=swap" rel="stylesheet">
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-RPE47LV27L"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
 
-  gtag('config', 'G-RPE47LV27L');
-</script>
-
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-RPE47LV27L"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-RPE47LV27L');
+  </script>
 </head>
+
 <body>
-  <!-- Header -->
-  <header class="site-header">
-    <div class="logo">
-      <a href="../index.html">
-        <img src="../images/svklogo.png" alt="SVK Logo">
-      </a>
+
+<!-- HEADER -->
+<header class="site-header">
+  <div class="logo">
+    <a href="../index.html">
+      <img src="../images/svklogo.png" alt="SVK Logo">
+    </a>
+  </div>
+
+  <nav class="nav-menu">
+    <div id="nav-links">
+      <a href="../wiringharnesses/wiring-harnesses.html">Wiring Harnesses</a>
+      <a href="../connectors/connectors.html">Connectors</a>
+      <a href="../3dparts/3d-parts.html">3D Parts</a>
+      <a href="../services/services.html">Services</a>
+      <a href="../resources/resources.html">Resources</a>
+      <a href="../about.html">About</a>
     </div>
-    <nav class="nav-menu">
-      <div id="nav-links">
-        <a href="../wiringharnesses/wiring-harnesses.html">Wiring Harnesses</a>
-        <a href="../connectors/connectors.html">Connectors</a>
-        <a href="../3dparts/3d-parts.html">3D Parts</a>
-        <a href="../services/services.html">Services</a>
-        <a href="../resources/resources.html">Resources</a>
-        <a href="../about.html">About</a>
-      </div>
-      <div class="hamburger" onclick="toggleMenu()">☰</div>
-    </nav>
-  </header>
 
-  <!-- Product Showcase -->
-  <main class="products">
-    <section class="product-detail">
-      <div class="product-showcase">
-        <div class="product-image">
-          <img src="../wiringharnesses/wireharnesses-images/Supra Harness.jpg" alt="Supra MK3 Harness">
-        </div>
-        <div class="product-description">
-          <h2>Supra MK3 Engine Harness - 1JZ 2JZ 1UZ 7M</h2>
-          <p>Custom high-performance wiring harness built for the Supra MK3. Perfect for standalone ECUs, injectors, sensors, and complete engine setups.
-            Available options for engines: 1JZ, 2JZ, 7M and 1UZ. Note: I highly recommend that you opt for a relay box that I can provide. 
-          </p>
-          <ul>
-            <li>Main & sub-harnesses included</li>
-            <li>High-quality connectors</li>
-            <li>Pre-installed fuse blocks</li>
-            <li>Compatible with aftermarket ECUs</li>
-            <li>12v Fusebox with 4 or 6 relays</li>
-          </ul>
-          <button>Email info@svkworks.com or send message on instagram for details</button>
-        </div>
-      </div>
+    <div class="hamburger" onclick="toggleMenu()">☰</div>
+  </nav>
+</header>
+
+<!-- MAIN -->
+<main class="products">
+<section class="product-detail">
+
+<!-- PRODUCT INFO -->
+<div class="product-showcase">
+<div class="product-image">
+  <div class="image-slider">
+    <img class="slide active" src="../wiringharnesses/wireharnesses-images/Supra Harness.jpg" alt="Harness Image 1">
+    <img class="slide" src="../wiringharnesses/wireharnesses-images/Supra Harness 2.jpg" alt="Harness Image 2">
+    <img class="slide" src="../wiringharnesses/wireharnesses-images/Supra Harness 3.jpg" alt="Harness Image 3">
+    <img class="slide" src="../wiringharnesses/wireharnesses-images/Supra Harness 4.jpg" alt="Harness Image 4">
+
+    <button class="slider-btn prev" onclick="changeSlide(-1)">&#10094;</button>
+    <button class="slider-btn next" onclick="changeSlide(1)">&#10095;</button>
+  </div>
+</div>
+
+  <div class="product-description">
+    <h2>SC300 SC400 Soarer Engine Harness</h2>
+    <p>
+      Custom-built engine wiring harness designed for the Z30 Chassis, SC300, SC400 and Soarer
+      Built in-house, one at a time, for standalone ECUs and modern engine management.
+    </p>
+    <ul>
+      <li>OEM-style fit and routing</li>
+      <li>Standalone ECU ready</li>
+      <li>High-quality automotive-grade wiring</li>
+      <li>Future expandability in mind</li>
+    </ul>
+    <button>Email info@svkworks.com or DM on Instagram</button>
+  </div>
+</div>
+
+<!-- CALCULATOR -->
 <section class="calculator-section">
-  <h3 style="color: rgb(255, 255, 255);">Harness Cost Calculator</h3>
+<h3 style="color: rgb(255, 255, 255);">Harness Cost Calculator</h3>
 
-  <div class="calculator">
-    <label>Note: For MK3 Supra your original harness may be required</label>
-    <label>Original Chassis</label>
+<div class="calculator">
+
+<!-- OPTIONS -->
+    <label></label>
+    <label>Year</label>
     <select class="price-option">
-      <option value="0">Turbo 5 Speed</option>
-      <option value="0">Turbo Auto</option>
-      <option value="0">NA 5 Speed</option>
-      <option value="0">NA Auto</option>
+      <option value="0">Select Year</option>
+      <option value="0">1991-1995</option>
+      <option value="0">1996-1997</option>
+      <option value="0">1998+</option>
     </select>
 
-        <label>Year</label>
+    <label>Original Chassis</label>
     <select class="price-option">
-      <option value="0">86-88</option>
-      <option value="0">90-92</option>
-      <option value="0">89 (Need to confirm chassis connectors)</option>
-
+      <option value="0">SC300</option>
+      <option value="0">SC400</option>
+      <option value="0">Soarer</option>
     </select>
 
     <label>ECU / Standalone</label>
@@ -103,10 +121,8 @@
       <option value="20">2JZ-GE VVT-i</option>
       <option value="20">1JZ-GTE VVT-i</option>
       <option value="0">1JZ-GTE Non VVT-i</option>
-      <option value="40">1UZ VVT-i or 3UZ VVT-i</option>
-      <option value="0">7M-GTE</option>
-      <option value="0">7M-GE</option>
-      <option value="0">Other, please specificy in email</option>
+      <option value="100">1UZ VVT-i or 3UZ VVT-i</option>
+      <option value="0">Other (Please Specify in Email)</option>
     </select>
 
     <label>Transmission</label>
@@ -118,8 +134,8 @@
       <option value="350">ZF8HP - Must select MaxxECU - Included Shifter Wiring too (+350)</option>
       <option value="35">CD009 + ($35)</option>
       <option value="35">T56 + ($35)</option>
-      <option value="0">Stock Auto - Must Select Dual ECU Setup or EMU Pro</option>
-      <option value="0">Other (Please Specify in Email)</option>
+      <option value="0">Stock Auto - Must Select Dual ECU Setup or EMU Pro under ECU / Standalone</option>
+      <option value="0">Custom Setup (Please Specify in Email)</option>
     </select>
 
     <label>Injectors</label>
@@ -135,7 +151,7 @@
     <label>Coils</label>
     <select class="price-option">
       <option value="0">Select Coil Type</option>
-      <option value="60">Stock 2JZGTE (+$60)</option>
+      <option value="60">Stock + ($60)</option>
       <option value="120">VR38 / R35 (+$120)</option>
       <option value="120">IGN1A (+$160)</option>
       <option value="120">1NZ/1ZZ Yaris Coils (+$120)</option>
@@ -148,7 +164,7 @@
       <option value="0">Select Wideband Type</option>
       <option value="40">Bosch LSU 4.2 (+$40)</option>
       <option value="40">Bosch LSU 4.9 (+$40)</option>
-      <option value="0">Other (Please Specificy in Email)</option>
+      <option value="0">Other (Please Specify in Email)</option>
     </select>
 
 
@@ -159,7 +175,6 @@
       <option value="50">OEM Non-VVTi Throttle Body and TPS (+$50)</option>
       <option value="120">Aftermarket TPS and IACV (+120)</option>
       <option value="200">Bosch DBW and Pedal (+$200)</option>
-      <option value="200">Only for 1UZ/3UZ - OEM DBW and Pedal (+200)</option>
       <option value="0">Other (Please Specify in Email)</option>
     </select>
 
@@ -167,14 +182,7 @@
     <select class="price-option">
       <option value="0">Select AC</option>
       <option value="0">No</option>
-      <option value="30">Yes (+$30 Must Select Select Relay Box Provision Option as well)</option>
-    </select>
-
-    <label>Relay Box Provision</label>
-    <select class="price-option">
-      <option value="0">Select if you want a relay box</option>
-      <option value="0">No</option>
-      <option value="150">Yes (+$150)</option>
+      <option value="30">Yes (+$30)</option>
     </select>
 
     <label>Fuel Pump Setup</label>
@@ -193,11 +201,13 @@
     <label>Fuel Pressure / Oil Pressure - Temp Sensors</label>
     <select class="price-option">
       <option value="0">Select How Many Sensors to add (sensors can be provided upon request)</option>
+      <option value="30">None</option>
       <option value="30">1 (+30)</option>
       <option value="60">2 (+60)</option>
       <option value="90">3 (+90)</option>
       <option value="120">4 (+120)</option>
     </select>
+
 
     <!-- CUSTOMER INFO -->
     <label>Your Name</label>
@@ -269,5 +279,16 @@ function toggleMenu() {
   document.getElementById("nav-links").classList.toggle("active");
 }
 </script>
+<script>
+let currentSlide = 0;
+const slides = document.querySelectorAll(".image-slider img");
+
+function changeSlide(direction) {
+  slides[currentSlide].classList.remove("active");
+  currentSlide = (currentSlide + direction + slides.length) % slides.length;
+  slides[currentSlide].classList.add("active");
+}
+</script>
+
 </body>
 </html>
