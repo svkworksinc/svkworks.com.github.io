@@ -42,13 +42,25 @@
   <!-- Product Showcase -->
   <main class="products">
     <section class="product-detail">
+
+      <!-- PRODUCT INFO -->
       <div class="product-showcase">
-        <div class="product-image">
-          <img src="../wiringharnesses/wireharnesses-images/Supra Harness.jpg" alt="Supra MK3 Harness">
+      <div class="product-image">
+        <div class="image-slider">
+          <img class="slide active" src="../wiringharnesses/wireharnesses-images/Supra Harness.jpg" alt="Harness Image 1">
+          <img class="slide" src="../wiringharnesses/wireharnesses-images/Supra Harness 2.jpg" alt="Harness Image 2">
+          <img class="slide" src="../wiringharnesses/wireharnesses-images/Supra Harness 3.jpg" alt="Harness Image 3">
+          <img class="slide" src="../wiringharnesses/wireharnesses-images/Supra Harness 4.jpg" alt="Harness Image 4">
+
+          <button class="slider-btn prev" onclick="changeSlide(-1)">&#10094;</button>
+          <button class="slider-btn next" onclick="changeSlide(1)">&#10095;</button>
         </div>
+      </div>
+
         <div class="product-description">
           <h2>Supra MK3 Engine Harness - 1JZ 2JZ 1UZ 7M</h2>
-          <p>Custom high-performance wiring harness built for the Supra MK3. Perfect for standalone ECUs, injectors, sensors, and complete engine setups.
+          <p>
+            Custom high-performance wiring harness built for the Supra MK3. Perfect for standalone ECUs, injectors, sensors, and complete engine setups.
             Available options for engines: 1JZ, 2JZ, 7M and 1UZ. Note: I highly recommend that you opt for a relay box that I can provide. 
           </p>
           <ul>
@@ -61,10 +73,12 @@
           <button>Email info@svkworks.com or send message on instagram for details</button>
         </div>
       </div>
-<section class="calculator-section">
-  <h3 style="color: rgb(255, 255, 255);">Harness Cost Calculator</h3>
 
-  <div class="calculator">
+<!-- CALCULATOR -->
+<section class="calculator-section">
+<h3 style="color: rgb(255, 255, 255);">Harness Cost Calculator</h3>
+
+<div class="calculator">
     <label>Note: For MK3 Supra your original harness may be required for fusebox and body plugs</label>
     <label>Original Chassis</label>
     <select class="price-option">
@@ -277,5 +291,16 @@ function toggleMenu() {
   document.getElementById("nav-links").classList.toggle("active");
 }
 </script>
+<script>
+let currentSlide = 0;
+const slides = document.querySelectorAll(".image-slider img");
+
+function changeSlide(direction) {
+  slides[currentSlide].classList.remove("active");
+  currentSlide = (currentSlide + direction + slides.length) % slides.length;
+  slides[currentSlide].classList.add("active");
+}
+</script>
+
 </body>
 </html>
