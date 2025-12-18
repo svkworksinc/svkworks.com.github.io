@@ -208,16 +208,6 @@ body {
   margin-top: auto;
 }
 
-label a {
-  color: #00ffaa;
-  text-decoration: underline;
-  font-size:smaller;
-}
-
-label a:hover {
-  color: #ff00cc;
-}
-
 /* Responsive */
 @media (max-width: 768px) {
   .product-showcase {
