@@ -7,7 +7,7 @@
 
 /* Body */
 body {
-  font-family: 'Orbitron', sans-serif;
+  font-family: 'Exo 2', system-ui, sans-serif;
   background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
   color: #fff;
   min-height: 100vh;
@@ -15,8 +15,14 @@ body {
   flex-direction: column;
 }
 
+h3{
+  font-family: 'Orbitron', sans-serif;
+  letter-spacing: 0.04em;
+}
+
 /* Header */
 .site-header {
+  font-family: 'Orbitron', sans-serif;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -201,6 +207,7 @@ body {
 
 /* Footer */
 .site-footer {
+  font-family: 'Orbitron', sans-serif;
   background: rgba(0,0,0,0.85);
   border-top: 2px solid #ff00cc;
   text-align: center;
