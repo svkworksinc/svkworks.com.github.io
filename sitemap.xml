@@ -45,7 +45,47 @@
 
   <!-- Blog -->
   <url>
-    <loc>https://www.yoursite.com/blog/why-a-custom-engine-harness-is-worth-it-for-supra-builds.html</loc>
+    <loc>https://www.svkworks.com/resources/common-wiring-problems-in-jz-swaps.html</loc>
+    <lastmod>2025-12-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Blog -->
+  <url>
+    <loc>https://www.svkworks.com/resources/common-wiring-problems-in-jz-swaps.html</loc>
+    <lastmod>2025-12-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Blog -->
+  <url>
+    <loc>https://www.svkworks.com/resources/mk4-supra-engine-harness-plug-and-play-vs-modified-oem-wiring.html</loc>
+    <lastmod>2025-12-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Blog -->
+  <url>
+    <loc>https://www.svkworks.com/resources/what-ecu-works-best-with-2jz-supra-swap.html</loc>
+    <lastmod>2025-12-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Blog -->
+  <url>
+    <loc>https://www.svkworks.com/resources/why-a-custom-engine-harness-is-worth-it-for-supra-builds.html</loc>
+    <lastmod>2025-12-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Blog -->
+  <url>
+    <loc>https://www.svkworks.com/resources/common-wiring-problems-in-jz-swaps.html</loc>
     <lastmod>2025-12-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
