@@ -6,6 +6,13 @@
   <title>MK4 Supra Cupholder | SVK Works</title>
   <meta name="description" content="Supra MKIV Cupholder SVK Works">
 
+    <meta property="og:title" content="MKIV Supra Cupholder">
+    <meta property="og:description" content="OEM-style cupholder upgrade for the MKIV Supra. No interior cutting, stable fit, clean install.">
+    <meta property="og:image" content="https://www.svkworks.com/3dparts/3dparts-images/supraCupHolder.jpg">
+    <meta property="og:url" content="https://www.svkworks.com/3dparts/supra-cup-holder.html">
+    <meta property="og:type" content="product">
+
+
   <link rel="icon" type="image/png" href="../images/svk-logo.png">
   <link rel="stylesheet" href="item.css">
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Orbitron:wght@500&display=swap" rel="stylesheet">
@@ -75,47 +82,6 @@
     }
     }
 </script>
-    <!--FAQ SCHEME-->
-    <script type="application/ld+json">
-        {
-          "@context": "https://schema.org",
-          "@type": "FAQPage",
-          "mainEntity": [
-            {
-              "@type": "Question",
-              "name": "Is the SVK Supra harness truly plug and play?",
-              "acceptedAnswer": {
-                "@type": "Answer",
-                "text": "Yes. SVK harnesses are fully plug and play, designed to connect directly to the chassis with no cutting or modification of factory wiring."
-              }
-            },
-            {
-              "@type": "Question",
-              "name": "Do SVK harnesses support aftermarket ECUs?",
-              "acceptedAnswer": {
-                "@type": "Answer",
-                "text": "Yes. SVK harnesses are designed for standalone ECUs including Haltech, Link, MaxxECU, ECU Masters, and others."
-              }
-            },
-            {
-              "@type": "Question",
-              "name": "Are OEM gauges and accessories retained?",
-              "acceptedAnswer": {
-                "@type": "Answer",
-                "text": "Yes. Gauge functionality such as tachometer, coolant temperature, speedometer, and warning lights can be retained depending on configuration."
-              }
-            },
-            {
-              "@type": "Question",
-              "name": "Are SVK harnesses built from new materials?",
-              "acceptedAnswer": {
-                "@type": "Answer",
-                "text": "All SVK harnesses are built from scratch using new wire, OEM-style connectors, and motorsport-grade materials."
-              }
-            }
-          ]
-        }
-    </script>
 
 </head>
 
@@ -185,49 +151,7 @@
       &copy; 2025 SVK Works. All rights reserved.
     </footer>
 
-<script>
-const BASE_PRICE = 1200;
-const options = document.querySelectorAll(".price-option");
-const totalDisplay = document.getElementById("total");
 
-function calculateTotal() {
-  let total = BASE_PRICE;
-  options.forEach(o => total += parseInt(o.value) || 0);
-  totalDisplay.textContent = total;
-}
-
-options.forEach(o => o.addEventListener("change", calculateTotal));
-calculateTotal();
-
-function emailOrder() {
-  const name = document.getElementById("customer-name").value || "Not provided";
-  const email = document.getElementById("customer-email").value;
-  const notes = document.getElementById("customer-notes").value || "None";
-
-  if (!email.includes("@")) {
-    alert("Please enter a valid email so I can reply.");
-    return;
-  }
-
-  let body = `SVK Harness Build Request\n\nBase Price: $${BASE_PRICE}\n\nSelections:\n`;
-
-  options.forEach(o => {
-    const label = o.previousElementSibling.textContent;
-    const text = o.options[o.selectedIndex].text;
-    body += `- ${label}: ${text}\n`;
-  });
-
-  body += `\nEstimated Total: $${totalDisplay.textContent}\n\n`;
-  body += `Customer:\nName: ${name}\nEmail: ${email}\nNotes: ${notes}`;
-
-  const mailto = `mailto:info@svkworks.com?subject=SVK Harness Build Request&body=${encodeURIComponent(body)}`;
-  window.location.href = mailto;
-}
-
-function toggleMenu() {
-  document.getElementById("nav-links").classList.toggle("active");
-}
-</script>
 <script>
 let currentSlide = 0;
 const slides = document.querySelectorAll(".image-slider img");
