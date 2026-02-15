@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SVK - Harness Conversion & Extension Services</title>
+    
+    <link rel="icon" type="image/png" href="../images/svk-logo.png">
+    <link rel="stylesheet" href="blog.css">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Orbitron:wght@500&display=swap" rel="stylesheet">
+
+    <style>
+        /* GLOBAL STYLES */
+        body { background-color: #ffffff; }
+
+        /* SERVICE GRID */
+        .service-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        @media (min-width: 768px) {
+            .service-grid { grid-template-columns: 1fr 1fr; }
+        }
+
+        /* CARDS */
+        .service-card {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            padding: 1.5rem;
+            border-radius: 8px;
+            color: #eee;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .service-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(211, 47, 47, 0.2);
+        }
+
+        .service-card h3 { color: #e62abd; margin-top: 0; }
+
+        .example-tag {
+            background: #333;
+            color: #e62abd;
+            font-size: 0.8rem;
+            font-weight: bold;
+            padding: 4px 10px;
+            border-radius: 4px;
+            border: 1px solid #444;
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+
+        /* PROCESS VISUALS */
+        .process-visual {
+            background: #1a1a1a;
+            color: #fff;
+            padding: 2rem;
+            border-radius: 12px;
+            border: 1px solid #e62abd;
+            text-align: center;
+            margin: 3rem 0;
+        }
+
+        .process-row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .process-box {
+            background: #2a2a2a;
+            border: 1px solid #444;
+            padding: 1rem 1.5rem;
+            border-radius: 6px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.9rem;
+        }
+
+        .process-box.highlight {
+            background: #e62abd;
+            border-color: #e62abd;
+            font-weight: bold;
+        }
+
+        .process-operator {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #e62abd;
+        }
+
+        .condition-box {
+            background: #000;
+            border: 1px dashed #e62abd;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            display: inline-block;
+            max-width: 600px;
+        }
+
+        /* PRICING TABLE */
+        .pricing-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #1a1a1a;
+            color: #fff;
+            margin: 2rem 0;
+        }
+
+        .pricing-table th {
+            background: #000;
+            border: 1px solid #333;
+            padding: 1rem;
+            text-align: left;
+            font-family: 'Orbitron', sans-serif;
+            color: #e62abd;
+        }
+
+        .pricing-table td {
+            border: 1px solid #333;
+            padding: 1rem;
+        }
+
+        .pricing-table tr:nth-child(even) { background: #222; }
+
+        .price-tag { font-weight: bold; color: #e62abd; }
+    </style>
+
+    <script>
+        function toggleMenu() {
+            document.getElementById('nav-links').classList.toggle('active');
+        }
+    </script>
+</head>
+<body>
+
+    <header class="site-header">
+        <div class="logo">
+            <a href="../index.html">
+                <img src="../images/svklogo.png" alt="SVK Logo">
+            </a>
+        </div>
+        <nav class="nav-menu">
+            <div id="nav-links">
+                <a href="../wiringharnesses/wiring-harnesses.html">Wiring Harnesses</a>
+                <a href="../connectors/connectors.html">Connectors</a>
+                <a href="../3dparts/3d-parts.html">3D Parts</a>
+                <a href="../services/services.html" class="active">Services</a>
+                <a href="../resources/resources.html">Resources</a>
+                <a href="../about.html">About</a>
+            </div>
+            <div class="hamburger" onclick="toggleMenu()">☰</div>
+        </nav>
+    </header>
+
+    <section class="hero hero-small">
+        <h1>Harness Conversion Services</h1>
+        <p>OEM Reliability for Your Engine Swap</p>
+    </section>
+
+    <nav class="breadcrumbs" aria-label="Breadcrumb">
+        <ol>
+            <li><a href="../index.html">Home</a></li>
+            <li><a href="../services/services.html">Services</a></li>
+            <li>Harness Conversion & Extension</li>
+        </ol>
+    </nav>
+
+    <main class="blog-container">
+        <div class="blog-meta">
+            SVK Works • Stock ECU Solutions • Custom Wiring • All Chassis
+        </div>
+
+        <h1>The Ideal Solution for Stock ECU Builds</h1>
+
+        <p>
+            If you have purchased a JDM or donor engine that came with its <strong>stock engine harness and ECU</strong>, 
+            you don't need to go standalone to get your car running. Many enthusiasts prefer the drivability and 
+            reliability of the factory Toyota or Nissan ECU. Our services are designed specifically for people 
+            who want to implement that stock hardware into a new chassis while keeping every gauge and switch functional.
+        </p>
+
+        <div class="process-visual">
+            <h2 style="color:white; margin-bottom: 2rem;">Wiring Logic</h2>
+            
+            <div style="text-align: left; margin-bottom: 0.5rem; color: #aaa; font-size: 0.8rem;">THE CONVERSION</div>
+            <div class="process-row">
+                <div class="process-box">
+                    Your Original<br>Chassis Plugs
+                    <span style="font-size:0.7rem; color:#888;"> (Used from old harness)</span>
+                </div>
+                <div class="process-operator">+</div>
+                <div class="process-box">Donor Engine<br>Stock Harness</div>
+                <div class="process-operator">=</div>
+                <div class="process-box highlight">Plug & Play<br>Swap</div>
+            </div>
+
+            <div style="text-align: left; margin-bottom: 0.5rem; color: #aaa; font-size: 0.8rem;">THE GEOMETRY CHECK</div>
+            <div class="condition-box">
+                <div class="process-row" style="margin-bottom: 0;">
+                    <div class="process-box">JDM Engine (RHD)</div>
+                    <div class="process-operator">+</div>
+                    <div class="process-box">USDM Chassis (LHD)</div>
+                    <div class="process-operator">=</div>
+                    <div class="process-box highlight">Extension<br>Required</div>
+                </div>
+            </div>
+        </div>
+
+        <section>
+            <h2>Service Options</h2>
+            <div class="service-grid">
+                <div class="service-card">
+                    <h3>Harness Conversion</h3>
+                    <span class="example-tag">Common for: MK3 Supra, S13/S14, E30, etc.</span>
+                    <p>This service is for those using the <strong>stock ECU</strong> that came with their engine. We take the body-side connectors from your original car and professionally pin them into the donor engine harness.</p>
+                    <ul>
+                        <li>Retains factory speedometer and tachometer signals.</li>
+                        <li>Properly routes check engine light and diagnostic pins.</li>
+                        <li>Ensures your stock ignition key triggers the starter and EFI relays.</li>
+                    </ul>
+                </div>
+
+                <div class="service-card">
+                    <h3>Harness Extension</h3>
+                    <span class="example-tag">Essential for JDM-to-USDM Swaps</span>
+                    <p>Stock JDM harnesses are designed for Right-Hand Drive cars, where the ECU sits on the opposite side. When putting these into a Left-Hand Drive chassis, the harness is physically too short to reach the passenger kick panel.</p>
+                    <ul>
+                        <li>Avoids "stretching" the harness across the engine bay.</li>
+                        <li>Each wire is extended using automotive-grade TXL wire.</li>
+                        <li>Finished in high-temp loom to match the factory look.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>Fixed Rate Pricing</h2>
+            <p><em>While we work on various platforms, we maintain fixed pricing for most standard JZ and RB conversions.</em></p>
+
+            <table class="pricing-table">
+                <thead>
+                    <tr>
+                        <th>Service</th>
+                        <th>Description</th>
+                        <th>Rate</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Conversion Service</strong></td>
+                        <td>Mating your stock engine harness to your chassis plugs</td>
+                        <td class="price-tag">$950</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Extension Service</strong></td>
+                        <td>Adding length for RHD-to-LHD configurations</td>
+                        <td class="price-tag">$450</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Full Swap Package</strong></td>
+                        <td>The complete solution (Conversion + Extension)</td>
+                        <td class="price-tag">$950 to $1,400</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <div class="blog-cta">
+            <p>
+                <strong>Stop struggling with undocumented splices.</strong><br>
+                Ship us your harnesses and get back a single, professional unit ready to plug into your stock ECU.
+            </p>
+            <a href="../contact.html" style="display: inline-block; background: #e62abd; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px; margin-top: 10px; font-weight: bold; font-family: 'Orbitron';">Book Your Service</a>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <p>&copy; 2025 SVK Works. All rights reserved.</p>
+    </footer>
+
+</body>
+</html>
