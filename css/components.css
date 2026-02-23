@@ -102,6 +102,10 @@
   position: absolute;
   top: var(--space-md);
   left: var(--space-md);
+  background: rgba(20, 20, 30, 0.85);
+  color: var(--magenta-light);
+  border-color: var(--magenta);
+  backdrop-filter: blur(6px);
 }
 
 .product-card-body {
@@ -547,11 +551,11 @@
 .resource-card {
   display: flex;
   align-items: center;
-  gap: var(--space-lg);
-  padding: var(--space-lg);
+  gap: var(--space-md);
+  padding: var(--space-md) var(--space-lg);
   background: var(--bg-card);
   border: 1px solid var(--border-color);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-md);
   transition: all var(--transition-base);
 }
 
@@ -561,24 +565,29 @@
 }
 
 .resource-icon {
-  width: 50px;
-  height: 50px;
+  width: 36px;
+  height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
   background: var(--magenta-subtle);
   color: var(--magenta);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
   flex-shrink: 0;
 }
 
 .resource-info {
   flex: 1;
+  min-width: 0;
 }
 
 .resource-info h4 {
-  font-size: var(--text-base);
-  margin-bottom: var(--space-xs);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  margin-bottom: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .resource-info p {
@@ -588,6 +597,18 @@
 
 .resource-download {
   flex-shrink: 0;
+}
+
+.resource-download-icon {
+  flex-shrink: 0;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  transition: color var(--transition-fast);
+}
+
+.resource-card:hover .resource-download-icon {
+  color: var(--magenta);
 }
 
 /* ---- Pagination ---- */

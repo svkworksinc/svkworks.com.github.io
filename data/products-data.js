@@ -547,7 +547,7 @@ const SVK_PRODUCTS_DATA = {
       "author": "SVK",
       "category": "Tech",
       "excerpt": "Still running a modified OEM harness? Here's why going standalone is the best investment for your build's reliability and performance.",
-      "image": "img/placeholder-blog.svg",
+      "image": "img/supraHarness1.jpg",
       "content": "<p>If you've ever chased an electrical gremlin through a 30-year-old OEM wiring harness, you know the pain. Modified factory harnesses carry decades of degraded insulation, corroded pins, and spliced-in aftermarket additions that create unreliable connections.</p><p>A standalone harness eliminates all of that. Every wire is purpose-built for your specific setup — no unused circuits, no mystery wires, no compromise. Here at SVK, every harness is built with fresh TXL mil-spec wire, new OEM-quality connectors, and a clean layout that makes troubleshooting a thing of the past.</p><h3>Key Benefits</h3><ul><li><strong>Reliability:</strong> New wiring means no corroded connections or degraded insulation</li><li><strong>Simplicity:</strong> Only the wires your engine needs — nothing extra</li><li><strong>Clean Install:</strong> Designed for a tucked, professional appearance</li><li><strong>Easy Troubleshooting:</strong> Color-coded, labeled, and documented</li></ul>"
     },
     {
@@ -558,7 +558,7 @@ const SVK_PRODUCTS_DATA = {
       "author": "SVK",
       "category": "Guides",
       "excerpt": "The 2JZ swap into the MK3 Supra is one of the most popular JDM builds. Here's what you need to know about the wiring side of this swap.",
-      "image": "img/placeholder-blog.svg",
+      "image": "img/supraHarness1.jpg",
       "content": "<p>The MK3 Supra with a 2JZ swap is a legendary combination. But the wiring can be the most challenging part of the build if you don't plan ahead.</p><h3>What You Need to Consider</h3><ul><li>ECU choice and connector pinout</li><li>Gauge cluster integration (speedo, tach, temp, fuel)</li><li>AC and power steering retention</li><li>Starter and charging system differences</li></ul><p>Our MK3 2JZ swap harness handles all of these integration points out of the box, so you can focus on the mechanical side of your build.</p>"
     },
     {
@@ -569,7 +569,7 @@ const SVK_PRODUCTS_DATA = {
       "author": "SVK",
       "category": "Tech",
       "excerpt": "Haltech, Link, AEM, Motec — the options are overwhelming. Here's our breakdown of the most popular ECU choices for 2JZ-powered builds.",
-      "image": "img/placeholder-blog.svg",
+      "image": "img/supraHarness1.jpg",
       "content": "<p>Choosing an ECU is one of the most important decisions in your build. Each platform has strengths depending on your goals.</p><h3>Haltech Elite</h3><p>User-friendly software, excellent support, and great I/O. Ideal for street and mild track builds.</p><h3>Link G4X</h3><p>Powerful and cost-effective. Great logging and tuning features. Popular in the drift community.</p><h3>AEM Infinity</h3><p>Professional-grade with extensive I/O. Preferred by many professional tuners.</p><h3>Motec M1</h3><p>Top-tier motorsport ECU. Unmatched data logging and strategy capabilities. Best for serious competition builds.</p>"
     }
   ],
