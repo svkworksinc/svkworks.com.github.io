@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Builds Gallery — SVK Works</title>
+  <meta name="description" content="Featured builds by SVK Works and our customers. MK4 Supra, MK3 Supra, Lexus SC, and more.">
+  <link rel="canonical" href="https://svkworks.com/builds.html">
+  <meta property="og:site_name" content="SVK Works">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Builds Gallery — SVK Works">
+  <meta property="og:description" content="Featured builds by SVK Works and our customers. MK4 Supra, MK3 Supra, Lexus SC, and more.">
+  <meta property="og:url" content="https://svkworks.com/builds.html">
+  <meta property="og:image" content="https://svkworks.com/img/og-default.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Builds Gallery — SVK Works">
+  <meta name="twitter:description" content="Featured builds by SVK Works and our customers. MK4 Supra, MK3 Supra, Lexus SC, and more.">
+  <meta name="twitter:image" content="https://svkworks.com/img/og-default.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+  <!-- Breadcrumb Schema -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://svkworks.com/index.html" },
+      { "@type": "ListItem", "position": 2, "name": "Builds", "item": "https://svkworks.com/builds.html" }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <div id="header-placeholder"></div>
+
+  <main>
+    <div class="page-hero">
+      <div class="container">
+        <div class="breadcrumb">
+          <a href="index.html">Home</a><span class="breadcrumb-sep">/</span>
+          <span>Builds</span>
+        </div>
+        <h1>Builds Gallery</h1>
+        <p>Featured builds from our shop and customers. See SVK harnesses in action.</p>
+      </div>
+    </div>
+
+    <!-- Gallery view -->
+    <section class="section" id="builds-gallery-section">
+      <div class="container">
+        <div class="filter-bar">
+          <div class="filter-tabs" id="build-filter">
+            <button class="filter-tab active" data-type="all">All Builds</button>
+            <button class="filter-tab" data-type="shop">Shop Builds</button>
+            <button class="filter-tab" data-type="customer">Customer Builds</button>
+          </div>
+        </div>
+        <div id="builds-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:var(--space-xl);"></div>
+      </div>
+    </section>
+
+    <!-- Single build view -->
+    <section class="section" id="build-detail-section" style="display:none;">
+      <div class="container container-narrow">
+        <div id="build-detail-content"></div>
+      </div>
+    </section>
+
+    <section class="cta-section">
+      <div class="container">
+        <div class="cta-box fade-in">
+          <span class="section-label">Got a Build?</span>
+          <h2>Submit Your Build</h2>
+          <p>Running an SVK harness? We'd love to feature your build. Send us photos and details.</p>
+          <a href="contact.html" class="btn btn-primary">Submit Your Build</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="footer-placeholder"></div>
+
+  <script defer src="components/header.js"></script>
+  <script defer src="components/footer.js"></script>
+  <script defer src="js/cart.js"></script>
+  <script defer src="js/components.js"></script>
+  <script defer src="data/products-data.js"></script>
+  <script defer src="js/products.js"></script>
+  <script defer src="js/search.js"></script>
+  <script defer src="js/main.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const data = await SVKProducts.load();
+      const params = new URLSearchParams(window.location.search);
+      const buildId = params.get('build');
+
+      if (buildId) {
+        showBuild(buildId);
+      } else {
+        showGallery();
+      }
+
+      function showGallery() {
+        document.getElementById('builds-gallery-section').style.display = '';
+        document.getElementById('build-detail-section').style.display = 'none';
+        let currentType = 'all';
+
+        function renderBuilds() {
+          let builds = data.builds || [];
+          if (currentType !== 'all') {
+            builds = builds.filter(b => b.type === currentType);
+          }
+
+          const container = document.getElementById('builds-grid');
+          container.innerHTML = builds.map(b => `
+            <a href="builds.html?build=${b.id}" class="build-card fade-in">
+              <img class="build-card-image" src="${b.image}" alt="${b.title}" loading="lazy">
+              <div class="build-card-overlay">
+                <div class="build-card-title">${b.title}</div>
+                <div class="build-card-specs">${b.specs}</div>
+              </div>
+            </a>
+          `).join('');
+          SVKMain.observeAnimations();
+        }
+
+        document.querySelectorAll('#build-filter .filter-tab').forEach(tab => {
+          tab.addEventListener('click', () => {
+            document.querySelectorAll('#build-filter .filter-tab').forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            currentType = tab.dataset.type;
+            renderBuilds();
+          });
+        });
+
+        renderBuilds();
+      }
+
+      function showBuild(id) {
+        const build = (data.builds || []).find(b => b.id === id);
+        if (!build) {
+          document.getElementById('build-detail-content').innerHTML = '<h2>Build not found</h2><p><a href="builds.html">Back to gallery</a></p>';
+          document.getElementById('builds-gallery-section').style.display = 'none';
+          document.getElementById('build-detail-section').style.display = '';
+          return;
+        }
+
+        document.title = `${build.title} — SVK Works Builds`;
+        document.getElementById('builds-gallery-section').style.display = 'none';
+        document.getElementById('build-detail-section').style.display = '';
+
+        document.getElementById('build-detail-content').innerHTML = `
+          <a href="builds.html" class="btn btn-ghost" style="margin-bottom:var(--space-lg);">&larr; Back to Gallery</a>
+          <img src="${build.image}" alt="${build.title}" style="width:100%;border-radius:var(--radius-lg);margin-bottom:var(--space-2xl);">
+          <div style="display:flex;align-items:center;gap:var(--space-md);margin-bottom:var(--space-md);">
+            <span class="badge">${build.type === 'shop' ? 'SVK Build' : 'Customer Build'}</span>
+            <span class="text-muted">${build.owner}</span>
+          </div>
+          <h1 style="margin-bottom:var(--space-md);">${build.title}</h1>
+          <p class="text-magenta" style="font-size:var(--text-lg);font-weight:var(--weight-semibold);margin-bottom:var(--space-xl);">${build.specs}</p>
+          <p style="color:var(--text-secondary);font-size:var(--text-lg);line-height:var(--leading-normal);margin-bottom:var(--space-xl);">${build.description}</p>
+          <div class="tag-list">
+            ${build.tags.map(t => `<span class="tag">${t}</span>`).join('')}
+          </div>
+        `;
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,94 +1,103 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="https://www.sitemaps.org/schemas/sitemap/0.9">
-
-  <!-- Homepage -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://www.svkworks.com/</loc>
-    <changefreq>weekly</changefreq>
+    <loc>https://svkworks.com/index.html</loc>
     <priority>1.0</priority>
   </url>
-  
-  <!-- Product: Supra MK4 Engine Harness -->
   <url>
-    <loc>https://www.svkworks.com/wiringharnesses/supra-mk4-2jz-harness.html</loc>
-    <changefreq>monthly</changefreq>
+    <loc>https://svkworks.com/mk4-supra.html</loc>
     <priority>0.9</priority>
   </url>
-  
-    <!-- Product: Lexus SC300 SC400 -->
   <url>
-    <loc>https://www.svkworks.com/wiringharnesses/sc300-sc400.html</loc>
-    <changefreq>monthly</changefreq>
+    <loc>https://svkworks.com/mk3-supra.html</loc>
     <priority>0.9</priority>
   </url>
-  
-  <!-- Product: Supra MK3 Engine Harness -->
   <url>
-    <loc>https://www.svkworks.com/wiringharnesses/supra-mk3-harness.html</loc>
-    <changefreq>monthly</changefreq>
+    <loc>https://svkworks.com/sc300.html</loc>
     <priority>0.9</priority>
   </url>
-
-  <!-- Contact Page -->
   <url>
-    <loc>https://www.svkworks.com/about.html</loc>
-    <changefreq>yearly</changefreq>
+    <loc>https://svkworks.com/harnesses.html</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://svkworks.com/services.html</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://svkworks.com/service-custom-harness.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://svkworks.com/service-connector-assembly.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://svkworks.com/service-3d-printing.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://svkworks.com/service-wiring-repair.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://svkworks.com/service-ecu-repair.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://svkworks.com/service-harness-conversion.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://svkworks.com/milspec-connector.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://svkworks.com/8hp-transmission.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://svkworks.com/other-parts.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://svkworks.com/builds.html</loc>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://svkworks.com/blog.html</loc>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://svkworks.com/resources.html</loc>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://svkworks.com/about.html</loc>
     <priority>0.5</priority>
   </url>
-
-  <!-- About Page -->
   <url>
-    <loc>https://www.svkworks.com/about.html</loc>
-    <changefreq>yearly</changefreq>
+    <loc>https://svkworks.com/support.html</loc>
     <priority>0.5</priority>
   </url>
-
-  <!-- Blog -->
   <url>
-    <loc>https://www.svkworks.com/resources/common-wiring-problems-in-jz-swaps.html</loc>
-    <lastmod>2025-12-20</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <loc>https://svkworks.com/contact.html</loc>
+    <priority>0.5</priority>
   </url>
-
-  <!-- Blog -->
   <url>
-    <loc>https://www.svkworks.com/resources/common-wiring-problems-in-jz-swaps.html</loc>
-    <lastmod>2025-12-20</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <loc>https://svkworks.com/terms.html</loc>
+    <priority>0.3</priority>
   </url>
-
-  <!-- Blog -->
   <url>
-    <loc>https://www.svkworks.com/resources/mk4-supra-engine-harness-plug-and-play-vs-modified-oem-wiring.html</loc>
-    <lastmod>2025-12-20</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <loc>https://svkworks.com/search.html</loc>
+    <priority>0.2</priority>
   </url>
-
-  <!-- Blog -->
   <url>
-    <loc>https://www.svkworks.com/resources/what-ecu-works-best-with-2jz-supra-swap.html</loc>
-    <lastmod>2025-12-20</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <loc>https://svkworks.com/cart.html</loc>
+    <priority>0.2</priority>
   </url>
-
-  <!-- Blog -->
   <url>
-    <loc>https://www.svkworks.com/resources/why-a-custom-engine-harness-is-worth-it-for-supra-builds.html</loc>
-    <lastmod>2025-12-20</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <loc>https://svkworks.com/product.html</loc>
+    <priority>0.2</priority>
   </url>
-
-  <!-- Blog -->
-  <url>
-    <loc>https://www.svkworks.com/resources/common-wiring-problems-in-jz-swaps.html</loc>
-    <lastmod>2025-12-20</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-
 </urlset>

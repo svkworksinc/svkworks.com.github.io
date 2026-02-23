@@ -3,121 +3,271 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SVK - Custom Engine Wiring Harnesses</title>
-  <link rel="icon" type="image/png" href="../images/svk-logo.png">
-  <link rel="stylesheet" href="styles.css">
-  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Orbitron:wght@500&display=swap" rel="stylesheet">
-  <script>
-    function toggleMenu() {
-      const nav = document.getElementById('nav-links');
-      nav.classList.toggle('active');
-    }
+  <title>SVK Works — Custom Standalone Wiring Harnesses</title>
+  <meta name="description" content="SVK Works builds custom standalone wiring harnesses for 2JZ, 1JZ, 1UZ, and more. Specializing in MK4 Supra, MK3 Supra, Lexus SC, and race applications.">
+  <link rel="canonical" href="https://svkworks.com/index.html">
+  <meta property="og:site_name" content="SVK Works">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="SVK Works — Custom Standalone Wiring Harnesses">
+  <meta property="og:description" content="SVK Works builds custom standalone wiring harnesses for 2JZ, 1JZ, 1UZ, and more. Specializing in MK4 Supra, MK3 Supra, Lexus SC, and race applications.">
+  <meta property="og:url" content="https://svkworks.com/index.html">
+  <meta property="og:image" content="https://svkworks.com/img/og-default.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="SVK Works — Custom Standalone Wiring Harnesses">
+  <meta name="twitter:description" content="SVK Works builds custom standalone wiring harnesses for 2JZ, 1JZ, 1UZ, and more. Specializing in MK4 Supra, MK3 Supra, Lexus SC, and race applications.">
+  <meta name="twitter:image" content="https://svkworks.com/img/og-default.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+  <!-- Organization Schema -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "SVK Works",
+    "url": "https://svkworks.com",
+    "logo": "https://svkworks.com/img/og-default.png",
+    "description": "Custom standalone wiring harnesses for 2JZ, 1JZ, 1UZ, and more. Built to order for MK4 Supra, MK3 Supra, Lexus SC, and race applications.",
+    "email": "info@svkworks.com",
+    "sameAs": []
+  }
   </script>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-RPE47LV27L"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-RPE47LV27L');
-</script>
-
 </head>
 <body>
-  <!-- Header -->
-<header class="site-header">
-  <!-- Left: Logo + Social -->
-  <div class="header-left">
-    <div class="logo">
-      <a href="../index.html">
-        <img src="../images/svklogo.png" alt="SVK Logo">
-      </a>
-    </div>
+  <div id="header-placeholder"></div>
 
-    <div class="social-links">
-      <a href="https://www.instagram.com/svk_works" target="_blank" aria-label="Instagram">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png" alt="Instagram">
-      </a>
-      <a href="https://www.tiktok.com/@svkworks" target="_blank" aria-label="TikTok">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Tiktok_icon.svg/2048px-Tiktok_icon.svg.png" alt="TikTok">
-      </a>
-      <a href="https://www.facebook.com/profile.php?id=61580949891529" target="_blank" aria-label="Facebook">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/c/cd/Facebook_logo_%28square%29.png" alt="Facebook">
-      </a>
-      
-    </div>
-
-      <div class="header-email">
-        <a href="mailto:info@svkworks.com">info@svkworks.com</a>
+  <main>
+    <!-- Hero -->
+    <section class="hero" style="background:url('img/containerbg.png') center/cover no-repeat fixed; background-color: transparent;">
+      <div class="container">
+        <div class="hero-content fade-in">
+          <span class="section-label">Custom Wiring Solutions</span>
+          <h1>Precision Wiring.<br>Built for <span class="accent">Performance.</span></h1>
+          <p style="color: #fff;">Standalone wiring harnesses engineered from scratch for your build. Clean, reliable, and race-proven — from street to track.</p>          <div class="hero-actions">
+            <a href="harnesses.html" class="btn btn-primary btn-lg">Browse Harnesses</a>
+            <a href="contact.html" class="btn btn-outline btn-lg">Get a Custom Quote</a>
+          </div>
+          <div class="hero-stats">
+            <div>
+              <div class="hero-stat-value">500+</div>
+              <div class="hero-stat-label">Harnesses Built</div>
+            </div>
+            <div>
+              <div class="hero-stat-value">6+</div>
+              <div class="hero-stat-label">Engine Platforms</div>
+            </div>
+            <div>
+              <div class="hero-stat-value">100%</div>
+              <div class="hero-stat-label">Custom Built</div>
+            </div>
+          </div>
+        </div>
       </div>
-  </div>
+    </section>
 
-  <!-- Right: Navigation -->
-  <nav class="nav-menu">
-    <div id="nav-links">
-      <a href="./wiringharnesses/wiring-harnesses.html">Wiring Harnesses</a>
-      <a href="./connectors/connectors.html">Connectors</a>
-      <a href="./3dparts/3d-parts.html">3D Parts</a>
-      <a href="./services/services.html">Services</a>
-      <a href="./resources/resources.html">Resources</a>
-      <a href="../about.html">About</a>
-    </div>
-
-    <div class="hamburger" onclick="toggleMenu()">☰</div>
-  </nav>
-</header>
-
-
-  <!-- Hero Section -->
-  <section class="hero">
-    <h1>Custom Engine Wiring Harnesses</h1>
-    <p>Precision-built for performance, by SVK.</p>
-  </section>
-
-
-  
-  <!-- Clickable Main Section -->
-  <section class="main-cards">
-    <h2>Explore Our Products</h2>
-    <div class="card-grid">
-
-      <a href="./wiringharnesses/supra-mk4-2jz-harness.html" class="main-card">
-        <img src="wiringharnesses\wireharnesses-images/Supra Harness.jpg" alt="Supra MK4 JZA80 Engine Harness">
-        <div class="card-text">
-          <h3>Supra MK4 JZA80 Engine Harness</h3>
-          <p>Plug N Play Supra Wiring Harness</p>
+    <!-- Categories -->
+    <section class="section" style="background:url('img/containerbg.png') center/cover no-repeat fixed;">
+      <div class="container">
+        <div class="section-header fade-in">
+          <span class="section-label">Shop by Platform</span>
+          <h2>Find Your Harness</h2>
+          <p style="color:#fff;">Browse standalone wiring harnesses by vehicle platform or engine type.</p>
         </div>
-      </a>
-
-      <a href="./wiringharnesses/supra-mk3-harness.html" class="main-card">
-        <img src="wiringharnesses\wireharnesses-images/Supra Harness.jpg" alt="Supra MK3 Engine Harness">
-        <div class="card-text">
-          <h3>Supra MK3 Engine Harness - 1JZ 2JZ 1UZ 3UZ 7M</h3>
-          <p>Plug N Play Supra Wiring Harness</p>
+        <div class="category-grid stagger-children" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:var(--space-xl);">
+          <a href="mk4-supra.html" class="category-card">
+            <div class="category-card-content">
+              <h3>MK4 Supra</h3>
+              <p>JZA80 — 2JZ-GTE, 2JZ-GE, 1JZ-GTE standalone harnesses</p>
+              <span class="card-link">Shop MK4 &rarr;</span>
+            </div>
+          </a>
+          <a href="mk3-supra.html" class="category-card">
+            <div class="category-card-content">
+              <h3>MK3 Supra</h3>
+              <p>MA70/JZA70 — 2JZ swap, 1JZ, 7M-GTE standalone harnesses</p>
+              <span class="card-link">Shop MK3 &rarr;</span>
+            </div>
+          </a>
+          <a href="other-parts.html" class="category-card">
+            <div class="category-card-content">
+              <h3>Other Platforms</h3>
+              <p>Lexus SC400/SC300, Honda K-series, universal swaps, connectors</p>
+              <span class="card-link">Browse All &rarr;</span>
+            </div>
+          </a>
         </div>
-      </a>
+      </div>
+    </section>
 
-      <a href="./connectors/connectors.html" class="main-card">
-        <img src="connectors\connector-images/Supra MK4 JZA80 - Chassis Set 16p 20p 38p.jpg" alt="Connectors">
-        <div class="card-text">
-          <h3>Connectors</h3>
-          <p>Durable connectors to make your wiring clean and reliable.</p>
+    <!-- Featured Products -->
+    <section class="section" style="background:var(--bg-secondary);">
+      <div class="container">
+        <div class="section-header fade-in">
+          <span class="section-label">Featured</span>
+          <h2>Popular Harnesses</h2>
+          <p>Our most requested standalone wiring harnesses, built to order.</p>
         </div>
-      </a>
-      <a href="./3dparts/3d-parts.html" class="main-card">
-        <img src="3dparts/3dparts-images/supraCupHolder.jpg" alt="3D Parts">
-        <div class="card-text">
-          <h3>3D Parts</h3>
-          <p>Custom 3D printed parts to fit your projects perfectly.</p>
+        <div class="product-grid" id="featured-products"></div>
+        <div class="text-center" style="margin-top:var(--space-2xl);">
+          <a href="harnesses.html" class="btn btn-outline">View All Harnesses &rarr;</a>
         </div>
-      </a>
-    </div>
-  </section>
+      </div>
+    </section>
 
-  <!-- Footer -->
-  <footer class="site-footer">
-    <p>&copy; 2025 SVK Works. All rights reserved.</p>
-  </footer>
+    <!-- Why SVK -->
+    <section class="section">
+      <div class="container">
+        <div class="section-header fade-in">
+          <span class="section-label">Why SVK</span>
+          <h2>Built Different</h2>
+          <p>Every harness is designed, built, and tested by hand in-house.</p>
+        </div>
+        <div class="features-grid stagger-children">
+          <div class="feature-card">
+            <div class="feature-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            </div>
+            <h3>Mil-Spec Wiring</h3>
+            <p>TXL cross-linked polyethylene wire rated for automotive temperatures and vibration. Raychem Spec 44 available for race builds.</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+            </div>
+            <h3>OEM Connectors</h3>
+            <p>Genuine OEM-quality Toyota, Sumitomo, and Deutsch connectors. No cheap knockoffs — every pin fits like factory.</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            </div>
+            <h3>Plug & Play</h3>
+            <p>Designed for your specific chassis and ECU combo. No guesswork — plug it in and start tuning.</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+            </div>
+            <h3>Custom Built</h3>
+            <p>Every harness is built to your exact specifications. Custom lengths, custom ECU pinouts, and tailored chassis integration.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="section" style="background:var(--bg-secondary);">
+      <div class="container">
+        <div class="section-header fade-in">
+          <span class="section-label">Testimonials</span>
+          <h2>What Builders Say</h2>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:var(--space-xl);" class="stagger-children">
+          <div class="testimonial-card">
+            <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+            <p class="testimonial-text">"Best harness I've ever installed. Plugged right in, fired up first try. The quality of the wiring and connectors is unmatched."</p>
+            <div class="testimonial-author">
+              <div class="testimonial-avatar">JM</div>
+              <div>
+                <div class="testimonial-name">Joe M.</div>
+                <div class="testimonial-vehicle">MK4 Supra — 2JZ-GTE</div>
+              </div>
+            </div>
+          </div>
+          <div class="testimonial-card">
+            <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+            <p class="testimonial-text">"The MK3 2JZ swap harness saved me weeks of wiring. Everything integrated perfectly with the gauge cluster and AC."</p>
+            <div class="testimonial-author">
+              <div class="testimonial-avatar">TR</div>
+              <div>
+                <div class="testimonial-name">Tyler R.</div>
+                <div class="testimonial-vehicle">MK3 Supra — 2JZ Swap</div>
+              </div>
+            </div>
+          </div>
+          <div class="testimonial-card">
+            <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+            <p class="testimonial-text">"Race-grade quality at a fair price. The K24 harness weighs nothing and the autosport connectors are legit. Competition ready."</p>
+            <div class="testimonial-author">
+              <div class="testimonial-avatar">DK</div>
+              <div>
+                <div class="testimonial-name">Dan K.</div>
+                <div class="testimonial-vehicle">EK Civic — K24 Race Build</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Recent Builds Preview -->
+    <section class="section">
+      <div class="container">
+        <div class="section-header fade-in">
+          <span class="section-label">Gallery</span>
+          <h2>Recent Builds</h2>
+          <p>Check out some of our recent work and customer builds.</p>
+        </div>
+        <div id="home-builds" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:var(--space-xl);"></div>
+        <div class="text-center" style="margin-top:var(--space-2xl);">
+          <a href="builds.html" class="btn btn-outline">View All Builds &rarr;</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Newsletter CTA -->
+    <section class="cta-section">
+      <div class="container">
+        <div class="cta-box fade-in">
+          <span class="section-label">Stay Updated</span>
+          <h2>Get Build Updates & Deals</h2>
+          <p>Be the first to know about new products, build features, and exclusive offers.</p>
+          <form class="newsletter-form" onsubmit="event.preventDefault(); SVKCart.showToast('Thanks for subscribing!');">
+            <input type="email" placeholder="Enter your email" required>
+            <button type="submit" class="btn btn-primary">Subscribe</button>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="footer-placeholder"></div>
+
+  <script defer src="components/header.js"></script>
+  <script defer src="components/footer.js"></script>
+  <script defer src="js/cart.js"></script>
+  <script defer src="js/components.js"></script>
+  <script defer src="data/products-data.js"></script>
+  <script defer src="js/products.js"></script>
+  <script defer src="js/search.js"></script>
+  <script defer src="js/main.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      // Wait for products to load
+      await SVKProducts.load();
+
+      // Render featured products
+      const featured = SVKProducts.getProducts({ featured: true });
+      SVKProducts.renderProductGrid(featured, 'featured-products');
+
+      // Render builds preview
+      const builds = SVKProducts.data.builds.slice(0, 4);
+      const buildsContainer = document.getElementById('home-builds');
+      if (buildsContainer && builds.length) {
+        buildsContainer.innerHTML = builds.map(b => `
+          <a href="builds.html?build=${b.id}" class="build-card fade-in">
+            <img class="build-card-image" src="${b.image}" alt="${b.title}" loading="lazy">
+            <div class="build-card-overlay">
+              <div class="build-card-title">${b.title}</div>
+              <div class="build-card-specs">${b.specs}</div>
+            </div>
+          </a>
+        `).join('');
+        SVKMain.observeAnimations();
+      }
+    });
+  </script>
 </body>
 </html>

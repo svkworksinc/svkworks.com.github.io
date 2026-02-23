@@ -3,90 +3,131 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>About SVK</title>
-  <link rel="icon" type="image/png" href="../images/svk-logo.png">
-  <link rel="stylesheet" href="styles.css">
-  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Orbitron:wght@500&display=swap" rel="stylesheet">
-  <script>
-    function toggleMenu() {
-      const nav = document.getElementById('nav-links');
-      nav.classList.toggle('active');
-    }
+  <title>About — SVK Works</title>
+  <meta name="description" content="About SVK Works — custom standalone wiring harnesses built by enthusiasts, for enthusiasts.">
+  <link rel="canonical" href="https://svkworks.com/about.html">
+  <meta property="og:site_name" content="SVK Works">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="About — SVK Works">
+  <meta property="og:description" content="About SVK Works — custom standalone wiring harnesses built by enthusiasts, for enthusiasts.">
+  <meta property="og:url" content="https://svkworks.com/about.html">
+  <meta property="og:image" content="https://svkworks.com/img/og-default.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="About — SVK Works">
+  <meta name="twitter:description" content="About SVK Works — custom standalone wiring harnesses built by enthusiasts, for enthusiasts.">
+  <meta name="twitter:image" content="https://svkworks.com/img/og-default.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+  <!-- Breadcrumb Schema -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://svkworks.com/index.html" },
+      { "@type": "ListItem", "position": 2, "name": "About", "item": "https://svkworks.com/about.html" }
+    ]
+  }
   </script>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-RPE47LV27L"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-RPE47LV27L');
-</script>
-
 </head>
 <body>
-  <!-- Header -->
-  <header class="site-header">
-    <div class="logo">
-      <a href="../index.html">
-        <img src="../images/svklogo.png" alt="SVK Logo">
-      </a>
-    </div>
-    <nav class="nav-menu">
-      <div id="nav-links">
-        <a href="../index.html">Home</a>
-        <a href="./wiringharnesses/wiring-harnesses.html">Wiring Harnesses</a>
-        <a href="./connectors/connectors.html">Connectors</a>
-        <a href="./3dparts/3d-parts.html">3D Parts</a>
-        <a href="./services/services.html">Services</a>
-        <a href="./resources/resources.html">Resources</a>
-        <a href="../about.html">About</a>
-      </div>
+  <div id="header-placeholder"></div>
 
-      <div class="hamburger" onclick="toggleMenu()">☰</div>
-    </nav>
-  </header>
-
-  <!-- Hero Section -->
-  <section class="hero">
-    <h1>About SVK</h1>
-    <p>Precision, passion, and performance—all in one harness.</p>
-  </section>
-
-  <!-- About Content -->
-  <section class="main-cards">
-    <h2>What is SVK Works</h2>
-    <div class="card-grid">
-      <div class="main-card">
-        <img src="../images/works.jpg" alt="SVK">
-        <div class="card-text">
-          <h3>SVK Works</h3>
-          <p>SVK is a one-person operation dedicated to building high-quality custom engine wiring harnesses for performance cars. From research to assembly, everything is crafted with precision.</p>
+  <main>
+    <div class="page-hero">
+      <div class="container">
+        <div class="breadcrumb">
+          <a href="index.html">Home</a><span class="breadcrumb-sep">/</span>
+          <span>About</span>
         </div>
-      </div>
-      <div class="main-card">
-        <img src="../images/builder.jpg" alt="The Builder">
-        <div class="card-text">
-          <h3>Run by a Passionate Builder</h3>
-          <p>Every harness is personally designed, tested, and assembled by me. I handle all the research, sourcing, and fabrication myself to ensure top-notch quality and reliability.</p>
-        </div>
-      </div>
-      <div class="main-card">
-        <img src="../images/SupraA80.jpg" alt="Mission">
-        <div class="card-text">
-          <h3>My Mission</h3>
-          <p>To provide enthusiasts and builders with reliable, high-performance wiring solutions that make engine swaps, standalone ECUs, and custom setups easier and safer.</p>
-        </div>
+        <h1>About SVK Works</h1>
+        <p>Built by enthusiasts. Engineered for reliability.</p>
       </div>
     </div>
-    <p style="text-align:center; margin-top:1.5rem; color:#ff00cc; font-weight:bold;">
-      At SVK, it’s just me and my passion for automotive electronics—handcrafted for your ride.
-    </p>
-  </section>
 
-  <!-- Footer -->
-  <footer class="site-footer">
-    <p>&copy; 2025 SVK Works. All rights reserved.</p>
-  </footer>
+    <section class="section">
+      <div class="container container-narrow">
+        <div class="fade-in" style="margin-bottom:var(--space-3xl);">
+          <span class="section-label">Our Story</span>
+          <h2 style="margin-bottom:var(--space-lg);">From the Garage to Your Build</h2>
+          <p style="color:var(--text-secondary);font-size:var(--text-lg);line-height:var(--leading-normal);">
+            SVK Works started from a simple frustration — dealing with degraded, spliced-together factory wiring on project cars. After building a standalone harness for our own MK3 Supra 2JZ swap and seeing the difference in reliability, we knew this was something every builder needed.
+          </p>
+          <p style="color:var(--text-secondary);font-size:var(--text-lg);line-height:var(--leading-normal);">
+            Today, SVK Works builds custom standalone wiring harnesses for a growing range of platforms — from the legendary 2JZ and 1JZ to the 1UZ V8, Honda K-series, and beyond. Every harness is designed, built, and tested by hand with the same attention to detail we'd put into our own cars.
+          </p>
+        </div>
+
+        <div class="features-grid stagger-children" style="margin-bottom:var(--space-3xl);">
+          <div class="feature-card">
+            <div class="feature-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            </div>
+            <h3>Quality First</h3>
+            <p>Mil-spec wire, OEM connectors, and thorough testing on every harness before it ships.</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            </div>
+            <h3>Builder Community</h3>
+            <p>We're car builders too. We understand what you need because we've been in the same seat.</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+            </div>
+            <h3>Growing Beyond Wiring</h3>
+            <p>We're expanding into 3D printed parts, custom fabrication, and connectors to be your one-stop build resource.</p>
+          </div>
+        </div>
+
+        <div class="fade-in">
+          <span class="section-label">What We Build</span>
+          <h2 style="margin-bottom:var(--space-lg);">Platforms &amp; Engines</h2>
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:var(--space-md);margin-bottom:var(--space-2xl);">
+            <div class="feature-card" style="padding:var(--space-lg);text-align:center;">
+              <h3 style="color:var(--magenta);font-size:var(--text-xl);">2JZ</h3>
+              <p>GTE &amp; GE — VVTi / Non-VVTi</p>
+            </div>
+            <div class="feature-card" style="padding:var(--space-lg);text-align:center;">
+              <h3 style="color:var(--magenta);font-size:var(--text-xl);">1JZ</h3>
+              <p>GTE — VVTi / Non-VVTi</p>
+            </div>
+            <div class="feature-card" style="padding:var(--space-lg);text-align:center;">
+              <h3 style="color:var(--magenta);font-size:var(--text-xl);">1UZ</h3>
+              <p>FE — VVTi / Non-VVTi</p>
+            </div>
+            <div class="feature-card" style="padding:var(--space-lg);text-align:center;">
+              <h3 style="color:var(--magenta);font-size:var(--text-xl);">7M</h3>
+              <p>GTE Turbo Inline-6</p>
+            </div>
+            <div class="feature-card" style="padding:var(--space-lg);text-align:center;">
+              <h3 style="color:var(--magenta);font-size:var(--text-xl);">K-Series</h3>
+              <p>K24 / K20 Race &amp; Street</p>
+            </div>
+            <div class="feature-card" style="padding:var(--space-lg);text-align:center;">
+              <h3 style="color:var(--magenta);font-size:var(--text-xl);">Custom</h3>
+              <p>Any engine, any chassis</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="footer-placeholder"></div>
+
+  <script defer src="components/header.js"></script>
+  <script defer src="components/footer.js"></script>
+  <script defer src="js/cart.js"></script>
+  <script defer src="js/components.js"></script>
+  <script defer src="data/products-data.js"></script>
+  <script defer src="js/products.js"></script>
+  <script defer src="js/search.js"></script>
+  <script defer src="js/main.js"></script>
 </body>
 </html>

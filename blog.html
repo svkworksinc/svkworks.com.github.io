@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blog — SVK Works</title>
+  <meta name="description" content="Tech articles, build guides, and wiring tips from SVK Works.">
+  <link rel="canonical" href="https://svkworks.com/blog.html">
+  <meta property="og:site_name" content="SVK Works">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Blog — SVK Works">
+  <meta property="og:description" content="Tech articles, build guides, and wiring tips from SVK Works.">
+  <meta property="og:url" content="https://svkworks.com/blog.html">
+  <meta property="og:image" content="https://svkworks.com/img/og-default.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Blog — SVK Works">
+  <meta name="twitter:description" content="Tech articles, build guides, and wiring tips from SVK Works.">
+  <meta name="twitter:image" content="https://svkworks.com/img/og-default.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+  <!-- Breadcrumb Schema -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://svkworks.com/index.html" },
+      { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://svkworks.com/blog.html" }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <div id="header-placeholder"></div>
+
+  <main>
+    <div class="page-hero">
+      <div class="container">
+        <div class="breadcrumb">
+          <a href="index.html">Home</a><span class="breadcrumb-sep">/</span>
+          <span>Blog</span>
+        </div>
+        <h1>Blog</h1>
+        <p>Tech articles, build guides, and wiring tips from the SVK workshop.</p>
+      </div>
+    </div>
+
+    <!-- Blog list view -->
+    <section class="section" id="blog-list-section">
+      <div class="container">
+        <div class="filter-bar">
+          <div class="filter-tabs" id="blog-filter">
+            <button class="filter-tab active" data-cat="all">All</button>
+            <button class="filter-tab" data-cat="Tech">Tech</button>
+            <button class="filter-tab" data-cat="Guides">Guides</button>
+          </div>
+        </div>
+        <div id="blog-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:var(--space-xl);"></div>
+      </div>
+    </section>
+
+    <!-- Single blog post view -->
+    <section class="section" id="blog-post-section" style="display:none;">
+      <div class="container container-narrow">
+        <div id="blog-post-content"></div>
+      </div>
+    </section>
+  </main>
+
+  <div id="footer-placeholder"></div>
+
+  <script defer src="components/header.js"></script>
+  <script defer src="components/footer.js"></script>
+  <script defer src="js/cart.js"></script>
+  <script defer src="js/components.js"></script>
+  <script defer src="data/products-data.js"></script>
+  <script defer src="js/products.js"></script>
+  <script defer src="js/search.js"></script>
+  <script defer src="js/main.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const data = await SVKProducts.load();
+      const params = new URLSearchParams(window.location.search);
+      const postId = params.get('post');
+
+      if (postId) {
+        showPost(postId);
+      } else {
+        showList();
+      }
+
+      function showList() {
+        document.getElementById('blog-list-section').style.display = '';
+        document.getElementById('blog-post-section').style.display = 'none';
+        let currentCat = 'all';
+
+        function renderBlogs() {
+          let blogs = data.blogs || [];
+          if (currentCat !== 'all') {
+            blogs = blogs.filter(b => b.category === currentCat);
+          }
+
+          const container = document.getElementById('blog-grid');
+          container.innerHTML = blogs.map(b => `
+            <div class="blog-card fade-in">
+              <div class="blog-card-image"><img src="${b.image}" alt="${b.title}" loading="lazy"></div>
+              <div class="blog-card-body">
+                <div class="blog-card-meta">
+                  <span class="badge">${b.category}</span>
+                  <span>${SVKMain.formatDate(b.date)}</span>
+                </div>
+                <h3 class="blog-card-title"><a href="blog.html?post=${b.id}">${b.title}</a></h3>
+                <p class="blog-card-excerpt">${b.excerpt}</p>
+              </div>
+            </div>
+          `).join('');
+          SVKMain.observeAnimations();
+        }
+
+        document.querySelectorAll('#blog-filter .filter-tab').forEach(tab => {
+          tab.addEventListener('click', () => {
+            document.querySelectorAll('#blog-filter .filter-tab').forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            currentCat = tab.dataset.cat;
+            renderBlogs();
+          });
+        });
+
+        renderBlogs();
+      }
+
+      function showPost(id) {
+        const post = (data.blogs || []).find(b => b.id === id);
+        if (!post) {
+          document.getElementById('blog-post-content').innerHTML = '<h2>Post not found</h2><p><a href="blog.html">Back to blog</a></p>';
+          document.getElementById('blog-list-section').style.display = 'none';
+          document.getElementById('blog-post-section').style.display = '';
+          return;
+        }
+
+        document.title = `${post.title} — SVK Works Blog`;
+        document.getElementById('blog-list-section').style.display = 'none';
+        document.getElementById('blog-post-section').style.display = '';
+
+        document.getElementById('blog-post-content').innerHTML = `
+          <a href="blog.html" class="btn btn-ghost" style="margin-bottom:var(--space-lg);">&larr; Back to Blog</a>
+          <div class="blog-card-meta" style="margin-bottom:var(--space-md);">
+            <span class="badge">${post.category}</span>
+            <span class="text-muted">${SVKMain.formatDate(post.date)}</span>
+            <span class="text-muted">by ${post.author}</span>
+          </div>
+          <h1 style="margin-bottom:var(--space-xl);">${post.title}</h1>
+          <img src="${post.image}" alt="${post.title}" style="border-radius:var(--radius-lg);margin-bottom:var(--space-2xl);width:100%;">
+          <div class="blog-content" style="color:var(--text-secondary);line-height:var(--leading-normal);font-size:var(--text-lg);">
+            ${post.content}
+          </div>
+        `;
+      }
+    });
+  </script>
+</body>
+</html>

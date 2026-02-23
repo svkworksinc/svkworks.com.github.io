@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>All Harnesses — SVK Works</title>
+  <meta name="description" content="Browse all custom standalone wiring harnesses by SVK Works. 2JZ, 1JZ, 1UZ, K-series and more.">
+  <link rel="canonical" href="https://svkworks.com/harnesses.html">
+  <meta property="og:site_name" content="SVK Works">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="All Harnesses — SVK Works">
+  <meta property="og:description" content="Browse all custom standalone wiring harnesses by SVK Works. 2JZ, 1JZ, 1UZ, K-series and more.">
+  <meta property="og:url" content="https://svkworks.com/harnesses.html">
+  <meta property="og:image" content="https://svkworks.com/img/og-default.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="All Harnesses — SVK Works">
+  <meta name="twitter:description" content="Browse all custom standalone wiring harnesses by SVK Works. 2JZ, 1JZ, 1UZ, K-series and more.">
+  <meta name="twitter:image" content="https://svkworks.com/img/og-default.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+  <!-- Breadcrumb Schema -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://svkworks.com/index.html" },
+      { "@type": "ListItem", "position": 2, "name": "All Harnesses", "item": "https://svkworks.com/harnesses.html" }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <div id="header-placeholder"></div>
+
+  <main>
+    <div class="page-hero">
+      <div class="container">
+        <div class="breadcrumb">
+          <a href="index.html">Home</a><span class="breadcrumb-sep">/</span>
+          <span>All Harnesses</span>
+        </div>
+        <h1>Wiring Harnesses</h1>
+        <p>Complete catalog of custom standalone wiring harnesses. Filter by platform, engine, or search for exactly what you need.</p>
+      </div>
+    </div>
+
+    <section class="section">
+      <div class="container">
+        <div class="filter-bar" id="filter-bar">
+          <div class="filter-tabs" id="filter-tabs">
+            <button class="filter-tab active" data-filter="all">All</button>
+            <button class="filter-tab" data-filter="mk4-supra">MK4 Supra</button>
+            <button class="filter-tab" data-filter="mk3-supra">MK3 Supra</button>
+            <button class="filter-tab" data-filter="other">Other</button>
+          </div>
+          <div class="filter-sort">
+            <label for="sort-select">Sort:</label>
+            <select id="sort-select">
+              <option value="default">Default</option>
+              <option value="price-asc">Price: Low to High</option>
+              <option value="price-desc">Price: High to Low</option>
+              <option value="name">Name: A-Z</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="product-grid" id="product-grid"></div>
+      </div>
+    </section>
+  </main>
+
+  <div id="footer-placeholder"></div>
+
+  <script defer src="components/header.js"></script>
+  <script defer src="components/footer.js"></script>
+  <script defer src="js/cart.js"></script>
+  <script defer src="js/components.js"></script>
+  <script defer src="data/products-data.js"></script>
+  <script defer src="js/products.js"></script>
+  <script defer src="js/search.js"></script>
+  <script defer src="js/main.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      await SVKProducts.load();
+
+      let currentFilter = 'all';
+      let currentSort = 'default';
+
+      function renderProducts() {
+        const filter = {};
+        if (currentFilter !== 'all') filter.category = currentFilter;
+        if (currentSort !== 'default') filter.sort = currentSort;
+        const products = SVKProducts.getProducts(filter);
+        SVKProducts.renderProductGrid(products, 'product-grid');
+      }
+
+      // Filter tabs
+      document.querySelectorAll('.filter-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+          document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+          tab.classList.add('active');
+          currentFilter = tab.dataset.filter;
+          renderProducts();
+        });
+      });
+
+      // Sort select
+      document.getElementById('sort-select').addEventListener('change', (e) => {
+        currentSort = e.target.value;
+        renderProducts();
+      });
+
+      // Check URL hash for deep-link filter
+      if (window.location.hash === '#engine-harnesses') {
+        currentFilter = 'all';
+      }
+
+      renderProducts();
+    });
+  </script>
+</body>
+</html>
