@@ -171,103 +171,44 @@
       "featured": false
     },
     {
-      "id": "sc400-1uzfe-standalone",
-      "name": "Lexus SC400 1UZ-FE Standalone Harness",
-      "slug": "sc400-1uzfe-standalone",
-      "category": "other",
-      "engine": "1UZ-FE",
-      "tags": ["1uz", "sc400", "lexus", "standalone", "v8"],
-      "price": 1250,
+      "id": "k-series-universal-harness",
+      "name": "K20/K24 Universal Swap Harness",
+      "slug": "k-series-universal-harness",
+      "category": "universal-harness",
+      "engine": "K20/K24",
+      "tags": ["k20", "k24", "honda", "universal", "swap", "standalone", "custom"],
+      "price": 0,
       "image": "img/supraHarness1.jpg",
       "images": ["img/supraHarness1.jpg"],
-      "badge": "New",
-      "shortDesc": "Complete standalone harness for the 1UZ-FE V8 in the SC400 chassis.",
-      "description": "Full standalone wiring harness for the legendary 1UZ-FE V8. Designed for the Lexus SC400 but can be adapted for universal swap applications. Clean, reliable, and ready for aftermarket ECU control.",
+      "badge": "Custom Order",
+      "shortDesc": "Custom standalone harness for Honda K20/K24 engine swaps. Built to your specs — contact us for a quote.",
+      "description": "Custom-built standalone wiring harness for Honda K20 and K24 engine swap applications. Every harness is built to order based on your specific chassis, ECU, and accessory requirements. Contact us with your build details for a custom quote.",
       "specs": {
-        "Engine": "1UZ-FE VVTi / Non-VVTi",
-        "Chassis": "Lexus SC400 (Z30)",
-        "Wire Type": "TXL Cross-Linked Polyethylene",
-        "Connector Type": "OEM Toyota / Sumitomo",
-        "ECU Compatibility": "Haltech, Link, AEM",
-        "Lead Time": "5-7 weeks"
-      },
-      "options": {
-        "ECU Type": ["Haltech Elite", "Link G4X", "AEM Infinity", "Other"],
-        "VVTi": ["VVTi", "Non-VVTi"]
-      },
-      "inStock": true,
-      "featured": true
-    },
-    {
-      "id": "sc300-2jzgte-standalone",
-      "name": "Lexus SC300 2JZ-GTE Swap Harness",
-      "slug": "sc300-2jzgte-standalone",
-      "category": "other",
-      "engine": "2JZ-GTE",
-      "tags": ["2jz", "sc300", "lexus", "standalone", "swap", "turbo"],
-      "price": 1300,
-      "image": "img/supraHarness1.jpg",
-      "images": ["img/supraHarness1.jpg"],
-      "badge": "",
-      "shortDesc": "2JZ-GTE swap harness for the Lexus SC300. Full standalone with chassis integration.",
-      "description": "Standalone wiring harness for the popular 2JZ-GTE swap into the Lexus SC300 (Soarer). Includes full chassis integration for gauges, AC, and power systems.",
-      "specs": {
-        "Engine": "2JZ-GTE VVTi / Non-VVTi",
-        "Chassis": "Lexus SC300 (Z30)",
-        "Wire Type": "TXL Cross-Linked Polyethylene",
-        "Connector Type": "OEM Toyota / Deutsch",
-        "ECU Compatibility": "Haltech, Link, AEM, Motec",
-        "Lead Time": "5-7 weeks"
-      },
-      "options": {
-        "ECU Type": ["Haltech Elite", "Link G4X", "AEM Infinity", "Motec M1", "Other"],
-        "VVTi": ["VVTi", "Non-VVTi"]
-      },
-      "inStock": true,
-      "featured": false
-    },
-    {
-      "id": "k24-race-harness",
-      "name": "K24 Full Race Standalone Harness",
-      "slug": "k24-race-harness",
-      "category": "other",
-      "engine": "K24",
-      "tags": ["k24", "honda", "race", "standalone", "custom"],
-      "price": 1500,
-      "image": "img/supraHarness1.jpg",
-      "images": ["img/supraHarness1.jpg"],
-      "badge": "Race",
-      "shortDesc": "Full race-tier standalone harness for the Honda K24. Mil-spec, lightweight, and competition ready.",
-      "description": "Competition-grade standalone wiring harness for the Honda K24 engine. Built with Raychem mil-spec wire, autosport connectors, and designed for minimal weight. Ideal for time attack, drift, and circuit racing applications.",
-      "specs": {
-        "Engine": "K24A / K24Z",
+        "Engine": "K20A / K20C / K24A / K24Z",
         "Chassis": "Universal / Custom",
-        "Wire Type": "Raychem Spec 44",
-        "Connector Type": "Autosport / Deutsch DTM",
-        "ECU Compatibility": "Haltech, Link, AEM, Motec",
-        "Weight": "Under 2 lbs",
+        "Wire Type": "TXL or Raychem Spec 44",
+        "Connector Type": "OEM Honda / Deutsch DTM",
+        "ECU Compatibility": "Haltech, Link, AEM, Motec, Hondata",
         "Lead Time": "5-7 weeks"
       },
-      "options": {
-        "ECU Type": ["Haltech Elite", "Link G4X", "AEM Infinity", "Motec M1", "Other"],
-        "Connector Level": ["Standard Deutsch", "Autosport AS"]
-      },
+      "options": {},
       "inStock": true,
-      "featured": true
+      "featured": true,
+      "page": "k-series-universal-harness.html"
     },
     {
       "id": "1uz-universal-standalone",
       "name": "1UZ-FE Universal Swap Harness",
       "slug": "1uz-universal-standalone",
-      "category": "other",
+      "category": "universal-harness",
       "engine": "1UZ-FE",
-      "tags": ["1uz", "universal", "swap", "standalone", "v8"],
-      "price": 1150,
+      "tags": ["1uz", "universal", "swap", "standalone", "v8", "custom"],
+      "price": 0,
       "image": "img/supraHarness1.jpg",
       "images": ["img/supraHarness1.jpg"],
-      "badge": "",
-      "shortDesc": "Universal standalone harness for 1UZ-FE swap into any chassis.",
-      "description": "Versatile standalone harness for the 1UZ-FE V8 engine. Designed with extended leads and universal connector options for swap into non-Toyota chassis applications.",
+      "badge": "Custom Order",
+      "shortDesc": "Universal standalone harness for 1UZ-FE V8 swap into any chassis. Built to your specs — contact us for a quote.",
+      "description": "Versatile standalone harness for the 1UZ-FE V8 engine. Designed with extended leads and universal connector options for swap into any chassis. Every harness is custom built to your specific requirements.",
       "specs": {
         "Engine": "1UZ-FE VVTi / Non-VVTi",
         "Chassis": "Universal",
@@ -276,13 +217,10 @@
         "ECU Compatibility": "Haltech, Link, AEM",
         "Lead Time": "5-7 weeks"
       },
-      "options": {
-        "ECU Type": ["Haltech Elite", "Link G4X", "AEM Infinity", "Other"],
-        "VVTi": ["VVTi", "Non-VVTi"],
-        "Lead Length": ["Standard (4ft)", "Extended (6ft)", "Custom"]
-      },
+      "options": {},
       "inStock": true,
-      "featured": false
+      "featured": true,
+      "page": "1uz-universal-harness.html"
     },
     {
       "id": "oem-connector-kit-2jz",

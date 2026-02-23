@@ -65,11 +65,13 @@
 
 /* ---- Product Cards ---- */
 .product-card {
+  position: relative;
   background: var(--bg-card);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
   overflow: hidden;
   transition: all var(--transition-base);
+  cursor: pointer;
 }
 
 .product-card:hover {
@@ -116,6 +118,13 @@
 .product-card-title a {
   color: inherit;
   text-decoration: none;
+}
+
+.product-card-title a::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
 }
 
 .product-card-title a:hover {
@@ -500,6 +509,38 @@
 .build-card-specs {
   font-size: var(--text-xs);
   color: var(--text-muted);
+}
+
+/* ---- Specs Table ---- */
+.specs-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: var(--space-md);
+}
+
+.specs-table th,
+.specs-table td {
+  padding: 0.6rem 0.75rem;
+  font-size: var(--text-sm);
+  border-bottom: 1px solid var(--border-color);
+  text-align: left;
+  vertical-align: top;
+}
+
+.specs-table th {
+  color: var(--text-muted);
+  font-weight: var(--weight-medium);
+  white-space: nowrap;
+  width: 140px;
+}
+
+.specs-table td {
+  color: var(--text-primary);
+}
+
+.specs-table tr:last-child th,
+.specs-table tr:last-child td {
+  border-bottom: none;
 }
 
 /* ---- Resource / Diagram Cards ---- */
