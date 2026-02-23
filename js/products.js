@@ -78,10 +78,10 @@ const SVKProducts = {
           </h3>
           <p class="product-card-desc">${product.shortDesc}</p>
           <div class="product-card-footer">
-            <span class="product-card-price">${SVKCart.formatPrice(product.price)}</span>
-            <button class="add-to-cart-btn" data-product-id="${product.id}" aria-label="Add to cart">
+            <span class="product-card-price">${product.price ? SVKCart.formatPrice(product.price) : 'Custom Order'}</span>
+            ${product.price ? `<button class="add-to-cart-btn" data-product-id="${product.id}" aria-label="Add to cart" style="position:relative;z-index:2;">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-            </button>
+            </button>` : ''}
           </div>
         </div>
       </div>
