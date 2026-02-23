@@ -329,6 +329,34 @@
       "options": {},
       "inStock": true,
       "featured": false
+    },
+    {
+      "id": "mk4-supra-cupholder",
+      "name": "MK4 Supra 3D Printed Cupholder",
+      "slug": "mk4-supra-cupholder",
+      "category": "3d-parts",
+      "engine": "",
+      "tags": ["mk4", "supra", "cupholder", "3d-print", "interior", "accessories"],
+      "price": 45,
+      "image": "img/placeholder-harness.svg",
+      "images": ["img/placeholder-harness.svg"],
+      "badge": "New",
+      "shortDesc": "Custom 3D printed cupholder designed to fit the MK4 Supra (JZA80) interior. Drop-in fitment with no modification required.",
+      "description": "A clean, functional cupholder solution for the MK4 Supra — because the factory never included one. Designed specifically for the JZA80 chassis interior, this 3D printed cupholder mounts in the center console area without any drilling or permanent modification. Printed in-house at SVK Works using high-quality PETG for heat resistance and durability.",
+      "specs": {
+        "Fitment": "MK4 Supra (JZA80) 1993–2002",
+        "Material": "PETG — Heat and UV Resistant",
+        "Color": "Matte Black",
+        "Cup Diameter": "Up to 90mm (standard can/bottle)",
+        "Installation": "No drilling required",
+        "Weight": "Approx. 85g"
+      },
+      "options": {
+        "Color": ["Matte Black", "Gloss Black", "Carbon Fiber Look"]
+      },
+      "inStock": true,
+      "featured": true,
+      "page": "mk4-supra-cupholder.html"
     }
   ],
   "categories": [
@@ -359,6 +387,13 @@
       "slug": "other",
       "description": "Honda, universal harnesses, connectors, and accessories",
       "page": "other-parts.html"
+    },
+    {
+      "id": "3d-parts",
+      "name": "3D Parts",
+      "slug": "3d-parts",
+      "description": "Custom 3D printed interior and exterior accessories",
+      "page": "3d-parts.html"
     }
   ],
   "resources": [

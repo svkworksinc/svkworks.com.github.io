@@ -74,7 +74,7 @@ const SVKProducts = {
         </div>
         <div class="product-card-body">
           <h3 class="product-card-title">
-            <a href="product.html?id=${product.id}">${product.name}</a>
+            <a href="${product.page || 'product.html?id=' + product.id}">${product.name}</a>
           </h3>
           <p class="product-card-desc">${product.shortDesc}</p>
           <div class="product-card-footer">
