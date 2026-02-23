@@ -510,7 +510,13 @@
       totalDisplay.textContent = total.toLocaleString();
     }
 
-    options.forEach(o => o.addEventListener('change', calculateTotal));
+    options.forEach(o => {
+      o.addEventListener('change', () => {
+        calculateTotal();
+        const group = o.closest('.calc-group');
+        if (group) group.classList.toggle('selected', o.selectedIndex > 0);
+      });
+    });
     calculateTotal();
 
     // === Email Order ===
