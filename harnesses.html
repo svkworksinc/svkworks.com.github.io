@@ -4,17 +4,17 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>All Harnesses — SVK Works</title>
-  <meta name="description" content="Browse all custom standalone wiring harnesses by SVK Works. 2JZ, 1JZ, 1UZ, K-series and more.">
+  <meta name="description" content="Browse all custom standalone wiring harnesses by SVK Works. MK4 Supra, MK3 Supra, SC300/SC400/Soarer and more.">
   <link rel="canonical" href="https://svkworks.com/harnesses.html">
   <meta property="og:site_name" content="SVK Works">
   <meta property="og:type" content="website">
   <meta property="og:title" content="All Harnesses — SVK Works">
-  <meta property="og:description" content="Browse all custom standalone wiring harnesses by SVK Works. 2JZ, 1JZ, 1UZ, K-series and more.">
+  <meta property="og:description" content="Browse all custom standalone wiring harnesses by SVK Works. MK4 Supra, MK3 Supra, SC300/SC400/Soarer and more.">
   <meta property="og:url" content="https://svkworks.com/harnesses.html">
   <meta property="og:image" content="https://svkworks.com/img/og-default.png">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="All Harnesses — SVK Works">
-  <meta name="twitter:description" content="Browse all custom standalone wiring harnesses by SVK Works. 2JZ, 1JZ, 1UZ, K-series and more.">
+  <meta name="twitter:description" content="Browse all custom standalone wiring harnesses by SVK Works. MK4 Supra, MK3 Supra, SC300/SC400/Soarer and more.">
   <meta name="twitter:image" content="https://svkworks.com/img/og-default.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -44,31 +44,62 @@
           <span>All Harnesses</span>
         </div>
         <h1>Wiring Harnesses</h1>
-        <p>Complete catalog of custom standalone wiring harnesses. Filter by platform, engine, or search for exactly what you need.</p>
+        <p>Custom standalone wiring harnesses built to order. Select your chassis to configure and order.</p>
       </div>
     </div>
 
     <section class="section">
       <div class="container">
-        <div class="filter-bar" id="filter-bar">
-          <div class="filter-tabs" id="filter-tabs">
-            <button class="filter-tab active" data-filter="all">All</button>
-            <button class="filter-tab" data-filter="mk4-supra">MK4 Supra</button>
-            <button class="filter-tab" data-filter="mk3-supra">MK3 Supra</button>
-            <button class="filter-tab" data-filter="other">Other</button>
+        <div class="product-grid">
+          <!-- MK4 Supra -->
+          <div class="product-card fade-in">
+            <div class="product-card-image">
+              <img src="img/supraHarness1.jpg" alt="MK4 Supra JZA80 Standalone Wiring Harness" loading="lazy">
+              <span class="product-card-badge badge">Popular</span>
+            </div>
+            <div class="product-card-body">
+              <h3 class="product-card-title">
+                <a href="mk4-supra.html">MK4 Supra JZA80 Harness</a>
+              </h3>
+              <p class="product-card-desc">Plug and play standalone engine harness for the MK4 Supra. 2JZ-GTE, 2JZ-GE, 1JZ-GTE, and 1UZ support. Full gauge, A/C, and OEM feature retention.</p>
+              <div class="product-card-footer">
+                <span class="product-card-price">From $1,450</span>
+              </div>
+            </div>
           </div>
-          <div class="filter-sort">
-            <label for="sort-select">Sort:</label>
-            <select id="sort-select">
-              <option value="default">Default</option>
-              <option value="price-asc">Price: Low to High</option>
-              <option value="price-desc">Price: High to Low</option>
-              <option value="name">Name: A-Z</option>
-            </select>
+
+          <!-- MK3 Supra -->
+          <div class="product-card fade-in">
+            <div class="product-card-image">
+              <img src="img/supraHarness1.jpg" alt="MK3 Supra MA70 Standalone Wiring Harness" loading="lazy">
+            </div>
+            <div class="product-card-body">
+              <h3 class="product-card-title">
+                <a href="mk3-supra.html">MK3 Supra MA70 Harness</a>
+              </h3>
+              <p class="product-card-desc">Standalone engine harness for the MK3 Supra. 2JZ-GTE swap, 1JZ-GTE, and 7M-GTE support with full chassis integration including gauges and A/C.</p>
+              <div class="product-card-footer">
+                <span class="product-card-price">From $1,450</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- SC300 / SC400 / Soarer -->
+          <div class="product-card fade-in">
+            <div class="product-card-image">
+              <img src="img/supraHarness1.jpg" alt="Lexus SC300 SC400 Soarer Standalone Wiring Harness" loading="lazy">
+            </div>
+            <div class="product-card-body">
+              <h3 class="product-card-title">
+                <a href="sc300.html">SC300 / SC400 / Soarer Harness</a>
+              </h3>
+              <p class="product-card-desc">Standalone engine harness for the Lexus SC300, SC400, and Toyota Soarer. 2JZ-GTE swap and 1UZ-FE support with full chassis integration.</p>
+              <div class="product-card-footer">
+                <span class="product-card-price">From $1,450</span>
+              </div>
+            </div>
           </div>
         </div>
-
-        <div class="product-grid" id="product-grid"></div>
       </div>
     </section>
   </main>
@@ -83,44 +114,5 @@
   <script defer src="js/products.js"></script>
   <script defer src="js/search.js"></script>
   <script defer src="js/main.js"></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', async () => {
-      await SVKProducts.load();
-
-      let currentFilter = 'all';
-      let currentSort = 'default';
-
-      function renderProducts() {
-        const filter = {};
-        if (currentFilter !== 'all') filter.category = currentFilter;
-        if (currentSort !== 'default') filter.sort = currentSort;
-        const products = SVKProducts.getProducts(filter);
-        SVKProducts.renderProductGrid(products, 'product-grid');
-      }
-
-      // Filter tabs
-      document.querySelectorAll('.filter-tab').forEach(tab => {
-        tab.addEventListener('click', () => {
-          document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
-          tab.classList.add('active');
-          currentFilter = tab.dataset.filter;
-          renderProducts();
-        });
-      });
-
-      // Sort select
-      document.getElementById('sort-select').addEventListener('change', (e) => {
-        currentSort = e.target.value;
-        renderProducts();
-      });
-
-      // Check URL hash for deep-link filter
-      if (window.location.hash === '#engine-harnesses') {
-        currentFilter = 'all';
-      }
-
-      renderProducts();
-    });
-  </script>
 </body>
 </html>
