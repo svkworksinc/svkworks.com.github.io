@@ -31,7 +31,8 @@ const SVK_PRODUCTS_DATA = {
         "VVTi": ["VVTi", "Non-VVTi"]
       },
       "inStock": true,
-      "featured": true
+      "featured": true,
+      "page": "mk4-supra.html"
     },
     {
       "id": "mk4-2jzge-standalone",
@@ -59,7 +60,8 @@ const SVK_PRODUCTS_DATA = {
         "VVTi": ["VVTi", "Non-VVTi"]
       },
       "inStock": true,
-      "featured": false
+      "featured": false,
+      "page": "mk4-supra.html"
     },
     {
       "id": "mk4-1jzgte-standalone",
@@ -87,7 +89,8 @@ const SVK_PRODUCTS_DATA = {
         "VVTi": ["VVTi", "Non-VVTi"]
       },
       "inStock": true,
-      "featured": false
+      "featured": false,
+      "page": "mk4-supra.html"
     },
     {
       "id": "mk3-2jzgte-standalone",
@@ -117,7 +120,8 @@ const SVK_PRODUCTS_DATA = {
         "Extras": ["AC Integration", "Power Steering", "Cruise Control"]
       },
       "inStock": true,
-      "featured": true
+      "featured": true,
+      "page": "mk3-supra.html"
     },
     {
       "id": "mk3-1jzgte-standalone",
@@ -145,7 +149,8 @@ const SVK_PRODUCTS_DATA = {
         "VVTi": ["VVTi", "Non-VVTi"]
       },
       "inStock": true,
-      "featured": false
+      "featured": false,
+      "page": "mk3-supra.html"
     },
     {
       "id": "mk3-7mgte-standalone",
@@ -172,7 +177,8 @@ const SVK_PRODUCTS_DATA = {
         "ECU Type": ["Haltech Elite", "Link G4X", "AEM Infinity", "Megasquirt", "Other"]
       },
       "inStock": true,
-      "featured": false
+      "featured": false,
+      "page": "mk3-supra.html"
     },
     {
       "id": "k-series-universal-harness",
