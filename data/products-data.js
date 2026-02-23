@@ -367,141 +367,204 @@ const SVK_PRODUCTS_DATA = {
   ],
   "resources": [
     {
-      "id": "2jzgte-pinout",
-      "title": "2JZ-GTE ECU Pinout Diagram",
-      "description": "Complete ECU pinout reference for the 2JZ-GTE engine (VVTi and Non-VVTi variants)",
-      "category": "2JZ",
+      "id": "97-98-supra-ewd",
+      "title": "1997-1998 Toyota Supra EWD",
+      "description": "Electrical Wiring Diagram for the 1997-1998 Toyota Supra (MK4)",
+      "category": "MK4 Supra",
       "type": "pdf",
-      "file": "resources/2jzgte-pinout.pdf",
-      "size": "2.4 MB"
+      "file": "resources/97-98 Supra EWD.pdf",
+      "size": "4.7 MB"
     },
     {
-      "id": "2jzge-pinout",
-      "title": "2JZ-GE ECU Pinout Diagram",
-      "description": "ECU pinout reference for the naturally aspirated 2JZ-GE",
-      "category": "2JZ",
+      "id": "98-plus-jza80-j-spec",
+      "title": "1998+ Supra JZA80 J-Spec EWD",
+      "description": "Japanese specification electrical wiring diagrams for late-model MK4 Supras",
+      "category": "MK4 Supra",
       "type": "pdf",
-      "file": "resources/2jzge-pinout.pdf",
-      "size": "1.8 MB"
+      "file": "resources/98+ JZA80 J Spec.pdf",
+      "size": "0.6 MB"
     },
     {
-      "id": "1jzgte-pinout",
-      "title": "1JZ-GTE ECU Pinout Diagram",
-      "description": "Complete pinout for the 1JZ-GTE VVTi and Non-VVTi ECU",
-      "category": "1JZ",
+      "id": "1987-supra-ewd",
+      "title": "1987 Toyota Supra EWD",
+      "description": "Complete Electrical Wiring Diagram for the 1987 Toyota Supra (MK3)",
+      "category": "MK3 Supra",
       "type": "pdf",
-      "file": "resources/1jzgte-pinout.pdf",
-      "size": "2.1 MB"
+      "file": "resources/1987 Supra EWD.pdf",
+      "size": "27.2 MB"
     },
     {
-      "id": "1uzfe-pinout",
-      "title": "1UZ-FE ECU Pinout Diagram",
-      "description": "ECU pinout reference for the 1UZ-FE V8 (VVTi and Non-VVTi)",
-      "category": "1UZ",
+      "id": "1990-supra-ewd",
+      "title": "1990 Toyota Supra EWD",
+      "description": "Electrical Wiring Diagram for the 1990 Toyota Supra (MK3)",
+      "category": "MK3 Supra",
       "type": "pdf",
-      "file": "resources/1uzfe-pinout.pdf",
+      "file": "resources/1990 Supra EWD.pdf",
       "size": "2.6 MB"
     },
     {
-      "id": "mk4-chassis-wiring",
-      "title": "MK4 Supra Chassis Wiring Overview",
-      "description": "Full chassis wiring diagram for the JZA80 MK4 Supra — gauge cluster, fuse box, lighting, and accessories",
-      "category": "MK4 Supra",
+      "id": "1991-mr2-ewd",
+      "title": "1991 Toyota MR2 EWD",
+      "description": "Complete Electrical Wiring Diagram for the SW20 MR2 platform",
+      "category": "MR2",
       "type": "pdf",
-      "file": "resources/mk4-chassis-wiring.pdf",
-      "size": "5.2 MB"
+      "file": "resources/1991 MR2 EWD.pdf",
+      "size": "62.6 MB"
     },
     {
-      "id": "mk3-chassis-wiring",
-      "title": "MK3 Supra Chassis Wiring Overview",
-      "description": "Complete chassis wiring reference for the MA70/JZA70 MK3 Supra",
-      "category": "MK3 Supra",
+      "id": "1992-sc300-sc400-ewd",
+      "title": "1992 Lexus SC300/SC400 EWD",
+      "description": "Electrical Wiring Diagram for the 1992 Lexus SC series",
+      "category": "SC300/SC400",
       "type": "pdf",
-      "file": "resources/mk3-chassis-wiring.pdf",
+      "file": "resources/1992 SC300 SC400 EWD.pdf",
+      "size": "0.6 MB"
+    },
+    {
+      "id": "1993-sc300-sc400-manual",
+      "title": "1993 Lexus SC300/SC400 Service Manual",
+      "description": "Technical service and wiring reference for the 1993 Lexus SC series",
+      "category": "SC300/SC400",
+      "type": "pdf",
+      "file": "resources/1993 SC300 SC400.pdf",
+      "size": "0.8 MB"
+    },
+    {
+      "id": "1994-sc300-sc400-manual",
+      "title": "1994 Lexus SC300/SC400 Service Manual",
+      "description": "Technical service and wiring reference for the 1994 Lexus SC series",
+      "category": "SC300/SC400",
+      "type": "pdf",
+      "file": "resources/1994 SC300 SC400.pdf",
+      "size": "0.8 MB"
+    },
+    {
+      "id": "1995-gs300-ewd",
+      "title": "1995 Lexus GS300 EWD",
+      "description": "Electrical Wiring Diagram for the 1995 Lexus GS300 (JZS147)",
+      "category": "GS300",
+      "type": "pdf",
+      "file": "resources/1995 GS300 EWD.pdf",
       "size": "4.8 MB"
     },
     {
-      "id": "7mgte-pinout",
-      "title": "7M-GTE ECU Pinout Diagram",
-      "description": "ECU pinout reference for the 7M-GTE turbo inline-6",
-      "category": "7M",
+      "id": "1995-sc300-sc400-manual",
+      "title": "1995 Lexus SC300/SC400 Service Manual",
+      "description": "Technical service and wiring reference for the 1995 Lexus SC series",
+      "category": "SC300/SC400",
       "type": "pdf",
-      "file": "resources/7mgte-pinout.pdf",
-      "size": "1.5 MB"
-    },
-    {
-      "id": "haltech-2jz-basemap",
-      "title": "Haltech Elite 2JZ Base Map Guide",
-      "description": "Configuration guide and base map settings for Haltech Elite ECU on the 2JZ-GTE",
-      "category": "Guides",
-      "type": "pdf",
-      "file": "resources/haltech-2jz-basemap.pdf",
-      "size": "3.1 MB"
-    },
-    {
-      "id": "sc300-chassis-wiring",
-      "title": "Lexus SC300 Chassis Wiring Overview",
-      "description": "Full chassis wiring diagram for the Z30 Lexus SC300 — gauge cluster, fuse box, lighting, and accessories",
-      "category": "SC300",
-      "type": "pdf",
-      "file": "resources/sc300-chassis-wiring.pdf",
-      "size": "4.5 MB"
-    },
-    {
-      "id": "2jz-sensor-reference",
-      "title": "2JZ Sensor Reference Guide",
-      "description": "Complete sensor specifications for the 2JZ engine — resistance values, voltage ranges, and connector pinouts for all sensors",
-      "category": "2JZ",
-      "type": "pdf",
-      "file": "resources/2jz-sensor-reference.pdf",
-      "size": "1.9 MB"
-    },
-    {
-      "id": "1jz-sensor-reference",
-      "title": "1JZ Sensor Reference Guide",
-      "description": "Sensor specifications and wiring reference for the 1JZ-GTE engine platform",
-      "category": "1JZ",
-      "type": "pdf",
-      "file": "resources/1jz-sensor-reference.pdf",
-      "size": "1.7 MB"
-    },
-    {
-      "id": "coil-wiring-guide",
-      "title": "Aftermarket Coil Wiring Guide",
-      "description": "Wiring reference for popular coil-on-plug conversions — R35 VR38, IGN1A, Yaris 1NZ, and Audi R8 coils on JZ engines",
-      "category": "Guides",
-      "type": "pdf",
-      "file": "resources/coil-wiring-guide.pdf",
-      "size": "2.2 MB"
-    },
-    {
-      "id": "dbw-install-guide",
-      "title": "Drive-By-Wire (DBW) Install Guide",
-      "description": "Installation and wiring guide for Bosch DBW throttle body and pedal setups on 2JZ and 1JZ platforms",
-      "category": "Guides",
-      "type": "pdf",
-      "file": "resources/dbw-install-guide.pdf",
-      "size": "1.4 MB"
-    },
-    {
-      "id": "zf8hp-wiring-reference",
-      "title": "ZF 8HP Transmission Wiring Reference",
-      "description": "Pinout and wiring reference for ZF 8HP transmission swap in the MK4 Supra with MaxxECU integration",
-      "category": "Guides",
-      "type": "pdf",
-      "file": "resources/zf8hp-wiring-reference.pdf",
-      "size": "2.8 MB"
-    },
-    {
-      "id": "milspec-connector-pinout",
-      "title": "Milspec Autosport Connector Pinout",
-      "description": "Pin assignment reference for the SVK milspec autosport firewall pass-through connector",
-      "category": "Guides",
-      "type": "pdf",
-      "file": "resources/milspec-connector-pinout.pdf",
+      "file": "resources/1995 SC300 SC400.pdf",
       "size": "0.8 MB"
+    },
+    {
+      "id": "1995-supra-ewd",
+      "title": "1995 Toyota Supra EWD",
+      "description": "Electrical Wiring Diagram for the 1995 Toyota Supra (MK4)",
+      "category": "MK4 Supra",
+      "type": "pdf",
+      "file": "resources/1995 Supra EWD.pdf",
+      "size": "5.3 MB"
+    },
+    {
+      "id": "1996-sc300-sc400-manual",
+      "title": "1996 Lexus SC300/SC400 Service Manual",
+      "description": "Technical service and wiring reference for the 1996 Lexus SC series",
+      "category": "SC300/SC400",
+      "type": "pdf",
+      "file": "resources/1996 SC300 SC400.pdf",
+      "size": "0.7 MB"
+    },
+    {
+      "id": "1997-sc300-sc400-ewd",
+      "title": "1997 Lexus SC400/SC300 EWD",
+      "description": "Electrical Wiring Diagram for the 1997 Lexus SC series",
+      "category": "SC300/SC400",
+      "type": "pdf",
+      "file": "resources/1997 SC400 SC300 EWD.pdf",
+      "size": "0.7 MB"
+    },
+    {
+      "id": "1998-ls400-manual",
+      "title": "1998 Lexus LS400 Service Manual",
+      "description": "Technical service reference for the 1998 Lexus LS400 (UCF20)",
+      "category": "LS400",
+      "type": "pdf",
+      "file": "resources/1998 LS400.pdf",
+      "size": "1.1 MB"
+    },
+    {
+      "id": "1998-sc300-sc400-ewd",
+      "title": "1998 Lexus SC300/SC400 EWD",
+      "description": "Electrical Wiring Diagram for the 1998 Lexus SC series",
+      "category": "SC300/SC400",
+      "type": "pdf",
+      "file": "resources/1998 SC300 SC400 EWD.pdf",
+      "size": "0.8 MB"
+    },
+    {
+      "id": "1999-gs300-gs400-ewd",
+      "title": "1999 Lexus GS300/GS400 EWD",
+      "description": "Electrical Wiring Diagram for the 1999 Lexus GS series (JZS161/UZS161)",
+      "category": "GS300/GS400",
+      "type": "pdf",
+      "file": "resources/1999 GS300 GS400 EWD.pdf",
+      "size": "7.1 MB"
+    },
+    {
+      "id": "2001-is300-ewd",
+      "title": "2001 Lexus IS300 EWD",
+      "description": "Electrical Wiring Diagram for the 2001 Lexus IS300 (SXE10)",
+      "category": "IS300",
+      "type": "pdf",
+      "file": "resources/2001 IS300 EWD.pdf",
+      "size": "0.9 MB"
+    },
+    {
+      "id": "2004-is300-ewd",
+      "title": "2004 Lexus IS300 EWD",
+      "description": "Electrical Wiring Diagram for the 2004 Lexus IS300 (SXE10)",
+      "category": "IS300",
+      "type": "pdf",
+      "file": "resources/2004 IS300 EWD.pdf",
+      "size": "4.2 MB"
+    },
+    {
+      "id": "2005-ls430-ewd",
+      "title": "2005 Lexus LS430 EWD",
+      "description": "Electrical Wiring Diagram for the 2005 Lexus LS430 (UCF30)",
+      "category": "LS400/LS430",
+      "type": "pdf",
+      "file": "resources/2005 LS430 EWD.pdf",
+      "size": "0.9 MB"
+    },
+    {
+      "id": "jza80-model-differences",
+      "title": "JZA80 Model Differences Chart",
+      "description": "Detailed comparison chart of year-to-year changes for the MK4 Supra",
+      "category": "MK4 Supra",
+      "type": "pdf",
+      "file": "resources/JZA80 Model Differences Chart.pdf",
+      "size": "0.1 MB"
+    },
+    {
+      "id": "jza80-supra-j-spec-full",
+      "title": "JZA80 Supra J-Spec Workshop Manual",
+      "description": "Complete Japanese specification workshop manual for the MK4 Supra",
+      "category": "MK4 Supra",
+      "type": "pdf",
+      "file": "resources/JZA80 Supra J Spec.pdf",
+      "size": "21.1 MB"
+    },
+    {
+      "id": "toyota-connectors-reference",
+      "title": "Toyota Connectors Guide",
+      "description": "Comprehensive reference for Toyota OEM electrical connectors and pinouts",
+      "category": "Guides",
+      "type": "pdf",
+      "file": "resources/Toyota Connectors.pdf",
+      "size": "4.8 MB"
     }
-  ],
+],
   "blogs": [
     {
       "id": "why-standalone-harness",
