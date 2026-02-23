@@ -47,7 +47,13 @@ const SVK_HEADER_HTML = `
               <li><a href="service-harness-conversion.html">Harness Conversion</a></li>
             </ul>
           </li>
-          <li class="nav-item"><a href="other-parts.html" class="nav-link">Other Parts</a></li>
+          <li class="nav-item has-dropdown">
+            <a href="other-parts.html" class="nav-link">Parts</a>
+            <ul class="dropdown">
+              <li><a href="3d-parts.html">3D Parts</a></li>
+              <li><a href="other-parts.html">Other Parts</a></li>
+            </ul>
+          </li>
           <li class="nav-item"><a href="builds.html" class="nav-link">Builds</a></li>
           <li class="nav-item"><a href="blog.html" class="nav-link">Blog</a></li>
           <li class="nav-item"><a href="about.html" class="nav-link">About</a></li>
