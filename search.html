@@ -79,6 +79,23 @@
         const results = await SVKSearch.performSearch(q);
         SVKSearch.renderSearchResults(results, q);
       });
+
+      // Live search as user types (debounced)
+      let searchTimeout;
+      input.addEventListener('input', () => {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(async () => {
+          const q = input.value.trim();
+          if (!q) {
+            document.getElementById('search-results').innerHTML = '';
+            history.replaceState(null, '', 'search.html');
+            return;
+          }
+          history.replaceState(null, '', `search.html?q=${encodeURIComponent(q)}`);
+          const results = await SVKSearch.performSearch(q);
+          SVKSearch.renderSearchResults(results, q);
+        }, 300);
+      });
     });
   </script>
 </body>
