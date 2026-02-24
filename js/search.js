@@ -48,7 +48,7 @@ const SVKSearch = {
             <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
           </div>
           <h3>No results found</h3>
-          <p>Try a different search term, or browse our <a href="/products/">product catalog</a>.</p>
+          <p>Try a different search term, or browse our <a href="harnesses.html">product catalog</a>.</p>
         </div>
       `;
       container.innerHTML = html;
@@ -94,7 +94,7 @@ const SVKSearch = {
             <div class="blog-card-image"><img src="${b.image}" alt="${b.title}" loading="lazy"></div>
             <div class="blog-card-body">
               <div class="blog-card-meta"><span>${b.category}</span><span>${this.formatDate(b.date)}</span></div>
-              <h3 class="blog-card-title"><a href="/blog/?post=${b.id}">${b.title}</a></h3>
+              <h3 class="blog-card-title"><a href="blog.html?post=${b.id}">${b.title}</a></h3>
               <p class="blog-card-excerpt">${b.excerpt}</p>
             </div>
           </div>
