@@ -86,11 +86,13 @@ const SVKComponents = {
       }, { passive: true });
     }
 
-    // Set active nav link
-    const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+    // Set active nav link based on current path
+    const path = window.location.pathname;
     document.querySelectorAll('.nav-link').forEach(link => {
       const href = link.getAttribute('href');
-      if (href === currentPage) {
+      if (href === '/' && (path === '/' || path === '/index.html')) {
+        link.classList.add('active');
+      } else if (href !== '/' && path.startsWith(href)) {
         link.classList.add('active');
       }
     });
