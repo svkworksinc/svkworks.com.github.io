@@ -15,7 +15,7 @@ const SVKProducts = {
     }
     // Fallback to fetch for server environments
     try {
-      const res = await fetch('/data/products.json');
+      const res = await fetch('data/products.json');
       if (!res.ok) throw new Error('Failed to load products');
       this.data = await res.json();
       return this.data;
@@ -74,7 +74,7 @@ const SVKProducts = {
         </div>
         <div class="product-card-body">
           <h3 class="product-card-title">
-            <a href="${product.page || '/product/?id=' + product.id}">${product.name}</a>
+            <a href="${product.page || 'product.html?id=' + product.id}">${product.name}</a>
           </h3>
           <p class="product-card-desc">${product.shortDesc}</p>
           <div class="product-card-footer">
@@ -161,15 +161,15 @@ const SVKProducts = {
 
     // Category name for breadcrumb
     const catNames = { 'mk4-supra': 'MK4 Supra', 'mk3-supra': 'MK3 Supra', 'other': 'Other Parts' };
-    const catPages = { 'mk4-supra': '/products/mk4-supra/', 'mk3-supra': '/products/mk3-supra/', 'other': '/products/other-parts/' };
+    const catPages = { 'mk4-supra': 'mk4-supra.html', 'mk3-supra': 'mk3-supra.html', 'other': 'other-parts.html' };
 
     container.innerHTML = `
       <div class="page-hero">
         <div class="container">
           <div class="breadcrumb">
-            <a href="/">Home</a><span class="breadcrumb-sep">/</span>
-            <a href="/products/">Harnesses</a><span class="breadcrumb-sep">/</span>
-            <a href="${catPages[product.category] || '/products/'}">${catNames[product.category] || 'Products'}</a><span class="breadcrumb-sep">/</span>
+            <a href="index.html">Home</a><span class="breadcrumb-sep">/</span>
+            <a href="harnesses.html">Harnesses</a><span class="breadcrumb-sep">/</span>
+            <a href="${catPages[product.category] || 'harnesses.html'}">${catNames[product.category] || 'Products'}</a><span class="breadcrumb-sep">/</span>
             <span>${product.name}</span>
           </div>
         </div>
@@ -192,7 +192,7 @@ const SVKProducts = {
               ${optionsHtml}
               <div class="product-add-actions">
                 <button class="btn btn-primary btn-lg" id="add-to-cart-detail">Add to Cart</button>
-                <a href="/contact/" class="btn btn-outline btn-lg">Custom Quote</a>
+                <a href="contact.html" class="btn btn-outline btn-lg">Custom Quote</a>
               </div>
               <div style="display:flex;gap:var(--space-lg);margin-top:var(--space-md);">
                 <span class="badge ${product.inStock ? 'badge-success' : ''}">${product.inStock ? 'In Stock / Made to Order' : 'Contact for Availability'}</span>
