@@ -12,8 +12,8 @@ const SVK_PRODUCTS_DATA = {
       "engine": "2JZ-GTE",
       "tags": ["2jz", "mk4", "supra", "standalone", "turbo"],
       "price": 1200,
-      "image": "img/supraHarness1.jpg",
-      "images": ["img/supraHarness1.jpg"],
+      "image": "/img/supraHarness1.jpg",
+      "images": ["/img/supraHarness1.jpg"],
       "badge": "Popular",
       "shortDesc": "Complete standalone engine harness for the 2JZ-GTE in the MK4 Supra chassis. Plug and play with OEM connectors.",
       "description": "Fully custom standalone wiring harness designed specifically for the 2JZ-GTE engine in the MK4 Supra (JZA80) chassis. Features mil-spec wiring, OEM-quality connectors, and a clean tuck-ready design. Includes all engine sensors, injectors, coils, and ECU connections. Compatible with popular aftermarket ECUs including Haltech, Link, AEM, and more.",
@@ -32,7 +32,7 @@ const SVK_PRODUCTS_DATA = {
       },
       "inStock": true,
       "featured": true,
-      "page": "mk4-supra.html"
+      "page": "/products/mk4-supra/"
     },
     {
       "id": "mk4-2jzge-standalone",
@@ -42,8 +42,8 @@ const SVK_PRODUCTS_DATA = {
       "engine": "2JZ-GE",
       "tags": ["2jz", "mk4", "supra", "standalone", "na"],
       "price": 1050,
-      "image": "img/supraHarness1.jpg",
-      "images": ["img/supraHarness1.jpg"],
+      "image": "/img/supraHarness1.jpg",
+      "images": ["/img/supraHarness1.jpg"],
       "badge": "",
       "shortDesc": "Standalone harness for the naturally aspirated 2JZ-GE in the MK4 chassis.",
       "description": "Custom standalone wiring harness for the 2JZ-GE engine. Perfect for turbo conversion builds or standalone NA setups. Clean mil-spec wiring with OEM-fit connectors.",
@@ -61,7 +61,7 @@ const SVK_PRODUCTS_DATA = {
       },
       "inStock": true,
       "featured": false,
-      "page": "mk4-supra.html"
+      "page": "/products/mk4-supra/"
     },
     {
       "id": "mk4-1jzgte-standalone",
@@ -71,8 +71,8 @@ const SVK_PRODUCTS_DATA = {
       "engine": "1JZ-GTE",
       "tags": ["1jz", "mk4", "supra", "standalone", "swap"],
       "price": 1100,
-      "image": "img/supraHarness1.jpg",
-      "images": ["img/supraHarness1.jpg"],
+      "image": "/img/supraHarness1.jpg",
+      "images": ["/img/supraHarness1.jpg"],
       "badge": "",
       "shortDesc": "1JZ-GTE standalone harness for MK4 Supra swap applications.",
       "description": "Standalone wiring harness built for 1JZ-GTE swap into the MK4 Supra chassis. Includes all necessary sensor connections and ECU pigtail.",
@@ -90,7 +90,7 @@ const SVK_PRODUCTS_DATA = {
       },
       "inStock": true,
       "featured": false,
-      "page": "mk4-supra.html"
+      "page": "/products/mk4-supra/"
     },
     {
       "id": "mk3-2jzgte-standalone",
@@ -100,8 +100,8 @@ const SVK_PRODUCTS_DATA = {
       "engine": "2JZ-GTE",
       "tags": ["2jz", "mk3", "supra", "standalone", "swap", "turbo"],
       "price": 1350,
-      "image": "img/supraHarness1.jpg",
-      "images": ["img/supraHarness1.jpg"],
+      "image": "/img/supraHarness1.jpg",
+      "images": ["/img/supraHarness1.jpg"],
       "badge": "Popular",
       "shortDesc": "2JZ-GTE swap harness designed for the MK3 Supra chassis. Full standalone with all chassis integration.",
       "description": "Complete standalone wiring harness for 2JZ-GTE swap into the MK3 Supra (MA70/JZA70) chassis. Includes full chassis integration — gauges, AC, power steering, and all engine management connections.",
@@ -121,7 +121,7 @@ const SVK_PRODUCTS_DATA = {
       },
       "inStock": true,
       "featured": true,
-      "page": "mk3-supra.html"
+      "page": "/products/mk3-supra/"
     },
     {
       "id": "mk3-1jzgte-standalone",
@@ -131,8 +131,8 @@ const SVK_PRODUCTS_DATA = {
       "engine": "1JZ-GTE",
       "tags": ["1jz", "mk3", "supra", "standalone", "swap"],
       "price": 1100,
-      "image": "img/supraHarness1.jpg",
-      "images": ["img/supraHarness1.jpg"],
+      "image": "/img/supraHarness1.jpg",
+      "images": ["/img/supraHarness1.jpg"],
       "badge": "",
       "shortDesc": "1JZ-GTE standalone harness for MK3 Supra. Native swap with full chassis support.",
       "description": "Standalone wiring harness for the 1JZ-GTE swap into MK3 Supra. Clean integration with OEM gauge cluster, AC, and all chassis systems.",
@@ -150,7 +150,7 @@ const SVK_PRODUCTS_DATA = {
       },
       "inStock": true,
       "featured": false,
-      "page": "mk3-supra.html"
+      "page": "/products/mk3-supra/"
     },
     {
       "id": "mk3-7mgte-standalone",
@@ -160,8 +160,8 @@ const SVK_PRODUCTS_DATA = {
       "engine": "7M-GTE",
       "tags": ["7m", "mk3", "supra", "standalone"],
       "price": 950,
-      "image": "img/supraHarness1.jpg",
-      "images": ["img/supraHarness1.jpg"],
+      "image": "/img/supraHarness1.jpg",
+      "images": ["/img/supraHarness1.jpg"],
       "badge": "Popular",
       "shortDesc": "Standalone harness for the original 7M-GTE in the MK3 Supra.",
       "description": "Keep it original with a clean standalone harness for the 7M-GTE. Removes decades of degraded OEM wiring and replaces it with fresh mil-spec connections.",
@@ -178,7 +178,7 @@ const SVK_PRODUCTS_DATA = {
       },
       "inStock": true,
       "featured": false,
-      "page": "mk3-supra.html"
+      "page": "/products/mk3-supra/"
     },
     {
       "id": "k-series-universal-harness",
@@ -188,8 +188,8 @@ const SVK_PRODUCTS_DATA = {
       "engine": "K20/K24",
       "tags": ["k20", "k24", "honda", "universal", "swap", "standalone", "custom"],
       "price": 0,
-      "image": "img/supraHarness1.jpg",
-      "images": ["img/supraHarness1.jpg"],
+      "image": "/img/supraHarness1.jpg",
+      "images": ["/img/supraHarness1.jpg"],
       "badge": "Custom Order",
       "shortDesc": "Custom standalone harness for Honda K20/K24 engine swaps. Built to your specs — contact us for a quote.",
       "description": "Custom-built standalone wiring harness for Honda K20 and K24 engine swap applications. Every harness is built to order based on your specific chassis, ECU, and accessory requirements. Contact us with your build details for a custom quote.",
@@ -204,7 +204,7 @@ const SVK_PRODUCTS_DATA = {
       "options": {},
       "inStock": true,
       "featured": true,
-      "page": "k-series-universal-harness.html"
+      "page": "/products/k-series-universal-harness/"
     },
     {
       "id": "1uz-universal-standalone",
@@ -214,8 +214,8 @@ const SVK_PRODUCTS_DATA = {
       "engine": "1UZ-FE",
       "tags": ["1uz", "universal", "swap", "standalone", "v8", "custom"],
       "price": 0,
-      "image": "img/supraHarness1.jpg",
-      "images": ["img/supraHarness1.jpg"],
+      "image": "/img/supraHarness1.jpg",
+      "images": ["/img/supraHarness1.jpg"],
       "badge": "Custom Order",
       "shortDesc": "Universal standalone harness for 1UZ-FE V8 swap into any chassis. Built to your specs — contact us for a quote.",
       "description": "Versatile standalone harness for the 1UZ-FE V8 engine. Designed with extended leads and universal connector options for swap into any chassis. Every harness is custom built to your specific requirements.",
@@ -230,7 +230,7 @@ const SVK_PRODUCTS_DATA = {
       "options": {},
       "inStock": true,
       "featured": true,
-      "page": "1uz-universal-harness.html"
+      "page": "/products/1uz-universal-harness/"
     },
     {
       "id": "oem-connector-kit-2jz",
@@ -240,8 +240,8 @@ const SVK_PRODUCTS_DATA = {
       "engine": "2JZ",
       "tags": ["2jz", "connectors", "parts", "oem"],
       "price": 185,
-      "image": "img/supraHarness1.jpg",
-      "images": ["img/supraHarness1.jpg"],
+      "image": "/img/supraHarness1.jpg",
+      "images": ["/img/supraHarness1.jpg"],
       "badge": "",
       "shortDesc": "Complete OEM connector set for the 2JZ engine — injectors, coils, sensors.",
       "description": "Full set of OEM-spec connectors for the 2JZ engine platform. Includes injector plugs, coil connectors, TPS, MAP, IAT, coolant temp, cam/crank sensors, and more. Perfect for harness builders or DIY repairs.",
@@ -263,8 +263,8 @@ const SVK_PRODUCTS_DATA = {
       "engine": "1JZ",
       "tags": ["1jz", "connectors", "parts", "oem"],
       "price": 165,
-      "image": "img/supraHarness1.jpg",
-      "images": ["img/supraHarness1.jpg"],
+      "image": "/img/supraHarness1.jpg",
+      "images": ["/img/supraHarness1.jpg"],
       "badge": "",
       "shortDesc": "Complete OEM connector set for the 1JZ engine platform.",
       "description": "Full set of OEM-spec connectors for the 1JZ engine. Includes all sensor, injector, and coil connectors needed for a complete harness build.",
@@ -286,8 +286,8 @@ const SVK_PRODUCTS_DATA = {
       "engine": "",
       "tags": ["mk4", "supra", "cupholder", "3d-print", "interior", "accessories"],
       "price": 45,
-      "image": "img/supraHarness1.jpg",
-      "images": ["img/supraHarness1.jpg"],
+      "image": "/img/supraHarness1.jpg",
+      "images": ["/img/supraHarness1.jpg"],
       "badge": "New",
       "shortDesc": "Custom 3D printed cupholder designed to fit the MK4 Supra (JZA80) interior. Drop-in fitment with no modification required.",
       "description": "A clean, functional cupholder solution for the MK4 Supra — because the factory never included one. Designed specifically for the JZA80 chassis interior, this 3D printed cupholder mounts in the center console area without any drilling or permanent modification. Printed in-house at SVK Works using high-quality PETG for heat resistance and durability.",
@@ -304,7 +304,7 @@ const SVK_PRODUCTS_DATA = {
       },
       "inStock": true,
       "featured": true,
-      "page": "mk4-supra-cupholder.html"
+      "page": "/products/3d-parts/"
     }
   ],
   "categories": [
@@ -313,35 +313,35 @@ const SVK_PRODUCTS_DATA = {
       "name": "MK4 Supra",
       "slug": "mk4-supra",
       "description": "Standalone wiring harnesses for the A80 MK4 Supra platform",
-      "page": "mk4-supra.html"
+      "page": "/products/mk4-supra/"
     },
     {
       "id": "mk3-supra",
       "name": "MK3 Supra",
       "slug": "mk3-supra",
       "description": "Standalone wiring harnesses for the A70 MK3 Supra platform",
-      "page": "mk3-supra.html"
+      "page": "/products/mk3-supra/"
     },
     {
       "id": "sc300",
       "name": "Lexus SC300",
       "slug": "sc300",
       "description": "Standalone wiring harnesses for the Lexus SC300 (Z30) platform",
-      "page": "sc300.html"
+      "page": "/products/sc300/"
     },
     {
       "id": "other",
       "name": "Other Parts",
       "slug": "other",
       "description": "Honda, universal harnesses, connectors, and accessories",
-      "page": "other-parts.html"
+      "page": "/products/other-parts/"
     },
     {
       "id": "3d-parts",
       "name": "3D Parts",
       "slug": "3d-parts",
       "description": "Custom 3D printed interior and exterior accessories",
-      "page": "3d-parts.html"
+      "page": "/products/3d-parts/"
     }
   ],
   "resources": [
@@ -553,7 +553,7 @@ const SVK_PRODUCTS_DATA = {
       "author": "SVK",
       "category": "Tech",
       "excerpt": "Still running a modified OEM harness? Here's why going standalone is the best investment for your build's reliability and performance.",
-      "image": "img/works.jpg",
+      "image": "/img/works.jpg",
       "content": "<p>If you've ever chased an electrical gremlin through a 30-year-old OEM wiring harness, you know the pain. Modified factory harnesses carry decades of degraded insulation, corroded pins, and spliced-in aftermarket additions that create unreliable connections.</p><p>A standalone harness eliminates all of that. Every wire is purpose-built for your specific setup — no unused circuits, no mystery wires, no compromise. Here at SVK, every harness is built with fresh TXL mil-spec wire, new OEM-quality connectors, and a clean layout that makes troubleshooting a thing of the past.</p><h3>Key Benefits</h3><ul><li><strong>Reliability:</strong> New wiring means no corroded connections or degraded insulation</li><li><strong>Simplicity:</strong> Only the wires your engine needs — nothing extra</li><li><strong>Clean Install:</strong> Designed for a tucked, professional appearance</li><li><strong>Easy Troubleshooting:</strong> Color-coded, labeled, and documented</li></ul>"
     },
     {
@@ -564,7 +564,7 @@ const SVK_PRODUCTS_DATA = {
       "author": "SVK",
       "category": "Guides",
       "excerpt": "The 2JZ swap into the MK3 Supra is one of the most popular JDM builds. Here's what you need to know about the wiring side of this swap.",
-      "image": "img/SupraA70.jpg",
+      "image": "/img/SupraA70.jpg",
       "content": "<p>The MK3 Supra with a 2JZ swap is a legendary combination. But the wiring can be the most challenging part of the build if you don't plan ahead.</p><h3>What You Need to Consider</h3><ul><li>ECU choice and connector pinout</li><li>Gauge cluster integration (speedo, tach, temp, fuel)</li><li>AC and power steering retention</li><li>Starter and charging system differences</li></ul><p>Our MK3 2JZ swap harness handles all of these integration points out of the box, so you can focus on the mechanical side of your build.</p>"
     },
     {
@@ -575,7 +575,7 @@ const SVK_PRODUCTS_DATA = {
       "author": "SVK",
       "category": "Tech",
       "excerpt": "Haltech, Link, AEM, Motec — the options are overwhelming. Here's our breakdown of the most popular ECU choices for 2JZ-powered builds.",
-      "image": "img/SupraA80.jpg",
+      "image": "/img/SupraA80.jpg",
       "content": "<p>Choosing an ECU is one of the most important decisions in your build. Each platform has strengths depending on your goals.</p><h3>Haltech Elite</h3><p>User-friendly software, excellent support, and great I/O. Ideal for street and mild track builds.</p><h3>Link G4X</h3><p>Powerful and cost-effective. Great logging and tuning features. Popular in the drift community.</p><h3>AEM Infinity</h3><p>Professional-grade with extensive I/O. Preferred by many professional tuners.</p><h3>Motec M1</h3><p>Top-tier motorsport ECU. Unmatched data logging and strategy capabilities. Best for serious competition builds.</p>"
     }
   ],
@@ -587,10 +587,10 @@ const SVK_PRODUCTS_DATA = {
       "type": "shop",
       "specs": "2JZ-GE NA | W58 5-Speed | JDM | All Stock",
       "description": "Our JDM NA five-speed MK4 Supra — kept completely stock the way Toyota intended. Clean, unmolested, and a perfect example of the JZA80 chassis. Sometimes the best build is the one you don't touch.",
-      "image": "img/background.jpg",
-      "images": ["img/background.jpg"],
+      "image": "/img/background.jpg",
+      "images": ["/img/background.jpg"],
       "tags": ["mk4", "supra", "2jz", "jdm", "stock"],
-      "page": "build-1997-mk4-supra.html"
+      "page": "/builds/1997-mk4-supra/"
     },
     {
       "id": "1989-mk3-supra",
@@ -599,10 +599,10 @@ const SVK_PRODUCTS_DATA = {
       "type": "shop",
       "specs": "2JZ-GE VVT-i Swap | R154 5-Speed | Targa Top",
       "description": "Targa top MK3 Supra with a 2JZ-GE VVT-i swap mated to an R154 5-speed transmission. A clean and reliable modern drivetrain in a classic A70 body — the best of both worlds.",
-      "image": "img/MK3_Supra.jpg",
-      "images": ["img/MK3_Supra.jpg"],
+      "image": "/img/MK3_Supra.jpg",
+      "images": ["/img/MK3_Supra.jpg"],
       "tags": ["mk3", "supra", "2jz", "swap", "r154"],
-      "page": "build-1989-mk3-supra.html"
+      "page": "/builds/1989-mk3-supra/"
     },
     {
       "id": "1998-sc400",
@@ -611,10 +611,10 @@ const SVK_PRODUCTS_DATA = {
       "type": "shop",
       "specs": "1UZ-FE VVT-i | CD009 6-Speed Swap",
       "description": "Our SC400 running the factory 1UZ-FE VVT-i V8 paired with a Nissan CD009 6-speed manual transmission swap. Smooth V8 power with a proper third pedal — the way it should have been from the factory.",
-      "image": "img/SC400_2.jpg",
-      "images": ["img/SC400_2.jpg"],
+      "image": "/img/SC400_2.jpg",
+      "images": ["/img/SC400_2.jpg"],
       "tags": ["sc400", "lexus", "1uz", "cd009", "swap"],
-      "page": "build-1998-sc400.html"
+      "page": "/builds/1998-sc400/"
     },
     {
       "id": "2002-mr-s",
@@ -623,10 +623,10 @@ const SVK_PRODUCTS_DATA = {
       "type": "shop",
       "specs": "2ZZ-GE Swap | Stock 5-Speed | Mid-Engine",
       "description": "Our lightweight MR-S with a 2ZZ-GE swap keeping the stock 5-speed transmission. The high-revving Celica GT-S motor in a mid-engine chassis makes for an incredible driver's car — light, nimble, and screams to redline.",
-      "image": "img/MR2_Spyder.jpg",
-      "images": ["img/MR2_Spyder.jpg"],
+      "image": "/img/MR2_Spyder.jpg",
+      "images": ["/img/MR2_Spyder.jpg"],
       "tags": ["mr-s", "mr2", "toyota", "2zz", "swap", "mid-engine"],
-      "page": "build-2002-mr-s.html"
+      "page": "/builds/2002-mr-s/"
     }
   ]
 };
