@@ -206,11 +206,7 @@
 }
 
 .category-card::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to top, rgba(10, 10, 15, 0.7) 0%, rgba(10, 10, 15, 0.05) 60%);
-  z-index: 1;
+  display: none;
 }
 
 .category-card:hover {
@@ -228,12 +224,14 @@
   font-size: var(--text-xl);
   color: var(--text-primary);
   margin-bottom: var(--space-sm);
+  text-shadow: 0 1px 4px rgba(0,0,0,0.9), 0 0 8px rgba(0,0,0,0.7);
 }
 
 .category-card p {
   font-size: var(--text-sm);
   color: var(--text-secondary);
   margin-bottom: var(--space-md);
+  text-shadow: 0 1px 3px rgba(0,0,0,0.9), 0 0 6px rgba(0,0,0,0.7);
 }
 
 .category-card .card-link {
@@ -243,6 +241,7 @@
   display: inline-flex;
   align-items: center;
   gap: var(--space-xs);
+  text-shadow: 0 1px 3px rgba(0,0,0,0.9), 0 0 6px rgba(0,0,0,0.7);
 }
 
 .category-card:hover .card-link {
