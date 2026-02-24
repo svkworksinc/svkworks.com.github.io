@@ -194,9 +194,6 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
-  min-height: 280px;
-  padding: var(--space-xl);
   border-radius: var(--radius-lg);
   overflow: hidden;
   background: var(--bg-card);
@@ -205,8 +202,12 @@
   text-decoration: none;
 }
 
-.category-card::before {
-  display: none;
+.category-card-image {
+  width: 100%;
+  height: 200px;
+  background-size: cover;
+  background-position: center;
+  flex-shrink: 0;
 }
 
 .category-card:hover {
@@ -216,22 +217,19 @@
 }
 
 .category-card-content {
-  position: relative;
-  z-index: 2;
+  padding: var(--space-xl);
 }
 
 .category-card h3 {
   font-size: var(--text-xl);
   color: var(--text-primary);
   margin-bottom: var(--space-sm);
-  text-shadow: 0 1px 4px rgba(0,0,0,0.9), 0 0 8px rgba(0,0,0,0.7);
 }
 
 .category-card p {
   font-size: var(--text-sm);
   color: var(--text-secondary);
   margin-bottom: var(--space-md);
-  text-shadow: 0 1px 3px rgba(0,0,0,0.9), 0 0 6px rgba(0,0,0,0.7);
 }
 
 .category-card .card-link {
@@ -241,7 +239,6 @@
   display: inline-flex;
   align-items: center;
   gap: var(--space-xs);
-  text-shadow: 0 1px 3px rgba(0,0,0,0.9), 0 0 6px rgba(0,0,0,0.7);
 }
 
 .category-card:hover .card-link {
