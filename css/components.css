@@ -919,14 +919,8 @@
   border-bottom: none;
 }
 
-.calc-group:nth-child(odd) {
+.calc-group {
   background: var(--bg-card);
-  border-left-color: var(--border-magenta);
-}
-
-.calc-group:nth-child(even) {
-  background: var(--bg-secondary);
-  border-left-color: var(--border-color);
 }
 
 .calc-group.selected {
@@ -937,7 +931,7 @@
 .calc-label {
   font-size: var(--text-sm);
   font-weight: var(--weight-medium);
-  color: var(--text-secondary);
+  color: var(--success);
 }
 
 .calc-hint {
