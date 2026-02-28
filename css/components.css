@@ -919,10 +919,6 @@
   border-bottom: none;
 }
 
-.calc-group {
-  background: var(--bg-card);
-}
-
 .calc-group.selected {
   background: var(--magenta-subtle);
   border-left-color: var(--magenta);
@@ -931,7 +927,7 @@
 .calc-label {
   font-size: var(--text-sm);
   font-weight: var(--weight-medium);
-  color: var(--success);
+  color: var(--magenta);
 }
 
 .calc-hint {
