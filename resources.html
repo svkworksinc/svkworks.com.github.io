@@ -53,13 +53,13 @@
         <div class="filter-bar">
           <div class="filter-tabs" id="resource-filter">
             <button class="filter-tab active" data-cat="all">All</button>
-            <button class="filter-tab" data-cat="2JZ">2JZ</button>
-            <button class="filter-tab" data-cat="1JZ">1JZ</button>
-            <button class="filter-tab" data-cat="1UZ">1UZ</button>
-            <button class="filter-tab" data-cat="7M">7M</button>
             <button class="filter-tab" data-cat="MK4 Supra">MK4 Supra</button>
             <button class="filter-tab" data-cat="MK3 Supra">MK3 Supra</button>
-            <button class="filter-tab" data-cat="SC300">SC300</button>
+            <button class="filter-tab" data-cat="SC300/SC400">SC300/SC400</button>
+            <button class="filter-tab" data-cat="GS300">GS300</button>
+            <button class="filter-tab" data-cat="IS300">IS300</button>
+            <button class="filter-tab" data-cat="LS400">LS400</button>
+            <button class="filter-tab" data-cat="MR2">MR2</button>
             <button class="filter-tab" data-cat="Guides">Guides</button>
           </div>
         </div>
@@ -98,7 +98,7 @@
       function renderResources() {
         let resources = data.resources || [];
         if (currentCat !== 'all') {
-          resources = resources.filter(r => r.category === currentCat);
+          resources = resources.filter(r => r.category === currentCat || r.category.includes(currentCat));
         }
 
         const container = document.getElementById('resources-list');

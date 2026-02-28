@@ -68,14 +68,61 @@
           <div class="cart-summary">
             <h3>Order Summary</h3>
             <div id="cart-summary-content"></div>
-            <button class="btn btn-primary btn-lg" onclick="SVKCart.showToast('Checkout coming soon! For now, please contact us to place your order.'); ">
-              Proceed to Checkout
-            </button>
-            <p class="cart-note">Shipping calculated at checkout. All harnesses are made to order.</p>
-            <div class="promo-form">
-              <input type="text" placeholder="Promo code">
-              <button class="btn btn-sm btn-outline" onclick="SVKCart.showToast('Promo codes coming soon!');">Apply</button>
+            <button class="btn btn-primary btn-lg" id="place-order-btn">Place Order Request</button>
+            <p class="cart-note">All harnesses are made to order. We'll send a PayPal invoice once we review your request.</p>
+          </div>
+        </div>
+
+        <!-- Order Request Form -->
+        <div id="order-request-section" style="display:none;max-width:640px;margin:0 auto;">
+          <h2 style="margin-bottom:var(--space-md);">Complete Your Order Request</h2>
+          <div style="padding:var(--space-lg);background:var(--bg-card);border:1px solid var(--border-magenta);border-radius:var(--radius-md);margin-bottom:var(--space-xl);">
+            <p style="margin:0;font-size:var(--text-sm);color:var(--text-secondary);">
+              <strong style="color:var(--text-primary);">How it works:</strong> Submit your order details below. We'll review your request, adjust if needed, and send a <strong style="color:var(--magenta);">PayPal invoice</strong> to your email. Once you pay, we start building.
+            </p>
+          </div>
+          <div id="order-cart-review" style="margin-bottom:var(--space-xl);"></div>
+          <!-- SETUP: Sign up free at formspree.io, create a form, then replace YOUR_FORMSPREE_ORDER_ID below -->
+          <form id="order-form" action="https://formspree.io/f/YOUR_FORMSPREE_ORDER_ID" method="POST">
+            <input type="hidden" name="_subject" value="New Order Request — SVK Works">
+            <input type="hidden" name="order_items" id="hidden-order-items">
+            <input type="hidden" name="order_total" id="hidden-order-total">
+            <div class="form-group">
+              <label class="form-label" for="order-name">Name *</label>
+              <input type="text" class="form-input" id="order-name" name="name" required>
             </div>
+            <div class="form-group">
+              <label class="form-label" for="order-email">Email *</label>
+              <input type="email" class="form-input" id="order-email" name="email" required placeholder="PayPal invoice will be sent here">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="order-vehicle">Vehicle / Build Info</label>
+              <input type="text" class="form-input" id="order-vehicle" name="vehicle" placeholder="e.g., 1997 MK4 Supra — 2JZ-GTE swap">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="order-notes">Additional Notes</label>
+              <textarea class="form-textarea" id="order-notes" name="notes" rows="4" placeholder="Any special requirements, ECU choice, lead time questions, etc."></textarea>
+            </div>
+            <div style="display:flex;gap:var(--space-md);flex-wrap:wrap;">
+              <button type="submit" class="btn btn-primary btn-lg" id="order-submit-btn">Submit Order Request</button>
+              <button type="button" class="btn btn-outline btn-lg" id="back-to-cart-btn">Back to Cart</button>
+            </div>
+            <div id="order-error" style="display:none;margin-top:var(--space-lg);padding:var(--space-lg);background:var(--bg-card);border:1px solid #e74c3c;border-radius:var(--radius-md);">
+              Something went wrong. Please email your order to <a href="mailto:info@svkworks.com" style="color:var(--magenta);">info@svkworks.com</a>.
+            </div>
+          </form>
+        </div>
+
+        <!-- Order Success -->
+        <div id="order-success-section" style="display:none;text-align:center;padding:var(--space-4xl) var(--space-xl);">
+          <div style="font-size:3rem;margin-bottom:var(--space-lg);">&#10003;</div>
+          <h2>Order Request Received!</h2>
+          <p style="color:var(--text-secondary);max-width:480px;margin:var(--space-md) auto var(--space-2xl);">
+            We'll review your order and send a <strong>PayPal invoice</strong> to your email within 1 business day. Once you approve and pay, we start building your harness.
+          </p>
+          <div style="display:flex;gap:var(--space-md);justify-content:center;flex-wrap:wrap;">
+            <a href="harnesses.html" class="btn btn-outline">Browse More Products</a>
+            <a href="contact.html" class="btn btn-ghost">Contact Us</a>
           </div>
         </div>
       </div>
@@ -95,6 +142,75 @@
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       SVKCart.renderCartPage();
+
+      // Place Order button → show order request form
+      document.getElementById('place-order-btn').addEventListener('click', () => {
+        const cart = SVKCart.getCart();
+        if (!cart.length) return;
+
+        // Build cart review summary
+        const reviewHtml = `
+          <h3 style="margin-bottom:var(--space-md);">Your Items</h3>
+          ${cart.map(item => `
+            <div style="display:flex;justify-content:space-between;padding:var(--space-sm) 0;border-bottom:1px solid var(--border-color);font-size:var(--text-sm);">
+              <span>${item.name} × ${item.quantity}</span>
+              <span style="color:var(--magenta);">${SVKCart.formatPrice(item.price * item.quantity)}</span>
+            </div>
+          `).join('')}
+          <div style="display:flex;justify-content:space-between;padding:var(--space-md) 0;font-weight:700;">
+            <span>Estimated Total</span>
+            <span style="color:var(--magenta);">${SVKCart.formatPrice(SVKCart.getTotal())}</span>
+          </div>
+          <p style="font-size:var(--text-xs);color:var(--text-muted);margin-top:var(--space-xs);">Final price confirmed in your PayPal invoice.</p>
+        `;
+        document.getElementById('order-cart-review').innerHTML = reviewHtml;
+
+        // Populate hidden fields
+        document.getElementById('hidden-order-items').value = JSON.stringify(
+          cart.map(i => `${i.name} x${i.quantity} — ${SVKCart.formatPrice(i.price * i.quantity)}`)
+        );
+        document.getElementById('hidden-order-total').value = SVKCart.formatPrice(SVKCart.getTotal());
+
+        document.getElementById('cart-content').style.display = 'none';
+        document.getElementById('cart-empty').style.display = 'none';
+        document.getElementById('order-request-section').style.display = 'block';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+
+      // Back to cart button
+      document.getElementById('back-to-cart-btn').addEventListener('click', () => {
+        document.getElementById('order-request-section').style.display = 'none';
+        SVKCart.renderCartPage();
+      });
+
+      // Order form submission
+      document.getElementById('order-form').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const btn = document.getElementById('order-submit-btn');
+        btn.disabled = true;
+        btn.textContent = 'Submitting...';
+        try {
+          const response = await fetch(this.action, {
+            method: 'POST',
+            body: new FormData(this),
+            headers: { 'Accept': 'application/json' }
+          });
+          if (response.ok) {
+            SVKCart.clearCart();
+            document.getElementById('order-request-section').style.display = 'none';
+            document.getElementById('order-success-section').style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          } else {
+            document.getElementById('order-error').style.display = 'block';
+            btn.disabled = false;
+            btn.textContent = 'Submit Order Request';
+          }
+        } catch {
+          document.getElementById('order-error').style.display = 'block';
+          btn.disabled = false;
+          btn.textContent = 'Submit Order Request';
+        }
+      });
     });
   </script>
 </body>
