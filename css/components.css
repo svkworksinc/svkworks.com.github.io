@@ -898,7 +898,7 @@
   display: flex;
   flex-direction: column;
   gap: 0;
-  border: 1px solid var(--border-color);
+  background: rgba(0, 0, 0, 0.2);
   border-radius: var(--radius-lg);
   overflow: hidden;
 }
@@ -910,13 +910,8 @@
   padding: 0.6rem var(--space-md);
   border-radius: 0;
   border: none;
-  border-bottom: 1px solid var(--border-color);
   border-left: 3px solid transparent;
   transition: background var(--transition-fast), border-color var(--transition-fast);
-}
-
-.calc-group:last-child {
-  border-bottom: none;
 }
 
 .calc-group.selected {
