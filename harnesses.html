@@ -50,9 +50,26 @@
 
     <section class="section">
       <div class="container">
-        <div class="product-grid">
+        <div class="filter-bar">
+          <div class="filter-tabs" id="harness-filter">
+            <button class="filter-tab active" data-filter="all">All</button>
+            <button class="filter-tab" data-filter="mk4">MK4 Supra</button>
+            <button class="filter-tab" data-filter="mk3">MK3 Supra</button>
+            <button class="filter-tab" data-filter="sc">SC300 / SC400</button>
+            <button class="filter-tab" data-filter="universal">Universal</button>
+          </div>
+          <div class="filter-sort">
+            <label for="harness-sort">Sort:</label>
+            <select id="harness-sort" class="form-select" style="padding:0.4rem 2rem 0.4rem 0.75rem;font-size:var(--text-sm);">
+              <option value="default">Default</option>
+              <option value="price-asc">Price: Low to High</option>
+              <option value="price-desc">Price: High to Low</option>
+            </select>
+          </div>
+        </div>
+        <div class="product-grid" id="harness-grid">
           <!-- MK4 Supra -->
-          <div class="product-card fade-in">
+          <div class="product-card fade-in" data-filter="mk4" data-price="1200">
             <div class="product-card-image">
               <img src="img/supraHarness1.jpg" alt="MK4 Supra JZA80 Standalone Wiring Harness" loading="lazy">
               <span class="product-card-badge badge">Popular</span>
@@ -63,13 +80,13 @@
               </h3>
               <p class="product-card-desc">Plug and play standalone engine harness for the MK4 Supra. 2JZ-GTE, 2JZ-GE, 1JZ-GTE, and 1UZ support. Full gauge, A/C, and OEM feature retention.</p>
               <div class="product-card-footer">
-                <span class="product-card-price">From $1,450</span>
+                <span class="product-card-price">From $1,200</span>
               </div>
             </div>
           </div>
 
           <!-- MK3 Supra -->
-          <div class="product-card fade-in">
+          <div class="product-card fade-in" data-filter="mk3" data-price="950">
             <div class="product-card-image">
               <img src="img/supraHarness1.jpg" alt="MK3 Supra MA70 Standalone Wiring Harness" loading="lazy">
             </div>
@@ -79,15 +96,15 @@
               </h3>
               <p class="product-card-desc">Standalone engine harness for the MK3 Supra. 2JZ-GTE swap, 1JZ-GTE, and 7M-GTE support with full chassis integration including gauges and A/C.</p>
               <div class="product-card-footer">
-                <span class="product-card-price">From $1,450</span>
+                <span class="product-card-price">From $950</span>
               </div>
             </div>
           </div>
 
           <!-- SC300 / SC400 / Soarer -->
-          <div class="product-card fade-in">
+          <div class="product-card fade-in" data-filter="sc" data-price="1200">
             <div class="product-card-image">
-              <img src="img/supraHarness1.jpg" alt="Lexus SC300 SC400 Soarer Standalone Wiring Harness" loading="lazy">
+              <img src="img/SC300.jpg" alt="Lexus SC300 SC400 Soarer Standalone Wiring Harness" loading="lazy">
             </div>
             <div class="product-card-body">
               <h3 class="product-card-title">
@@ -95,13 +112,13 @@
               </h3>
               <p class="product-card-desc">Standalone engine harness for the Lexus SC300, SC400, and Toyota Soarer. 2JZ-GTE swap and 1UZ-FE support with full chassis integration.</p>
               <div class="product-card-footer">
-                <span class="product-card-price">From $1,450</span>
+                <span class="product-card-price">From $1,200</span>
               </div>
             </div>
           </div>
 
           <!-- 1UZ-FE Universal -->
-          <div class="product-card fade-in">
+          <div class="product-card fade-in" data-filter="universal" data-price="0">
             <div class="product-card-image">
               <img src="img/supraHarness1.jpg" alt="1UZ-FE Universal Swap Standalone Wiring Harness" loading="lazy">
               <span class="product-card-badge badge">Custom Order</span>
@@ -118,7 +135,7 @@
           </div>
 
           <!-- K20/K24 Universal -->
-          <div class="product-card fade-in">
+          <div class="product-card fade-in" data-filter="universal" data-price="0">
             <div class="product-card-image">
               <img src="img/supraHarness1.jpg" alt="K20 K24 Universal Swap Standalone Wiring Harness" loading="lazy">
               <span class="product-card-badge badge">Custom Order</span>
@@ -148,5 +165,48 @@
   <script defer src="js/products.js"></script>
   <script defer src="js/search.js"></script>
   <script defer src="js/main.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const grid = document.getElementById('harness-grid');
+      const allCards = Array.from(grid.querySelectorAll('.product-card'));
+
+      function applyFilter(filterVal, sortVal) {
+        const filtered = filterVal === 'all'
+          ? allCards
+          : allCards.filter(c => c.dataset.filter === filterVal);
+
+        if (sortVal === 'price-asc') {
+          filtered.sort((a, b) => Number(a.dataset.price) - Number(b.dataset.price));
+        } else if (sortVal === 'price-desc') {
+          filtered.sort((a, b) => Number(b.dataset.price) - Number(a.dataset.price));
+        }
+
+        // Hide all, then show and re-append in order
+        allCards.forEach(c => c.style.display = 'none');
+        filtered.forEach(c => {
+          c.style.display = '';
+          grid.appendChild(c);
+        });
+        SVKMain.observeAnimations();
+      }
+
+      let activeFilter = 'all';
+      let activeSort = 'default';
+
+      document.querySelectorAll('#harness-filter .filter-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+          document.querySelectorAll('#harness-filter .filter-tab').forEach(t => t.classList.remove('active'));
+          tab.classList.add('active');
+          activeFilter = tab.dataset.filter;
+          applyFilter(activeFilter, activeSort);
+        });
+      });
+
+      document.getElementById('harness-sort').addEventListener('change', function() {
+        activeSort = this.value;
+        applyFilter(activeFilter, activeSort);
+      });
+    });
+  </script>
 </body>
 </html>

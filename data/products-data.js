@@ -577,6 +577,28 @@ const SVK_PRODUCTS_DATA = {
       "excerpt": "Haltech, Link, AEM, Motec — the options are overwhelming. Here's our breakdown of the most popular ECU choices for 2JZ-powered builds.",
       "image": "img/SupraA80.jpg",
       "content": "<p>Choosing an ECU is one of the most important decisions in your build. Each platform has strengths depending on your goals.</p><h3>Haltech Elite</h3><p>User-friendly software, excellent support, and great I/O. Ideal for street and mild track builds.</p><h3>Link G4X</h3><p>Powerful and cost-effective. Great logging and tuning features. Popular in the drift community.</p><h3>AEM Infinity</h3><p>Professional-grade with extensive I/O. Preferred by many professional tuners.</p><h3>Motec M1</h3><p>Top-tier motorsport ECU. Unmatched data logging and strategy capabilities. Best for serious competition builds.</p>"
+    },
+    {
+      "id": "txl-vs-raychem-spec44",
+      "title": "Mil-Spec Wiring Explained: TXL vs Raychem Spec 44",
+      "slug": "txl-vs-raychem-spec44",
+      "date": "2025-10-05",
+      "author": "SVK",
+      "category": "Tech",
+      "excerpt": "Not all automotive wire is created equal. Here's a deep dive into the two wire types we use at SVK Works — and when each one is the right call for your build.",
+      "image": "img/supraHarness1.jpg",
+      "content": "<p>Wire selection is one of the most overlooked aspects of harness building, but it directly affects reliability, longevity, and weight. At SVK Works we use two wire types depending on the application.</p><h3>TXL Cross-Linked Polyethylene</h3><p>TXL (cross-linked polyethylene) is our standard for street and street-track builds. It's rated to 125°C continuous, resists oil, fuel, and abrasion, and stays flexible in cold temperatures. The cross-linked insulation won't crack or shrink over time like PVC-based wire. For a car that sees regular road miles, TXL strikes the perfect balance of performance and cost.</p><h3>Raychem Spec 44</h3><p>Spec 44 is the gold standard for motorsport. Used in aerospace and Formula 1 applications, it's rated to 150°C, is significantly lighter than TXL at equivalent ampacity, and has outstanding chemical and abrasion resistance. The thinner wall means a tidier, lighter harness — critical in weight-sensitive race builds. We offer Spec 44 as an upgrade on all of our harnesses.</p><h3>Which One Do You Need?</h3><ul><li><strong>Street / weekend track use:</strong> TXL is ideal. Proven, durable, cost-effective.</li><li><strong>Full race / time attack / dedicated track car:</strong> Spec 44 is worth the upgrade for the weight savings and temperature headroom.</li><li><strong>Engine bay heat zones:</strong> We always use Spec 44 near headers and turbos regardless of build type.</li></ul>"
+    },
+    {
+      "id": "sc400-cd009-swap-wiring",
+      "title": "SC400 Manual Swap: Wiring the CD009 Conversion",
+      "slug": "sc400-cd009-swap-wiring",
+      "date": "2025-09-18",
+      "author": "SVK",
+      "category": "Guides",
+      "excerpt": "Swapping a Nissan 350Z CD009 6-speed into the SC400 is one of the cleanest manual conversions available. Here's everything you need to know about the wiring side.",
+      "image": "img/SC400_2.jpg",
+      "content": "<p>The Lexus SC400 is one of the best platforms for a manual transmission conversion — a smooth 1UZ-FE V8, a well-balanced chassis, and the CD009 6-speed from the Nissan 350Z bolts in with an adapter plate. But the wiring requires careful attention.</p><h3>What Changes on the Wiring Side</h3><ul><li><strong>Neutral Safety Switch:</strong> The automatic trans has a range switch that the ECU monitors. With a manual, you'll need to wire in a simple clutch switch or jumper the circuit so the car starts in gear.</li><li><strong>VSS (Vehicle Speed Sensor):</strong> The CD009 has its own VSS output. You'll need to match the signal to what your ECU and gauge cluster expect — often a simple adapter or tuning table adjustment.</li><li><strong>Reverse Lights:</strong> Wire the reverse light switch from the CD009 into the SC chassis harness for full functionality.</li><li><strong>Cruise Control:</strong> OEM cruise control will need to be re-configured or deleted, as the auto trans throttle strategy changes with a manual.</li></ul><h3>Our SC400 Harness Solution</h3><p>Our standalone harness for the SC400 is built to accommodate the CD009 swap from the ground up. We handle all of the above integration points so you're not chasing gremlins post-install. Reach out with your specific setup and we'll configure the harness to match.</p>"
     }
   ],
   "builds": [

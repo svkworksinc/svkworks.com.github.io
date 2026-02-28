@@ -54,7 +54,9 @@
           <!-- Contact Form -->
           <div class="fade-in">
             <h2 style="margin-bottom:var(--space-xl);">Send a Message</h2>
-            <form id="contact-form">
+            <!-- SETUP: Sign up free at formspree.io, create a form, then replace YOUR_FORMSPREE_ID below -->
+            <form id="contact-form" action="https://formspree.io/f/YOUR_FORMSPREE_ID" method="POST">
+              <input type="hidden" name="_subject" value="New Message — SVK Works Contact Form">
               <div class="form-group">
                 <label class="form-label" for="contact-name">Name *</label>
                 <input type="text" class="form-input" id="contact-name" name="name" required>
@@ -82,7 +84,13 @@
                 <label class="form-label" for="contact-message">Message *</label>
                 <textarea class="form-textarea" id="contact-message" name="message" rows="6" required placeholder="Tell us about your build, question, or request..."></textarea>
               </div>
-              <button type="submit" class="btn btn-primary btn-lg">Send Message</button>
+              <button type="submit" class="btn btn-primary btn-lg" id="contact-submit">Send Message</button>
+              <div id="contact-success" style="display:none;margin-top:var(--space-lg);padding:var(--space-lg);background:var(--bg-card);border:1px solid var(--magenta);border-radius:var(--radius-md);color:var(--text-primary);">
+                <strong style="color:var(--magenta);">Message sent!</strong> We'll get back to you within 24 hours.
+              </div>
+              <div id="contact-error" style="display:none;margin-top:var(--space-lg);padding:var(--space-lg);background:var(--bg-card);border:1px solid #e74c3c;border-radius:var(--radius-md);color:var(--text-primary);">
+                Something went wrong. Please email us directly at <a href="mailto:info@svkworks.com" style="color:var(--magenta);">info@svkworks.com</a>.
+              </div>
             </form>
           </div>
 
@@ -136,10 +144,30 @@
   <script defer src="js/search.js"></script>
   <script defer src="js/main.js"></script>
   <script>
-    document.getElementById('contact-form').addEventListener('submit', function(e) {
+    document.getElementById('contact-form').addEventListener('submit', async function(e) {
       e.preventDefault();
-      SVKCart.showToast('Message sent! We\'ll get back to you soon.');
-      this.reset();
+      const btn = document.getElementById('contact-submit');
+      btn.disabled = true;
+      btn.textContent = 'Sending...';
+      try {
+        const response = await fetch(this.action, {
+          method: 'POST',
+          body: new FormData(this),
+          headers: { 'Accept': 'application/json' }
+        });
+        if (response.ok) {
+          this.style.display = 'none';
+          document.getElementById('contact-success').style.display = 'block';
+        } else {
+          document.getElementById('contact-error').style.display = 'block';
+          btn.disabled = false;
+          btn.textContent = 'Send Message';
+        }
+      } catch {
+        document.getElementById('contact-error').style.display = 'block';
+        btn.disabled = false;
+        btn.textContent = 'Send Message';
+      }
     });
   </script>
 </body>
