@@ -8,7 +8,9 @@ const SVK_HEADER_HTML = `
   <div class="header-top">
     <div class="container">
       <div class="header-top-content">
-        <span class="header-notice">Custom Standalone Wiring Harnesses — Built to Order</span>
+        <span class="header-notice">Custom Standalone Wiring Harnesses — Built to Order
+        || For Questions and Concerns please email at info@svkworks.com or contact us through Instagram / Facebook
+</span>
         <div class="header-top-links">
           <a href="support.html">Support</a>
           <a href="resources.html">Resources</a>
