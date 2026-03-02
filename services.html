@@ -153,6 +153,82 @@
       </div>
     </section>
 
+    <!-- Quote Calculator -->
+    <section class="section">
+      <div class="container container-narrow">
+        <div style="text-align:center;margin-bottom:var(--space-2xl);">
+          <span class="section-label">Estimate</span>
+          <h2 style="margin:var(--space-md) 0;">Price Estimator</h2>
+          <p style="color:var(--text-secondary);font-size:var(--text-lg);">Select your service to get a rough price range. Final pricing confirmed after we review your project.</p>
+        </div>
+
+        <div class="quote-calculator">
+          <div class="form-group">
+            <label class="form-label">Service Type</label>
+            <div class="option-buttons" id="qc-service" style="flex-wrap:wrap;">
+              <button class="option-btn selected" data-low="800"  data-high="1600" data-addons="true">Custom Harness</button>
+              <button class="option-btn"           data-low="500"  data-high="950"  data-addons="true">Harness Conversion</button>
+              <button class="option-btn"           data-low="100"  data-high="350"  data-addons="false">Wiring Repair</button>
+              <button class="option-btn"           data-low="150"  data-high="450"  data-addons="false">ECU Repair</button>
+              <button class="option-btn"           data-low="200"  data-high="500"  data-addons="false">Connector Assembly</button>
+              <button class="option-btn"           data-low="50"   data-high="250"  data-addons="false">3D Printing</button>
+            </div>
+          </div>
+
+          <div class="form-group" id="qc-addons-group">
+            <label class="form-label">Add-Ons</label>
+            <div class="qc-checkboxes">
+              <label class="qc-checkbox"><input type="checkbox" data-add="250"> MILSpec Connector <span style="color:var(--text-muted);">+$250</span></label>
+              <label class="qc-checkbox"><input type="checkbox" data-add="100"> VVTi Integration <span style="color:var(--text-muted);">+$100</span></label>
+              <label class="qc-checkbox"><input type="checkbox" data-add="150"> Full Chassis Integration <span style="color:var(--text-muted);">+$150</span></label>
+              <label class="qc-checkbox"><input type="checkbox" data-add="300"> Rush Build (2–3 wks) <span style="color:var(--text-muted);">+$300</span></label>
+            </div>
+          </div>
+
+          <div class="quote-result">
+            <div class="quote-result-label">Estimated Range</div>
+            <div class="quote-result-price" id="qc-price">$800 — $1,600</div>
+            <p class="quote-result-note">Estimates only — final price confirmed after we review your build details.</p>
+            <a href="contact.html" class="btn btn-primary">Get an Exact Quote</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <script>
+      function updateQuote() {
+        const activeBtn = document.querySelector('#qc-service .option-btn.selected');
+        if (!activeBtn) return;
+        let low  = parseInt(activeBtn.dataset.low);
+        let high = parseInt(activeBtn.dataset.high);
+        const showAddons = activeBtn.dataset.addons === 'true';
+        document.getElementById('qc-addons-group').style.display = showAddons ? '' : 'none';
+        if (showAddons) {
+          document.querySelectorAll('.qc-checkboxes input:checked').forEach(cb => {
+            const add = parseInt(cb.dataset.add);
+            low  += add;
+            high += add;
+          });
+        }
+        document.getElementById('qc-price').textContent =
+          '$' + low.toLocaleString() + ' — $' + high.toLocaleString();
+      }
+
+      document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('#qc-service .option-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            document.querySelectorAll('#qc-service .option-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            document.querySelectorAll('.qc-checkboxes input').forEach(cb => { cb.checked = false; });
+            updateQuote();
+          });
+        });
+        document.querySelectorAll('.qc-checkboxes input').forEach(cb => {
+          cb.addEventListener('change', updateQuote);
+        });
+      });
+    </script>
+
     <!-- CTA -->
     <section class="section" style="background:var(--bg-secondary);">
       <div class="container container-narrow" style="text-align:center;">

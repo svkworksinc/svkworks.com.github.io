@@ -115,12 +115,14 @@
 
         <!-- Order Success -->
         <div id="order-success-section" style="display:none;text-align:center;padding:var(--space-4xl) var(--space-xl);">
-          <div style="font-size:3rem;margin-bottom:var(--space-lg);">&#10003;</div>
+          <div style="width:64px;height:64px;border-radius:50%;background:rgba(34,197,94,0.12);border:2px solid rgba(34,197,94,0.3);display:flex;align-items:center;justify-content:center;margin:0 auto var(--space-lg);">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#86efac" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
           <h2>Order Request Received!</h2>
           <p style="color:var(--text-secondary);max-width:480px;margin:var(--space-md) auto var(--space-2xl);">
             We'll review your order and send a <strong>PayPal invoice</strong> to your email within 1 business day. Once you approve and pay, we start building your harness.
           </p>
-          <div style="display:flex;gap:var(--space-md);justify-content:center;flex-wrap:wrap;">
+          <div id="order-success-actions" style="display:flex;gap:var(--space-md);justify-content:center;flex-wrap:wrap;">
             <a href="harnesses.html" class="btn btn-outline">Browse More Products</a>
             <a href="contact.html" class="btn btn-ghost">Contact Us</a>
           </div>
@@ -144,7 +146,7 @@
       SVKCart.renderCartPage();
 
       // Place Order button → show order request form
-      document.getElementById('place-order-btn').addEventListener('click', () => {
+      document.getElementById('place-order-btn').addEventListener('click', async () => {
         const cart = SVKCart.getCart();
         if (!cart.length) return;
 
@@ -175,6 +177,21 @@
         document.getElementById('cart-empty').style.display = 'none';
         document.getElementById('order-request-section').style.display = 'block';
         window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        // Pre-fill name + email if signed in
+        await SVKAuth.ready;
+        if (SVKAuth.configured) {
+          const session = await SVKAuth.getSession();
+          if (session) {
+            const nameField  = document.getElementById('order-name');
+            const emailField = document.getElementById('order-email');
+            if (!emailField.value) emailField.value = session.user.email;
+            if (!nameField.value) {
+              const profile = await SVKAuth.getProfile();
+              if (profile?.full_name) nameField.value = profile.full_name;
+            }
+          }
+        }
       });
 
       // Back to cart button
@@ -189,23 +206,58 @@
         const btn = document.getElementById('order-submit-btn');
         btn.disabled = true;
         btn.textContent = 'Submitting...';
+
+        const cart        = SVKCart.getCart();
+        const vehicle     = document.getElementById('order-vehicle').value.trim();
+        const notes       = document.getElementById('order-notes').value.trim();
+        const baseNote    = [vehicle && `Vehicle: ${vehicle}`, notes].filter(Boolean).join('\n');
+        const isConfigured = !this.action.includes('YOUR_FORMSPREE');
+
+        let formspreeOk = false;
         try {
-          const response = await fetch(this.action, {
-            method: 'POST',
-            body: new FormData(this),
-            headers: { 'Accept': 'application/json' }
-          });
-          if (response.ok) {
-            SVKCart.clearCart();
-            document.getElementById('order-request-section').style.display = 'none';
-            document.getElementById('order-success-section').style.display = 'block';
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          } else {
-            document.getElementById('order-error').style.display = 'block';
-            btn.disabled = false;
-            btn.textContent = 'Submit Order Request';
+          if (isConfigured) {
+            const response = await fetch(this.action, {
+              method: 'POST',
+              body: new FormData(this),
+              headers: { 'Accept': 'application/json' }
+            });
+            formspreeOk = response.ok;
           }
-        } catch {
+        } catch { /* network error — fall through to Supabase */ }
+
+        // Save to Supabase if signed in (works regardless of Formspree)
+        let supabaseOk = false;
+        await SVKAuth.ready;
+        if (SVKAuth.configured) {
+          const session = await SVKAuth.getSession();
+          if (session) {
+            for (const item of cart) {
+              await SVKAuth.saveOrder({
+                product:    item.name,
+                options:    item.options || {},
+                totalPrice: item.price * item.quantity,
+                notes:      baseNote,
+              });
+            }
+            supabaseOk = true;
+          }
+        }
+
+        if (formspreeOk || supabaseOk) {
+          SVKCart.clearCart();
+          document.getElementById('order-request-section').style.display = 'none';
+
+          // Show "View in Account" if order was saved to account
+          if (supabaseOk) {
+            const actions = document.getElementById('order-success-actions');
+            actions.insertAdjacentHTML('afterbegin',
+              `<a href="account.html" class="btn btn-primary">View in Account</a>`
+            );
+          }
+
+          document.getElementById('order-success-section').style.display = 'block';
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        } else {
           document.getElementById('order-error').style.display = 'block';
           btn.disabled = false;
           btn.textContent = 'Submit Order Request';

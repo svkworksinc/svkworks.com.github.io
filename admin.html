@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin — SVK Works</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="js/auth.js"></script>
+</head>
+<body>
+  <main>
+
+    <!-- Loading -->
+    <div id="admin-loading" class="section" style="text-align:center;">
+      <div class="container">
+        <div class="spinner" style="margin:4rem auto;"></div>
+        <p class="text-secondary">Loading admin panel…</p>
+      </div>
+    </div>
+
+    <!-- Not authorized -->
+    <div id="admin-denied" style="display:none;text-align:center;padding:var(--space-4xl) var(--space-xl);">
+      <div style="width:72px;height:72px;border-radius:50%;background:rgba(239,68,68,0.1);border:2px solid rgba(239,68,68,0.3);display:flex;align-items:center;justify-content:center;margin:0 auto var(--space-xl);">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#fca5a5" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      </div>
+      <h2>Access Denied</h2>
+      <p style="color:var(--text-secondary);margin:var(--space-md) 0 var(--space-2xl);">This page is restricted to SVK Works administrators.<br>Sign in with an admin account to continue.</p>
+      <div style="display:flex;gap:var(--space-md);justify-content:center;">
+        <a href="login.html" class="btn btn-primary">Sign In</a>
+        <a href="index.html" class="btn btn-ghost">Go Home</a>
+      </div>
+    </div>
+
+    <!-- Admin content -->
+    <div id="admin-content" style="display:none;">
+
+      <!-- Top bar -->
+      <div style="background:var(--bg-secondary);border-bottom:1px solid var(--border-color);padding:var(--space-md) 0;position:sticky;top:0;z-index:100;">
+        <div class="container" style="display:flex;align-items:center;justify-content:space-between;gap:var(--space-md);">
+          <div style="display:flex;align-items:center;gap:var(--space-md);">
+            <a href="index.html" style="color:var(--magenta);font-weight:var(--weight-bold);text-decoration:none;font-size:var(--text-lg);">SVK Works</a>
+            <span style="color:var(--border-color);">|</span>
+            <span style="font-size:var(--text-sm);color:var(--text-muted);font-weight:var(--weight-medium);">Order Management</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:var(--space-md);">
+            <span class="badge" id="admin-user-badge"></span>
+            <button class="btn btn-ghost" style="font-size:var(--text-sm);" onclick="handleAdminSignOut()">Sign Out</button>
+          </div>
+        </div>
+      </div>
+
+      <section class="section">
+        <div class="container">
+
+          <!-- Stats -->
+          <div class="account-stats" id="admin-stats" style="margin-bottom:var(--space-2xl);"></div>
+
+          <!-- Filter + search bar -->
+          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:var(--space-md);margin-bottom:var(--space-xl);">
+            <div class="filter-tabs" id="admin-status-filter">
+              <button class="filter-tab active" data-status="all">All</button>
+              <button class="filter-tab" data-status="pending">Pending</button>
+              <button class="filter-tab" data-status="in_progress">In Progress</button>
+              <button class="filter-tab" data-status="shipped">Shipped</button>
+              <button class="filter-tab" data-status="complete">Complete</button>
+              <button class="filter-tab" data-status="cancelled">Cancelled</button>
+            </div>
+            <input type="search" class="form-input" id="admin-search"
+              placeholder="Search customer or product…"
+              style="max-width:260px;padding:0.5rem var(--space-md);">
+          </div>
+
+          <!-- Orders -->
+          <div id="admin-orders-loading" class="account-empty">
+            <div class="account-empty-icon">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            </div>
+            <p>Loading orders…</p>
+          </div>
+
+          <div id="admin-orders-empty" class="account-empty" style="display:none;">
+            <div class="account-empty-icon">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            </div>
+            <p>No orders found.</p>
+          </div>
+
+          <div id="admin-orders-list" style="display:none;flex-direction:column;gap:var(--space-md);"></div>
+
+          <p id="admin-orders-count" style="display:none;text-align:right;margin-top:var(--space-xl);font-size:var(--text-sm);color:var(--text-muted);"></p>
+
+        </div>
+      </section>
+    </div>
+
+  </main>
+
+  <script>
+    SVKAuth.init();
+
+    const STATUS_LABELS = {
+      pending:     { label: 'Pending Review',  cls: 'status-pending'  },
+      in_progress: { label: 'In Progress',     cls: 'status-progress' },
+      complete:    { label: 'Complete',         cls: 'status-complete' },
+      shipped:     { label: 'Shipped',          cls: 'status-shipped'  },
+      cancelled:   { label: 'Cancelled',        cls: 'status-cancelled'},
+    };
+
+    const STATUS_OPTIONS = [
+      { value: 'pending',     label: 'Pending Review' },
+      { value: 'in_progress', label: 'In Progress'    },
+      { value: 'shipped',     label: 'Shipped'        },
+      { value: 'complete',    label: 'Complete'       },
+      { value: 'cancelled',   label: 'Cancelled'      },
+    ];
+
+    let allOrders = [];
+    let currentFilter = 'all';
+    let searchQuery   = '';
+
+    function formatDate(iso) {
+      return new Date(iso).toLocaleDateString('en-US', { year:'numeric', month:'short', day:'numeric' });
+    }
+
+    function formatPrice(cents) {
+      return '$' + Number(cents).toLocaleString();
+    }
+
+    function renderOptions(opts) {
+      if (!opts || !Object.keys(opts).length) return '';
+      return Object.entries(opts)
+        .filter(([, v]) => v && !String(v).startsWith('Select'))
+        .map(([k, v]) => `<span style="margin-right:var(--space-sm);"><span style="color:var(--text-muted);">${k}:</span> ${v}</span>`)
+        .join('');
+    }
+
+    function renderAdminOrder(order) {
+      const s       = STATUS_LABELS[order.status] || STATUS_LABELS.pending;
+      const profile = order._profile || {};
+      const custName  = profile.full_name || '—';
+      const custEmail = profile.email    || order.user_id?.slice(0, 16) + '…' || '—';
+      const shortId   = order.id?.slice(0, 8).toUpperCase() || '';
+      const optHtml   = renderOptions(order.options);
+
+      const statusSelect = STATUS_OPTIONS.map(o =>
+        `<option value="${o.value}" ${order.status === o.value ? 'selected' : ''}>${o.label}</option>`
+      ).join('');
+
+      return `
+        <div class="order-card admin-order-card" data-order-id="${order.id}">
+          <div class="admin-order-top">
+            <div class="admin-order-customer">
+              <div class="admin-customer-avatar">${(custName[0] || '?').toUpperCase()}</div>
+              <div>
+                <div class="admin-customer-name">${custName}</div>
+                <div class="admin-customer-email">${custEmail}</div>
+              </div>
+            </div>
+            <div class="order-card-right">
+              <span class="order-status ${s.cls}">${s.label}</span>
+              <span class="order-total">${formatPrice(order.total_price)}</span>
+            </div>
+          </div>
+
+          <div class="admin-order-meta">
+            <span class="order-product">${order.product}</span>
+            <span class="order-date">${formatDate(order.submitted_at)}</span>
+            ${shortId ? `<span class="order-id">#${shortId}</span>` : ''}
+          </div>
+
+          ${optHtml ? `<div style="margin-top:var(--space-sm);font-size:var(--text-sm);color:var(--text-secondary);">${optHtml}</div>` : ''}
+          ${order.notes ? `<p class="order-notes" style="margin-top:var(--space-sm);">${order.notes}</p>` : ''}
+
+          <div class="admin-order-actions">
+            <div style="display:flex;align-items:center;gap:var(--space-sm);flex:1;">
+              <label style="font-size:var(--text-xs);color:var(--text-muted);white-space:nowrap;">Update Status:</label>
+              <select class="form-input admin-status-select" style="padding:0.35rem var(--space-md);font-size:var(--text-sm);">
+                ${statusSelect}
+              </select>
+            </div>
+            <button class="btn btn-outline admin-save-btn" style="font-size:var(--text-sm);padding:0.4rem var(--space-lg);">Save</button>
+            <span class="admin-save-msg" style="display:none;font-size:var(--text-xs);"></span>
+          </div>
+        </div>
+      `;
+    }
+
+    function filteredOrders() {
+      let orders = allOrders;
+      if (currentFilter !== 'all') {
+        orders = orders.filter(o => o.status === currentFilter);
+      }
+      if (searchQuery) {
+        const q = searchQuery.toLowerCase();
+        orders = orders.filter(o =>
+          o.product.toLowerCase().includes(q) ||
+          (o._profile?.full_name || '').toLowerCase().includes(q) ||
+          (o._profile?.email    || '').toLowerCase().includes(q) ||
+          (o.notes              || '').toLowerCase().includes(q)
+        );
+      }
+      return orders;
+    }
+
+    function renderOrders() {
+      const orders  = filteredOrders();
+      const listEl  = document.getElementById('admin-orders-list');
+      const emptyEl = document.getElementById('admin-orders-empty');
+      const countEl = document.getElementById('admin-orders-count');
+
+      if (orders.length === 0) {
+        listEl.style.display  = 'none';
+        emptyEl.style.display = 'flex';
+        countEl.style.display = 'none';
+        return;
+      }
+
+      listEl.style.display  = 'flex';
+      emptyEl.style.display = 'none';
+      listEl.innerHTML      = orders.map(renderAdminOrder).join('');
+      countEl.style.display = 'block';
+      countEl.textContent   = `Showing ${orders.length} of ${allOrders.length} orders`;
+
+      // Bind save buttons
+      listEl.querySelectorAll('.admin-order-card').forEach(card => {
+        const orderId = card.dataset.orderId;
+        const saveBtn = card.querySelector('.admin-save-btn');
+        const select  = card.querySelector('.admin-status-select');
+        const msg     = card.querySelector('.admin-save-msg');
+
+        saveBtn.addEventListener('click', async () => {
+          saveBtn.disabled    = true;
+          saveBtn.textContent = 'Saving…';
+          const { error } = await SVKAuth.updateOrderStatus(orderId, select.value);
+          if (error) {
+            msg.textContent   = 'Error: ' + error.message;
+            msg.style.color   = '#fca5a5';
+          } else {
+            // Update local state
+            const order = allOrders.find(o => o.id === orderId);
+            if (order) order.status = select.value;
+            msg.textContent = 'Saved';
+            msg.style.color = '#86efac';
+            // Update status badge in-place
+            const statusBadge = card.querySelector('.order-status');
+            const s = STATUS_LABELS[select.value] || STATUS_LABELS.pending;
+            statusBadge.className  = `order-status ${s.cls}`;
+            statusBadge.textContent = s.label;
+          }
+          msg.style.display   = 'inline';
+          saveBtn.disabled    = false;
+          saveBtn.textContent = 'Save';
+          setTimeout(() => { msg.style.display = 'none'; }, 3000);
+        });
+      });
+    }
+
+    function updateStats(orders) {
+      const counts = { total: orders.length, pending: 0, in_progress: 0, shipped: 0, complete: 0 };
+      orders.forEach(o => {
+        if (counts[o.status] !== undefined) counts[o.status]++;
+      });
+      const revenue = orders
+        .filter(o => o.status !== 'cancelled')
+        .reduce((s, o) => s + (o.total_price || 0), 0);
+
+      document.getElementById('admin-stats').innerHTML = `
+        <div class="account-stat"><div class="account-stat-value">${counts.total}</div><div class="account-stat-label">Total Orders</div></div>
+        <div class="account-stat"><div class="account-stat-value" style="color:#fcd34d;">${counts.pending}</div><div class="account-stat-label">Pending</div></div>
+        <div class="account-stat"><div class="account-stat-value" style="color:#93c5fd;">${counts.in_progress}</div><div class="account-stat-label">In Progress</div></div>
+        <div class="account-stat"><div class="account-stat-value" style="color:var(--magenta);">${formatPrice(revenue)}</div><div class="account-stat-label">Total Revenue</div></div>
+      `;
+      document.getElementById('admin-stats').style.gridTemplateColumns = 'repeat(4,1fr)';
+    }
+
+    async function handleAdminSignOut() {
+      await SVKAuth.signOut();
+      window.location.href = 'login.html';
+    }
+
+    async function initAdmin() {
+      await SVKAuth.ready;
+
+      const session = await SVKAuth.getSession();
+      if (!session) {
+        document.getElementById('admin-loading').style.display = 'none';
+        document.getElementById('admin-denied').style.display  = 'block';
+        return;
+      }
+
+      const admin = await SVKAuth.isAdmin();
+      if (!admin) {
+        document.getElementById('admin-loading').style.display = 'none';
+        document.getElementById('admin-denied').style.display  = 'block';
+        return;
+      }
+
+      // Show admin UI
+      document.getElementById('admin-loading').style.display = 'none';
+      document.getElementById('admin-content').style.display = 'block';
+
+      const profile = await SVKAuth.getProfile();
+      document.getElementById('admin-user-badge').textContent =
+        (profile?.full_name || session.user.email) + ' (admin)';
+
+      // Load all orders
+      allOrders = await SVKAuth.getAdminOrders();
+      document.getElementById('admin-orders-loading').style.display = 'none';
+      updateStats(allOrders);
+      renderOrders();
+
+      // Filter tabs
+      document.querySelectorAll('#admin-status-filter .filter-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+          document.querySelectorAll('#admin-status-filter .filter-tab').forEach(t => t.classList.remove('active'));
+          tab.classList.add('active');
+          currentFilter = tab.dataset.status;
+          renderOrders();
+        });
+      });
+
+      // Search
+      let debounce;
+      document.getElementById('admin-search').addEventListener('input', e => {
+        clearTimeout(debounce);
+        debounce = setTimeout(() => {
+          searchQuery = e.target.value.trim();
+          renderOrders();
+        }, 200);
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', initAdmin);
+  </script>
+</body>
+</html>

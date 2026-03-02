@@ -6,7 +6,7 @@
 const SVKSearch = {
   async performSearch(query) {
     const data = await SVKProducts.load();
-    if (!query || query.trim().length === 0) return { products: [], blogs: [], resources: [] };
+    if (!query || query.trim().length === 0) return { products: [], blogs: [], resources: [], builds: [] };
 
     const q = query.toLowerCase().trim();
 
@@ -30,14 +30,21 @@ const SVKSearch = {
       r.category.toLowerCase().includes(q)
     );
 
-    return { products, blogs, resources };
+    const builds = (data.builds || []).filter(b =>
+      b.title.toLowerCase().includes(q) ||
+      (b.specs       || '').toLowerCase().includes(q) ||
+      (b.description || '').toLowerCase().includes(q) ||
+      (b.tags        || []).some(t => t.toLowerCase().includes(q))
+    );
+
+    return { products, blogs, resources, builds };
   },
 
   renderSearchResults(results, query) {
     const container = document.getElementById('search-results');
     if (!container) return;
 
-    const totalResults = results.products.length + results.blogs.length + results.resources.length;
+    const totalResults = results.products.length + results.blogs.length + results.resources.length + (results.builds || []).length;
 
     let html = `<p class="text-secondary" style="margin-bottom:var(--space-xl);">Found <strong>${totalResults}</strong> results for "<strong>${this.escapeHtml(query)}</strong>"</p>`;
 
@@ -98,6 +105,24 @@ const SVKSearch = {
               <p class="blog-card-excerpt">${b.excerpt}</p>
             </div>
           </div>
+        `;
+      });
+      html += '</div>';
+    }
+
+    // Builds
+    if ((results.builds || []).length > 0) {
+      html += `<h2 style="margin-bottom:var(--space-lg);">Builds (${results.builds.length})</h2>`;
+      html += '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:var(--space-xl);margin-bottom:var(--space-3xl);">';
+      results.builds.forEach(b => {
+        html += `
+          <a href="${b.page || 'builds.html?build=' + b.id}" class="build-card fade-in" style="text-decoration:none;">
+            <img class="build-card-image" src="${b.image}" alt="${b.title}" loading="lazy">
+            <div class="build-card-overlay">
+              <div class="build-card-title">${b.title}</div>
+              <div class="build-card-specs">${b.specs}</div>
+            </div>
+          </a>
         `;
       });
       html += '</div>';
