@@ -40,8 +40,8 @@
 
    ============================================ */
 
-const SUPABASE_URL = 'YOUR_SUPABASE_URL';
-const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
+const SUPABASE_URL = 'https://czdoptpeyffzjzqueogs.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_jMz6NBLEe1JI8BWCjVN2nQ_EzlIY3np';
 
 const SVKAuth = {
   client: null,
