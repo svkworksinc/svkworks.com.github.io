@@ -1329,6 +1329,211 @@
   padding-top: var(--space-sm);
 }
 
+.order-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-top: 2px;
+}
+
+.order-id {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  font-family: monospace;
+  background: var(--bg-secondary);
+  padding: 1px 6px;
+  border-radius: var(--radius-sm);
+}
+
+/* ======================================
+   Account Hero Section
+   ====================================== */
+
+.account-hero-section {
+  background: var(--bg-secondary);
+  padding-bottom: var(--space-xl);
+}
+
+/* ======================================
+   Account Stats Row
+   ====================================== */
+
+.account-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-md);
+  margin-top: var(--space-xl);
+}
+
+.account-stat {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  text-align: center;
+}
+
+.account-stat-value {
+  font-size: var(--text-2xl);
+  font-weight: var(--weight-bold);
+  color: var(--text-primary);
+  line-height: 1;
+}
+
+.account-stat-label {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: var(--space-xs);
+}
+
+/* ======================================
+   Account Info Card
+   ====================================== */
+
+.account-info-row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.account-info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.account-info-key {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: var(--weight-medium);
+}
+
+.account-info-val {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  word-break: break-all;
+}
+
+.account-info-mono {
+  font-family: monospace;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+/* ======================================
+   Order Status Pipeline
+   ====================================== */
+
+.order-pipeline {
+  display: flex;
+  align-items: flex-start;
+  margin-top: var(--space-md);
+  padding-top: var(--space-md);
+  border-top: 1px solid var(--border-color);
+}
+
+.pipeline-step {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-xs);
+  position: relative;
+}
+
+/* Connecting line from center of this step to center of next */
+.pipeline-step:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  top: 9px;
+  left: 50%;
+  width: 100%;
+  height: 2px;
+  background: var(--border-color);
+  z-index: 0;
+}
+
+.pipeline-step.done:not(:last-child)::after {
+  background: var(--magenta);
+}
+
+.pipeline-step.active:not(:last-child)::after {
+  background: var(--border-color);
+}
+
+.pipeline-dot {
+  width: 20px;
+  height: 20px;
+  border-radius: var(--radius-full);
+  background: var(--bg-secondary);
+  border: 2px solid var(--border-color);
+  position: relative;
+  z-index: 1;
+  flex-shrink: 0;
+  transition: background var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.pipeline-step.done .pipeline-dot {
+  background: var(--magenta);
+  border-color: var(--magenta);
+}
+
+.pipeline-step.active .pipeline-dot {
+  background: var(--bg-card);
+  border-color: var(--magenta);
+  box-shadow: 0 0 0 3px var(--magenta-subtle);
+}
+
+.pipeline-label {
+  font-size: 10px;
+  color: var(--text-muted);
+  text-align: center;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.pipeline-step.done .pipeline-label,
+.pipeline-step.active .pipeline-label {
+  color: var(--text-secondary);
+  font-weight: var(--weight-medium);
+}
+
+.order-pipeline-cancelled {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  margin-top: var(--space-md);
+  padding-top: var(--space-md);
+  border-top: 1px solid var(--border-color);
+  font-size: var(--text-xs);
+  color: #fca5a5;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: var(--weight-semibold);
+}
+
+/* Quick links with chevrons */
+.account-links a {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.account-links svg {
+  opacity: 0.4;
+  flex-shrink: 0;
+  transition: opacity var(--transition-fast), transform var(--transition-fast);
+}
+
+.account-links a:hover svg {
+  opacity: 0.8;
+  transform: translateX(2px);
+}
+
 @media (max-width: 900px) {
   .account-layout {
     grid-template-columns: 1fr;
@@ -1336,6 +1541,10 @@
 
   .account-sidebar {
     order: -1;
+  }
+
+  .account-stats {
+    grid-template-columns: repeat(3, 1fr);
   }
 }
 
@@ -1349,6 +1558,23 @@
     justify-content: center;
   }
 
+  .account-stats {
+    grid-template-columns: 1fr;
+    gap: var(--space-sm);
+  }
+
+  .account-stat {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    text-align: left;
+    padding: var(--space-md) var(--space-lg);
+  }
+
+  .account-stat-value {
+    font-size: var(--text-xl);
+  }
+
   .order-card-header {
     flex-direction: column;
   }
@@ -1357,6 +1583,10 @@
     align-items: flex-start;
     flex-direction: row;
     gap: var(--space-md);
+  }
+
+  .pipeline-label {
+    display: none;
   }
 
   .auth-card {
