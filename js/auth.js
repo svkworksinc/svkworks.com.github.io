@@ -138,10 +138,11 @@ const SVKAuth = {
   },
 
   async updateProfile(updates) {
-    if (!this.client) return;
+    if (!this.client) return { data: null, error: { message: 'Auth not configured.' } };
     const user = await this.getUser();
-    if (!user) return;
-    await this.client.from('profiles').upsert({ id: user.id, ...updates });
+    if (!user) return { data: null, error: { message: 'Not signed in.' } };
+    const { data, error } = await this.client.from('profiles').upsert({ id: user.id, ...updates });
+    return { data, error };
   },
 
   async resetPassword(email) {
