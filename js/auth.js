@@ -40,24 +40,26 @@
 
    ============================================ */
 
-const SUPABASE_URL = 'YOUR_SUPABASE_URL';
+const SUPABASE_URL = 'https://czdoptpeyffzjzqueogs.supabase.co';
 const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
+
+// Resolver must live outside the object so it's captured before SVKAuth is assigned
+let _svkResolveReady;
 
 const SVKAuth = {
   client: null,
 
   // Resolves when init() has completed — await this before calling auth methods
-  ready: new Promise(resolve => { SVKAuth._resolveReady = resolve; }),
-  _resolveReady: null,
+  ready: new Promise(resolve => { _svkResolveReady = resolve; }),
 
   init() {
-    if (!window.supabase || SUPABASE_URL === 'YOUR_SUPABASE_URL') {
+    if (!window.supabase || SUPABASE_ANON_KEY === 'YOUR_SUPABASE_ANON_KEY') {
       // Supabase not configured — resolve ready so pages don't hang
-      this._resolveReady();
+      _svkResolveReady();
       return;
     }
     this.client = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    this._resolveReady();
+    _svkResolveReady();
   },
 
   get configured() {
