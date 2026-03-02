@@ -12,6 +12,8 @@
         id uuid references auth.users(id) primary key,
         full_name text,
         phone text,
+        email text,
+        is_admin boolean default false,
         created_at timestamptz default now()
       );
 
@@ -32,11 +34,34 @@
       create policy "Users manage own profile"
         on profiles for all using (auth.uid() = id) with check (auth.uid() = id);
 
-      create policy "Users view own orders"
-        on orders for select using (auth.uid() = user_id);
-
       create policy "Users insert own orders"
         on orders for insert with check (auth.uid() = user_id);
+
+   ADMIN SETUP (run after basic setup):
+
+      -- Security-definer function avoids policy recursion
+      create or replace function auth_is_admin()
+      returns boolean language sql security definer as $$
+        select coalesce((select is_admin from profiles where id = auth.uid()), false)
+      $$;
+
+      -- Combined order read policy: own orders + admin sees all
+      create policy "Users view own orders"
+        on orders for select
+        using (auth.uid() = user_id or auth_is_admin());
+
+      -- Admins can update order status
+      create policy "Admins update orders"
+        on orders for update
+        using (auth_is_admin());
+
+      -- Admins can read all profiles (for order management)
+      create policy "Admins read profiles"
+        on profiles for select
+        using (auth.uid() = id or auth_is_admin());
+
+      -- Grant admin to a user (replace with your account's user ID):
+      -- update profiles set is_admin = true where id = 'your-uuid-here';
 
    ============================================ */
 
@@ -91,7 +116,12 @@ const SVKAuth = {
 
   async signIn(email, password) {
     if (!this.client) return { error: { message: 'Auth not configured.' } };
-    return await this.client.auth.signInWithPassword({ email, password });
+    const result = await this.client.auth.signInWithPassword({ email, password });
+    if (!result.error && result.data?.user) {
+      // Silently sync email to profile (non-blocking)
+      this.client.from('profiles').upsert({ id: result.data.user.id, email }).then(() => {});
+    }
+    return result;
   },
 
   async signUp(email, password, fullName) {
@@ -101,6 +131,7 @@ const SVKAuth = {
       await this.client.from('profiles').upsert({
         id: data.user.id,
         full_name: fullName,
+        email: email,
       });
     }
     return { data, error };
@@ -150,5 +181,36 @@ const SVKAuth = {
     return await this.client.auth.resetPasswordForEmail(email, {
       redirectTo: window.location.origin + '/account.html',
     });
+  },
+
+  async isAdmin() {
+    const profile = await this.getProfile();
+    return !!profile?.is_admin;
+  },
+
+  async getAdminOrders() {
+    if (!this.client) return [];
+    const { data: orders } = await this.client
+      .from('orders')
+      .select('*')
+      .order('submitted_at', { ascending: false });
+    if (!orders?.length) return [];
+    // Fetch profiles in parallel to get customer info
+    const userIds = [...new Set(orders.map(o => o.user_id))];
+    const { data: profiles } = await this.client
+      .from('profiles')
+      .select('id, full_name, email')
+      .in('id', userIds);
+    const profileMap = Object.fromEntries((profiles || []).map(p => [p.id, p]));
+    return orders.map(o => ({ ...o, _profile: profileMap[o.user_id] || {} }));
+  },
+
+  async updateOrderStatus(orderId, newStatus) {
+    if (!this.client) return { error: { message: 'Not configured.' } };
+    return await this.client
+      .from('orders')
+      .update({ status: newStatus })
+      .eq('id', orderId)
+      .select();
   },
 };

@@ -66,11 +66,17 @@ const SVKProducts = {
   },
 
   renderProductCard(product) {
+    const isWishlisted = typeof SVKWishlist !== 'undefined' && SVKWishlist.has(product.id);
     return `
       <div class="product-card fade-in" data-product-id="${product.id}">
         <div class="product-card-image">
           <img src="${product.image}" alt="${product.name}" loading="lazy">
           ${product.badge ? `<span class="product-card-badge badge">${product.badge}</span>` : ''}
+          <button class="wishlist-btn${isWishlisted ? ' active' : ''}" data-wishlist-id="${product.id}" aria-label="${isWishlisted ? 'Remove from wishlist' : 'Save to wishlist'}">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="${isWishlisted ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
+          </button>
         </div>
         <div class="product-card-body">
           <h3 class="product-card-title">
@@ -117,11 +123,25 @@ const SVKProducts = {
         e.stopPropagation();
         const id = btn.dataset.productId;
         const product = this.getProduct(id);
-        if (product) {
-          SVKCart.addItem(product);
-        }
+        if (product) SVKCart.addItem(product);
       });
     });
+
+    // Wishlist buttons (only if SVKWishlist is loaded)
+    if (typeof SVKWishlist !== 'undefined') {
+      container.querySelectorAll('.wishlist-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          const id    = btn.dataset.wishlistId;
+          const added = SVKWishlist.toggle(id);
+          btn.classList.toggle('active', added);
+          btn.querySelector('path').setAttribute('fill', added ? 'currentColor' : 'none');
+          btn.setAttribute('aria-label', added ? 'Remove from wishlist' : 'Save to wishlist');
+          SVKCart.showToast(added ? 'Saved to wishlist' : 'Removed from wishlist');
+        });
+      });
+    }
   },
 
   // Render the product detail page
@@ -203,6 +223,24 @@ const SVKProducts = {
         </div>
       </div>
     `;
+
+    // Related products
+    const related = this.getProducts({ category: product.category })
+      .filter(p => p.id !== productId)
+      .slice(0, 3);
+    if (related.length > 0) {
+      container.insertAdjacentHTML('beforeend', `
+        <div class="section" style="background:var(--bg-secondary);padding-top:var(--space-3xl);">
+          <div class="container">
+            <div class="account-section-header" style="margin-bottom:var(--space-xl);">
+              <h2>Related Products</h2>
+            </div>
+            <div class="product-grid">${related.map(p => this.renderProductCard(p)).join('')}</div>
+          </div>
+        </div>
+      `);
+      this.bindAddToCart(container.querySelector('.product-grid'));
+    }
 
     // Option button selection
     container.querySelectorAll('.option-buttons').forEach(group => {

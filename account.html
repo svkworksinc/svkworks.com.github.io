@@ -55,7 +55,7 @@
       <div class="container">
         <div class="account-layout">
 
-          <!-- Left: Build requests -->
+          <!-- Left: Build requests + Wishlist -->
           <div class="account-main">
             <div class="account-section-header">
               <h2>Build Requests</h2>
@@ -79,6 +79,22 @@
             </div>
 
             <div id="orders-list" style="display:none; flex-direction:column; gap:var(--space-md);"></div>
+
+            <!-- Saved Harnesses (Wishlist) -->
+            <div id="wishlist-section" style="display:none;margin-top:var(--space-3xl);">
+              <div class="account-section-header">
+                <h2>Saved Harnesses</h2>
+                <span class="section-label" id="wishlist-count-badge"></span>
+              </div>
+              <div id="wishlist-empty" class="account-empty" style="display:none;">
+                <div class="account-empty-icon">
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                </div>
+                <p>No saved harnesses yet.</p>
+                <a href="harnesses.html" class="btn btn-outline" style="margin-top:var(--space-md);">Browse Harnesses</a>
+              </div>
+              <div id="wishlist-grid" class="product-grid" style="display:none;"></div>
+            </div>
           </div>
 
           <!-- Right: Sidebar -->
@@ -184,7 +200,11 @@
   <script defer src="components/header.js"></script>
   <script defer src="components/footer.js"></script>
   <script defer src="js/cart.js"></script>
+  <script defer src="js/wishlist.js"></script>
   <script defer src="js/components.js"></script>
+  <script defer src="data/products-data.js"></script>
+  <script defer src="js/products.js"></script>
+  <script defer src="js/search.js"></script>
   <script defer src="js/main.js"></script>
   <script>
     let _userEmail = '';
@@ -355,6 +375,41 @@
         document.getElementById('order-count-badge').textContent =
           orders.length + (orders.length === 1 ? ' order' : ' orders');
       }
+
+      // Wishlist
+      loadWishlist();
+    }
+
+    function loadWishlist() {
+      if (typeof SVKWishlist === 'undefined') return;
+      const ids = SVKWishlist.getWishlist();
+      const section = document.getElementById('wishlist-section');
+      section.style.display = 'block';
+
+      if (!ids.length) {
+        document.getElementById('wishlist-empty').style.display = 'flex';
+        return;
+      }
+
+      // Products must be loaded
+      if (typeof SVKProducts === 'undefined' || !SVKProducts.data) {
+        // Try again shortly
+        setTimeout(loadWishlist, 500);
+        return;
+      }
+
+      const products = ids.map(id => SVKProducts.getProduct(id)).filter(Boolean);
+      if (!products.length) {
+        document.getElementById('wishlist-empty').style.display = 'flex';
+        return;
+      }
+
+      document.getElementById('wishlist-count-badge').textContent =
+        products.length + (products.length === 1 ? ' item' : ' items');
+      const grid = document.getElementById('wishlist-grid');
+      grid.style.display = 'grid';
+      grid.innerHTML = products.map(p => SVKProducts.renderProductCard(p)).join('');
+      SVKProducts.bindAddToCart(grid);
     }
 
     document.addEventListener('DOMContentLoaded', initPage);

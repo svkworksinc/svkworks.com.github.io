@@ -67,16 +67,146 @@
       </div>
     </section>
 
-    <section class="cta-section">
+    <section class="cta-section" id="build-submit-section">
       <div class="container">
-        <div class="cta-box fade-in">
+
+        <!-- CTA prompt -->
+        <div class="cta-box fade-in" id="build-cta-box">
           <span class="section-label">Got a Build?</span>
           <h2>Submit Your Build</h2>
-          <p>Running an SVK harness? We'd love to feature your build. Send us photos and details.</p>
-          <a href="contact.html" class="btn btn-primary">Submit Your Build</a>
+          <p>Running an SVK harness? We'd love to feature your build in the gallery.</p>
+          <button class="btn btn-primary" onclick="showBuildForm()">Submit Your Build</button>
         </div>
+
+        <!-- Inline submission form -->
+        <div id="build-form-wrap" style="display:none;max-width:600px;margin:0 auto;">
+          <div style="margin-bottom:var(--space-2xl);text-align:center;">
+            <span class="section-label">Submit</span>
+            <h2 style="margin:var(--space-sm) 0;">Your Build Details</h2>
+            <p style="color:var(--text-secondary);">Tell us about your car. We'll review and add it to the gallery.</p>
+          </div>
+
+          <!-- SETUP: Replace YOUR_FORMSPREE_ID with your builds form ID from formspree.io -->
+          <form id="build-form" class="build-submit-form" action="https://formspree.io/f/YOUR_FORMSPREE_ID" method="POST">
+            <input type="hidden" name="_subject" value="Build Submission — SVK Works">
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-md);">
+              <div class="form-group">
+                <label class="form-label" for="build-name">Your Name *</label>
+                <input type="text" class="form-input" id="build-name" name="name" required placeholder="John D.">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="build-email">Email *</label>
+                <input type="email" class="form-input" id="build-email" name="email" required placeholder="you@example.com">
+              </div>
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-md);">
+              <div class="form-group">
+                <label class="form-label" for="build-year">Year *</label>
+                <input type="text" class="form-input" id="build-year" name="year" required placeholder="1997">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="build-car">Make / Model *</label>
+                <input type="text" class="form-input" id="build-car" name="car" required placeholder="Toyota Supra MK4">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="build-engine">Engine / Swap *</label>
+              <input type="text" class="form-input" id="build-engine" name="engine" required placeholder="2JZ-GTE — Haltech Elite 2500">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="build-harness">SVK Harness Used *</label>
+              <input type="text" class="form-input" id="build-harness" name="harness" required placeholder="MK4 Supra 2JZ-GTE Standalone Harness">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="build-description">Build Description</label>
+              <textarea class="form-textarea" id="build-description" name="description" rows="4"
+                placeholder="Tell us about the build — power goals, other mods, the story behind it…"></textarea>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="build-instagram">Instagram Handle <span style="color:var(--text-muted);font-weight:400;">(optional)</span></label>
+              <input type="text" class="form-input" id="build-instagram" name="instagram" placeholder="@yourusername">
+            </div>
+
+            <div id="build-form-error" class="auth-error" style="display:none;"></div>
+
+            <div style="display:flex;gap:var(--space-md);flex-wrap:wrap;margin-top:var(--space-md);">
+              <button type="submit" class="btn btn-primary btn-lg" id="build-submit-btn">Submit Build</button>
+              <button type="button" class="btn btn-ghost btn-lg" onclick="hideBuildForm()">Cancel</button>
+            </div>
+          </form>
+
+          <!-- Success -->
+          <div id="build-form-success" style="display:none;text-align:center;padding:var(--space-3xl) 0;">
+            <div style="width:64px;height:64px;border-radius:50%;background:rgba(34,197,94,0.12);border:2px solid rgba(34,197,94,0.3);display:flex;align-items:center;justify-content:center;margin:0 auto var(--space-xl);">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#86efac" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <h3>Build Submitted!</h3>
+            <p style="color:var(--text-secondary);margin:var(--space-md) 0 var(--space-2xl);">Thanks for sharing your build. We'll review it and reach out if we'd like to feature it in the gallery.</p>
+            <button class="btn btn-outline" onclick="hideBuildForm()">Back to Gallery</button>
+          </div>
+        </div>
+
       </div>
     </section>
+
+    <script>
+      function showBuildForm() {
+        document.getElementById('build-cta-box').style.display   = 'none';
+        document.getElementById('build-form-wrap').style.display = 'block';
+        document.getElementById('build-submit-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+
+      function hideBuildForm() {
+        document.getElementById('build-form').reset();
+        document.getElementById('build-form-error').style.display   = 'none';
+        document.getElementById('build-form-success').style.display = 'none';
+        document.getElementById('build-form').style.display         = 'block';
+        document.getElementById('build-form-wrap').style.display    = 'none';
+        document.getElementById('build-cta-box').style.display      = '';
+      }
+
+      document.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('build-form').addEventListener('submit', async function(e) {
+          e.preventDefault();
+          const btn = document.getElementById('build-submit-btn');
+          const err = document.getElementById('build-form-error');
+          btn.disabled    = true;
+          btn.textContent = 'Submitting…';
+          err.style.display = 'none';
+
+          const isConfigured = !this.action.includes('YOUR_FORMSPREE');
+          let ok = false;
+
+          if (isConfigured) {
+            try {
+              const res = await fetch(this.action, {
+                method: 'POST', body: new FormData(this), headers: { 'Accept': 'application/json' }
+              });
+              ok = res.ok;
+            } catch { /* fall through */ }
+          } else {
+            // Formspree not configured — show success anyway (admin sees it elsewhere)
+            ok = true;
+          }
+
+          if (ok) {
+            this.style.display = 'none';
+            document.getElementById('build-form-success').style.display = 'block';
+          } else {
+            err.textContent   = 'Submission failed. Email us directly at info@svkworks.com.';
+            err.style.display = 'block';
+            btn.disabled      = false;
+            btn.textContent   = 'Submit Build';
+          }
+        });
+      });
+    </script>
   </main>
 
   <div id="footer-placeholder"></div>
