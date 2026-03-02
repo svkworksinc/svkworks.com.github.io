@@ -41,7 +41,7 @@
    ============================================ */
 
 const SUPABASE_URL = 'https://czdoptpeyffzjzqueogs.supabase.co';
-const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
+const SUPABASE_ANON_KEY = 'sb_publishable_jMz6NBLEe1JI8BWCjVN2nQ_EzlIY3np';
 
 // Resolver must live outside the object so it's captured before SVKAuth is assigned
 let _svkResolveReady;
@@ -53,7 +53,7 @@ const SVKAuth = {
   ready: new Promise(resolve => { _svkResolveReady = resolve; }),
 
   init() {
-    if (!window.supabase || SUPABASE_ANON_KEY === 'YOUR_SUPABASE_ANON_KEY') {
+    if (!window.supabase || !SUPABASE_URL || !SUPABASE_ANON_KEY) {
       // Supabase not configured — resolve ready so pages don't hang
       _svkResolveReady();
       return;
