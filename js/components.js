@@ -20,6 +20,35 @@ const SVKComponents = {
     }
 
     SVKCart.updateCartCount();
+    this._bootstrapAuth();
+  },
+
+  _bootstrapAuth() {
+    // Dynamically load Supabase SDK then auth.js, then update the header
+    const sdkScript = document.createElement('script');
+    sdkScript.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js';
+    sdkScript.onload = () => {
+      const authScript = document.createElement('script');
+      authScript.src = 'js/auth.js';
+      authScript.onload = () => {
+        SVKAuth.init();
+        SVKAuth.ready.then(() => this._updateAccountBtn());
+      };
+      document.head.appendChild(authScript);
+    };
+    document.head.appendChild(sdkScript);
+  },
+
+  async _updateAccountBtn() {
+    if (!SVKAuth.configured) return;
+    const session = await SVKAuth.getSession();
+    const btn = document.getElementById('account-btn');
+    if (!btn) return;
+    if (session) {
+      btn.href = 'account.html';
+      btn.setAttribute('aria-label', 'My Account');
+      btn.classList.add('logged-in');
+    }
   },
 
   initHeader() {
