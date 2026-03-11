@@ -34,24 +34,74 @@
   }
   </script>
 
-  <!-- Product Schema -->
+  <!-- Product Schema – individual variants for Google Shopping -->
   <script type="application/ld+json">
-  {
-    "@context": "https://schema.org/",
-    "@type": "Product",
-    "name": "Supra MK3 MA70 Engine Harness",
-    "description": "Custom Supra MK3 engine wiring harness for 2JZ swap, 1JZ swap, and 7M-GTE standalone. Built-to-order and compatible with Haltech, Link, MaxxECU, EMU Black and more.",
-    "brand": { "@type": "Brand", "name": "SVK Works" },
-    "offers": {
-      "@type": "Offer",
-      "priceCurrency": "USD",
-      "price": "1550.00",
-      "availability": "https://schema.org/InStock",
-      "url": "https://svkworks.com/mk3-supra.html",
-      "priceValidUntil": "2027-12-31",
-      "seller": { "@type": "Organization", "name": "SVK Works" }
+  [
+    {
+      "@context": "https://schema.org/",
+      "@type": "Product",
+      "name": "MK3 Supra 2JZ-GTE Swap Wiring Harness",
+      "description": "Plug & play standalone engine wiring harness for the MK3 Toyota Supra MA70 with 2JZ-GTE swap. Compatible with Haltech, Link, MaxxECU, EMU Black. Full chassis integration — gauges, A/C, power steering.",
+      "image": ["https://svkworks.com/img/supraHarness1.jpg"],
+      "brand": { "@type": "Brand", "name": "SVK Works" },
+      "sku": "SVK-MK3-2JZGTE",
+      "mpn": "SVK-MK3-2JZGTE",
+      "offers": {
+        "@type": "Offer",
+        "priceCurrency": "USD",
+        "price": "1350.00",
+        "availability": "https://schema.org/InStock",
+        "url": "https://svkworks.com/mk3-supra.html",
+        "priceValidUntil": "2027-12-31",
+        "itemCondition": "https://schema.org/NewCondition",
+        "seller": { "@type": "Organization", "name": "SVK Works" },
+        "shippingDetails": {
+          "@type": "OfferShippingDetails",
+          "shippingDestination": { "@type": "DefinedRegion", "addressCountry": "US" }
+        }
+      }
+    },
+    {
+      "@context": "https://schema.org/",
+      "@type": "Product",
+      "name": "MK3 Supra 1JZ-GTE Standalone Wiring Harness",
+      "description": "Plug & play standalone engine wiring harness for the MK3 Toyota Supra MA70 with 1JZ-GTE. Compatible with Haltech, Link, MaxxECU, EMU Black. Full chassis integration.",
+      "image": ["https://svkworks.com/img/supraHarness1.jpg"],
+      "brand": { "@type": "Brand", "name": "SVK Works" },
+      "sku": "SVK-MK3-1JZGTE",
+      "mpn": "SVK-MK3-1JZGTE",
+      "offers": {
+        "@type": "Offer",
+        "priceCurrency": "USD",
+        "price": "1100.00",
+        "availability": "https://schema.org/InStock",
+        "url": "https://svkworks.com/mk3-supra.html",
+        "priceValidUntil": "2027-12-31",
+        "itemCondition": "https://schema.org/NewCondition",
+        "seller": { "@type": "Organization", "name": "SVK Works" }
+      }
+    },
+    {
+      "@context": "https://schema.org/",
+      "@type": "Product",
+      "name": "MK3 Supra 7M-GTE Standalone Wiring Harness",
+      "description": "Plug & play standalone engine wiring harness for the MK3 Toyota Supra MA70 with 7M-GTE. Compatible with Haltech, Link, MaxxECU, EMU Black. Full chassis integration.",
+      "image": ["https://svkworks.com/img/supraHarness1.jpg"],
+      "brand": { "@type": "Brand", "name": "SVK Works" },
+      "sku": "SVK-MK3-7MGTE",
+      "mpn": "SVK-MK3-7MGTE",
+      "offers": {
+        "@type": "Offer",
+        "priceCurrency": "USD",
+        "price": "950.00",
+        "availability": "https://schema.org/InStock",
+        "url": "https://svkworks.com/mk3-supra.html",
+        "priceValidUntil": "2027-12-31",
+        "itemCondition": "https://schema.org/NewCondition",
+        "seller": { "@type": "Organization", "name": "SVK Works" }
+      }
     }
-  }
+  ]
   </script>
 
   <!-- FAQ Schema -->

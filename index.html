@@ -5,12 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SVK Works — Custom Standalone Wiring Harnesses</title>
   <meta name="description" content="SVK Works builds custom standalone wiring harnesses for 2JZ, 1JZ, 1UZ, and more. Specializing in MK4 Supra, MK3 Supra, Lexus SC, and race applications.">
-  <link rel="canonical" href="https://svkworks.com/index.html">
+  <link rel="canonical" href="https://svkworks.com/">
   <meta property="og:site_name" content="SVK Works">
   <meta property="og:type" content="website">
   <meta property="og:title" content="SVK Works — Custom Standalone Wiring Harnesses">
   <meta property="og:description" content="SVK Works builds custom standalone wiring harnesses for 2JZ, 1JZ, 1UZ, and more. Specializing in MK4 Supra, MK3 Supra, Lexus SC, and race applications.">
-  <meta property="og:url" content="https://svkworks.com/index.html">
+  <meta property="og:url" content="https://svkworks.com/">
   <meta property="og:image" content="https://svkworks.com/img/og-default.png">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="SVK Works — Custom Standalone Wiring Harnesses">
@@ -239,6 +239,43 @@
       </div>
     </section>
 
+    <!-- From the Blog — static links for crawlability -->
+    <section class="section" style="background:var(--bg-secondary);">
+      <div class="container">
+        <div class="section-header fade-in">
+          <span class="section-label">From the Blog</span>
+          <h2>Tech Articles &amp; Guides</h2>
+          <p>Build knowledge from the SVK workshop — wiring tips, swap guides, and tech deep-dives.</p>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:var(--space-xl);" class="stagger-children">
+          <div class="blog-card fade-in">
+            <div class="blog-card-body">
+              <div class="blog-card-meta"><span class="badge">Tech</span></div>
+              <h3 class="blog-card-title"><a href="blog-why-standalone-harness.html">Why Your Build Needs a Standalone Harness</a></h3>
+              <p class="blog-card-excerpt">Still running a modified OEM harness? Here's why going standalone is the best investment for your build.</p>
+            </div>
+          </div>
+          <div class="blog-card fade-in">
+            <div class="blog-card-body">
+              <div class="blog-card-meta"><span class="badge">Guides</span></div>
+              <h3 class="blog-card-title"><a href="blog-mk3-2jz-swap-guide.html">MK3 Supra 2JZ Swap: Wiring Considerations</a></h3>
+              <p class="blog-card-excerpt">The 2JZ swap into the MK3 Supra is legendary. Here's what you need to know about the wiring side.</p>
+            </div>
+          </div>
+          <div class="blog-card fade-in">
+            <div class="blog-card-body">
+              <div class="blog-card-meta"><span class="badge">Tech</span></div>
+              <h3 class="blog-card-title"><a href="blog-choosing-ecu.html">Choosing the Right ECU for Your 2JZ Build</a></h3>
+              <p class="blog-card-excerpt">Haltech, Link, AEM, Motec — our breakdown of the most popular ECU choices for 2JZ builds.</p>
+            </div>
+          </div>
+        </div>
+        <div class="text-center" style="margin-top:var(--space-2xl);">
+          <a href="blog.html" class="btn btn-outline">Read All Articles &rarr;</a>
+        </div>
+      </div>
+    </section>
+
     <!-- Social CTA -->
     <section class="cta-section">
       <div class="container">
@@ -289,7 +326,7 @@
       const buildsContainer = document.getElementById('home-builds');
       if (buildsContainer && builds.length) {
         buildsContainer.innerHTML = builds.map(b => `
-          <a href="builds.html?build=${b.id}" class="build-card fade-in">
+          <a href="${b.page || 'builds.html?build=' + b.id}" class="build-card fade-in">
             <img class="build-card-image" src="${b.image}" alt="${b.title}" loading="lazy">
             <div class="build-card-overlay">
               <div class="build-card-title">${b.title}</div>

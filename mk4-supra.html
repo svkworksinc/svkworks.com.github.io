@@ -34,24 +34,74 @@
   }
   </script>
 
-  <!-- Product Schema -->
+  <!-- Product Schema – individual variants for Google Shopping -->
   <script type="application/ld+json">
-  {
-    "@context": "https://schema.org/",
-    "@type": "Product",
-    "name": "Supra MK4 JZA80 Engine Harness",
-    "description": "Custom Supra MK4 engine wiring harness for 2JZ, 1JZ, and 1UZ engines. Built-to-order and compatible with Haltech, Link, MaxxECU, EMU Black and more.",
-    "brand": { "@type": "Brand", "name": "SVK Works" },
-    "offers": {
-      "@type": "Offer",
-      "priceCurrency": "USD",
-      "price": "1450.00",
-      "availability": "https://schema.org/InStock",
-      "url": "https://svkworks.com/mk4-supra.html",
-      "priceValidUntil": "2027-12-31",
-      "seller": { "@type": "Organization", "name": "SVK Works" }
+  [
+    {
+      "@context": "https://schema.org/",
+      "@type": "Product",
+      "name": "MK4 Supra 2JZ-GTE Standalone Wiring Harness",
+      "description": "Plug & play standalone engine wiring harness for the MK4 Toyota Supra JZA80 with 2JZ-GTE. Compatible with Haltech, Link, MaxxECU, EMU Black. Full chassis integration — gauges, A/C, power steering.",
+      "image": ["https://svkworks.com/img/supraHarness1.jpg"],
+      "brand": { "@type": "Brand", "name": "SVK Works" },
+      "sku": "SVK-MK4-2JZGTE",
+      "mpn": "SVK-MK4-2JZGTE",
+      "offers": {
+        "@type": "Offer",
+        "priceCurrency": "USD",
+        "price": "1200.00",
+        "availability": "https://schema.org/InStock",
+        "url": "https://svkworks.com/mk4-supra.html",
+        "priceValidUntil": "2027-12-31",
+        "itemCondition": "https://schema.org/NewCondition",
+        "seller": { "@type": "Organization", "name": "SVK Works" },
+        "shippingDetails": {
+          "@type": "OfferShippingDetails",
+          "shippingDestination": { "@type": "DefinedRegion", "addressCountry": "US" }
+        }
+      }
+    },
+    {
+      "@context": "https://schema.org/",
+      "@type": "Product",
+      "name": "MK4 Supra 2JZ-GE Standalone Wiring Harness",
+      "description": "Plug & play standalone engine wiring harness for the MK4 Toyota Supra JZA80 with 2JZ-GE. Compatible with Haltech, Link, MaxxECU, EMU Black. Full chassis integration.",
+      "image": ["https://svkworks.com/img/supraHarness1.jpg"],
+      "brand": { "@type": "Brand", "name": "SVK Works" },
+      "sku": "SVK-MK4-2JZGE",
+      "mpn": "SVK-MK4-2JZGE",
+      "offers": {
+        "@type": "Offer",
+        "priceCurrency": "USD",
+        "price": "1050.00",
+        "availability": "https://schema.org/InStock",
+        "url": "https://svkworks.com/mk4-supra.html",
+        "priceValidUntil": "2027-12-31",
+        "itemCondition": "https://schema.org/NewCondition",
+        "seller": { "@type": "Organization", "name": "SVK Works" }
+      }
+    },
+    {
+      "@context": "https://schema.org/",
+      "@type": "Product",
+      "name": "MK4 Supra 1JZ-GTE Standalone Wiring Harness",
+      "description": "Plug & play standalone engine wiring harness for the MK4 Toyota Supra JZA80 with 1JZ-GTE. Compatible with Haltech, Link, MaxxECU, EMU Black. Full chassis integration.",
+      "image": ["https://svkworks.com/img/supraHarness1.jpg"],
+      "brand": { "@type": "Brand", "name": "SVK Works" },
+      "sku": "SVK-MK4-1JZGTE",
+      "mpn": "SVK-MK4-1JZGTE",
+      "offers": {
+        "@type": "Offer",
+        "priceCurrency": "USD",
+        "price": "1100.00",
+        "availability": "https://schema.org/InStock",
+        "url": "https://svkworks.com/mk4-supra.html",
+        "priceValidUntil": "2027-12-31",
+        "itemCondition": "https://schema.org/NewCondition",
+        "seller": { "@type": "Organization", "name": "SVK Works" }
+      }
     }
-  }
+  ]
   </script>
 
   <!-- FAQ Schema -->

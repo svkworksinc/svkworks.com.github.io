@@ -21,19 +21,30 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
   <link rel="stylesheet" href="css/style.css">
   <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
-  <!-- Product Schema -->
+  <!-- Product Schema for Google Shopping -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "Product",
     "name": "MK4 Supra 3D Printed Cupholder",
-    "description": "Custom 3D printed cupholder for the MK4 Supra (JZA80). Drop-in fitment, no drilling required. Printed in PETG for heat resistance.",
+    "description": "Custom 3D printed cupholder for the MK4 Supra (JZA80). Drop-in fitment, no drilling required. Printed in PETG for heat resistance. Available in multiple colors.",
+    "image": ["https://svkworks.com/img/supraHarness1.jpg"],
     "brand": { "@type": "Brand", "name": "SVK Works" },
+    "sku": "SVK-MK4-CUPHOLDER",
+    "mpn": "SVK-MK4-CUPHOLDER",
     "offers": {
       "@type": "Offer",
       "price": "45.00",
       "priceCurrency": "USD",
-      "availability": "https://schema.org/InStock"
+      "availability": "https://schema.org/InStock",
+      "url": "https://svkworks.com/mk4-supra-cupholder.html",
+      "priceValidUntil": "2027-12-31",
+      "itemCondition": "https://schema.org/NewCondition",
+      "seller": { "@type": "Organization", "name": "SVK Works" },
+      "shippingDetails": {
+        "@type": "OfferShippingDetails",
+        "shippingDestination": { "@type": "DefinedRegion", "addressCountry": "US" }
+      }
     }
   }
   </script>

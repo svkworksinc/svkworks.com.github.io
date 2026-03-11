@@ -34,21 +34,25 @@
   }
   </script>
 
-  <!-- Product Schema -->
+  <!-- Product Schema – for Google Shopping -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org/",
     "@type": "Product",
-    "name": "Lexus SC300 / SC400 / Soarer Z30 Engine Harness",
+    "name": "Lexus SC300 / SC400 / Soarer Z30 Standalone Wiring Harness",
     "description": "Custom Lexus SC300, SC400, and Toyota Soarer Z30 engine wiring harness for 2JZ-GTE, 1JZ-GTE, 2JZ-GE, and 1UZ swap applications. Built-to-order with full chassis integration. Compatible with Haltech, Link, MaxxECU, EMU Black and more.",
+    "image": ["https://svkworks.com/img/supraHarness1.jpg"],
     "brand": { "@type": "Brand", "name": "SVK Works" },
+    "sku": "SVK-SC300-HARNESS",
+    "mpn": "SVK-SC300-HARNESS",
     "offers": {
-      "@type": "Offer",
+      "@type": "AggregateOffer",
       "priceCurrency": "USD",
-      "price": "1500.00",
+      "lowPrice": "950.00",
+      "highPrice": "1500.00",
+      "offerCount": "4",
       "availability": "https://schema.org/InStock",
       "url": "https://svkworks.com/sc300.html",
-      "priceValidUntil": "2027-12-31",
       "seller": { "@type": "Organization", "name": "SVK Works" }
     }
   }
