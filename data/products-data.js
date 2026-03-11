@@ -604,6 +604,30 @@ const SVK_PRODUCTS_DATA = {
       "image": "img/SC400_2.jpg",
       "page": "blog-sc400-cd009-swap-wiring.html",
       "content": "<p>The Lexus SC400 is one of the best platforms for a manual transmission conversion — a smooth 1UZ-FE V8, a well-balanced chassis, and the CD009 6-speed from the Nissan 350Z bolts in with an adapter plate. But the wiring requires careful attention.</p><h3>What Changes on the Wiring Side</h3><ul><li><strong>Neutral Safety Switch:</strong> The automatic trans has a range switch that the ECU monitors. With a manual, you'll need to wire in a simple clutch switch or jumper the circuit so the car starts in gear.</li><li><strong>VSS (Vehicle Speed Sensor):</strong> The CD009 has its own VSS output. You'll need to match the signal to what your ECU and gauge cluster expect — often a simple adapter or tuning table adjustment.</li><li><strong>Reverse Lights:</strong> Wire the reverse light switch from the CD009 into the SC chassis harness for full functionality.</li><li><strong>Cruise Control:</strong> OEM cruise control will need to be re-configured or deleted, as the auto trans throttle strategy changes with a manual.</li></ul><h3>Our SC400 Harness Solution</h3><p>Our standalone harness for the SC400 is built to accommodate the CD009 swap from the ground up. We handle all of the above integration points so you're not chasing gremlins post-install. Reach out with your specific setup and we'll configure the harness to match.</p>"
+    },
+    {
+      "id": "1uz-swap-wiring",
+      "title": "1UZ-FE Swap Wiring: What You Need to Know",
+      "slug": "1uz-swap-wiring",
+      "date": "2025-10-05",
+      "author": "SVK",
+      "category": "Tech",
+      "excerpt": "The 1UZ-FE is a proven V8 swap candidate. Here's a breakdown of the wiring challenges and how a purpose-built harness makes the install clean and reliable.",
+      "image": "img/SC400_2.jpg",
+      "page": "blog-1uz-swap-wiring.html",
+      "content": "<p>The Toyota/Lexus 1UZ-FE is one of the most popular V8 swap engines for good reason — it's compact, reliable, relatively affordable, and makes great power with modern tuning.</p><h3>VVT-i vs. Non-VVT-i</h3><p>The 1UZ came in two main variants — the earlier non-VVT-i (1990–1997) and the later VVT-i (1998–2001). The VVT-i version is more desirable for power potential, but it adds complexity to the wiring.</p><h3>Key Wiring Challenges</h3><ul><li>Sequential fuel injection with two ECU connectors</li><li>Coil-on-plug ignition — eight individual coils</li><li>TRAC/VSC systems deeply integrated in OEM harness</li><li>Transmission integration for manual swap applications</li></ul>"
+    },
+    {
+      "id": "mil-spec-connectors",
+      "title": "Mil-Spec Connectors: Why They Matter for Motorsport Wiring",
+      "slug": "mil-spec-connectors",
+      "date": "2025-09-18",
+      "author": "SVK",
+      "category": "Tech",
+      "excerpt": "Mil-spec connectors are the gold standard for motorsport and high-performance wiring. Here's why they're worth the investment and what makes them different.",
+      "image": "img/works.jpg",
+      "page": "blog-mil-spec-connectors.html",
+      "content": "<p>Not all connectors are created equal. When you're building a performance car that's going to see heat, vibration, moisture, and the occasional hard launch, the connectors in your wiring harness are as critical as the wire itself.</p><h3>What Makes Mil-Spec Different?</h3><p>Mil-spec connectors are built to MIL-DTL specifications, tested for vibration resistance, temperature cycling, moisture ingress, and contact retention.</p><h3>Deutsch DT and DTM Series</h3><p>The most common mil-spec connectors in motorsport wiring. Sealed design, wedge-lock retention, high vibration resistance, wide temperature range.</p>"
     }
   ],
   "builds": [
