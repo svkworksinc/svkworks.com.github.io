@@ -56,6 +56,14 @@ const SVK_HEADER_HTML = `
               <li><a href="other-parts.html">Other Parts</a></li>
             </ul>
           </li>
+          <li class="nav-item has-dropdown">
+            <a href="connectors.html" class="nav-link">Connectors</a>
+            <ul class="dropdown">
+              <li><a href="connectors.html">OEM Connector Kits</a></li>
+              <li><a href="connectors.html#deutsch">Deutsch / Mil-Spec</a></li>
+              <li><a href="milspec-connector.html">Autosport Upgrade</a></li>
+            </ul>
+          </li>
           <li class="nav-item"><a href="builds.html" class="nav-link">Builds</a></li>
           <li class="nav-item"><a href="blog.html" class="nav-link">Blog</a></li>
           <li class="nav-item"><a href="about.html" class="nav-link">About</a></li>
