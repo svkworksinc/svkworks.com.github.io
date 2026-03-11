@@ -26,7 +26,7 @@
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     "itemListElement": [
-      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://svkworks.com/index.html" },
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://svkworks.com/" },
       { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://svkworks.com/blog.html" },
       { "@type": "ListItem", "position": 3, "name": "Choosing the Right ECU for Your 2JZ Build", "item": "https://svkworks.com/blog-choosing-ecu.html" }
     ]
@@ -39,10 +39,53 @@
     "headline": "Choosing the Right ECU for Your 2JZ Build",
     "description": "Haltech, Link, AEM, Motec — the options are overwhelming. Here's our breakdown of the most popular ECU choices for 2JZ-powered builds.",
     "datePublished": "2025-11-10",
-    "author": { "@type": "Organization", "name": "SVK Works" },
+    "dateModified": "2026-03-11",
+    "author": { "@type": "Organization", "name": "SVK Works", "url": "https://svkworks.com" },
     "publisher": { "@type": "Organization", "name": "SVK Works", "url": "https://svkworks.com" },
     "image": "https://svkworks.com/img/works.jpg",
-    "url": "https://svkworks.com/blog-choosing-ecu.html"
+    "url": "https://svkworks.com/blog-choosing-ecu.html",
+    "mainEntityOfPage": "https://svkworks.com/blog-choosing-ecu.html"
+  }
+  </script>
+  <!-- FAQ Schema -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What is the best ECU for a 2JZ-GTE?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "There is no single best ECU — it depends on your goals, budget, and available tuning support. For street builds and newcomers to standalone tuning, the Haltech Elite 2500 or Link G4X offer an excellent balance of capability and ease of use. For serious competition builds, the Motec M1 or AEM Infinity are preferred. MaxxECU Race is a strong all-around choice that punches above its price point."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does ECU choice affect the wiring harness?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, directly. Each ECU uses a different connector housing, different pin count, and different pinout. The harness must be built to match your specific ECU. SVK Works builds harnesses for all major ECU platforms — Haltech, Link, MaxxECU, EMU Black, AEM, Motec, and others. Specify your ECU at order time."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Do I need a standalone ECU for my 2JZ build?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "For any engine swap application or serious performance build, a standalone ECU is strongly recommended. Standalone ECUs provide full control over fueling, ignition, boost, and all engine functions without the limitations of factory management. They also allow ongoing tuning as your build evolves."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can SVK Works build a harness for my specific ECU?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. SVK Works builds harnesses for Haltech Elite and Nexus, Link G4X and G4+, MaxxECU Race and Street, ECU Masters EMU Black and Pro, AEM Infinity, Motec M1, and other platforms. If your ECU is not listed, contact us with the model and we'll confirm compatibility."
+        }
+      }
+    ]
   }
   </script>
 </head>
@@ -63,7 +106,7 @@
           <span>by SVK Works</span>
         </div>
         <h1>Choosing the Right ECU for Your 2JZ Build</h1>
-        <p>Haltech, Link, AEM, Motec — the options are overwhelming. Here's our breakdown of the most popular ECU choices for 2JZ-powered builds.</p>
+        <p>Haltech, Link, AEM, Motec — the options are overwhelming. Here's our breakdown of the most popular ECU choices for 2JZ-powered builds and how to make the right call for your setup.</p>
       </div>
     </div>
 
@@ -74,23 +117,140 @@
         <img src="img/works.jpg" alt="ECU selection for 2JZ builds" style="border-radius:var(--radius-lg);margin-bottom:var(--space-2xl);width:100%;">
 
         <div class="blog-content" style="color:var(--text-secondary);line-height:var(--leading-normal);font-size:var(--text-lg);">
-          <p>Choosing an ECU is one of the most important decisions in your build. Each platform has strengths depending on your goals — budget, tuning support, I/O requirements, and how serious you are about data logging will all influence the right choice for you.</p>
 
-          <h3>Haltech Elite Series</h3>
-          <p>User-friendly software, excellent support community, and great I/O. The Haltech Elite 2500 is a favorite for street and mild track builds. Their PC-Link software has a relatively gentle learning curve and Haltech's customer support is responsive. If you're new to standalone ECU tuning, Haltech is a comfortable starting point.</p>
+          <p>The ECU is the brain of your build. It controls fueling, ignition timing, boost management, traction control, launch control, and every other strategy that determines how your car actually performs. Choosing the wrong ECU for your application means either overpaying for features you'll never use or under-speccing for the build you're actually building.</p>
 
-          <h3>Link G4X / G4+</h3>
-          <p>Powerful and cost-effective. The Link G4X offers exceptional value with outstanding logging and tuning features. Extremely popular in the drift community. PCLink (their tuning software) is more complex than Haltech's interface but offers deeper control. A favorite for both street builds and competition-level setups.</p>
+          <p>At SVK Works, we build harnesses for every major standalone ECU platform. We see these units in the context of real builds — what works well, where each platform excels, and where the limitations start to show. Here's our honest breakdown.</p>
 
-          <h3>AEM Infinity</h3>
-          <p>Professional-grade with extensive I/O. The AEM Infinity is preferred by many professional tuners for its flexibility and reliability. Strong in the time attack and road race world. Requires more tuning experience to get the most out of it, but rewards that investment.</p>
+          <h2>What to Consider Before Choosing</h2>
 
-          <h3>Motec M1</h3>
-          <p>Top-tier motorsport ECU. Unmatched data logging and strategy capabilities. Best for serious competition builds where data analysis and advanced engine management strategies matter. The M1 is significantly more expensive and requires specialized knowledge to tune, but there is no better option for high-level motorsport applications.</p>
+          <p>Before comparing specific ECUs, there are four questions that should guide your decision:</p>
 
-          <h3>How ECU Choice Affects Your Harness</h3>
-          <p>The ECU you choose directly determines your harness requirements — connector type, pinout, I/O count, and sensor wiring. At SVK Works, we build harnesses for all major ECU platforms. Tell us your ECU when you order and we'll build the harness to match exactly.</p>
+          <p><strong>1. What does the car do?</strong> A street car that occasionally sees track days has different requirements than a dedicated time attack car. Street builds benefit from user-friendly software and broad OEM feature support. Competition builds benefit from deep data logging and advanced control strategies.</p>
+
+          <p><strong>2. Who is going to tune it?</strong> If you have access to a tuner who is expert in a specific platform, that platform is often the right choice regardless of other factors. The best tune on a mid-tier ECU beats a mediocre tune on a top-tier unit every time.</p>
+
+          <p><strong>3. What are your I/O requirements?</strong> Count the sensors and outputs your build needs — fuel injectors, ignition coils, cam and crank sensors, boost solenoids, wideband O2, traction control inputs, flex fuel sensor, launch control, AC control, fan outputs. Add them up and make sure your ECU has the I/O to handle all of it.</p>
+
+          <p><strong>4. What's your budget?</strong> ECU costs range from under $500 to over $5,000 for the hardware alone. Software licensing, expansion modules, and tuner time all add to the total. Set a realistic budget before you start comparing.</p>
+
+          <h2>Haltech Elite Series</h2>
+
+          <p>The Haltech Elite 2500 is one of the most commonly specified ECUs for 2JZ builds globally, and for good reason. Haltech's PC-Link software has a relatively gentle learning curve — it's logical, well-documented, and has decades of community support behind it. If you're new to standalone tuning or working with a tuner who isn't a specialist in a specific platform, Haltech's approachability is a genuine advantage.</p>
+
+          <p>The Elite 2500's I/O is comprehensive for most builds: 8 injector drives, 8 ignition outputs, multiple boost control channels, dual wideband inputs, onboard traction control, launch control, and flat-shift. It supports VVT-i control natively, which matters for late-spec 2JZ-GTE engines.</p>
+
+          <p>Haltech's Nexus range takes things further with expanded I/O and integrated PDM functionality, but for a standard 2JZ street or track build, the Elite 2500 has plenty of headroom. The ecosystem is mature: plug-and-play harnesses for some vehicles, wide community support, and generally good customer service from Haltech directly.</p>
+
+          <p><strong>Best for:</strong> Street builds, street-to-track cars, newcomers to standalone tuning, builders who value software accessibility.</p>
+
+          <h2>Link G4X / G4+</h2>
+
+          <p>The Link G4X is a force in the 2JZ community, particularly in the drift and time attack scenes. The G4X represents a significant upgrade over the older G4+ in terms of processing speed, internal logging capacity, and software refinement. PCLink — the tuning software — is more technically demanding than Haltech's interface, but the depth of control it offers is exceptional.</p>
+
+          <p>Link's internal logging is a particular strength. Being able to log high-resolution data without an external logger is a genuine advantage on a track day when minimizing wiring and weight matters. The G4X supports onboard traction control with individual wheel speed inputs, which is valuable for drift and circuit applications alike.</p>
+
+          <p>Price-wise, the Link G4X represents excellent value at its tier. The feature set is competitive with ECUs that cost significantly more, and the community and tuner familiarity in the drift world means finding someone who knows the platform well is not difficult.</p>
+
+          <p><strong>Best for:</strong> Drift builds, budget-conscious competition builds, builders with access to a Link-familiar tuner.</p>
+
+          <h2>MaxxECU Race</h2>
+
+          <p>MaxxECU is a European standalone ECU brand that has grown significantly in popularity in recent years, and for good reason. The Race model offers a feature set that rivals ECUs at considerably higher price points — comprehensive I/O, sophisticated traction control (4WD capable), extensive data logging, and one of the best user interfaces in the standalone ECU market. The Windows-based MaxxECU software is consistently praised for its logical layout and real-time response.</p>
+
+          <p>For 2JZ applications, MaxxECU handles everything from basic street setups to full race configurations. The internal logging at high sample rates is competitive with external loggers, and the traction control system has been validated in serious circuit racing applications.</p>
+
+          <p>The main limitation is ecosystem maturity compared to Haltech and Link — the tuner base is smaller in some markets, and community resources like base maps and forum support are still building. But for a builder willing to invest time in the platform, MaxxECU delivers exceptional capability per dollar.</p>
+
+          <p><strong>Best for:</strong> Builders willing to explore newer platforms, value-focused performance builds, circuit racing.</p>
+
+          <h2>ECU Masters EMU Black</h2>
+
+          <p>The EMU Black is a cost-effective standalone that punches well above its price point. It handles all core 2JZ functions — sequential injection, coil-on-plug ignition, boost control, VVT-i — and includes launch control and flat-shift features that were once the exclusive domain of far more expensive ECUs.</p>
+
+          <p>The software is functional and improving with each revision, though it lacks some of the polish and depth of Haltech or Link's platforms. The ECU Masters community is active and the documentation has improved significantly in recent years.</p>
+
+          <p>For a budget-conscious build where getting a solid tune is the priority and advanced data analysis or sophisticated traction control aren't required, the EMU Black is a very capable choice that leaves budget for other parts of the build.</p>
+
+          <p><strong>Best for:</strong> Budget street builds and entry-level track cars, builds where ECU cost needs to be minimized without sacrificing standalone capability.</p>
+
+          <h2>AEM Infinity</h2>
+
+          <p>The AEM Infinity series occupies a professional-grade position in the standalone ECU market, favored by many professional tuners for its robustness and the depth of its control strategies. The Infinity's I/O count is excellent, and AEM's InfinityTuner software provides comprehensive access to every parameter.</p>
+
+          <p>The Infinity is particularly well-regarded in the time attack and road racing world in North America, where AEM's support infrastructure is strongest. The ECU is used in a number of professional series, which means real-world validation at levels that most alternatives haven't achieved.</p>
+
+          <p>It requires more tuning experience to get the best out of — this is not an ECU to pair with an inexperienced tuner. But for a build where the right tuner is already lined up and the goal is a professional-quality result, the Infinity delivers.</p>
+
+          <p><strong>Best for:</strong> Professional builds, time attack and road racing, builders with access to a skilled AEM-certified tuner.</p>
+
+          <h2>Motec M1</h2>
+
+          <p>The Motec M1 is the top of the pyramid. It's used in Formula E, WRC, GT3 series, and the highest levels of global motorsport. The data logging, analysis tools, and control strategy depth of the M1 platform have no equal in the standalone aftermarket space.</p>
+
+          <p>The M1 is significantly more expensive than the alternatives — hardware alone runs several thousand dollars, and the software licensing model adds to the ongoing cost. It requires specialist knowledge to configure and tune; most aftermarket tuners don't work with M1 regularly, so finding the right person matters.</p>
+
+          <p>For a street car or a casual track build, the M1 is overkill in the most literal sense. But for a competition car where every data point matters and the budget supports the investment, there is genuinely nothing better.</p>
+
+          <p><strong>Best for:</strong> Serious competition builds, professional teams, applications where data analysis and advanced control strategies are the priority.</p>
+
+          <h2>How ECU Choice Affects Your Harness</h2>
+
+          <p>This point cannot be overstated: your ECU choice directly determines your <a href="harnesses.html">wiring harness</a>. Each ECU uses a different connector housing, different pin configuration, and different pinout. A harness built for a Haltech Elite 2500 cannot simply be re-pinned for a Link G4X — the connectors are different, the organization is different, and the wire routing changes.</p>
+
+          <p>When you order an SVK Works harness, you specify your ECU during the build configuration. The harness arrives with the correct connector for your unit, every pin wired to the correct position in your ECU's pinout, and a wiring diagram that references your specific ECU's pin numbers. No adapter looms, no re-pinning — it plugs straight in.</p>
+
+          <p>If you haven't made your ECU decision yet, <a href="contact.html">contact us</a> before ordering. We can discuss your build requirements and help you make the right call based on what your application actually needs.</p>
+
         </div>
+
+        <!-- FAQ Section -->
+        <div style="margin-top:var(--space-3xl);padding-top:var(--space-3xl);border-top:1px solid var(--border);">
+          <h2 style="margin-bottom:var(--space-xl);">Frequently Asked Questions</h2>
+          <div style="display:flex;flex-direction:column;gap:var(--space-lg);">
+
+            <details style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);overflow:hidden;">
+              <summary style="padding:var(--space-lg) var(--space-xl);cursor:pointer;font-weight:600;list-style:none;display:flex;justify-content:space-between;align-items:center;">
+                What is the best ECU for a 2JZ-GTE?
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;"><polyline points="6 9 12 15 18 9"/></svg>
+              </summary>
+              <div style="padding:0 var(--space-xl) var(--space-lg);color:var(--text-secondary);">
+                <p>There is no single best ECU — it depends on your goals, budget, and available tuning support. For street builds and newcomers to standalone tuning, the Haltech Elite 2500 or Link G4X offer an excellent balance of capability and ease of use. For serious competition builds, the Motec M1 or AEM Infinity are preferred. MaxxECU Race is a strong all-around choice that punches above its price point.</p>
+              </div>
+            </details>
+
+            <details style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);overflow:hidden;">
+              <summary style="padding:var(--space-lg) var(--space-xl);cursor:pointer;font-weight:600;list-style:none;display:flex;justify-content:space-between;align-items:center;">
+                Does ECU choice affect the wiring harness?
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;"><polyline points="6 9 12 15 18 9"/></svg>
+              </summary>
+              <div style="padding:0 var(--space-xl) var(--space-lg);color:var(--text-secondary);">
+                <p>Yes, directly. Each ECU uses a different connector housing, different pin count, and different pinout. The harness must be built to match your specific ECU. SVK Works builds harnesses for all major ECU platforms — Haltech, Link, MaxxECU, EMU Black, AEM, Motec, and others. Specify your ECU at order time.</p>
+              </div>
+            </details>
+
+            <details style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);overflow:hidden;">
+              <summary style="padding:var(--space-lg) var(--space-xl);cursor:pointer;font-weight:600;list-style:none;display:flex;justify-content:space-between;align-items:center;">
+                Do I need a standalone ECU for my 2JZ build?
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;"><polyline points="6 9 12 15 18 9"/></svg>
+              </summary>
+              <div style="padding:0 var(--space-xl) var(--space-lg);color:var(--text-secondary);">
+                <p>For any engine swap application or serious performance build, a standalone ECU is strongly recommended. Standalone ECUs provide full control over fueling, ignition, boost, and all engine functions without the limitations of factory management. They also allow ongoing tuning as your build evolves.</p>
+              </div>
+            </details>
+
+            <details style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);overflow:hidden;">
+              <summary style="padding:var(--space-lg) var(--space-xl);cursor:pointer;font-weight:600;list-style:none;display:flex;justify-content:space-between;align-items:center;">
+                Can SVK Works build a harness for my specific ECU?
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;"><polyline points="6 9 12 15 18 9"/></svg>
+              </summary>
+              <div style="padding:0 var(--space-xl) var(--space-lg);color:var(--text-secondary);">
+                <p>Yes. SVK Works builds harnesses for Haltech Elite and Nexus, Link G4X and G4+, MaxxECU Race and Street, ECU Masters EMU Black and Pro, AEM Infinity, Motec M1, and other platforms. If your ECU is not listed, contact us with the model and we'll confirm compatibility.</p>
+              </div>
+            </details>
+          </div>
+        </div>
+
       </div>
     </section>
 
@@ -99,7 +259,7 @@
         <div class="cta-box fade-in">
           <span class="section-label">ECU Ready?</span>
           <h2>Get a Harness Built for Your ECU</h2>
-          <p>We build harnesses for Haltech, Link, AEM, Motec, and other platforms. Tell us your setup and we'll build it right.</p>
+          <p>We build harnesses for Haltech, Link, MaxxECU, AEM, Motec, and more. Tell us your setup and we'll build it right the first time.</p>
           <a href="harnesses.html" class="btn btn-primary">Browse Harnesses</a>
         </div>
       </div>

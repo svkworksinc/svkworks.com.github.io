@@ -54,9 +54,18 @@
           <!-- Contact Form -->
           <div class="fade-in">
             <h2 style="margin-bottom:var(--space-xl);">Send a Message</h2>
-            <!-- SETUP: Sign up free at formspree.io, create a form, then replace YOUR_FORMSPREE_ID below -->
-            <form id="contact-form" action="https://formspree.io/f/YOUR_FORMSPREE_ID" method="POST">
-              <input type="hidden" name="_subject" value="New Message — SVK Works Contact Form">
+            <!--
+              Web3Forms — sends directly to your Gmail with no backend.
+              SETUP (takes 30 seconds):
+              1. Go to https://web3forms.com
+              2. Enter your Gmail address and click "Create Access Key"
+              3. Copy the key and replace YOUR_WEB3FORMS_ACCESS_KEY below
+            -->
+            <form id="contact-form">
+              <input type="hidden" name="access_key" value="YOUR_WEB3FORMS_ACCESS_KEY">
+              <input type="hidden" name="subject" value="New Message — SVK Works Contact Form">
+              <input type="hidden" name="from_name" value="SVK Works Website">
+              <input type="checkbox" name="botcheck" style="display:none;">
               <div class="form-group">
                 <label class="form-label" for="contact-name">Name *</label>
                 <input type="text" class="form-input" id="contact-name" name="name" required>
@@ -67,13 +76,13 @@
               </div>
               <div class="form-group">
                 <label class="form-label" for="contact-subject">Subject</label>
-                <select class="form-select" id="contact-subject" name="subject">
-                  <option value="general">General Inquiry</option>
-                  <option value="quote">Custom Quote Request</option>
-                  <option value="support">Technical Support</option>
-                  <option value="order">Order Question</option>
-                  <option value="build">Build Submission</option>
-                  <option value="other">Other</option>
+                <select class="form-select" id="contact-subject" name="inquiry_type">
+                  <option value="General Inquiry">General Inquiry</option>
+                  <option value="Custom Quote Request">Custom Quote Request</option>
+                  <option value="Technical Support">Technical Support</option>
+                  <option value="Order Question">Order Question</option>
+                  <option value="Build Submission">Build Submission</option>
+                  <option value="Other">Other</option>
                 </select>
               </div>
               <div class="form-group">
@@ -150,12 +159,14 @@
       btn.disabled = true;
       btn.textContent = 'Sending...';
       try {
-        const response = await fetch(this.action, {
+        const data = Object.fromEntries(new FormData(this));
+        const response = await fetch('https://api.web3forms.com/submit', {
           method: 'POST',
-          body: new FormData(this),
-          headers: { 'Accept': 'application/json' }
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify(data)
         });
-        if (response.ok) {
+        const result = await response.json();
+        if (result.success) {
           this.style.display = 'none';
           document.getElementById('contact-success').style.display = 'block';
         } else {

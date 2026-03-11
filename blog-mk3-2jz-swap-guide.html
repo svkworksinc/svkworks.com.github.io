@@ -26,7 +26,7 @@
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     "itemListElement": [
-      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://svkworks.com/index.html" },
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://svkworks.com/" },
       { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://svkworks.com/blog.html" },
       { "@type": "ListItem", "position": 3, "name": "MK3 Supra 2JZ Swap: Wiring Considerations", "item": "https://svkworks.com/blog-mk3-2jz-swap-guide.html" }
     ]
@@ -39,10 +39,53 @@
     "headline": "MK3 Supra 2JZ Swap: Wiring Considerations",
     "description": "The 2JZ swap into the MK3 Supra is one of the most popular JDM builds. Here's what you need to know about the wiring side of this swap.",
     "datePublished": "2025-12-20",
-    "author": { "@type": "Organization", "name": "SVK Works" },
+    "dateModified": "2026-03-11",
+    "author": { "@type": "Organization", "name": "SVK Works", "url": "https://svkworks.com" },
     "publisher": { "@type": "Organization", "name": "SVK Works", "url": "https://svkworks.com" },
     "image": "https://svkworks.com/img/MK3_Supra.jpg",
-    "url": "https://svkworks.com/blog-mk3-2jz-swap-guide.html"
+    "url": "https://svkworks.com/blog-mk3-2jz-swap-guide.html",
+    "mainEntityOfPage": "https://svkworks.com/blog-mk3-2jz-swap-guide.html"
+  }
+  </script>
+  <!-- FAQ Schema -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What ECU should I use for a MK3 Supra 2JZ swap?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "A standalone ECU is strongly recommended. Popular choices include Haltech Elite 2500, Link G4X, and MaxxECU Street or Race. These ECUs allow you to control the 2JZ on its own terms, without trying to adapt it to factory management. The harness is built to the ECU you choose."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Will my MK3 Supra gauge cluster work with a 2JZ swap?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The MK3 gauge cluster uses different signal types than the 2JZ. Tachometer, coolant temperature, and fuel level all require integration work. A properly built standalone harness handles these signal translations so your OEM gauges read correctly without modifications to the cluster itself."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I retain the A70 air conditioning with a 2JZ swap?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. The A70 AC system can be retained with a 2JZ swap. The AC compressor control line needs to be integrated with the standalone ECU so it can cut AC under high load. This is handled in the SVK MK3 2JZ harness."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is a 2JZ-GTE or 2JZ-GE better for the MK3 Supra swap?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The 2JZ-GTE is the preferred choice for performance builds — it's turbocharged from the factory and has a robust bottom end that supports significant power with the right supporting modifications. The 2JZ-GE is a more affordable option for street builds or as a base for a single turbo conversion. Both are equally supported by SVK harnesses."
+        }
+      }
+    ]
   }
   </script>
 </head>
@@ -63,7 +106,7 @@
           <span>by SVK Works</span>
         </div>
         <h1>MK3 Supra 2JZ Swap: Wiring Considerations</h1>
-        <p>The 2JZ swap into the MK3 Supra is one of the most popular JDM builds. Here's what you need to know about the wiring side of this swap.</p>
+        <p>The 2JZ swap into the MK3 Supra is one of the most popular JDM builds ever conceived. Here's what you need to know about the wiring side before you start pulling looms.</p>
       </div>
     </div>
 
@@ -71,27 +114,143 @@
       <div class="container container-narrow">
         <a href="blog.html" class="btn btn-ghost" style="margin-bottom:var(--space-xl);">&larr; Back to Blog</a>
 
-        <img src="img/MK3_Supra.jpg" alt="MK3 Supra 2JZ swap" style="border-radius:var(--radius-lg);margin-bottom:var(--space-2xl);width:100%;">
+        <img src="img/MK3_Supra.jpg" alt="MK3 Supra with 2JZ swap engine" style="border-radius:var(--radius-lg);margin-bottom:var(--space-2xl);width:100%;">
 
         <div class="blog-content" style="color:var(--text-secondary);line-height:var(--leading-normal);font-size:var(--text-lg);">
-          <p>The MK3 Supra with a 2JZ swap is a legendary combination. But the wiring can be the most challenging part of the build if you don't plan ahead. The A70 chassis predates the 2JZ by nearly a decade, meaning nothing plugs in directly.</p>
 
-          <h3>What You Need to Consider</h3>
+          <p>The MK3 Toyota Supra is one of those builds that never goes out of style. The A70 chassis is lightweight, well-balanced, and responds beautifully to power increases. Dropping a 2JZ-GTE into one creates a car with near-factory aesthetics hiding a significantly more capable drivetrain underneath. But the wiring side of this swap is where many builders run into serious trouble.</p>
+
+          <p>The A70 chassis predates the 2JZ by nearly a decade. The factory wiring systems, sensor strategies, and communication protocols are from entirely different automotive eras. Nothing plugs in directly, and the temptation to adapt the donor engine's factory harness into the MK3 chassis leads to problems that can take years to fully surface.</p>
+
+          <p>Here's everything you need to understand about the wiring before you start this swap.</p>
+
+          <h2>The Generation Gap Problem</h2>
+
+          <p>The MK3 Supra (1986–1992 A70 chassis) was engineered with mid-1980s electrical architecture. The factory 7M-GTE was managed by an early Toyota EFI system with relatively simple sensor integration. The speedometer is mechanical (cable driven). The tach signal is a basic analog pulse. The fuel sender and coolant temp gauge use straightforward resistive sensors.</p>
+
+          <p>The 2JZ-GTE from a JZA80 MK4 Supra (1993–2002) is a decade newer. It uses sequential fuel injection with multiple ECU connectors. The electrical system assumes it's living in a car with the full complement of JZA80 chassis electronics — ABS, traction control, a different fuse box layout, and different signal characteristics for every sensor.</p>
+
+          <p>When you try to make a 2JZ run in an A70 chassis using either the original 7M harness or the 2JZ donor harness, you're trying to bridge this gap with modifications. The result is always a compromise — and compromises in vehicle wiring become electrical faults eventually.</p>
+
+          <h2>ECU Selection: The First Decision That Shapes Everything</h2>
+
+          <p>The ECU you choose for a 2JZ-swapped MK3 Supra determines everything about the harness. If you're running a standalone ECU — which is the right approach for this swap — the harness is built around that ECU's specific connector, pinout, and I/O requirements.</p>
+
+          <p>Popular choices for this application include:</p>
+
           <ul>
-            <li><strong>ECU choice and connector pinout</strong> — Your ECU dictates the entire harness architecture. A standalone ECU is strongly recommended over converting a factory 2JZ harness.</li>
-            <li><strong>Gauge cluster integration</strong> — The MK3 cluster uses different speedo, tach, temp, and fuel sender signals than the 2JZ. These need to be translated or replaced.</li>
-            <li><strong>AC and power steering retention</strong> — If you want to keep these creature comforts, they require separate integration work on the engine harness.</li>
-            <li><strong>Starter and charging system differences</strong> — The 2JZ starter and alternator wiring differs from the 7M-GE it replaced. A fresh harness handles these differences cleanly.</li>
+            <li><strong>Haltech Elite 2500:</strong> Excellent I/O count, user-friendly software, and strong tuner support base. The Elite 2500 handles the 2JZ-GTE's ignition, injection, boost control, and VVT-i if applicable, with room left over for advanced features.</li>
+            <li><strong>Link G4X:</strong> Extremely popular in the drift community for its price-to-performance ratio and outstanding PCLink software. Excellent logging and onboard traction control options.</li>
+            <li><strong>MaxxECU Race:</strong> European origin, increasingly popular for its sophisticated software and value. Strong internal logging and broad I/O makes it competitive with ECUs at twice the price.</li>
+            <li><strong>ECU Masters EMU Black:</strong> Cost-effective standalone with solid functionality. Good choice for builds where budget is a priority without sacrificing standalone capability.</li>
           </ul>
 
-          <h3>The OEM Conversion Trap</h3>
-          <p>Many builders try to splice a 2JZ-GTE or 2JZ-GE factory harness into the MK3's existing chassis wiring. This usually works — until it doesn't. You end up with a harness that's half A70 era, half JZA80 era, full of splices and adaptors. When something fails, tracing the fault becomes a nightmare.</p>
+          <p>Once you've selected your ECU, the harness is engineered to match — the correct connector housing, the right number of pins, each circuit wired to the correct position in your ECU's pinout. Read our full guide on <a href="blog-choosing-ecu.html">choosing the right ECU for your 2JZ build</a> for a deeper comparison.</p>
 
-          <h3>The Standalone Approach</h3>
-          <p>Our MK3 2JZ swap harness is built from scratch to handle all of these integration points cleanly. We wire directly to your chosen ECU — Haltech, Link, AEM, or others — with proper cluster integration for the A70 gauges, clean engine bay routing, and full documentation. You get a harness that was designed for your exact combination rather than hacked together from two different generation wiring schemes.</p>
+          <h2>Gauge Cluster Integration</h2>
 
-          <p>The result is a swap that starts reliably, runs cleanly, and is easy to troubleshoot years down the road.</p>
+          <p>This is the area where most builders underestimate the complexity. The A70 MK3 Supra cluster uses a combination of mechanical and electrical signals that differ significantly from what a 2JZ-GTE produces natively. Getting your OEM gauges to read correctly requires translating between these two systems.</p>
+
+          <p><strong>Tachometer:</strong> The MK3 cluster uses a different tach signal level and pulse pattern than the 2JZ's ignition output. Your standalone ECU will typically have a tach output signal that can be configured to drive the factory cluster directly, but it requires specific setup.</p>
+
+          <p><strong>Coolant Temperature:</strong> The MK3 gauge and the 2JZ ECT sensor use different resistance curves. Running the engine sensor straight to the OEM gauge gives an inaccurate reading. The solution is either a gauge cluster conversion, a signal converter, or routing the cluster through the standalone ECU with appropriate scaling.</p>
+
+          <p><strong>Speedometer:</strong> The MK3 uses a mechanical speedometer cable. The 2JZ in a standalone application gets its speed signal from the ABS or transmission VSS. If you want a functioning speedometer, you need either a VSS-to-mechanical converter or a replacement electronic cluster.</p>
+
+          <p><strong>Fuel Level:</strong> The fuel sender in the tank sends a variable resistance signal to the gauge. If you're running the original tank and sender, this is often a direct connection — but verify the resistance range matches before assuming it works.</p>
+
+          <p>A properly built <a href="mk3-supra.html">MK3 Supra swap harness</a> handles all of these integration points cleanly, routing the correct signals to the correct places so the OEM cluster reads accurately without hacks or aftermarket gauge panels.</p>
+
+          <h2>AC and Power Steering Retention</h2>
+
+          <p>One of the things that separates a truly complete swap from a "just runs" swap is whether the creature comforts still work. AC and power steering are the two most commonly neglected systems in engine swaps — and both are very achievable with correct wiring.</p>
+
+          <p><strong>Air Conditioning:</strong> The AC system in the MK3 requires the engine to provide a signal that allows the compressor to engage. The standalone ECU needs to control the AC compressor clutch, and it needs to know when AC is requested so it can raise idle speed accordingly. This is standard functionality in all modern standalone ECUs — it just needs to be wired correctly in the harness and configured in the tune.</p>
+
+          <p>The AC compressor itself from the 2JZ donor engine may not be a direct physical fit for the A70 chassis. Many builders retain the original 7M AC compressor with an adapter bracket — which means the electrical connection needs to account for whichever compressor is installed.</p>
+
+          <p><strong>Power Steering:</strong> The factory power steering system is hydraulic and largely mechanical — the only electrical involvement is the pressure switch that signals high load to the ECU. This is straightforward to integrate into the standalone harness.</p>
+
+          <h2>The OEM Conversion Approach: Why It Fails</h2>
+
+          <p>Many builders attempt to start with the 2JZ-GTE factory harness from the donor car and modify it to work in the MK3. This approach sounds reasonable — the 2JZ harness already has everything needed for the engine — but it leads to a predictable set of problems.</p>
+
+          <p>The factory 2JZ-GTE harness is enormous. It's designed for the JZA80 chassis, which means it includes connectors for the JZA80 ABS module, the JZA80 climate control system, the JZA80 body computers, and dozens of other components that don't exist in your A70. All of these unused circuits are dead weight — literally extra wire and connectors that add mass, take up space, and create potential fault points with nothing connected to them.</p>
+
+          <p>When builders cut out the unused sections and splice in the MK3 chassis connectors, they create a harness that's part JZA80, part A70, all compromised. The junctions between the two generations are often the first points of failure, typically manifesting as intermittent faults that are extraordinarily difficult to diagnose without knowing exactly which splice you're looking for.</p>
+
+          <h2>The Standalone Approach: Built for Your Combination</h2>
+
+          <p>A purpose-built standalone harness for the MK3 2JZ swap starts with a blank slate. The wire routing is designed for the A70 engine bay and firewall — not borrowed from a JZA80 and forced to fit. Every connector is chosen for its specific circuit. The chassis integration points use the correct A70 connectors so the car's existing wiring doesn't need to be modified.</p>
+
+          <p>The result is a swap that:</p>
+          <ul>
+            <li>Starts reliably in all conditions</li>
+            <li>Has functioning gauges that read accurately</li>
+            <li>Retains AC and power steering without aftermarket workarounds</li>
+            <li>Is fully documented with a build-specific wiring diagram</li>
+            <li>Can be diagnosed quickly if a fault ever does occur — because every circuit is labeled and accounted for</li>
+          </ul>
+
+          <h2>VVT-i: An Additional Consideration</h2>
+
+          <p>If you're using a late 2JZ-GTE with VVT-i (generally from 1998 JDM Supras onward), the ECU needs to control the VVT-i cam phaser in addition to all standard 2JZ functions. VVT-i adds a cam control solenoid and oil control valve that need to be wired and controlled. All the ECUs mentioned above support this natively. The SVK MK3 harness accounts for VVT-i if your engine has it — specify at order time.</p>
+
+          <h2>Getting Started on Your Build</h2>
+
+          <p>If you're planning a 2JZ swap into your MK3 Supra, the wiring should be part of the initial planning, not an afterthought. The harness affects what ECU you choose, what sensors you run, whether you retain or delete OEM accessories, and how the car will drive once it's running.</p>
+
+          <p>Our <a href="mk3-supra.html">MK3 Supra harness</a> is available for 2JZ-GTE (with and without VVT-i), 2JZ-GE, and 1JZ-GTE combinations. Every harness is built to your specific ECU choice with full A70 chassis integration. <a href="contact.html">Contact us</a> to discuss your build and we'll help you configure the right harness for your application.</p>
+
         </div>
+
+        <!-- FAQ Section -->
+        <div style="margin-top:var(--space-3xl);padding-top:var(--space-3xl);border-top:1px solid var(--border);">
+          <h2 style="margin-bottom:var(--space-xl);">Frequently Asked Questions</h2>
+          <div style="display:flex;flex-direction:column;gap:var(--space-lg);">
+
+            <details style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);overflow:hidden;">
+              <summary style="padding:var(--space-lg) var(--space-xl);cursor:pointer;font-weight:600;list-style:none;display:flex;justify-content:space-between;align-items:center;">
+                What ECU should I use for a MK3 Supra 2JZ swap?
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;"><polyline points="6 9 12 15 18 9"/></svg>
+              </summary>
+              <div style="padding:0 var(--space-xl) var(--space-lg);color:var(--text-secondary);">
+                <p>A standalone ECU is strongly recommended. Popular choices include Haltech Elite 2500, Link G4X, and MaxxECU Street or Race. These ECUs allow you to control the 2JZ on its own terms, without trying to adapt it to factory management. The harness is built to the ECU you choose.</p>
+              </div>
+            </details>
+
+            <details style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);overflow:hidden;">
+              <summary style="padding:var(--space-lg) var(--space-xl);cursor:pointer;font-weight:600;list-style:none;display:flex;justify-content:space-between;align-items:center;">
+                Will my MK3 Supra gauge cluster work with a 2JZ swap?
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;"><polyline points="6 9 12 15 18 9"/></svg>
+              </summary>
+              <div style="padding:0 var(--space-xl) var(--space-lg);color:var(--text-secondary);">
+                <p>The MK3 gauge cluster uses different signal types than the 2JZ. Tachometer, coolant temperature, and fuel level all require integration work. A properly built standalone harness handles these signal translations so your OEM gauges read correctly without modifications to the cluster itself.</p>
+              </div>
+            </details>
+
+            <details style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);overflow:hidden;">
+              <summary style="padding:var(--space-lg) var(--space-xl);cursor:pointer;font-weight:600;list-style:none;display:flex;justify-content:space-between;align-items:center;">
+                Can I retain the A70 air conditioning with a 2JZ swap?
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;"><polyline points="6 9 12 15 18 9"/></svg>
+              </summary>
+              <div style="padding:0 var(--space-xl) var(--space-lg);color:var(--text-secondary);">
+                <p>Yes. The A70 AC system can be retained with a 2JZ swap. The AC compressor control line needs to be integrated with the standalone ECU so it can cut AC under high load. This is handled in the SVK MK3 2JZ harness.</p>
+              </div>
+            </details>
+
+            <details style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);overflow:hidden;">
+              <summary style="padding:var(--space-lg) var(--space-xl);cursor:pointer;font-weight:600;list-style:none;display:flex;justify-content:space-between;align-items:center;">
+                Is a 2JZ-GTE or 2JZ-GE better for the MK3 Supra swap?
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;"><polyline points="6 9 12 15 18 9"/></svg>
+              </summary>
+              <div style="padding:0 var(--space-xl) var(--space-lg);color:var(--text-secondary);">
+                <p>The 2JZ-GTE is the preferred choice for performance builds — it's turbocharged from the factory and has a robust bottom end that supports significant power with the right modifications. The 2JZ-GE is more affordable and works well for street builds or as a base for a single turbo conversion. Both are equally supported by SVK harnesses.</p>
+              </div>
+            </details>
+          </div>
+        </div>
+
       </div>
     </section>
 
@@ -100,7 +259,7 @@
         <div class="cta-box fade-in">
           <span class="section-label">MK3 Supra Build?</span>
           <h2>See Our MK3 Supra Harness</h2>
-          <p>Purpose-built standalone harness for the MK3 Supra 2JZ swap. Handles ECU integration, gauge cluster, AC retention, and more.</p>
+          <p>Purpose-built standalone harness for the MK3 Supra 2JZ swap. Handles ECU integration, gauge cluster, AC retention, and more. Built to order for your exact setup.</p>
           <a href="mk3-supra.html" class="btn btn-primary">View MK3 Harness</a>
         </div>
       </div>
