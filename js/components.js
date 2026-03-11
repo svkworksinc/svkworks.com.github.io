@@ -5,7 +5,25 @@
    ============================================ */
 
 const SVKComponents = {
+  // ─── Google Analytics 4 ───────────────────────────────────────────────────
+  // Replace G-XXXXXXXXXX with your GA4 Measurement ID from analytics.google.com
+  // Go to: Admin → Data Streams → select your stream → copy the Measurement ID
+  GA_ID: 'G-XXXXXXXXXX',
+
+  _loadAnalytics() {
+    if (!this.GA_ID || this.GA_ID === 'G-XXXXXXXXXX') return; // not yet configured
+    const script = document.createElement('script');
+    script.async = true;
+    script.src = `https://www.googletagmanager.com/gtag/js?id=${this.GA_ID}`;
+    document.head.appendChild(script);
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = function() { window.dataLayer.push(arguments); };
+    window.gtag('js', new Date());
+    window.gtag('config', this.GA_ID, { anonymize_ip: true });
+  },
+
   load() {
+    this._loadAnalytics();
     const headerEl = document.getElementById('header-placeholder');
     const footerEl = document.getElementById('footer-placeholder');
 
