@@ -480,7 +480,8 @@
       "author": "SVK",
       "category": "Tech",
       "excerpt": "Still running a modified OEM harness? Here's why going standalone is the best investment for your build's reliability and performance.",
-      "image": "img/placeholder-blog.svg",
+      "image": "img/works.jpg",
+      "page": "blog-why-standalone-harness.html",
       "content": "<p>If you've ever chased an electrical gremlin through a 30-year-old OEM wiring harness, you know the pain. Modified factory harnesses carry decades of degraded insulation, corroded pins, and spliced-in aftermarket additions that create unreliable connections.</p><p>A standalone harness eliminates all of that. Every wire is purpose-built for your specific setup — no unused circuits, no mystery wires, no compromise. Here at SVK, every harness is built with fresh TXL mil-spec wire, new OEM-quality connectors, and a clean layout that makes troubleshooting a thing of the past.</p><h3>Key Benefits</h3><ul><li><strong>Reliability:</strong> New wiring means no corroded connections or degraded insulation</li><li><strong>Simplicity:</strong> Only the wires your engine needs — nothing extra</li><li><strong>Clean Install:</strong> Designed for a tucked, professional appearance</li><li><strong>Easy Troubleshooting:</strong> Color-coded, labeled, and documented</li></ul>"
     },
     {
@@ -491,7 +492,8 @@
       "author": "SVK",
       "category": "Guides",
       "excerpt": "The 2JZ swap into the MK3 Supra is one of the most popular JDM builds. Here's what you need to know about the wiring side of this swap.",
-      "image": "img/placeholder-blog.svg",
+      "image": "img/MK3_Supra.jpg",
+      "page": "blog-mk3-2jz-swap-guide.html",
       "content": "<p>The MK3 Supra with a 2JZ swap is a legendary combination. But the wiring can be the most challenging part of the build if you don't plan ahead.</p><h3>What You Need to Consider</h3><ul><li>ECU choice and connector pinout</li><li>Gauge cluster integration (speedo, tach, temp, fuel)</li><li>AC and power steering retention</li><li>Starter and charging system differences</li></ul><p>Our MK3 2JZ swap harness handles all of these integration points out of the box, so you can focus on the mechanical side of your build.</p>"
     },
     {
@@ -503,7 +505,32 @@
       "category": "Tech",
       "excerpt": "Haltech, Link, AEM, Motec — the options are overwhelming. Here's our breakdown of the most popular ECU choices for 2JZ-powered builds.",
       "image": "img/placeholder-blog.svg",
+      "page": "blog-choosing-ecu.html",
       "content": "<p>Choosing an ECU is one of the most important decisions in your build. Each platform has strengths depending on your goals.</p><h3>Haltech Elite</h3><p>User-friendly software, excellent support, and great I/O. Ideal for street and mild track builds.</p><h3>Link G4X</h3><p>Powerful and cost-effective. Great logging and tuning features. Popular in the drift community.</p><h3>AEM Infinity</h3><p>Professional-grade with extensive I/O. Preferred by many professional tuners.</p><h3>Motec M1</h3><p>Top-tier motorsport ECU. Unmatched data logging and strategy capabilities. Best for serious competition builds.</p>"
+    },
+    {
+      "id": "1uz-swap-wiring",
+      "title": "1UZ-FE Swap Wiring: What You Need to Know",
+      "slug": "1uz-swap-wiring",
+      "date": "2025-10-05",
+      "author": "SVK",
+      "category": "Tech",
+      "excerpt": "The 1UZ-FE is a proven V8 swap candidate. Here's a breakdown of the wiring challenges and how a purpose-built harness makes the install clean and reliable.",
+      "image": "img/SC400_2.jpg",
+      "page": "blog-1uz-swap-wiring.html",
+      "content": "<p>The Toyota/Lexus 1UZ-FE is one of the most popular V8 swap engines for good reason — it's compact, reliable, relatively affordable, and makes great power with modern tuning.</p><h3>VVT-i vs. Non-VVT-i</h3><p>The 1UZ came in two main variants — the earlier non-VVT-i (1990–1997) and the later VVT-i (1998–2001). The VVT-i version is more desirable for power potential, but it adds complexity to the wiring.</p><h3>Key Wiring Challenges</h3><ul><li>Sequential fuel injection with two ECU connectors</li><li>Coil-on-plug ignition — eight individual coils</li><li>TRAC/VSC systems deeply integrated in OEM harness</li><li>Transmission integration for manual swap applications</li></ul>"
+    },
+    {
+      "id": "mil-spec-connectors",
+      "title": "Mil-Spec Connectors: Why They Matter for Motorsport Wiring",
+      "slug": "mil-spec-connectors",
+      "date": "2025-09-18",
+      "author": "SVK",
+      "category": "Tech",
+      "excerpt": "Mil-spec connectors are the gold standard for motorsport and high-performance wiring. Here's why they're worth the investment and what makes them different.",
+      "image": "img/works.jpg",
+      "page": "blog-mil-spec-connectors.html",
+      "content": "<p>Not all connectors are created equal. When you're building a performance car that's going to see heat, vibration, moisture, and the occasional hard launch, the connectors in your wiring harness are as critical as the wire itself.</p><h3>What Makes Mil-Spec Different?</h3><p>Mil-spec connectors are built to MIL-DTL specifications, tested for vibration resistance, temperature cycling, moisture ingress, and contact retention.</p><h3>Deutsch DT and DTM Series</h3><p>The most common mil-spec connectors in motorsport wiring. Sealed design, wedge-lock retention, high vibration resistance, wide temperature range.</p>"
     }
   ],
   "builds": [

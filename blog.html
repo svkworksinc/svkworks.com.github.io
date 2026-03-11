@@ -112,7 +112,7 @@
                   <span class="badge">${b.category}</span>
                   <span>${SVKMain.formatDate(b.date)}</span>
                 </div>
-                <h3 class="blog-card-title"><a href="blog.html?post=${b.id}">${b.title}</a></h3>
+                <h3 class="blog-card-title"><a href="${b.page || 'blog.html?post=' + b.id}">${b.title}</a></h3>
                 <p class="blog-card-excerpt">${b.excerpt}</p>
               </div>
             </div>
