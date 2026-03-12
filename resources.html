@@ -78,7 +78,7 @@
           <a href="wiring-diagram-gs300.html" class="btn btn-secondary" style="font-size: var(--text-sm);">GS300 / GS400</a>
           <a href="wiring-diagram-is300.html" class="btn btn-secondary" style="font-size: var(--text-sm);">IS300</a>
           <a href="wiring-diagram-ls400.html" class="btn btn-secondary" style="font-size: var(--text-sm);">LS400 / LS430</a>
-          <a href="wiring-diagram-mr2.html" class="btn btn-secondary" style="font-size: var(--text-sm);">MR2 (SW20)</a>
+          <a href="wiring-diagram-mr2.html" class="btn btn-secondary" style="font-size: var(--text-sm);">MR2 (All Generations)</a>
         </div>
       </div>
     </section>
@@ -110,7 +110,7 @@
             <li><a href="wiring-diagram-gs300.html"><strong>Lexus GS300/GS400 Wiring Diagrams</strong></a> — 1995 GS300 EWD (JZS147), 1999 GS300/GS400 EWD (JZS161/UZS161)</li>
             <li><a href="wiring-diagram-is300.html"><strong>Lexus IS300 Wiring Diagrams</strong></a> — 2001 IS300 EWD, 2004 IS300 EWD</li>
             <li><a href="wiring-diagram-ls400.html"><strong>Lexus LS400/LS430 Wiring Diagrams</strong></a> — 1998 LS400 EWD, 2005 LS430 EWD</li>
-            <li><a href="wiring-diagram-mr2.html"><strong>Toyota MR2 SW20 Wiring Diagram</strong></a> — 1991 MR2 EWD (3S-GTE / 5S-FE)</li>
+            <li><a href="wiring-diagram-mr2.html"><strong>Toyota MR2 Wiring Diagrams (All Generations)</strong></a> — 1991 SW20 MR2 EWD (3S-GTE / 5S-FE)</li>
           </ul>
         </noscript>
 
@@ -157,7 +157,7 @@
         }
 
         container.innerHTML = resources.map(r => `
-          <a href="${r.file}" class="resource-grid-card fade-in" target="_blank" download>
+          <a href="${r.file}" class="resource-grid-card fade-in" target="_blank">
             <div class="resource-grid-card-header">
               <span class="badge">${r.category}</span>
               <div class="resource-grid-icon">
@@ -174,11 +174,11 @@
             <div class="resource-grid-card-footer">
               <span class="resource-grid-meta">${r.type.toUpperCase()} &bull; ${r.size}</span>
               <span class="resource-grid-download">
-                Download
+                View PDF
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                  <polyline points="7 10 12 15 17 10"/>
-                  <line x1="12" y1="15" x2="12" y2="3"/>
+                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                  <polyline points="15 3 21 3 21 9"/>
+                  <line x1="10" y1="14" x2="21" y2="3"/>
                 </svg>
               </span>
             </div>
