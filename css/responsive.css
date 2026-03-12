@@ -26,8 +26,10 @@
 /* Mobile nav breakpoint */
 @media (max-width: 768px) {
   :root {
-    --space-4xl: 3rem;
-    --space-3xl: 2.5rem;
+    --space-4xl: 2.5rem;
+    --space-3xl: 2rem;
+    --space-2xl: 1.75rem;
+    --space-xl: 1.5rem;
     --header-top-height: 0px; /* top bar hidden on mobile */
   }
 
@@ -35,9 +37,10 @@
     padding: 0 var(--space-md);
   }
 
-  h1 { font-size: var(--text-3xl); }
-  h2 { font-size: var(--text-2xl); }
-  h3 { font-size: var(--text-xl); }
+  h1 { font-size: var(--text-2xl); }
+  h2 { font-size: var(--text-xl); }
+  h3 { font-size: var(--text-lg); }
+  p  { font-size: var(--text-sm); }
 
   /* Hide header top bar on mobile — saves 36px of screen space */
   .header-top {
@@ -144,7 +147,9 @@
 
   .hero-stats {
     flex-wrap: wrap;
-    gap: var(--space-xl);
+    gap: var(--space-md);
+    margin-top: var(--space-xl);
+    padding-top: var(--space-lg);
   }
 
   .hero-actions {
@@ -217,15 +222,88 @@
   .contact-grid {
     grid-template-columns: 1fr !important;
   }
+
+  /* Section headings — tighter line-height on mobile */
+  .section-header {
+    margin-bottom: var(--space-xl);
+  }
+
+  .section-header .section-label {
+    font-size: var(--text-xs);
+    margin-bottom: var(--space-sm);
+  }
+
+  /* Category cards — shorter image, less padding */
+  .category-card-image {
+    height: 150px;
+  }
+
+  .category-card-content {
+    padding: var(--space-md);
+  }
+
+  .category-card h3 {
+    font-size: var(--text-base);
+    margin-bottom: var(--space-xs);
+  }
+
+  /* Feature cards — less padding */
+  .feature-card {
+    padding: var(--space-lg);
+  }
+
+  .feature-icon {
+    width: 40px;
+    height: 40px;
+    margin-bottom: var(--space-md);
+  }
+
+  /* CTA box — less padding */
+  .cta-box {
+    padding: var(--space-xl);
+  }
+
+  /* Testimonial cards — less padding */
+  .testimonial-card {
+    padding: var(--space-lg);
+  }
+
+  .testimonial-text {
+    font-size: var(--text-sm);
+  }
+
+  /* Product card body — less padding */
+  .product-card-body {
+    padding: var(--space-md);
+  }
+
+  /* Blog card body — less padding */
+  .blog-card-body {
+    padding: var(--space-md);
+  }
+
+  .blog-card-title {
+    font-size: var(--text-base);
+  }
+
+  /* Hero content — tighter */
+  .hero-content p {
+    font-size: var(--text-sm);
+    margin-bottom: var(--space-lg);
+  }
+
+  .hero-stat-value {
+    font-size: var(--text-xl);
+  }
+
+  .hero-stat-label {
+    font-size: var(--text-xs);
+  }
 }
 
 /* Small mobile */
 @media (max-width: 480px) {
-  h1 { font-size: var(--text-2xl); }
-
-  .hero-stat-value {
-    font-size: var(--text-2xl);
-  }
+  h1 { font-size: var(--text-xl); }
 
   .product-grid {
     grid-template-columns: 1fr;
@@ -233,5 +311,17 @@
 
   .features-grid {
     grid-template-columns: 1fr;
+  }
+
+  /* Stack hero stats in a tighter 2-col grid on very small screens */
+  .hero-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-md);
+  }
+
+  /* Reduce category card image further */
+  .category-card-image {
+    height: 120px;
   }
 }
