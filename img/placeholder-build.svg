@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="450" viewBox="0 0 600 450">
+  <rect width="600" height="450" fill="#16161f"/>
+  <rect x="130" y="120" width="340" height="200" rx="20" fill="#1e1e2a" stroke="#e91e8c" stroke-width="1" opacity="0.4"/>
+  <circle cx="210" cy="320" r="30" fill="none" stroke="#6b6b80" stroke-width="2" opacity="0.3"/>
+  <circle cx="210" cy="320" r="12" fill="none" stroke="#6b6b80" stroke-width="2" opacity="0.3"/>
+  <circle cx="390" cy="320" r="30" fill="none" stroke="#6b6b80" stroke-width="2" opacity="0.3"/>
+  <circle cx="390" cy="320" r="12" fill="none" stroke="#6b6b80" stroke-width="2" opacity="0.3"/>
+  <path d="M180 200 L220 160 L380 160 L420 200" fill="none" stroke="#e91e8c" stroke-width="1.5" opacity="0.5"/>
+  <text x="300" y="400" text-anchor="middle" fill="#6b6b80" font-family="sans-serif" font-size="14">Build Gallery</text>
+</svg>

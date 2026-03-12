@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mil-Spec Wiring Explained: TXL vs Raychem Spec 44 — SVK Works</title>
+  <meta name="description" content="Not all automotive wire is created equal. Here's a deep dive into the two wire types we use at SVK Works — and when each one is the right call for your build.">
+  <link rel="canonical" href="https://svkworks.com/blog-txl-vs-raychem-spec44.html">
+  <meta property="og:site_name" content="SVK Works">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Mil-Spec Wiring Explained: TXL vs Raychem Spec 44 — SVK Works">
+  <meta property="og:description" content="Not all automotive wire is created equal. Here's a deep dive into the two wire types we use at SVK Works — and when each one is the right call for your build.">
+  <meta property="og:url" content="https://svkworks.com/blog-txl-vs-raychem-spec44.html">
+  <meta property="og:image" content="https://svkworks.com/img/supraHarness1.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Mil-Spec Wiring Explained: TXL vs Raychem Spec 44 — SVK Works">
+  <meta name="twitter:description" content="Not all automotive wire is created equal. Here's a deep dive into the two wire types we use at SVK Works — and when each one is the right call for your build.">
+  <meta name="twitter:image" content="https://svkworks.com/img/supraHarness1.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://svkworks.com/" },
+      { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://svkworks.com/blog.html" },
+      { "@type": "ListItem", "position": 3, "name": "Mil-Spec Wiring Explained: TXL vs Raychem Spec 44", "item": "https://svkworks.com/blog-txl-vs-raychem-spec44.html" }
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Mil-Spec Wiring Explained: TXL vs Raychem Spec 44",
+    "description": "Not all automotive wire is created equal. Here's a deep dive into the two wire types we use at SVK Works — and when each one is the right call for your build.",
+    "datePublished": "2025-10-05",
+    "dateModified": "2026-03-11",
+    "author": { "@type": "Organization", "name": "SVK Works", "url": "https://svkworks.com" },
+    "publisher": { "@type": "Organization", "name": "SVK Works", "url": "https://svkworks.com" },
+    "image": "https://svkworks.com/img/supraHarness1.jpg",
+    "url": "https://svkworks.com/blog-txl-vs-raychem-spec44.html",
+    "mainEntityOfPage": "https://svkworks.com/blog-txl-vs-raychem-spec44.html"
+  }
+  </script>
+  <!-- FAQ Schema -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What is TXL wire?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "TXL stands for cross-linked polyethylene insulated wire. It's rated to 125°C continuous and is significantly more durable than standard PVC automotive wire. TXL is oil, fuel, and abrasion resistant, and maintains flexibility in cold temperatures. It's the standard wire specification for quality standalone wiring harnesses."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What is Raychem Spec 44?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Raychem Spec 44 (officially MIL-W-22759/44) is an aerospace-grade wire rated to 150°C with thinner wall insulation than TXL. It offers significant weight savings at equivalent ampacity and outstanding chemical resistance. It's used in Formula 1, aerospace, and high-performance motorsport applications."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Should I upgrade to Raychem Spec 44 for a street car?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "For a pure street car, TXL is the better value. It provides all the durability you need at a lower cost. Spec 44 is worth the upgrade for dedicated track or race cars where weight savings matter, or for high-heat zones near turbos and headers in any build."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does SVK Works use Spec 44 near turbos regardless of wire spec chosen?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. Regardless of the overall wire specification chosen for your harness, SVK Works always uses Raychem Spec 44 in high-heat zones near headers and turbos. The temperature rating of TXL is not adequate for sustained exposure to radiated heat from exhaust components."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <div id="header-placeholder"></div>
+
+  <main>
+    <div class="page-hero">
+      <div class="container">
+        <div class="breadcrumb">
+          <a href="index.html">Home</a><span class="breadcrumb-sep">/</span>
+          <a href="blog.html">Blog</a><span class="breadcrumb-sep">/</span>
+          <span>Mil-Spec Wiring Explained: TXL vs Raychem Spec 44</span>
+        </div>
+        <div class="blog-card-meta" style="margin-bottom:var(--space-md);">
+          <span class="badge">Tech</span>
+          <span>October 5, 2025</span>
+          <span>by SVK Works</span>
+        </div>
+        <h1>Mil-Spec Wiring Explained: TXL vs Raychem Spec 44</h1>
+        <p>Not all automotive wire is created equal. Here's a deep dive into the two wire types used at SVK Works — and when each one is the right choice for your build.</p>
+      </div>
+    </div>
+
+    <section class="section">
+      <div class="container container-narrow">
+        <a href="blog.html" class="btn btn-ghost" style="margin-bottom:var(--space-xl);">&larr; Back to Blog</a>
+
+        <img src="img/supraHarness1.jpg" alt="Mil-spec automotive wiring harness detail" style="border-radius:var(--radius-lg);margin-bottom:var(--space-2xl);width:100%;">
+
+        <div class="blog-content" style="color:var(--text-secondary);line-height:var(--leading-normal);font-size:var(--text-lg);">
+
+          <p>Wire selection is one of the most overlooked aspects of harness building, but it has a direct impact on the reliability, longevity, and weight of the finished product. The aftermarket wiring industry is full of cheap wire — generic automotive wire from unknown sources sold by the reel to unsuspecting builders. The result is harnesses that look fine on day one and start causing problems as the insulation degrades from heat cycling, chemical exposure, and mechanical stress.</p>
+
+          <p>At SVK Works, we use two wire specifications depending on the application: TXL cross-linked polyethylene for standard builds and Raychem Spec 44 for race builds and heat-critical zones. Here's what those specifications actually mean and why the distinction matters.</p>
+
+          <h2>Why Wire Specification Matters</h2>
+
+          <p>Automotive wiring lives in a demanding environment. The engine bay of a performance car subjects wire insulation to temperatures that cycle from freezing to well over 100°C, depending on the season and how the car is driven. Oil, fuel, brake fluid, and coolant all contact the wiring at various points. Vibration from the engine, exhaust, and road surface creates mechanical stress on insulation and terminations over time.</p>
+
+          <p>PVC-insulated wire — the type used in most household electrical applications and a significant percentage of the automotive aftermarket — handles these conditions poorly over time. The plasticizers in PVC migrate out of the insulation as it ages, leaving brittle insulation that cracks, shrinks, and eventually exposes bare conductors. In a 30-year-old performance car, this is exactly what you find inside modified OEM harnesses: cracked insulation, green-corroded conductors, and potential short circuits waiting for the right moment to cause a problem.</p>
+
+          <p>Cross-linked polyethylene wire — what TXL refers to — uses a different insulation chemistry that doesn't suffer from the same degradation mechanism. The cross-linking process creates polymer chains that are chemically bonded together, resulting in insulation that maintains its properties through decades of heat cycling and chemical exposure.</p>
+
+          <h2>TXL Cross-Linked Polyethylene: The Right Choice for Street and Street-Track Builds</h2>
+
+          <p>TXL (sometimes written as XLPE for cross-linked polyethylene) is rated to 125°C continuous operation. To put that in context, the ambient temperature in a typical engine bay at operating temperature is 80–110°C depending on the vehicle and whether it's turbocharged. TXL has meaningful headroom above that baseline.</p>
+
+          <p>Beyond the temperature rating, TXL offers several properties that make it superior to PVC for automotive use:</p>
+
+          <ul>
+            <li><strong>Oil and fuel resistance:</strong> TXL insulation does not swell, soften, or degrade when contacted by engine oil, fuel, coolant, or brake fluid. This is critical for any wiring that runs near fuel lines or through areas that may see fluid exposure.</li>
+            <li><strong>Abrasion resistance:</strong> The cross-linked insulation is significantly more resistant to abrasion than PVC. Wires routed through grommets, along chassis edges, or through tight areas maintain their insulation integrity over time.</li>
+            <li><strong>Cold flexibility:</strong> TXL remains flexible in freezing temperatures. PVC becomes stiff and brittle in cold weather, which creates stress at bends and grommets that can eventually crack the insulation.</li>
+            <li><strong>Dimensional stability:</strong> TXL insulation does not shrink over time. PVC shrinks as plasticizers leach out, eventually exposing the bare conductor at terminal entries.</li>
+          </ul>
+
+          <p>For a street car, a weekend track car, or any build where cost needs to be balanced against performance, TXL is the correct choice. It provides all of the durability needed for the application without the cost premium of aerospace-grade wire.</p>
+
+          <p>Every standard <a href="harnesses.html">SVK Works harness</a> is built with TXL as the base wire specification.</p>
+
+          <h2>Raychem Spec 44: When Weight and Temperature Margin Matter</h2>
+
+          <p>Raychem Spec 44 — officially MIL-W-22759/44 — is an aerospace-grade wire that has been adopted by motorsport as the gold standard for race vehicle wiring. The specification requires wire that meets or exceeds ratings for 150°C continuous operation, with thinner wall insulation than equivalent TXL wire at the same conductor size.</p>
+
+          <p>That thinner wall is the key advantage. A 20AWG Spec 44 wire has a smaller outside diameter than a 20AWG TXL wire. Multiply that difference across hundreds of wires in a full harness, and the cumulative effect on harness diameter and weight is significant. In weight-sensitive motorsport applications — time attack, circuit racing, hill climb — this matters. The difference between a TXL harness and a Spec 44 harness on the same car can be 15–25% by weight.</p>
+
+          <p>The temperature rating improvement also matters in specific zones. While the engine bay ambient temperature is within TXL's rating, the radiant heat from exhaust manifolds and turbine housings creates localized temperatures that significantly exceed 125°C. Any wiring that runs near the turbo or exhaust — oxygen sensor wiring, boost control solenoid wiring, boost sensor circuits — benefits from Spec 44's additional temperature margin.</p>
+
+          <p>Spec 44 also has outstanding chemical resistance, exceeding TXL in its ability to withstand exposure to aggressive fluids. For race cars where fire suppression systems, methanol, or other aggressive chemicals may contact wiring, this resistance has real value.</p>
+
+          <h2>The Practical Comparison</h2>
+
+          <p>Here's how the two specifications compare in practice:</p>
+
+          <ul>
+            <li><strong>Temperature rating:</strong> TXL: 125°C continuous. Spec 44: 150°C continuous.</li>
+            <li><strong>Insulation wall thickness:</strong> TXL is thicker. Spec 44 is thinner, enabling smaller harness diameter and lower weight.</li>
+            <li><strong>Chemical resistance:</strong> Both are excellent. Spec 44 has slight advantages with aggressive chemicals.</li>
+            <li><strong>Cold flexibility:</strong> Both maintain flexibility in extreme cold. TXL is adequate; Spec 44 is marginally better.</li>
+            <li><strong>Cost:</strong> Spec 44 is significantly more expensive than TXL. The cost difference varies by gauge but is typically 3–5x per meter.</li>
+            <li><strong>Applications:</strong> TXL for street and street-track. Spec 44 for dedicated race and high-heat zones.</li>
+          </ul>
+
+          <h2>How SVK Works Applies This</h2>
+
+          <p>The choice between TXL and Spec 44 isn't always all-or-nothing. At SVK Works, we apply both specifications intelligently within a single harness when it makes sense. The base wire in a standard build is TXL. Circuits that run near the turbo, exhaust manifold, or header — the oxygen sensor circuit, EGT sensor, boost solenoid wiring, coolant sensor circuits that route near the head — are built with Spec 44 regardless of the overall wire specification selected for the harness.</p>
+
+          <p>This ensures that every wire in the harness is operating within its temperature rating, without the cost premium of building the entire harness in Spec 44 for a street car that doesn't need it.</p>
+
+          <p>For customers who want full Spec 44 construction — usually for dedicated track or race builds where weight is the priority — we offer this as an upgrade option on all harnesses. The finished harness is noticeably lighter and more tightly packaged, with all the thermal benefits that implies.</p>
+
+          <h2>What to Ask Your Harness Builder</h2>
+
+          <p>When evaluating any harness builder, wire specification is one of the first questions to ask. Specifically:</p>
+
+          <ul>
+            <li>What wire specification do you use? (TXL, GPT, SXL, Spec 44, or something else?)</li>
+            <li>What do you use near heat sources like turbos and headers?</li>
+            <li>What gauge are you running for high-current circuits like main power and injectors?</li>
+          </ul>
+
+          <p>If the answer to the first question is "GPT" or "SXL" — both of which are PVC-insulated — that's a significant red flag. If the builder can't answer the question at all, that's a bigger one.</p>
+
+          <p>The wire is the foundation of the harness. Whatever you invest in connectors, documentation, and build quality sits on top of that foundation. Getting it right is non-negotiable for a harness that's going to live in a serious build.</p>
+
+        </div>
+
+        <!-- FAQ Section -->
+        <div style="margin-top:var(--space-3xl);padding-top:var(--space-3xl);border-top:1px solid var(--border);">
+          <h2 style="margin-bottom:var(--space-xl);">Frequently Asked Questions</h2>
+          <div style="display:flex;flex-direction:column;gap:var(--space-lg);">
+
+            <details style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);overflow:hidden;">
+              <summary style="padding:var(--space-lg) var(--space-xl);cursor:pointer;font-weight:600;list-style:none;display:flex;justify-content:space-between;align-items:center;">
+                What is TXL wire?
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;"><polyline points="6 9 12 15 18 9"/></svg>
+              </summary>
+              <div style="padding:0 var(--space-xl) var(--space-lg);color:var(--text-secondary);">
+                <p>TXL stands for cross-linked polyethylene insulated wire. It's rated to 125°C continuous and is significantly more durable than standard PVC automotive wire. TXL is oil, fuel, and abrasion resistant, and maintains flexibility in cold temperatures. It's the standard wire specification for quality standalone wiring harnesses.</p>
+              </div>
+            </details>
+
+            <details style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);overflow:hidden;">
+              <summary style="padding:var(--space-lg) var(--space-xl);cursor:pointer;font-weight:600;list-style:none;display:flex;justify-content:space-between;align-items:center;">
+                What is Raychem Spec 44?
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;"><polyline points="6 9 12 15 18 9"/></svg>
+              </summary>
+              <div style="padding:0 var(--space-xl) var(--space-lg);color:var(--text-secondary);">
+                <p>Raychem Spec 44 (officially MIL-W-22759/44) is an aerospace-grade wire rated to 150°C with thinner wall insulation than TXL. It offers significant weight savings at equivalent ampacity and outstanding chemical resistance. It's used in Formula 1, aerospace, and high-performance motorsport applications.</p>
+              </div>
+            </details>
+
+            <details style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);overflow:hidden;">
+              <summary style="padding:var(--space-lg) var(--space-xl);cursor:pointer;font-weight:600;list-style:none;display:flex;justify-content:space-between;align-items:center;">
+                Should I upgrade to Raychem Spec 44 for a street car?
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;"><polyline points="6 9 12 15 18 9"/></svg>
+              </summary>
+              <div style="padding:0 var(--space-xl) var(--space-lg);color:var(--text-secondary);">
+                <p>For a pure street car, TXL is the better value. It provides all the durability you need at a lower cost. Spec 44 is worth the upgrade for dedicated track or race cars where weight savings matter, or for high-heat zones near turbos and headers in any build.</p>
+              </div>
+            </details>
+
+            <details style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);overflow:hidden;">
+              <summary style="padding:var(--space-lg) var(--space-xl);cursor:pointer;font-weight:600;list-style:none;display:flex;justify-content:space-between;align-items:center;">
+                Does SVK Works use Spec 44 near turbos regardless of wire spec chosen?
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;"><polyline points="6 9 12 15 18 9"/></svg>
+              </summary>
+              <div style="padding:0 var(--space-xl) var(--space-lg);color:var(--text-secondary);">
+                <p>Yes. Regardless of the overall wire specification chosen for your harness, SVK Works always uses Raychem Spec 44 in high-heat zones near headers and turbos. The temperature rating of TXL is not adequate for sustained exposure to radiated heat from exhaust components.</p>
+              </div>
+            </details>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <section class="cta-section">
+      <div class="container">
+        <div class="cta-box fade-in">
+          <span class="section-label">Built Right</span>
+          <h2>Shop Our Harness Catalog</h2>
+          <p>All SVK harnesses are built with TXL as standard. Raychem Spec 44 upgrade available on all harnesses. Choose the wire spec that matches your build.</p>
+          <a href="harnesses.html" class="btn btn-primary">View All Harnesses</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="footer-placeholder"></div>
+
+  <script defer src="components/header.js"></script>
+  <script defer src="components/footer.js"></script>
+  <script defer src="js/cart.js"></script>
+  <script defer src="js/components.js"></script>
+  <script defer src="js/main.js"></script>
+</body>
+</html>

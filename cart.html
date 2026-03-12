@@ -3,295 +3,267 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Your Cart | SVK</title>
-  <style>
-    body { font-family: 'Montserrat', sans-serif; background:#0a0a1a; color:#fff; margin:0; padding:2rem;}
-    h1 { font-family: 'Orbitron', sans-serif; color:#ff00ff; }
-    table { width:100%; border-collapse: collapse; margin-top:2rem; }
-    th, td { padding:1rem; border-bottom:1px solid #333; text-align:left; }
-    th { color:#00f7ff; }
-    img { width:60px; border-radius:6px; }
-    input[type="number"] {
-      width: 60px; padding:0.3rem;
-      background:#0a0a1a; color:#fff; border:1px solid #ff00ff; border-radius:4px;
-      text-align:center;
-    }
-    .remove-btn {
-      background:#ff3333; color:#fff; border:none;
-      padding:0.4rem 0.8rem; border-radius:6px; cursor:pointer;
-      transition:.3s;
-    }
-    .remove-btn:hover { background:#cc0000; }
-    .total { text-align:right; font-size:1.2rem; margin-top:1.5rem; color:#ffcc00; }
-    .checkout-btn {
-      display:inline-block; margin-top:1rem;
-      background:#ff00ff; padding:0.75rem 1.5rem; border-radius:8px; color:#fff;
-      text-decoration:none; font-weight:bold; transition:.3s;
-    }
-    .checkout-btn:hover { background:#00f7ff; color:#0a0a1a; }
-
-    /* Header */
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1rem 2rem;
-      background: rgba(10, 0, 30, 0.95);
-      border-bottom: 2px solid #ff0099;
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-    }
-
-    .logo {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 1.8rem;
-      color: #00f7ff;
-      text-shadow: 0 0 6px #ff00ff;
-    }
-
-    nav {
-      position: relative;
-    }
-
-    .nav-links {
-      list-style: none;
-      display: flex;
-      gap: 1.5rem;
-    }
-
-    .nav-links a {
-      text-decoration: none;
-      color: #00fff7;
-      font-weight: bold;
-      transition: color 0.3s ease;
-    }
-
-    .nav-links a:hover {
-      color: #ffcc00;
-    }
-
-    /* Hamburger */
-    .hamburger {
-      display: none;
-      flex-direction: column;
-      cursor: pointer;
-    }
-
-    .hamburger span {
-      height: 3px;
-      width: 25px;
-      background: #fff;
-      margin: 4px;
-      border-radius: 2px;
-      transition: all 0.3s ease;
-    }
-
-    /* Section */
-    .products {
-      padding: 2rem 1rem;
-      max-width: 1200px;
-      margin: auto;
-    }
-
-    .products h1 {
-      font-family: 'Orbitron', sans-serif;
-      text-align: center;
-      font-size: 2.5rem;
-      margin-bottom: 2rem;
-      color: #ff00ff;
-      text-shadow: 0 0 12px #00f7ff;
-    }
-
-    .product-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1.5rem;
-    }
-
-    .product-card {
-      background: rgba(255, 0, 153, 0.1);
-      border: 2px solid #00f7ff;
-      border-radius: 12px;
-      overflow: hidden;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .product-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 0 20px #ff00ff;
-    }
-
-    .product-card img {
-      width: 100%;
-      height: 220px;
-      object-fit: cover;
-    }
-
-    .product-info {
-      padding: 1rem;
-    }
-
-    .product-info h2 {
-      font-size: 1.4rem;
-      margin: 0 0 0.5rem;
-      color: #00f7ff;
-      text-shadow: 0 0 6px #ff00ff;
-    }
-
-    .product-info p {
-      font-size: 1rem;
-      color: #ccc;
-      margin-bottom: 1rem;
-    }
-
-    .product-info button {
-      width: 100%;
-      background: #ff00ff;
-      border: none;
-      color: white;
-      padding: 0.8rem;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: 600;
-      transition: background 0.3s ease;
-      font-family: 'Orbitron', sans-serif;
-      font-size: 1rem;
-    }
-
-    .product-info button:hover {
-      background: #00f7ff;
-      color: #0a0a1a;
-    }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-      .nav-links {
-        display: none;
-        position: absolute;
-        top: 60px;
-        right: 0;
-        background: rgba(10, 0, 30, 0.95);
-        flex-direction: column;
-        width: 220px;
-        padding: 1rem;
-        border-left: 2px solid #ff0099;
-      }
-
-      .nav-links.show {
-        display: flex;
-      }
-
-      .hamburger {
-        display: flex;
-      }
-    }
-  </style>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-RPE47LV27L"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-RPE47LV27L');
-</script>
-
+  <title>Shopping Cart — SVK Works</title>
+  <meta name="description" content="Review your cart and proceed to checkout.">
+  <meta name="robots" content="noindex, follow">
+  <link rel="canonical" href="https://svkworks.com/cart.html">
+  <meta property="og:site_name" content="SVK Works">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Shopping Cart — SVK Works">
+  <meta property="og:description" content="Review your cart and proceed to checkout.">
+  <meta property="og:url" content="https://svkworks.com/cart.html">
+  <meta property="og:image" content="https://svkworks.com/img/og-default.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Shopping Cart — SVK Works">
+  <meta name="twitter:description" content="Review your cart and proceed to checkout.">
+  <meta name="twitter:image" content="https://svkworks.com/img/og-default.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+  <!-- Breadcrumb Schema -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://svkworks.com/" },
+      { "@type": "ListItem", "position": 2, "name": "Cart", "item": "https://svkworks.com/cart.html" }
+    ]
+  }
+  </script>
 </head>
 <body>
+  <div id="header-placeholder"></div>
 
-  <header>
-    <div class="logo">SVK</div>
-    <nav>
-      <div class="hamburger" onclick="toggleMenu()">
-        <span></span><span></span><span></span>
+  <main>
+    <div class="page-hero">
+      <div class="container">
+        <div class="breadcrumb">
+          <a href="index.html">Home</a><span class="breadcrumb-sep">/</span>
+          <span>Cart</span>
+        </div>
+        <h1>Shopping Cart</h1>
       </div>
-      <ul class="nav-links" id="nav-links">
-        <li><a href="index.html">Home</a></li>
-        <li><a href="connectors.html">Connectors</a></li>
-        <li><a href="wire-harnesses.html">Wire Harnesses</a></li>
-		<li><a href="3d-parts.html">3D Parts</a></li>
-				<li><a href="cart.html" style="color:#ffcc00; text-decoration:none; font-weight:bold; position:relative;">
-		  Cart 🛒 <span id="cartCount" style="
-			background:#ff00ff;
-			color:#fff;
-			font-size:0.8rem;
-			font-weight:bold;
-			padding:2px 6px;
-			border-radius:50%;
-			position:absolute;
-			top:-10px;
-			right:-20px;
-		  ">0</span>
-		</a></li>
-      </ul>
-      </ul>
-    </nav>
-  </header>
+    </div>
 
-  <h1>Your Cart 🛒</h1>
-  <table id="cartTable">
-    <thead>
-      <tr>
-        <th>Item</th>
-        <th></th>
-        <th>Price</th>
-        <th>Qty</th>
-        <th>Subtotal</th>
-        <th>Action</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
-  <div class="total" id="cartTotal"></div>
-  <a href="checkout.html" class="checkout-btn">Proceed to Checkout</a>
+    <section class="cart-page">
+      <div class="container">
+        <!-- Empty state -->
+        <div id="cart-empty" class="empty-state" style="display:none;">
+          <div class="empty-state-icon">
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+          </div>
+          <h3>Your cart is empty</h3>
+          <p>Looks like you haven't added any harnesses yet.</p>
+          <a href="harnesses.html" class="btn btn-primary">Browse Harnesses</a>
+        </div>
 
+        <!-- Cart content -->
+        <div id="cart-content" class="cart-layout" style="display:none;">
+          <div>
+            <div class="cart-items" id="cart-items"></div>
+          </div>
+          <div class="cart-summary">
+            <h3>Order Summary</h3>
+            <div id="cart-summary-content"></div>
+            <button class="btn btn-primary btn-lg" id="place-order-btn">Place Order Request</button>
+            <p class="cart-note">All harnesses are made to order. We'll send a PayPal invoice once we review your request.</p>
+          </div>
+        </div>
+
+        <!-- Order Request Form -->
+        <div id="order-request-section" style="display:none;max-width:640px;margin:0 auto;">
+          <h2 style="margin-bottom:var(--space-md);">Complete Your Order Request</h2>
+          <div style="padding:var(--space-lg);background:var(--bg-card);border:1px solid var(--border-magenta);border-radius:var(--radius-md);margin-bottom:var(--space-xl);">
+            <p style="margin:0;font-size:var(--text-sm);color:var(--text-secondary);">
+              <strong style="color:var(--text-primary);">How it works:</strong> Submit your order details below. We'll review your request, adjust if needed, and send a <strong style="color:var(--magenta);">PayPal invoice</strong> to your email. Once you pay, we start building.
+            </p>
+          </div>
+          <div id="order-cart-review" style="margin-bottom:var(--space-xl);"></div>
+          <!-- SETUP: Sign up free at formspree.io, create a form, then replace YOUR_FORMSPREE_ORDER_ID below -->
+          <form id="order-form" action="https://formspree.io/f/YOUR_FORMSPREE_ORDER_ID" method="POST">
+            <input type="hidden" name="_subject" value="New Order Request — SVK Works">
+            <input type="hidden" name="order_items" id="hidden-order-items">
+            <input type="hidden" name="order_total" id="hidden-order-total">
+            <div class="form-group">
+              <label class="form-label" for="order-name">Name *</label>
+              <input type="text" class="form-input" id="order-name" name="name" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="order-email">Email *</label>
+              <input type="email" class="form-input" id="order-email" name="email" required placeholder="PayPal invoice will be sent here">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="order-vehicle">Vehicle / Build Info</label>
+              <input type="text" class="form-input" id="order-vehicle" name="vehicle" placeholder="e.g., 1997 MK4 Supra — 2JZ-GTE swap">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="order-notes">Additional Notes</label>
+              <textarea class="form-textarea" id="order-notes" name="notes" rows="4" placeholder="Any special requirements, ECU choice, lead time questions, etc."></textarea>
+            </div>
+            <div style="display:flex;gap:var(--space-md);flex-wrap:wrap;">
+              <button type="submit" class="btn btn-primary btn-lg" id="order-submit-btn">Submit Order Request</button>
+              <button type="button" class="btn btn-outline btn-lg" id="back-to-cart-btn">Back to Cart</button>
+            </div>
+            <div id="order-error" style="display:none;margin-top:var(--space-lg);padding:var(--space-lg);background:var(--bg-card);border:1px solid #e74c3c;border-radius:var(--radius-md);">
+              Something went wrong. Please email your order to <a href="mailto:info@svkworks.com" style="color:var(--magenta);">info@svkworks.com</a>.
+            </div>
+          </form>
+        </div>
+
+        <!-- Order Success -->
+        <div id="order-success-section" style="display:none;text-align:center;padding:var(--space-4xl) var(--space-xl);">
+          <div style="width:64px;height:64px;border-radius:50%;background:rgba(34,197,94,0.12);border:2px solid rgba(34,197,94,0.3);display:flex;align-items:center;justify-content:center;margin:0 auto var(--space-lg);">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#86efac" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <h2>Order Request Received!</h2>
+          <p style="color:var(--text-secondary);max-width:480px;margin:var(--space-md) auto var(--space-2xl);">
+            We'll review your order and send a <strong>PayPal invoice</strong> to your email within 1 business day. Once you approve and pay, we start building your harness.
+          </p>
+          <div id="order-success-actions" style="display:flex;gap:var(--space-md);justify-content:center;flex-wrap:wrap;">
+            <a href="harnesses.html" class="btn btn-outline">Browse More Products</a>
+            <a href="contact.html" class="btn btn-ghost">Contact Us</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="footer-placeholder"></div>
+
+  <script defer src="components/header.js"></script>
+  <script defer src="components/footer.js"></script>
+  <script defer src="js/cart.js"></script>
+  <script defer src="js/components.js"></script>
+  <script defer src="data/products-data.js"></script>
+  <script defer src="js/products.js"></script>
+  <script defer src="js/search.js"></script>
+  <script defer src="js/main.js"></script>
   <script>
-    function loadCart() {
-      let cart = JSON.parse(localStorage.getItem("cart")) || [];
-      const tbody = document.querySelector("#cartTable tbody");
-      const totalDiv = document.getElementById("cartTotal");
-      tbody.innerHTML = "";
-      let total = 0;
+    document.addEventListener('DOMContentLoaded', () => {
+      SVKCart.renderCartPage();
 
-      cart.forEach((item, index) => {
-        const subtotal = item.price * item.quantity;
-        total += subtotal;
+      // Place Order button → show order request form
+      document.getElementById('place-order-btn').addEventListener('click', async () => {
+        const cart = SVKCart.getCart();
+        if (!cart.length) return;
 
-        tbody.innerHTML += `
-          <tr>
-            <td><img src="${item.image}" alt="${item.name}"></td>
-            <td>${item.name}</td>
-            <td>$${item.price.toFixed(2)}</td>
-            <td>
-              <input type="number" min="1" value="${item.quantity}" onchange="updateQuantity(${index}, this.value)">
-            </td>
-            <td>$${subtotal.toFixed(2)}</td>
-            <td><button class="remove-btn" onclick="removeItem(${index})">Remove</button></td>
-          </tr>
+        // Build cart review summary
+        const reviewHtml = `
+          <h3 style="margin-bottom:var(--space-md);">Your Items</h3>
+          ${cart.map(item => `
+            <div style="display:flex;justify-content:space-between;padding:var(--space-sm) 0;border-bottom:1px solid var(--border-color);font-size:var(--text-sm);">
+              <span>${item.name} × ${item.quantity}</span>
+              <span style="color:var(--magenta);">${SVKCart.formatPrice(item.price * item.quantity)}</span>
+            </div>
+          `).join('')}
+          <div style="display:flex;justify-content:space-between;padding:var(--space-md) 0;font-weight:700;">
+            <span>Estimated Total</span>
+            <span style="color:var(--magenta);">${SVKCart.formatPrice(SVKCart.getTotal())}</span>
+          </div>
+          <p style="font-size:var(--text-xs);color:var(--text-muted);margin-top:var(--space-xs);">Final price confirmed in your PayPal invoice.</p>
         `;
+        document.getElementById('order-cart-review').innerHTML = reviewHtml;
+
+        // Populate hidden fields
+        document.getElementById('hidden-order-items').value = JSON.stringify(
+          cart.map(i => `${i.name} x${i.quantity} — ${SVKCart.formatPrice(i.price * i.quantity)}`)
+        );
+        document.getElementById('hidden-order-total').value = SVKCart.formatPrice(SVKCart.getTotal());
+
+        document.getElementById('cart-content').style.display = 'none';
+        document.getElementById('cart-empty').style.display = 'none';
+        document.getElementById('order-request-section').style.display = 'block';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        // Pre-fill name + email if signed in
+        await SVKAuth.ready;
+        if (SVKAuth.configured) {
+          const session = await SVKAuth.getSession();
+          if (session) {
+            const nameField  = document.getElementById('order-name');
+            const emailField = document.getElementById('order-email');
+            if (!emailField.value) emailField.value = session.user.email;
+            if (!nameField.value) {
+              const profile = await SVKAuth.getProfile();
+              if (profile?.full_name) nameField.value = profile.full_name;
+            }
+          }
+        }
       });
 
-      totalDiv.innerText = "Total: $" + total.toFixed(2);
-    }
+      // Back to cart button
+      document.getElementById('back-to-cart-btn').addEventListener('click', () => {
+        document.getElementById('order-request-section').style.display = 'none';
+        SVKCart.renderCartPage();
+      });
 
-    function updateQuantity(index, newQty) {
-      let cart = JSON.parse(localStorage.getItem("cart")) || [];
-      cart[index].quantity = parseInt(newQty);
-      localStorage.setItem("cart", JSON.stringify(cart));
-      loadCart();
-    }
+      // Order form submission
+      document.getElementById('order-form').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const btn = document.getElementById('order-submit-btn');
+        btn.disabled = true;
+        btn.textContent = 'Submitting...';
 
-    function removeItem(index) {
-      let cart = JSON.parse(localStorage.getItem("cart")) || [];
-      cart.splice(index, 1);
-      localStorage.setItem("cart", JSON.stringify(cart));
-      loadCart();
-    }
+        const cart        = SVKCart.getCart();
+        const vehicle     = document.getElementById('order-vehicle').value.trim();
+        const notes       = document.getElementById('order-notes').value.trim();
+        const baseNote    = [vehicle && `Vehicle: ${vehicle}`, notes].filter(Boolean).join('\n');
+        const isConfigured = !this.action.includes('YOUR_FORMSPREE');
 
-    loadCart();
+        let formspreeOk = false;
+        try {
+          if (isConfigured) {
+            const response = await fetch(this.action, {
+              method: 'POST',
+              body: new FormData(this),
+              headers: { 'Accept': 'application/json' }
+            });
+            formspreeOk = response.ok;
+          }
+        } catch { /* network error — fall through to Supabase */ }
+
+        // Save to Supabase if signed in (works regardless of Formspree)
+        let supabaseOk = false;
+        await SVKAuth.ready;
+        if (SVKAuth.configured) {
+          const session = await SVKAuth.getSession();
+          if (session) {
+            for (const item of cart) {
+              await SVKAuth.saveOrder({
+                product:    item.name,
+                options:    item.options || {},
+                totalPrice: item.price * item.quantity,
+                notes:      baseNote,
+              });
+            }
+            supabaseOk = true;
+          }
+        }
+
+        if (formspreeOk || supabaseOk) {
+          SVKCart.clearCart();
+          document.getElementById('order-request-section').style.display = 'none';
+
+          // Show "View in Account" if order was saved to account
+          if (supabaseOk) {
+            const actions = document.getElementById('order-success-actions');
+            actions.insertAdjacentHTML('afterbegin',
+              `<a href="account.html" class="btn btn-primary">View in Account</a>`
+            );
+          }
+
+          document.getElementById('order-success-section').style.display = 'block';
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        } else {
+          document.getElementById('order-error').style.display = 'block';
+          btn.disabled = false;
+          btn.textContent = 'Submit Order Request';
+        }
+      });
+    });
   </script>
-  
-  <script src="cart.js"></script>
 </body>
 </html>

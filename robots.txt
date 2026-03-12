@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+Disallow: /admin.html
+Disallow: /account.html
+Disallow: /login.html
+Disallow: /cart.html
+Disallow: /search.html
+Disallow: /product.html
+
+Sitemap: https://svkworks.com/sitemap.xml
