@@ -8,7 +8,7 @@ const SVKComponents = {
   // ─── Google Analytics 4 ───────────────────────────────────────────────────
   // Replace G-XXXXXXXXXX with your GA4 Measurement ID from analytics.google.com
   // Go to: Admin → Data Streams → select your stream → copy the Measurement ID
-  GA_ID: 'G-XXXXXXXXXX',
+  GA_ID: 'G-RPE47LV27L',
 
   _loadAnalytics() {
     if (!this.GA_ID || this.GA_ID === 'G-XXXXXXXXXX') return; // not yet configured
