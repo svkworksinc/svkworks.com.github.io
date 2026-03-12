@@ -28,6 +28,7 @@
   :root {
     --space-4xl: 3rem;
     --space-3xl: 2.5rem;
+    --header-top-height: 0px; /* top bar hidden on mobile */
   }
 
   .container {
@@ -38,32 +39,18 @@
   h2 { font-size: var(--text-2xl); }
   h3 { font-size: var(--text-xl); }
 
-  /* Header mobile — keep top links visible */
+  /* Hide header top bar on mobile — saves 36px of screen space */
   .header-top {
-    height: auto;
-    padding: var(--space-xs) 0;
+    display: none;
   }
 
-  .header-top-content {
-    flex-direction: column;
-    gap: var(--space-xs);
-    text-align: center;
-  }
-
-  .header-notice {
-    font-size: 10px;
-  }
-
-  .header-top-links {
-    gap: var(--space-md);
-  }
-
+  /* Adjust page/hero top margin since top bar is hidden */
   .page-hero {
-    margin-top: calc(var(--header-height) + var(--header-top-height));
+    margin-top: var(--header-height);
   }
 
   .hero {
-    margin-top: calc(var(--header-height) + var(--header-top-height));
+    margin-top: var(--header-height);
   }
 
   .nav-toggle {
@@ -91,9 +78,24 @@
   }
 
   .nav-link {
-    padding: 0.75rem var(--space-md);
+    padding: 0.875rem var(--space-md);
     font-size: var(--text-base);
     border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  /* Chevron indicator for dropdowns */
+  .has-dropdown > .nav-link .nav-chevron {
+    transition: transform var(--transition-base);
+    flex-shrink: 0;
+    opacity: 0.6;
+  }
+
+  .has-dropdown.open > .nav-link .nav-chevron {
+    transform: rotate(180deg);
+    opacity: 1;
   }
 
   .dropdown {
@@ -114,18 +116,30 @@
     max-height: 400px;
   }
 
+  /* Larger touch targets for dropdown links */
   .dropdown li a {
-    padding: 0.5rem var(--space-md);
+    padding: 0.75rem var(--space-md);
+    display: block;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
   }
 
   /* Hero mobile */
   .hero {
     min-height: auto;
     padding: var(--space-3xl) 0;
+    /* Remove fixed attachment — causes flickering on iOS */
+    background-attachment: scroll !important;
+  }
+
+  /* Also fix any section with fixed background */
+  section[style*="fixed"] {
+    background-attachment: scroll !important;
   }
 
   .hero-content h1 {
-    font-size: clamp(2rem, 6vw, 2.5rem);
+    font-size: clamp(1.75rem, 6vw, 2.5rem);
   }
 
   .hero-stats {

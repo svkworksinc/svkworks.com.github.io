@@ -78,6 +78,13 @@ const SVKComponents = {
     const searchInput = document.getElementById('search-input');
     const header = document.getElementById('site-header');
 
+    // Mobile menu helpers
+    const closeMenu = () => {
+      menu.classList.remove('active');
+      toggle.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+    };
+
     // Mobile menu toggle
     if (toggle && menu) {
       toggle.addEventListener('click', () => {
@@ -96,6 +103,27 @@ const SVKComponents = {
           link.parentElement.classList.toggle('open');
         }
       });
+    });
+
+    // Auto-close mobile menu when a non-dropdown link is tapped
+    document.querySelectorAll('.nav-menu a').forEach(link => {
+      link.addEventListener('click', () => {
+        if (window.innerWidth <= 768) {
+          // Only close if this is a real navigation link (not a dropdown toggle)
+          const isDropdownToggle = link.classList.contains('nav-link') &&
+                                   link.closest('.has-dropdown');
+          if (!isDropdownToggle) {
+            closeMenu();
+          }
+        }
+      });
+    });
+
+    // Close menu on Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && menu && menu.classList.contains('active')) {
+        closeMenu();
+      }
     });
 
     // Search overlay
