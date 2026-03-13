@@ -46,14 +46,24 @@
     "sku": "SVK-SC300-HARNESS",
     "mpn": "SVK-SC300-HARNESS",
     "offers": {
-      "@type": "AggregateOffer",
+      "@type": "Offer",
       "priceCurrency": "USD",
-      "lowPrice": "950.00",
-      "highPrice": "1500.00",
-      "offerCount": "4",
+      "price": "1500.00",
       "availability": "https://schema.org/InStock",
       "url": "https://svkworks.com/sc300.html",
-      "seller": { "@type": "Organization", "name": "SVK Works" }
+      "priceValidUntil": "2027-12-31",
+      "itemCondition": "https://schema.org/NewCondition",
+      "seller": { "@type": "Organization", "name": "SVK Works" },
+      "shippingDetails": {
+        "@type": "OfferShippingDetails",
+        "shippingDestination": { "@type": "DefinedRegion", "addressCountry": "US" },
+        "deliveryLeadTime": {
+          "@type": "QuantitativeValue",
+          "minValue": 5,
+          "maxValue": 8,
+          "unitCode": "WEE"
+        }
+      }
     }
   }
   </script>
