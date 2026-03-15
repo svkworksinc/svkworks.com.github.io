@@ -8,8 +8,8 @@ const SVK_FOOTER_HTML = `
   <div class="container">
     <div class="footer-grid">
       <div class="footer-col footer-about">
-        <a href="index.html" class="footer-logo">
-          <img src="img/svk-logo.png" alt="SVK Works" class="logo-img">
+        <a href="/" class="footer-logo">
+          <img src="/img/svk-logo.png" alt="SVK Works" class="logo-img">
         </a>
         <p>Custom standalone wiring harnesses built to order. Specializing in JDM platforms — 2JZ, 1JZ, 1UZ and beyond.</p>
         <div class="footer-social">
@@ -27,33 +27,33 @@ const SVK_FOOTER_HTML = `
       <div class="footer-col">
         <h4>Products</h4>
         <ul>
-          <li><a href="harnesses.html">All Harnesses</a></li>
-          <li><a href="mk4-supra.html">MK4 Supra</a></li>
-          <li><a href="mk3-supra.html">MK3 Supra</a></li>
-          <li><a href="sc300.html">SC300 / SC400 / Soarer</a></li>
-          <li><a href="connectors.html">Connectors</a></li>
-          <li><a href="other-parts.html">Other Parts</a></li>
+          <li><a href="/harnesses.html">All Harnesses</a></li>
+          <li><a href="/mk4-supra.html">MK4 Supra</a></li>
+          <li><a href="/mk3-supra.html">MK3 Supra</a></li>
+          <li><a href="/sc300.html">SC300 / SC400 / Soarer</a></li>
+          <li><a href="/connectors.html">Connectors</a></li>
+          <li><a href="/other-parts.html">Other Parts</a></li>
         </ul>
       </div>
       <div class="footer-col">
         <h4>Resources</h4>
         <ul>
-          <li><a href="resources.html">Wiring Diagrams</a></li>
-          <li><a href="blog.html">Blog</a></li>
-          <li><a href="builds.html">Builds Gallery</a></li>
-          <li><a href="faq.html">FAQ</a></li>
-          <li><a href="support.html">Support</a></li>
-          <li><a href="contact.html">Contact Us</a></li>
+          <li><a href="/resources.html">Wiring Diagrams</a></li>
+          <li><a href="/blog.html">Blog</a></li>
+          <li><a href="/builds.html">Builds Gallery</a></li>
+          <li><a href="/faq.html">FAQ</a></li>
+          <li><a href="/support.html">Support</a></li>
+          <li><a href="/contact.html">Contact Us</a></li>
         </ul>
       </div>
       <div class="footer-col">
         <h4>Company</h4>
         <ul>
-          <li><a href="about.html">About SVK</a></li>
-          <li><a href="terms.html">Terms &amp; Conditions</a></li>
-          <li><a href="terms.html#privacy">Privacy Policy</a></li>
-          <li><a href="terms.html#returns">Return Policy</a></li>
-          <li><a href="terms.html#shipping">Shipping Info</a></li>
+          <li><a href="/about.html">About SVK</a></li>
+          <li><a href="/terms.html">Terms &amp; Conditions</a></li>
+          <li><a href="/terms.html#privacy">Privacy Policy</a></li>
+          <li><a href="/terms.html#returns">Return Policy</a></li>
+          <li><a href="/terms.html#shipping">Shipping Info</a></li>
         </ul>
       </div>
     </div>
