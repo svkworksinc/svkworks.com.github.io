@@ -59,7 +59,7 @@ const SVK_HEADER_HTML = `
           <li class="nav-item has-dropdown">
             <a href="connectors.html" class="nav-link">Connectors<svg class="nav-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-left:4px"><polyline points="6 9 12 15 18 9"/></svg></a>
             <ul class="dropdown">
-              <li><a href="connectors.html">OEM Connector Kits</a></li>
+              <li><a href="connectors.html">MK4 Supra Connectors</a></li>
               <li><a href="connectors.html#deutsch">Deutsch / Mil-Spec</a></li>
               <li><a href="milspec-connector.html">Autosport Upgrade</a></li>
             </ul>
