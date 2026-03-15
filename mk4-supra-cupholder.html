@@ -91,6 +91,9 @@
               <div class="product-thumb active" onclick="goToSlide(0)">
                 <img src="img/supraCupHolder.jpg" alt="MK4 Supra cupholder view 1">
               </div>
+              <div class="product-thumb" onclick="goToSlide(1)">
+                <img src="img/supraCupHolder2.jpg" alt="MK4 Supra cupholder view 2">
+              </div>
             </div>
           </div>
 
@@ -254,7 +257,7 @@
   <script>
     // === Image Slider ===
     let currentSlide = 0;
-    const slides = ['img/builder.jpg'];
+    const slides = ['img/supraCupHolder.jpg', 'img/supraCupHolder2.jpg'];
 
     function changeSlide(dir) {
       currentSlide = (currentSlide + dir + slides.length) % slides.length;
@@ -289,7 +292,7 @@
           id: 'mk4-supra-cupholder',
           name: 'MK4 Supra 3D Printed Cupholder',
           price: 45,
-          image: 'img/builder.jpg',
+          image: 'img/supraCupHolder.jpg',
           options: { Color: color }
         });
       } else {
