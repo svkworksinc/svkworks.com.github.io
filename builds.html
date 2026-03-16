@@ -36,7 +36,7 @@
 <body>
   <div id="header-placeholder"></div>
 
-  <main>
+  <main id="main-content">
     <div class="page-hero">
       <div class="container">
         <div class="breadcrumb">
@@ -282,7 +282,7 @@
 
         document.getElementById('build-detail-content').innerHTML = `
           <a href="builds.html" class="btn btn-ghost" style="margin-bottom:var(--space-lg);">&larr; Back to Gallery</a>
-          <img src="${build.image}" alt="${build.title}" style="width:100%;border-radius:var(--radius-lg);margin-bottom:var(--space-2xl);">
+          <img src="${build.image}" alt="${build.title}" style="width:100%;border-radius:var(--radius-lg);margin-bottom:var(--space-2xl);" loading="lazy">
           <div style="display:flex;align-items:center;gap:var(--space-md);margin-bottom:var(--space-md);">
             <span class="badge">${build.type === 'shop' ? 'SVK Build' : 'Customer Build'}</span>
             <span class="text-muted">${build.owner}</span>
