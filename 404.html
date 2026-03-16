@@ -54,5 +54,27 @@
   <script defer src="/js/products.js"></script>
   <script defer src="/js/search.js"></script>
   <script defer src="/js/main.js"></script>
+  <script>
+    (function () {
+      var redirects = {
+        '/wiringharnesses/sc300-sc400.html': '/sc300.html',
+        '/wiringharnesses/race-spec-harness.html': '/harnesses.html',
+        '/wiringharnesses/supra-mk4-2jz-harness.html': '/mk4-supra.html',
+        '/wiringharnesses/supra-mk3-harness.html': '/mk3-supra.html',
+        '/resources/resources.html': '/resources.html',
+        '/services/services.html': '/services.html',
+      };
+      var path = window.location.pathname;
+      if (redirects[path]) {
+        window.location.replace(redirects[path]);
+        return;
+      }
+      // Generic fallback: /any-dir/page.html → /page.html
+      var m = path.match(/^\/[^/]+\/([^/]+\.html)$/);
+      if (m) {
+        window.location.replace('/' + m[1]);
+      }
+    })();
+  </script>
 </body>
 </html>
