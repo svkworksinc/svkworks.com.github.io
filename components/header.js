@@ -4,6 +4,7 @@
    ============================================ */
 
 const SVK_HEADER_HTML = `
+<a href="#main-content" class="skip-to-content">Skip to main content</a>
 <header class="site-header" id="site-header">
   <div class="header-top">
     <div class="container">
@@ -29,7 +30,7 @@ const SVK_HEADER_HTML = `
         </button>
         <ul class="nav-menu" id="nav-menu">
           <li class="nav-item has-dropdown">
-            <a href="/harnesses.html" class="nav-link">Harnesses</a>
+            <a href="/harnesses.html" class="nav-link" aria-haspopup="true">Harnesses</a>
             <ul class="dropdown">
               <li><a href="/mk4-supra.html">MK4 Supra</a></li>
               <li><a href="/mk3-supra.html">MK3 Supra</a></li>
@@ -38,7 +39,7 @@ const SVK_HEADER_HTML = `
             </ul>
           </li>
           <li class="nav-item has-dropdown">
-            <a href="/services.html" class="nav-link">Services</a>
+            <a href="/services.html" class="nav-link" aria-haspopup="true">Services</a>
             <ul class="dropdown">
               <li><a href="/service-custom-harness.html">Custom Harness Design</a></li>
               <li><a href="/service-connector-assembly.html">Connector Assembly</a></li>
@@ -50,14 +51,14 @@ const SVK_HEADER_HTML = `
             </ul>
           </li>
           <li class="nav-item has-dropdown">
-            <a href="/other-parts.html" class="nav-link">Parts</a>
+            <a href="/other-parts.html" class="nav-link" aria-haspopup="true">Parts</a>
             <ul class="dropdown">
               <li><a href="/3d-parts.html">3D Parts</a></li>
               <li><a href="/other-parts.html">Other Parts</a></li>
             </ul>
           </li>
           <li class="nav-item has-dropdown">
-            <a href="/connectors.html" class="nav-link">Connectors</a>
+            <a href="/connectors.html" class="nav-link" aria-haspopup="true">Connectors</a>
             <ul class="dropdown">
               <li><a href="/connectors.html">MK4 Supra Connectors</a></li>
               <li><a href="/connectors.html#deutsch">Deutsch / Mil-Spec</a></li>

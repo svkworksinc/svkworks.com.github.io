@@ -324,3 +324,22 @@ main {
 .breadcrumb-sep {
   color: var(--text-muted);
 }
+
+/* Skip to main content — accessibility */
+.skip-to-content {
+  position: absolute;
+  top: -100%;
+  left: var(--space-md);
+  padding: var(--space-sm) var(--space-lg);
+  background: var(--magenta);
+  color: #fff;
+  font-weight: 600;
+  font-size: var(--text-sm);
+  border-radius: var(--radius-md);
+  z-index: 9999;
+  text-decoration: none;
+  transition: top 0.1s;
+}
+.skip-to-content:focus {
+  top: var(--space-md);
+}

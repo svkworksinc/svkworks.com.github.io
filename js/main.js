@@ -38,6 +38,7 @@ const SVKMain = {
 
   initAccordions() {
     document.querySelectorAll('.accordion-header').forEach(header => {
+      header.setAttribute('aria-expanded', 'false');
       header.addEventListener('click', () => {
         const item = header.parentElement;
         const body = item.querySelector('.accordion-body');
@@ -49,12 +50,15 @@ const SVKMain = {
           i.classList.remove('active');
           const b = i.querySelector('.accordion-body');
           if (b) b.style.maxHeight = null;
+          const h = i.querySelector('.accordion-header');
+          if (h) h.setAttribute('aria-expanded', 'false');
         });
 
         // Toggle current
         if (!isActive) {
           item.classList.add('active');
           if (body) body.style.maxHeight = body.scrollHeight + 'px';
+          header.setAttribute('aria-expanded', 'true');
         }
       });
     });

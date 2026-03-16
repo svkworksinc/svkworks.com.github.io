@@ -21,6 +21,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
   <link rel="stylesheet" href="css/style.css">
   <link rel="icon" href="img/svk-icon.png" type="image/png">
+  <link rel="alternate" type="application/rss+xml" title="SVK Works Blog" href="https://svkworks.com/blog.xml">
   <!-- Breadcrumb Schema -->
   <script type="application/ld+json">
   {
@@ -36,7 +37,7 @@
 <body>
   <div id="header-placeholder"></div>
 
-  <main>
+  <main id="main-content">
     <div class="page-hero">
       <div class="container">
         <div class="breadcrumb">
@@ -153,7 +154,7 @@
             <span class="text-muted">by ${post.author}</span>
           </div>
           <h1 style="margin-bottom:var(--space-xl);">${post.title}</h1>
-          <img src="${post.image}" alt="${post.title}" style="border-radius:var(--radius-lg);margin-bottom:var(--space-2xl);width:100%;">
+          <img src="${post.image}" alt="${post.title}" style="border-radius:var(--radius-lg);margin-bottom:var(--space-2xl);width:100%;" loading="lazy">
           <div class="blog-content" style="color:var(--text-secondary);line-height:var(--leading-normal);font-size:var(--text-lg);">
             ${post.content}
           </div>
