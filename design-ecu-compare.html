@@ -1,0 +1,1292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Standalone ECU Comparison | SVK Works</title>
+  <meta name="description" content="Compare the most popular standalone ECUs for 2JZ, 1UZ, RB, SR20, and other JDM builds. Filter by budget and use case to find the right ECU for your engine swap or track build.">
+  <meta property="og:site_name" content="SVK Works">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Standalone ECU Comparison | SVK Works">
+  <meta property="og:description" content="Compare popular standalone ECUs for JDM builds. Filter by budget, use case, and features.">
+  <meta property="og:url" content="https://www.svkworks.com/design-ecu-compare.html">
+  <link rel="canonical" href="https://www.svkworks.com/design-ecu-compare.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="img/svk-icon.png" type="image/png">
+  <style>
+    :root {
+      --bg-primary: #0a0a0f;
+      --bg-secondary: #111118;
+      --bg-card: #16161f;
+      --bg-card-hover: #1c1c28;
+      --bg-elevated: #1e1e2a;
+      --magenta: #e91e8c;
+      --magenta-dark: #c4176f;
+      --magenta-light: #f54daa;
+      --magenta-glow: rgba(233,30,140,0.35);
+      --magenta-subtle: rgba(233,30,140,0.08);
+      --text-primary: #f0f0f5;
+      --text-secondary: #a0a0b5;
+      --text-muted: #6b6b80;
+      --border-color: rgba(255,255,255,0.08);
+      --border-hover: rgba(255,255,255,0.15);
+      --border-magenta: rgba(233,30,140,0.3);
+      --success: #22c55e;
+      --warning: #f59e0b;
+      --error: #ef4444;
+      --radius-sm: 4px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      --radius-xl: 16px;
+      --radius-full: 9999px;
+      --transition-base: 250ms ease;
+      --shadow-magenta: 0 4px 20px rgba(233,30,140,0.25);
+    }
+
+    /* ── Design concept badge ── */
+    .design-concept-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(233,30,140,0.12);
+      border: 1px solid var(--border-magenta);
+      color: var(--magenta-light);
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 5px 12px;
+      border-radius: var(--radius-full);
+      margin-bottom: 1.5rem;
+    }
+    .design-concept-badge::before {
+      content: '';
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--magenta);
+      animation: pulse-dot 1.8s ease-in-out infinite;
+    }
+    @keyframes pulse-dot {
+      0%,100% { opacity: 1; transform: scale(1); }
+      50%      { opacity: 0.5; transform: scale(1.4); }
+    }
+
+    /* ── Hero ── */
+    .page-hero {
+      background: var(--bg-secondary);
+      padding: 5rem 0 3rem;
+      border-bottom: 1px solid var(--border-color);
+      position: relative;
+      overflow: hidden;
+    }
+    .page-hero::after {
+      content: '';
+      position: absolute;
+      top: -80px;
+      right: -80px;
+      width: 480px;
+      height: 480px;
+      background: radial-gradient(circle, rgba(233,30,140,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .page-hero .container { position: relative; z-index: 1; }
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 1.5rem;
+    }
+    .breadcrumb a { color: var(--text-muted); text-decoration: none; }
+    .breadcrumb a:hover { color: var(--text-secondary); }
+    .breadcrumb-sep { color: var(--text-muted); opacity: 0.5; }
+    .page-hero h1 {
+      font-size: clamp(2rem, 4vw, 2.75rem);
+      font-weight: 700;
+      margin: 0 0 0.75rem;
+      line-height: 1.2;
+      color: var(--text-primary);
+    }
+    .page-hero .hero-sub {
+      font-size: 1.05rem;
+      color: var(--text-secondary);
+      max-width: 640px;
+      line-height: 1.6;
+      margin: 0 0 1rem;
+    }
+    .hero-note {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .hero-note::before {
+      content: 'ℹ';
+      font-size: 0.85rem;
+      color: var(--magenta-light);
+      opacity: 0.7;
+    }
+
+    /* ── Filter bar ── */
+    .filter-bar-wrap {
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border-color);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+    }
+    .filter-bar {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      padding: 0.85rem 0;
+      flex-wrap: wrap;
+    }
+    .filter-group {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .filter-group-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      white-space: nowrap;
+    }
+    .filter-pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 5px 14px;
+      border-radius: var(--radius-full);
+      border: 1px solid var(--border-color);
+      background: transparent;
+      color: var(--text-secondary);
+      font-size: 0.8rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition-base);
+      font-family: inherit;
+    }
+    .filter-pill:hover {
+      border-color: var(--border-hover);
+      color: var(--text-primary);
+    }
+    .filter-pill.active {
+      background: var(--magenta);
+      border-color: var(--magenta);
+      color: #fff;
+    }
+    @media (max-width: 640px) {
+      .filter-bar { gap: 1rem; padding: 0.75rem 0; }
+      .filter-group { gap: 0.375rem; }
+      .filter-pill { padding: 4px 10px; font-size: 0.75rem; }
+    }
+
+    /* ── ECU Grid ── */
+    .ecu-section {
+      padding: 3rem 0;
+      background: var(--bg-primary);
+    }
+    .ecu-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.25rem;
+    }
+    @media (max-width: 960px) {
+      .ecu-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 600px) {
+      .ecu-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ── ECU Card ── */
+    .ecu-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-xl);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      transition: var(--transition-base);
+    }
+    .ecu-card:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--border-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    }
+    .ecu-card.filtered-out {
+      opacity: 0.35;
+      pointer-events: none;
+    }
+
+    /* Brand badge */
+    .brand-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4px 10px;
+      border-radius: var(--radius-sm);
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      align-self: flex-start;
+    }
+    .brand-ecumaster { background: rgba(0,120,212,0.18); color: #4da6ff; border: 1px solid rgba(0,120,212,0.3); }
+    .brand-maxxecu  { background: rgba(255,140,0,0.15); color: #ffaa44; border: 1px solid rgba(255,140,0,0.3); }
+    .brand-haltech  { background: rgba(34,197,94,0.15); color: #4ade80; border: 1px solid rgba(34,197,94,0.3); }
+    .brand-link     { background: rgba(168,85,247,0.15); color: #c084fc; border: 1px solid rgba(168,85,247,0.3); }
+    .brand-motec    { background: rgba(239,68,68,0.15); color: #f87171; border: 1px solid rgba(239,68,68,0.3); }
+
+    .ecu-card-header { display: flex; flex-direction: column; gap: 0.5rem; }
+    .ecu-name {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.25;
+    }
+    .ecu-price {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--magenta-light);
+    }
+
+    .ecu-meta {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .difficulty-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 10px;
+      border-radius: var(--radius-full);
+      font-size: 0.72rem;
+      font-weight: 600;
+    }
+    .diff-beginner     { background: rgba(34,197,94,0.15); color: var(--success); border: 1px solid rgba(34,197,94,0.25); }
+    .diff-intermediate { background: rgba(245,158,11,0.15); color: var(--warning); border: 1px solid rgba(245,158,11,0.25); }
+    .diff-advanced     { background: rgba(239,68,68,0.15); color: var(--error); border: 1px solid rgba(239,68,68,0.25); }
+
+    /* Quick stats pills */
+    .quick-stats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.375rem;
+    }
+    .stat-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      padding: 3px 8px;
+      font-size: 0.72rem;
+      color: var(--text-secondary);
+      white-space: nowrap;
+    }
+    .stat-pill .label { color: var(--text-muted); }
+
+    /* Feature list */
+    .feature-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+    .feature-list li {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .feature-list li::before {
+      content: '✓';
+      color: var(--success);
+      font-size: 0.75rem;
+      flex-shrink: 0;
+    }
+
+    .ecu-best-for {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      font-style: italic;
+      padding-top: 0.25rem;
+      border-top: 1px solid var(--border-color);
+    }
+    .ecu-best-for strong { color: var(--text-secondary); font-style: normal; }
+
+    .ecu-card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin-top: auto;
+    }
+    .svk-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: var(--radius-full);
+    }
+    .svk-badge.available {
+      background: var(--magenta-subtle);
+      color: var(--magenta-light);
+      border: 1px solid var(--border-magenta);
+    }
+    .svk-badge.on-request {
+      background: rgba(255,255,255,0.04);
+      color: var(--text-muted);
+      border: 1px solid var(--border-color);
+    }
+
+    .btn-expand {
+      background: transparent;
+      border: 1px solid var(--border-color);
+      color: var(--text-secondary);
+      font-size: 0.78rem;
+      font-weight: 500;
+      padding: 6px 14px;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: var(--transition-base);
+      font-family: inherit;
+      white-space: nowrap;
+    }
+    .btn-expand:hover {
+      border-color: var(--magenta);
+      color: var(--magenta-light);
+    }
+    .btn-expand.expanded {
+      background: var(--magenta-subtle);
+      border-color: var(--border-magenta);
+      color: var(--magenta-light);
+    }
+
+    /* Expanded details */
+    .ecu-details {
+      display: none;
+      border-top: 1px solid var(--border-color);
+      padding-top: 1rem;
+      margin-top: 0.25rem;
+    }
+    .ecu-details.open { display: block; }
+    .details-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.5rem 1rem;
+      font-size: 0.78rem;
+    }
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 4px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+    .detail-label { color: var(--text-muted); }
+    .detail-value { color: var(--text-primary); font-weight: 500; text-align: right; }
+
+    /* ── Comparison Table ── */
+    .table-section {
+      padding: 2rem 0 3rem;
+      background: var(--bg-secondary);
+      border-top: 1px solid var(--border-color);
+    }
+    .section-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin: 0 0 0.5rem;
+    }
+    .section-sub {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin: 0 0 1.5rem;
+    }
+
+    .table-toggle-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+      font-weight: 500;
+      padding: 10px 20px;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: var(--transition-base);
+      font-family: inherit;
+      margin-bottom: 1.5rem;
+    }
+    .table-toggle-btn:hover {
+      border-color: var(--magenta);
+      color: var(--magenta-light);
+    }
+    .table-toggle-btn .chevron {
+      transition: transform 250ms ease;
+      font-size: 0.75rem;
+    }
+    .table-toggle-btn.open .chevron { transform: rotate(180deg); }
+
+    .table-wrap {
+      display: none;
+      overflow-x: auto;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+    }
+    .table-wrap.open { display: block; }
+
+    .compare-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.8rem;
+      min-width: 740px;
+    }
+    .compare-table th, .compare-table td {
+      padding: 9px 14px;
+      text-align: center;
+      border-bottom: 1px solid var(--border-color);
+      white-space: nowrap;
+    }
+    .compare-table th {
+      background: var(--bg-elevated);
+      color: var(--text-secondary);
+      font-weight: 600;
+      font-size: 0.75rem;
+    }
+    .compare-table td:first-child,
+    .compare-table th:first-child {
+      text-align: left;
+      position: sticky;
+      left: 0;
+      background: var(--bg-card);
+      font-weight: 600;
+      color: var(--text-primary);
+      z-index: 2;
+      min-width: 160px;
+    }
+    .compare-table th:first-child {
+      background: var(--bg-elevated);
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+    .compare-table tbody tr:nth-child(even) td { background: var(--bg-elevated); }
+    .compare-table tbody tr:nth-child(even) td:first-child { background: var(--bg-elevated); }
+    .compare-table tbody tr:last-child td { border-bottom: none; }
+    .compare-table .check { color: var(--success); font-size: 1rem; }
+    .compare-table .dash  { color: var(--text-muted); }
+    .compare-table .on-req { color: var(--warning); font-size: 0.72rem; }
+    .compare-table td { color: var(--text-secondary); }
+
+    /* ── Quiz ── */
+    .quiz-section {
+      padding: 3rem 0;
+      background: var(--bg-primary);
+      border-top: 1px solid var(--border-color);
+    }
+    .quiz-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-magenta);
+      border-radius: var(--radius-xl);
+      padding: 2.5rem;
+      max-width: 680px;
+      margin: 0 auto;
+    }
+    .quiz-progress {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 2rem;
+    }
+    .quiz-progress-label {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+    .quiz-progress-bar-wrap {
+      flex: 1;
+      height: 4px;
+      background: rgba(255,255,255,0.06);
+      border-radius: var(--radius-full);
+      margin: 0 1rem;
+      overflow: hidden;
+    }
+    .quiz-progress-bar {
+      height: 100%;
+      background: var(--magenta);
+      border-radius: var(--radius-full);
+      transition: width 400ms ease;
+    }
+
+    .quiz-question {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin: 0 0 1.25rem;
+      line-height: 1.4;
+    }
+    .quiz-options {
+      display: flex;
+      flex-direction: column;
+      gap: 0.625rem;
+    }
+    .quiz-option {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-color);
+      color: var(--text-secondary);
+      font-size: 0.88rem;
+      font-weight: 500;
+      padding: 12px 18px;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: var(--transition-base);
+      text-align: left;
+      font-family: inherit;
+      width: 100%;
+    }
+    .quiz-option:hover {
+      border-color: var(--border-magenta);
+      color: var(--text-primary);
+      background: var(--bg-card-hover);
+    }
+    .quiz-option.selected {
+      background: var(--magenta-subtle);
+      border-color: var(--magenta);
+      color: var(--magenta-light);
+    }
+
+    .quiz-step { display: none; }
+    .quiz-step.active { display: block; }
+
+    /* Result */
+    .quiz-result { display: none; }
+    .quiz-result.active { display: block; }
+    .result-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--magenta-light);
+      margin-bottom: 0.75rem;
+    }
+    .result-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin: 0 0 1.25rem;
+    }
+    .result-ecus {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+    .result-ecu-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 1rem 1.25rem;
+      gap: 1rem;
+    }
+    .result-ecu-card.primary { border-color: var(--magenta); background: var(--magenta-subtle); }
+    .result-ecu-name { font-size: 1rem; font-weight: 700; color: var(--text-primary); }
+    .result-ecu-price { font-size: 0.85rem; color: var(--magenta-light); font-weight: 600; }
+    .result-ecu-tag { font-size: 0.72rem; color: var(--text-muted); margin-top: 2px; }
+    .result-match-badge {
+      background: var(--magenta);
+      color: #fff;
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: var(--radius-full);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      flex-shrink: 0;
+    }
+    .result-runnerup-badge {
+      background: rgba(255,255,255,0.06);
+      color: var(--text-muted);
+      font-size: 0.68rem;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: var(--radius-full);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      flex-shrink: 0;
+    }
+
+    .quiz-restart {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      cursor: pointer;
+      font-family: inherit;
+      text-decoration: underline;
+      text-decoration-color: transparent;
+      transition: var(--transition-base);
+      padding: 0;
+    }
+    .quiz-restart:hover { color: var(--text-secondary); text-decoration-color: var(--text-secondary); }
+
+    /* ── SVK Note ── */
+    .svk-note-section {
+      padding: 2.5rem 0 3rem;
+      background: var(--bg-secondary);
+      border-top: 1px solid var(--border-color);
+    }
+    .svk-note-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-magenta);
+      border-radius: var(--radius-xl);
+      padding: 2rem 2.25rem;
+      max-width: 780px;
+      margin: 0 auto;
+      display: flex;
+      gap: 1.5rem;
+      align-items: flex-start;
+    }
+    .svk-note-icon {
+      font-size: 1.5rem;
+      flex-shrink: 0;
+      margin-top: 2px;
+      line-height: 1;
+    }
+    .svk-note-body p {
+      font-size: 0.92rem;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      margin: 0 0 1rem;
+    }
+    .svk-note-body a {
+      color: var(--magenta-light);
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .svk-note-body a:hover { text-decoration: underline; }
+    @media (max-width: 600px) {
+      .svk-note-card { flex-direction: column; gap: 1rem; padding: 1.5rem; }
+      .quiz-card { padding: 1.5rem; }
+    }
+
+    /* ── Shared container ── */
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }
+  </style>
+</head>
+<body>
+  <div id="header-placeholder"></div>
+
+  <!-- Hero -->
+  <section class="page-hero">
+    <div class="container">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="/">Home</a>
+        <span class="breadcrumb-sep">›</span>
+        <span>Resources</span>
+        <span class="breadcrumb-sep">›</span>
+        <span>ECU Comparison</span>
+      </nav>
+      <div class="design-concept-badge">Design Concept — Interactive Mockup</div>
+      <h1>Standalone ECU Comparison</h1>
+      <p class="hero-sub">Compare the most popular standalone ECUs for 2JZ, 1UZ, and SR-series builds. Filter by budget, use case, and features to find your match.</p>
+      <p class="hero-note">All prices are approximate USD. Specs sourced from manufacturer documentation.</p>
+    </div>
+  </section>
+
+  <!-- Filter bar -->
+  <div class="filter-bar-wrap">
+    <div class="container">
+      <div class="filter-bar">
+        <div class="filter-group">
+          <span class="filter-group-label">Budget</span>
+          <button class="filter-pill active" data-budget="all" onclick="setFilter('budget','all')">All</button>
+          <button class="filter-pill" data-budget="under-800" onclick="setFilter('budget','under-800')">Under $800</button>
+          <button class="filter-pill" data-budget="800-1200" onclick="setFilter('budget','800-1200')">$800–$1,200</button>
+          <button class="filter-pill" data-budget="1200-plus" onclick="setFilter('budget','1200-plus')">$1,200+</button>
+        </div>
+        <div class="filter-group">
+          <span class="filter-group-label">Use Case</span>
+          <button class="filter-pill active" data-usecase="all" onclick="setFilter('usecase','all')">All</button>
+          <button class="filter-pill" data-usecase="street" onclick="setFilter('usecase','street')">Street</button>
+          <button class="filter-pill" data-usecase="track" onclick="setFilter('usecase','track')">Track Day</button>
+          <button class="filter-pill" data-usecase="time-attack" onclick="setFilter('usecase','time-attack')">Time Attack</button>
+          <button class="filter-pill" data-usecase="race" onclick="setFilter('usecase','race')">Race</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ECU Grid -->
+  <section class="ecu-section">
+    <div class="container">
+      <div class="ecu-grid" id="ecuGrid">
+
+        <!-- ECUMaster EMU Black -->
+        <div class="ecu-card" data-budget="under-800" data-usecase="street track">
+          <div class="ecu-card-header">
+            <span class="brand-badge brand-ecumaster">ECUMaster</span>
+            <div class="ecu-name">EMU Black</div>
+            <div class="ecu-price">~$599 – $749</div>
+          </div>
+          <div class="ecu-meta">
+            <span class="difficulty-badge diff-intermediate">Intermediate</span>
+          </div>
+          <div class="quick-stats">
+            <span class="stat-pill"><span class="label">I/O</span> 12A / 8D / 8inj / 8ign</span>
+            <span class="stat-pill"><span class="label">WB</span> Add-on</span>
+            <span class="stat-pill"><span class="label">Log</span> 8 MB</span>
+            <span class="stat-pill"><span class="label">SW</span> ECUMaster</span>
+          </div>
+          <ul class="feature-list">
+            <li>Flex Fuel</li>
+            <li>Traction Control &amp; Launch Control</li>
+            <li>Anti-lag &amp; Boost Control</li>
+            <li>VVT Control &amp; Drive-by-Wire</li>
+            <li>CAN Bus &amp; Knock Control</li>
+          </ul>
+          <div class="ecu-best-for"><strong>Best for:</strong> Budget builds that need full features</div>
+          <div class="ecu-card-footer">
+            <span class="svk-badge available">✓ SVK Harness Available</span>
+            <button class="btn-expand" onclick="toggleExpand(this, 'emu-black')">View Details ▾</button>
+          </div>
+          <div class="ecu-details" id="emu-black">
+            <div class="details-grid">
+              <div class="detail-row"><span class="detail-label">Analog Inputs</span><span class="detail-value">12</span></div>
+              <div class="detail-row"><span class="detail-label">Digital Inputs</span><span class="detail-value">8</span></div>
+              <div class="detail-row"><span class="detail-label">Injector Outputs</span><span class="detail-value">8</span></div>
+              <div class="detail-row"><span class="detail-label">Ignition Outputs</span><span class="detail-value">8</span></div>
+              <div class="detail-row"><span class="detail-label">Built-in Wideband</span><span class="detail-value">No (add-on module)</span></div>
+              <div class="detail-row"><span class="detail-label">Data Logging</span><span class="detail-value">8 MB internal</span></div>
+              <div class="detail-row"><span class="detail-label">Software</span><span class="detail-value">ECUMaster</span></div>
+              <div class="detail-row"><span class="detail-label">Flat Shift</span><span class="detail-value">No</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- MaxxECU Race -->
+        <div class="ecu-card" data-budget="800-1200" data-usecase="track time-attack">
+          <div class="ecu-card-header">
+            <span class="brand-badge brand-maxxecu">MaxxECU</span>
+            <div class="ecu-name">Race</div>
+            <div class="ecu-price">~$1,099 – $1,299</div>
+          </div>
+          <div class="ecu-meta">
+            <span class="difficulty-badge diff-intermediate">Intermediate</span>
+          </div>
+          <div class="quick-stats">
+            <span class="stat-pill"><span class="label">I/O</span> 16A / 8D / 12inj / 12ign</span>
+            <span class="stat-pill"><span class="label">WB</span> Yes (2ch)</span>
+            <span class="stat-pill"><span class="label">Log</span> 4 GB</span>
+            <span class="stat-pill"><span class="label">SW</span> MaxxECU PC</span>
+          </div>
+          <ul class="feature-list">
+            <li>Flex Fuel &amp; Flat Shift</li>
+            <li>Traction Control &amp; Launch Control</li>
+            <li>Anti-lag &amp; Boost Control</li>
+            <li>VVT Control &amp; Drive-by-Wire</li>
+            <li>CAN Bus &amp; Knock Control</li>
+          </ul>
+          <div class="ecu-best-for"><strong>Best for:</strong> High I/O builds, European market popularity</div>
+          <div class="ecu-card-footer">
+            <span class="svk-badge available">✓ SVK Harness Available</span>
+            <button class="btn-expand" onclick="toggleExpand(this, 'maxxecu-race')">View Details ▾</button>
+          </div>
+          <div class="ecu-details" id="maxxecu-race">
+            <div class="details-grid">
+              <div class="detail-row"><span class="detail-label">Analog Inputs</span><span class="detail-value">16</span></div>
+              <div class="detail-row"><span class="detail-label">Digital Inputs</span><span class="detail-value">8</span></div>
+              <div class="detail-row"><span class="detail-label">Injector Outputs</span><span class="detail-value">12</span></div>
+              <div class="detail-row"><span class="detail-label">Ignition Outputs</span><span class="detail-value">12</span></div>
+              <div class="detail-row"><span class="detail-label">Built-in Wideband</span><span class="detail-value">Yes (2 channel)</span></div>
+              <div class="detail-row"><span class="detail-label">Data Logging</span><span class="detail-value">4 GB internal</span></div>
+              <div class="detail-row"><span class="detail-label">Software</span><span class="detail-value">MaxxECU PC</span></div>
+              <div class="detail-row"><span class="detail-label">Flat Shift</span><span class="detail-value">Yes</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Haltech Elite 1500 -->
+        <div class="ecu-card" data-budget="800-1200" data-usecase="street track">
+          <div class="ecu-card-header">
+            <span class="brand-badge brand-haltech">Haltech</span>
+            <div class="ecu-name">Elite 1500</div>
+            <div class="ecu-price">~$829 – $999</div>
+          </div>
+          <div class="ecu-meta">
+            <span class="difficulty-badge diff-beginner">Beginner</span>
+          </div>
+          <div class="quick-stats">
+            <span class="stat-pill"><span class="label">I/O</span> 10A / 8D / 6inj / 6ign</span>
+            <span class="stat-pill"><span class="label">WB</span> Add-on</span>
+            <span class="stat-pill"><span class="label">Log</span> 16 MB</span>
+            <span class="stat-pill"><span class="label">SW</span> NSP (Haltech)</span>
+          </div>
+          <ul class="feature-list">
+            <li>Flex Fuel</li>
+            <li>Traction Control &amp; Launch Control</li>
+            <li>Anti-lag &amp; Boost Control</li>
+            <li>VVT Control &amp; Drive-by-Wire</li>
+            <li>CAN Bus &amp; Knock Control</li>
+          </ul>
+          <div class="ecu-best-for"><strong>Best for:</strong> Street builds and first-time tuners</div>
+          <div class="ecu-card-footer">
+            <span class="svk-badge available">✓ SVK Harness Available</span>
+            <button class="btn-expand" onclick="toggleExpand(this, 'haltech-1500')">View Details ▾</button>
+          </div>
+          <div class="ecu-details" id="haltech-1500">
+            <div class="details-grid">
+              <div class="detail-row"><span class="detail-label">Analog Inputs</span><span class="detail-value">10</span></div>
+              <div class="detail-row"><span class="detail-label">Digital Inputs</span><span class="detail-value">8</span></div>
+              <div class="detail-row"><span class="detail-label">Injector Outputs</span><span class="detail-value">6</span></div>
+              <div class="detail-row"><span class="detail-label">Ignition Outputs</span><span class="detail-value">6</span></div>
+              <div class="detail-row"><span class="detail-label">Built-in Wideband</span><span class="detail-value">No (add-on)</span></div>
+              <div class="detail-row"><span class="detail-label">Data Logging</span><span class="detail-value">16 MB internal</span></div>
+              <div class="detail-row"><span class="detail-label">Software</span><span class="detail-value">NSP (Haltech)</span></div>
+              <div class="detail-row"><span class="detail-label">Flat Shift</span><span class="detail-value">No</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Haltech Elite 2500 -->
+        <div class="ecu-card" data-budget="1200-plus" data-usecase="street track time-attack">
+          <div class="ecu-card-header">
+            <span class="brand-badge brand-haltech">Haltech</span>
+            <div class="ecu-name">Elite 2500</div>
+            <div class="ecu-price">~$1,399 – $1,599</div>
+          </div>
+          <div class="ecu-meta">
+            <span class="difficulty-badge diff-beginner">Beginner</span>
+          </div>
+          <div class="quick-stats">
+            <span class="stat-pill"><span class="label">I/O</span> 14A / 12D / 8inj / 8ign</span>
+            <span class="stat-pill"><span class="label">WB</span> Add-on</span>
+            <span class="stat-pill"><span class="label">Log</span> 16 MB</span>
+            <span class="stat-pill"><span class="label">SW</span> NSP (Haltech)</span>
+          </div>
+          <ul class="feature-list">
+            <li>Flex Fuel, Flat Shift &amp; Transmission Control</li>
+            <li>Traction Control &amp; Launch Control</li>
+            <li>Anti-lag &amp; Boost Control</li>
+            <li>VVT Control &amp; Drive-by-Wire</li>
+            <li>CAN Bus &amp; Knock Control</li>
+          </ul>
+          <div class="ecu-best-for"><strong>Best for:</strong> Complex street/track builds, premium support</div>
+          <div class="ecu-card-footer">
+            <span class="svk-badge available">✓ SVK Harness Available</span>
+            <button class="btn-expand" onclick="toggleExpand(this, 'haltech-2500')">View Details ▾</button>
+          </div>
+          <div class="ecu-details" id="haltech-2500">
+            <div class="details-grid">
+              <div class="detail-row"><span class="detail-label">Analog Inputs</span><span class="detail-value">14</span></div>
+              <div class="detail-row"><span class="detail-label">Digital Inputs</span><span class="detail-value">12</span></div>
+              <div class="detail-row"><span class="detail-label">Injector Outputs</span><span class="detail-value">8</span></div>
+              <div class="detail-row"><span class="detail-label">Ignition Outputs</span><span class="detail-value">8</span></div>
+              <div class="detail-row"><span class="detail-label">Built-in Wideband</span><span class="detail-value">No (add-on)</span></div>
+              <div class="detail-row"><span class="detail-label">Data Logging</span><span class="detail-value">16 MB internal</span></div>
+              <div class="detail-row"><span class="detail-label">Software</span><span class="detail-value">NSP (Haltech)</span></div>
+              <div class="detail-row"><span class="detail-label">Flat Shift</span><span class="detail-value">Yes</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Link G4X Thunder -->
+        <div class="ecu-card" data-budget="1200-plus" data-usecase="track time-attack race">
+          <div class="ecu-card-header">
+            <span class="brand-badge brand-link">Link</span>
+            <div class="ecu-name">G4X Thunder</div>
+            <div class="ecu-price">~$1,149 – $1,349</div>
+          </div>
+          <div class="ecu-meta">
+            <span class="difficulty-badge diff-intermediate">Intermediate</span>
+          </div>
+          <div class="quick-stats">
+            <span class="stat-pill"><span class="label">I/O</span> 16A / 12D / 8inj / 8ign</span>
+            <span class="stat-pill"><span class="label">WB</span> Add-on</span>
+            <span class="stat-pill"><span class="label">Log</span> 64 MB</span>
+            <span class="stat-pill"><span class="label">SW</span> PCLink (Link)</span>
+          </div>
+          <ul class="feature-list">
+            <li>Flex Fuel &amp; Flat Shift</li>
+            <li>Traction Control &amp; Launch Control</li>
+            <li>Anti-lag &amp; Boost Control</li>
+            <li>VVT Control &amp; Drive-by-Wire</li>
+            <li>CAN Bus &amp; Knock Control</li>
+          </ul>
+          <div class="ecu-best-for"><strong>Best for:</strong> High I/O count, large logging builds</div>
+          <div class="ecu-card-footer">
+            <span class="svk-badge available">✓ SVK Harness Available</span>
+            <button class="btn-expand" onclick="toggleExpand(this, 'link-g4x')">View Details ▾</button>
+          </div>
+          <div class="ecu-details" id="link-g4x">
+            <div class="details-grid">
+              <div class="detail-row"><span class="detail-label">Analog Inputs</span><span class="detail-value">16</span></div>
+              <div class="detail-row"><span class="detail-label">Digital Inputs</span><span class="detail-value">12</span></div>
+              <div class="detail-row"><span class="detail-label">Injector Outputs</span><span class="detail-value">8</span></div>
+              <div class="detail-row"><span class="detail-label">Ignition Outputs</span><span class="detail-value">8</span></div>
+              <div class="detail-row"><span class="detail-label">Built-in Wideband</span><span class="detail-value">No (add-on)</span></div>
+              <div class="detail-row"><span class="detail-label">Data Logging</span><span class="detail-value">64 MB internal</span></div>
+              <div class="detail-row"><span class="detail-label">Software</span><span class="detail-value">PCLink (Link)</span></div>
+              <div class="detail-row"><span class="detail-label">Flat Shift</span><span class="detail-value">Yes</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Motec M1 GPR -->
+        <div class="ecu-card" data-budget="1200-plus" data-usecase="time-attack race">
+          <div class="ecu-card-header">
+            <span class="brand-badge brand-motec">MoTeC</span>
+            <div class="ecu-name">M1 GPR</div>
+            <div class="ecu-price">~$2,199 – $2,799</div>
+          </div>
+          <div class="ecu-meta">
+            <span class="difficulty-badge diff-advanced">Advanced</span>
+          </div>
+          <div class="quick-stats">
+            <span class="stat-pill"><span class="label">I/O</span> 20A / 16D / 8inj / 8ign</span>
+            <span class="stat-pill"><span class="label">WB</span> Optional</span>
+            <span class="stat-pill"><span class="label">Log</span> 2 GB</span>
+            <span class="stat-pill"><span class="label">SW</span> M1 Tune (MoTeC)</span>
+          </div>
+          <ul class="feature-list">
+            <li>Flex Fuel, Flat Shift &amp; GPS Integration</li>
+            <li>Traction Control &amp; Launch Control</li>
+            <li>Anti-lag &amp; Boost Control</li>
+            <li>VVT Control, Drive-by-Wire &amp; Trans Control</li>
+            <li>CAN Bus &amp; Knock Control</li>
+          </ul>
+          <div class="ecu-best-for"><strong>Best for:</strong> Dedicated race and time attack builds</div>
+          <div class="ecu-card-footer">
+            <span class="svk-badge on-request">SVK Harness on Request</span>
+            <button class="btn-expand" onclick="toggleExpand(this, 'motec-m1')">View Details ▾</button>
+          </div>
+          <div class="ecu-details" id="motec-m1">
+            <div class="details-grid">
+              <div class="detail-row"><span class="detail-label">Analog Inputs</span><span class="detail-value">20</span></div>
+              <div class="detail-row"><span class="detail-label">Digital Inputs</span><span class="detail-value">16</span></div>
+              <div class="detail-row"><span class="detail-label">Injector Outputs</span><span class="detail-value">8</span></div>
+              <div class="detail-row"><span class="detail-label">Ignition Outputs</span><span class="detail-value">8</span></div>
+              <div class="detail-row"><span class="detail-label">Built-in Wideband</span><span class="detail-value">Optional</span></div>
+              <div class="detail-row"><span class="detail-label">Data Logging</span><span class="detail-value">2 GB internal</span></div>
+              <div class="detail-row"><span class="detail-label">Software</span><span class="detail-value">M1 Tune (MoTeC)</span></div>
+              <div class="detail-row"><span class="detail-label">GPS Integration</span><span class="detail-value">Yes</span></div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /.ecu-grid -->
+    </div>
+  </section>
+
+  <!-- Full Comparison Table -->
+  <section class="table-section">
+    <div class="container">
+      <h2 class="section-title">Full Feature Comparison</h2>
+      <p class="section-sub">Side-by-side specs across all six ECUs.</p>
+      <button class="table-toggle-btn" id="tableToggleBtn" onclick="toggleTable()">
+        Show Full Comparison Table <span class="chevron">▾</span>
+      </button>
+      <div class="table-wrap" id="tableWrap">
+        <table class="compare-table">
+          <thead>
+            <tr>
+              <th>Feature</th>
+              <th>EMU Black</th>
+              <th>MaxxECU Race</th>
+              <th>Elite 1500</th>
+              <th>Elite 2500</th>
+              <th>G4X Thunder</th>
+              <th>M1 GPR</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Price (approx.)</td><td>$599–$749</td><td>$1,099–$1,299</td><td>$829–$999</td><td>$1,399–$1,599</td><td>$1,149–$1,349</td><td>$2,199–$2,799</td></tr>
+            <tr><td>Difficulty</td><td>Intermediate</td><td>Intermediate</td><td>Beginner</td><td>Beginner</td><td>Intermediate</td><td>Advanced</td></tr>
+            <tr><td>Analog Inputs</td><td>12</td><td>16</td><td>10</td><td>14</td><td>16</td><td>20</td></tr>
+            <tr><td>Digital Inputs</td><td>8</td><td>8</td><td>8</td><td>12</td><td>12</td><td>16</td></tr>
+            <tr><td>Injector Outputs</td><td>8</td><td>12</td><td>6</td><td>8</td><td>8</td><td>8</td></tr>
+            <tr><td>Ignition Outputs</td><td>8</td><td>12</td><td>6</td><td>8</td><td>8</td><td>8</td></tr>
+            <tr><td>Built-in Wideband</td><td class="dash">—</td><td class="check">✓ (2ch)</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td>Optional</td></tr>
+            <tr><td>Data Logging</td><td>8 MB</td><td>4 GB</td><td>16 MB</td><td>16 MB</td><td>64 MB</td><td>2 GB</td></tr>
+            <tr><td>Flex Fuel</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td></tr>
+            <tr><td>Traction Control</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td></tr>
+            <tr><td>Launch Control</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td></tr>
+            <tr><td>Flat Shift</td><td class="dash">—</td><td class="check">✓</td><td class="dash">—</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td></tr>
+            <tr><td>Anti-lag</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td></tr>
+            <tr><td>VVT / Cam Control</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td></tr>
+            <tr><td>Drive-by-Wire</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td></tr>
+            <tr><td>Boost Control</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td></tr>
+            <tr><td>Knock Control</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td></tr>
+            <tr><td>Transmission Control</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="check">✓</td><td class="dash">—</td><td class="check">✓</td></tr>
+            <tr><td>CAN Bus</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td></tr>
+            <tr><td>GPS Integration</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="check">✓</td></tr>
+            <tr><td>Software</td><td>ECUMaster</td><td>MaxxECU PC</td><td>NSP</td><td>NSP</td><td>PCLink</td><td>M1 Tune</td></tr>
+            <tr><td>SVK Harness</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td><td class="on-req">On request</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- Find Your ECU Quiz -->
+  <section class="quiz-section">
+    <div class="container">
+      <h2 class="section-title" style="text-align:center;margin-bottom:0.4rem;">Find Your ECU</h2>
+      <p class="section-sub" style="text-align:center;margin-bottom:2rem;">Answer three quick questions and we'll point you in the right direction.</p>
+      <div class="quiz-card">
+        <!-- Progress -->
+        <div class="quiz-progress">
+          <span class="quiz-progress-label" id="quizProgressLabel">Q1 of 3</span>
+          <div class="quiz-progress-bar-wrap">
+            <div class="quiz-progress-bar" id="quizProgressBar" style="width:33%"></div>
+          </div>
+        </div>
+
+        <!-- Q1 -->
+        <div class="quiz-step active" id="quizStep1">
+          <p class="quiz-question">What's your build goal?</p>
+          <div class="quiz-options">
+            <button class="quiz-option" onclick="selectAnswer(1, 'street', this)">Street car with occasional track days</button>
+            <button class="quiz-option" onclick="selectAnswer(1, 'track', this)">Dedicated track day car</button>
+            <button class="quiz-option" onclick="selectAnswer(1, 'time-attack', this)">Time attack / competition</button>
+            <button class="quiz-option" onclick="selectAnswer(1, 'race', this)">Full race car</button>
+          </div>
+        </div>
+
+        <!-- Q2 -->
+        <div class="quiz-step" id="quizStep2">
+          <p class="quiz-question">What's your budget for the ECU?</p>
+          <div class="quiz-options">
+            <button class="quiz-option" onclick="selectAnswer(2, 'under-800', this)">Under $800</button>
+            <button class="quiz-option" onclick="selectAnswer(2, '800-1200', this)">$800 – $1,200</button>
+            <button class="quiz-option" onclick="selectAnswer(2, '1200-1600', this)">$1,200 – $1,600</button>
+            <button class="quiz-option" onclick="selectAnswer(2, '1600-plus', this)">$1,600+</button>
+          </div>
+        </div>
+
+        <!-- Q3 -->
+        <div class="quiz-step" id="quizStep3">
+          <p class="quiz-question">How experienced are you with ECU tuning?</p>
+          <div class="quiz-options">
+            <button class="quiz-option" onclick="selectAnswer(3, 'new', this)">New to standalone ECUs</button>
+            <button class="quiz-option" onclick="selectAnswer(3, 'experienced', this)">Have tuned before</button>
+            <button class="quiz-option" onclick="selectAnswer(3, 'pro', this)">Professional / experienced tuner</button>
+          </div>
+        </div>
+
+        <!-- Result -->
+        <div class="quiz-result" id="quizResult">
+          <div class="result-label">Your Match</div>
+          <p class="result-title" id="quizResultTitle">Based on your answers, here's what we recommend:</p>
+          <div class="result-ecus" id="quizResultEcus"></div>
+          <button class="quiz-restart" onclick="restartQuiz()">↺ Start over</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SVK Note -->
+  <section class="svk-note-section">
+    <div class="container">
+      <div class="svk-note-card">
+        <div class="svk-note-icon">⚡</div>
+        <div class="svk-note-body">
+          <p>All harnesses built by SVK Works are designed to work with any of the ECUs above. We route and label every connector to the ECU manufacturer's pinout spec — no guessing, no adapters.</p>
+          <a href="harnesses.html">Browse our harness catalog →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div id="footer-placeholder"></div>
+
+  <script src="components/header.js" defer></script>
+  <script src="components/footer.js" defer></script>
+  <script src="js/cart.js" defer></script>
+  <script src="js/components.js" defer></script>
+  <script src="js/main.js" defer></script>
+
+  <script>
+    // ── Filter state ──
+    const filterState = { budget: 'all', usecase: 'all' };
+
+    function setFilter(type, value) {
+      filterState[type] = value;
+
+      // Update pill active states
+      const group = type === 'budget' ? '[data-budget]' : '[data-usecase]';
+      document.querySelectorAll(group).forEach(btn => {
+        const btnVal = btn.dataset.budget || btn.dataset.usecase;
+        btn.classList.toggle('active', btnVal === value);
+      });
+
+      applyFilters();
+    }
+
+    function applyFilters() {
+      const cards = document.querySelectorAll('.ecu-card');
+      cards.forEach(card => {
+        const cardBudget  = card.dataset.budget;
+        const cardUsecase = card.dataset.usecase; // space-separated list
+
+        const budgetMatch  = filterState.budget === 'all' || cardBudget === filterState.budget;
+        const usecaseMatch = filterState.usecase === 'all' || cardUsecase.split(' ').includes(filterState.usecase);
+
+        card.classList.toggle('filtered-out', !(budgetMatch && usecaseMatch));
+      });
+    }
+
+    // ── Expand / collapse card details ──
+    function toggleExpand(btn, id) {
+      const details = document.getElementById(id);
+      const isOpen = details.classList.contains('open');
+      details.classList.toggle('open', !isOpen);
+      btn.classList.toggle('expanded', !isOpen);
+      btn.textContent = isOpen ? 'View Details ▾' : 'Hide Details ▴';
+    }
+
+    // ── Comparison table toggle ──
+    function toggleTable() {
+      const btn  = document.getElementById('tableToggleBtn');
+      const wrap = document.getElementById('tableWrap');
+      const isOpen = wrap.classList.contains('open');
+      wrap.classList.toggle('open', !isOpen);
+      btn.classList.toggle('open', !isOpen);
+      btn.querySelector('.chevron').textContent = isOpen ? '▾' : '▴';
+      btn.childNodes[0].textContent = isOpen ? 'Show Full Comparison Table ' : 'Hide Comparison Table ';
+    }
+
+    // ── Quiz logic ──
+    const quizAnswers = {};
+
+    const ECU_DATA = {
+      'EMU Black':    { price: '~$599–$749',      tag: 'Budget · Intermediate' },
+      'MaxxECU Race': { price: '~$1,099–$1,299',  tag: 'High I/O · Built-in wideband' },
+      'Elite 1500':   { price: '~$829–$999',       tag: 'Beginner-friendly · Street' },
+      'Elite 2500':   { price: '~$1,399–$1,599',   tag: 'Beginner-friendly · Full features' },
+      'G4X Thunder':  { price: '~$1,149–$1,349',   tag: '64 MB logging · High I/O' },
+      'M1 GPR':       { price: '~$2,199–$2,799',   tag: 'Professional · Race-spec' },
+    };
+
+    function selectAnswer(step, value, btn) {
+      // Highlight selected
+      btn.closest('.quiz-options').querySelectorAll('.quiz-option').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      quizAnswers[step] = value;
+
+      // Advance after brief delay
+      setTimeout(() => advanceQuiz(step), 350);
+    }
+
+    function advanceQuiz(step) {
+      document.getElementById('quizStep' + step).classList.remove('active');
+
+      if (step < 3) {
+        const next = step + 1;
+        document.getElementById('quizStep' + next).classList.add('active');
+        const pct = next === 2 ? 66 : 100;
+        document.getElementById('quizProgressBar').style.width = pct + '%';
+        document.getElementById('quizProgressLabel').textContent = 'Q' + next + ' of 3';
+      } else {
+        document.getElementById('quizProgressLabel').textContent = 'Complete';
+        document.getElementById('quizProgressBar').style.width = '100%';
+        showQuizResult();
+      }
+    }
+
+    function getRecommendation() {
+      const goal    = quizAnswers[1];
+      const budget  = quizAnswers[2];
+      const exp     = quizAnswers[3];
+
+      // Race goal always surfaces MoTeC
+      if (goal === 'race' || exp === 'pro') {
+        return { primary: 'M1 GPR', secondary: 'Elite 2500' };
+      }
+      if (goal === 'time-attack') {
+        if (budget === '1600-plus') return { primary: 'M1 GPR', secondary: 'G4X Thunder' };
+        return { primary: 'G4X Thunder', secondary: 'MaxxECU Race' };
+      }
+
+      // by experience + budget
+      if (exp === 'new') {
+        if (budget === 'under-800') return { primary: 'EMU Black', secondary: null };
+        if (budget === '800-1200')  return { primary: 'Elite 1500', secondary: null };
+        return { primary: 'Elite 2500', secondary: null };
+      }
+      if (exp === 'experienced') {
+        if (budget === 'under-800') return { primary: 'EMU Black', secondary: null };
+        if (budget === '800-1200')  return { primary: 'MaxxECU Race', secondary: 'G4X Thunder' };
+        return { primary: 'Elite 2500', secondary: 'G4X Thunder' };
+      }
+      // fallback
+      return { primary: 'EMU Black', secondary: null };
+    }
+
+    function showQuizResult() {
+      document.getElementById('quizResult').classList.add('active');
+      const rec = getRecommendation();
+      const container = document.getElementById('quizResultEcus');
+      container.innerHTML = '';
+
+      function makeCard(name, isPrimary) {
+        const d = ECU_DATA[name];
+        const card = document.createElement('div');
+        card.className = 'result-ecu-card' + (isPrimary ? ' primary' : '');
+        card.innerHTML = `
+          <div>
+            <div class="result-ecu-name">${name}</div>
+            <div class="result-ecu-price">${d.price}</div>
+            <div class="result-ecu-tag">${d.tag}</div>
+          </div>
+          <span class="${isPrimary ? 'result-match-badge' : 'result-runnerup-badge'}">${isPrimary ? 'Best Match' : 'Runner-up'}</span>
+        `;
+        return card;
+      }
+
+      container.appendChild(makeCard(rec.primary, true));
+      if (rec.secondary) container.appendChild(makeCard(rec.secondary, false));
+    }
+
+    function restartQuiz() {
+      quizAnswers[1] = quizAnswers[2] = quizAnswers[3] = null;
+
+      document.getElementById('quizResult').classList.remove('active');
+      [1, 2, 3].forEach(n => {
+        const step = document.getElementById('quizStep' + n);
+        step.classList.toggle('active', n === 1);
+        step.querySelectorAll('.quiz-option').forEach(b => b.classList.remove('selected'));
+      });
+
+      document.getElementById('quizProgressBar').style.width = '33%';
+      document.getElementById('quizProgressLabel').textContent = 'Q1 of 3';
+    }
+  </script>
+</body>
+</html>
