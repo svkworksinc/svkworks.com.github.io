@@ -47,10 +47,25 @@ button, input, select, textarea {
   color: inherit;
   border: none;
   background: none;
-  outline: none;
 }
 
 button { cursor: pointer; }
+
+/* Keyboard focus: visible ring for tab navigation, hidden for mouse/touch */
+:focus { outline: none; }
+:focus-visible {
+  outline: 2px solid var(--magenta);
+  outline-offset: 3px;
+  border-radius: var(--radius-sm);
+}
+
+/* Form elements have their own box-shadow focus style — suppress the outline there */
+.form-input:focus-visible,
+.form-select:focus-visible,
+.form-textarea:focus-visible,
+.search-input:focus-visible {
+  outline: none;
+}
 
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-heading);
