@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trade & Installer Program | SVK Works</title>
+  <meta name="description" content="Exclusive trade pricing and priority access for professional shops, ECU dealers, and race prep facilities. Apply for the SVK Works installer trade program.">
+  <link rel="canonical" href="https://www.svkworks.com/design-wholesale.html">
+  <meta property="og:site_name" content="SVK Works">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Trade & Installer Program — SVK Works">
+  <meta property="og:description" content="Exclusive pricing and priority access for professional shops and resellers.">
+  <meta property="og:url" content="https://www.svkworks.com/design-wholesale.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="img/svk-icon.png" type="image/png">
+  <style>
+    /* ── Page-specific styles ── */
+
+    /* Hero */
+    .design-hero {
+      background: linear-gradient(160deg, #0f0f18 0%, var(--bg-primary) 60%);
+      border-bottom: 1px solid var(--border-color);
+      padding: var(--space-4xl) 0 var(--space-3xl);
+      position: relative;
+      overflow: hidden;
+    }
+    .design-hero::before {
+      content: '';
+      position: absolute;
+      top: -120px;
+      right: -120px;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, var(--magenta-glow) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .design-hero .design-concept-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(233, 30, 140, 0.12);
+      border: 1px solid var(--border-magenta);
+      color: var(--magenta-light);
+      font-size: var(--text-xs);
+      font-weight: var(--weight-semibold);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: var(--radius-full);
+      margin-bottom: var(--space-lg);
+    }
+    .design-hero h1 {
+      font-size: clamp(2rem, 5vw, var(--text-5xl));
+      font-weight: var(--weight-bold);
+      line-height: var(--leading-tight);
+      color: var(--text-primary);
+      margin-bottom: var(--space-md);
+    }
+    .design-hero .hero-subtitle {
+      font-size: var(--text-xl);
+      color: var(--text-secondary);
+      max-width: 620px;
+      line-height: var(--leading-normal);
+    }
+
+    /* Who This Is For cards */
+    .audience-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-xl);
+    }
+    @media (max-width: 900px) {
+      .audience-grid { grid-template-columns: 1fr; }
+    }
+    .audience-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-xl);
+      padding: var(--space-xl);
+      transition: border-color var(--transition-base), transform var(--transition-base);
+    }
+    .audience-card:hover {
+      border-color: var(--border-magenta);
+      transform: translateY(-3px);
+    }
+    .audience-icon {
+      width: 48px;
+      height: 48px;
+      background: var(--magenta-subtle);
+      border-radius: var(--radius-lg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: var(--space-lg);
+    }
+    .audience-card h3 {
+      font-size: var(--text-xl);
+      font-weight: var(--weight-semibold);
+      color: var(--text-primary);
+      margin-bottom: var(--space-sm);
+    }
+    .audience-card p {
+      color: var(--text-secondary);
+      font-size: var(--text-sm);
+      line-height: var(--leading-normal);
+    }
+
+    /* Pricing Table */
+    .pricing-table-wrap {
+      overflow-x: auto;
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--border-color);
+    }
+    .pricing-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: var(--text-sm);
+    }
+    .pricing-table thead tr {
+      background: var(--bg-elevated);
+    }
+    .pricing-table th {
+      padding: var(--space-lg) var(--space-xl);
+      text-align: left;
+      font-weight: var(--weight-semibold);
+      color: var(--text-primary);
+      white-space: nowrap;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .pricing-table th.col-feature {
+      color: var(--text-muted);
+      font-weight: var(--weight-medium);
+      width: 220px;
+    }
+    .pricing-table th.col-gold {
+      background: linear-gradient(160deg, rgba(233,30,140,0.18) 0%, rgba(233,30,140,0.06) 100%);
+      color: var(--magenta-light);
+      position: relative;
+    }
+    .pricing-table th.col-gold::after {
+      content: 'MOST POPULAR';
+      display: block;
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      color: var(--magenta);
+      margin-top: 4px;
+      font-weight: var(--weight-semibold);
+    }
+    .pricing-table td {
+      padding: var(--space-md) var(--space-xl);
+      border-bottom: 1px solid var(--border-color);
+      color: var(--text-secondary);
+      vertical-align: middle;
+    }
+    .pricing-table td.col-gold {
+      background: rgba(233,30,140,0.04);
+    }
+    .pricing-table td.col-feature {
+      color: var(--text-primary);
+      font-weight: var(--weight-medium);
+    }
+    .pricing-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+    .pricing-table tbody tr:hover td {
+      background: var(--bg-card-hover);
+    }
+    .pricing-table tbody tr:hover td.col-gold {
+      background: rgba(233,30,140,0.08);
+    }
+    .pricing-table .btn-row td {
+      padding: var(--space-lg) var(--space-xl);
+      background: var(--bg-secondary);
+    }
+    .pricing-table .btn-row td.col-gold {
+      background: rgba(233,30,140,0.07);
+    }
+    .tier-name {
+      font-size: var(--text-lg);
+      font-weight: var(--weight-bold);
+    }
+    .tier-retail { color: var(--text-muted); }
+    .tier-silver { color: #94a3b8; }
+    .tier-gold { color: var(--magenta-light); }
+    .tier-platinum { color: #e2c97e; }
+
+    .check { color: var(--success); font-size: 1.1em; }
+    .cross { color: var(--error); font-size: 1.1em; }
+    .dash { color: var(--text-muted); }
+
+    /* Benefits grid */
+    .benefits-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-lg);
+    }
+    @media (max-width: 900px) {
+      .benefits-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 560px) {
+      .benefits-grid { grid-template-columns: 1fr; }
+    }
+    .benefit-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: var(--space-xl);
+      display: flex;
+      gap: var(--space-md);
+      align-items: flex-start;
+      transition: border-color var(--transition-base);
+    }
+    .benefit-card:hover {
+      border-color: var(--border-magenta);
+    }
+    .benefit-icon {
+      width: 40px;
+      height: 40px;
+      min-width: 40px;
+      background: var(--magenta-subtle);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .benefit-card h4 {
+      font-size: var(--text-base);
+      font-weight: var(--weight-semibold);
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+    .benefit-card p {
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+      line-height: var(--leading-normal);
+    }
+
+    /* How It Works timeline */
+    .timeline {
+      display: flex;
+      align-items: flex-start;
+      gap: 0;
+      position: relative;
+      overflow-x: auto;
+      padding-bottom: var(--space-md);
+    }
+    .timeline-step {
+      flex: 1;
+      min-width: 160px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      position: relative;
+      padding: 0 var(--space-md);
+    }
+    .timeline-step:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      top: 24px;
+      left: calc(50% + 24px);
+      right: calc(-50% + 24px);
+      height: 2px;
+      background: linear-gradient(90deg, var(--border-magenta), var(--border-color));
+    }
+    .timeline-node {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: var(--bg-card);
+      border: 2px solid var(--border-magenta);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: var(--text-lg);
+      font-weight: var(--weight-bold);
+      color: var(--magenta);
+      margin-bottom: var(--space-md);
+      position: relative;
+      z-index: 1;
+    }
+    .timeline-step h4 {
+      font-size: var(--text-sm);
+      font-weight: var(--weight-semibold);
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+    .timeline-step p {
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+      line-height: var(--leading-normal);
+    }
+
+    /* Application Form */
+    .apply-form-wrap {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-xl);
+      padding: var(--space-3xl);
+      max-width: 760px;
+      margin: 0 auto;
+    }
+    @media (max-width: 600px) {
+      .apply-form-wrap { padding: var(--space-xl); }
+    }
+    .form-row-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-lg);
+    }
+    @media (max-width: 600px) {
+      .form-row-2 { grid-template-columns: 1fr; }
+    }
+    .form-note {
+      background: rgba(233, 30, 140, 0.06);
+      border: 1px solid var(--border-magenta);
+      border-radius: var(--radius-md);
+      padding: var(--space-md) var(--space-lg);
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+      margin-top: var(--space-xl);
+      line-height: var(--leading-normal);
+    }
+
+    /* FAQ */
+    .faq-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+    }
+    .faq-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      transition: border-color var(--transition-base);
+    }
+    .faq-item:hover {
+      border-color: var(--border-hover);
+    }
+    .faq-question {
+      width: 100%;
+      background: none;
+      border: none;
+      padding: var(--space-lg) var(--space-xl);
+      text-align: left;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      color: var(--text-primary);
+      font-size: var(--text-base);
+      font-weight: var(--weight-medium);
+      gap: var(--space-md);
+      font-family: var(--font-body);
+    }
+    .faq-question svg {
+      min-width: 20px;
+      transition: transform var(--transition-base);
+      color: var(--text-muted);
+    }
+    .faq-item.open .faq-question svg {
+      transform: rotate(180deg);
+      color: var(--magenta);
+    }
+    .faq-answer {
+      display: none;
+      padding: 0 var(--space-xl) var(--space-lg);
+      color: var(--text-secondary);
+      font-size: var(--text-sm);
+      line-height: var(--leading-normal);
+    }
+    .faq-item.open .faq-answer { display: block; }
+
+    /* Section label */
+    .section-label {
+      font-size: var(--text-xs);
+      font-weight: var(--weight-semibold);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--magenta);
+      display: block;
+      margin-bottom: var(--space-sm);
+    }
+    .section-header {
+      margin-bottom: var(--space-3xl);
+    }
+    .section-header h2 {
+      font-size: clamp(1.6rem, 3vw, var(--text-4xl));
+      font-weight: var(--weight-bold);
+      color: var(--text-primary);
+      line-height: var(--leading-tight);
+      margin-bottom: var(--space-md);
+    }
+    .section-header p {
+      color: var(--text-secondary);
+      font-size: var(--text-lg);
+      max-width: 600px;
+      line-height: var(--leading-normal);
+    }
+
+    /* Breadcrumb */
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      font-size: var(--text-sm);
+      color: var(--text-muted);
+      margin-bottom: var(--space-xl);
+    }
+    .breadcrumb a {
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color var(--transition-fast);
+    }
+    .breadcrumb a:hover { color: var(--text-primary); }
+    .breadcrumb-sep { color: var(--border-hover); }
+
+    /* Apply tier buttons */
+    .btn-apply-retail {
+      display: inline-block;
+      padding: 8px 18px;
+      border-radius: var(--radius-md);
+      font-size: var(--text-sm);
+      font-weight: var(--weight-semibold);
+      background: transparent;
+      border: 1px solid var(--border-hover);
+      color: var(--text-secondary);
+      cursor: pointer;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: background var(--transition-fast), border-color var(--transition-fast);
+    }
+    .btn-apply-retail:hover {
+      background: var(--bg-elevated);
+      border-color: var(--text-muted);
+    }
+    .btn-apply-silver {
+      display: inline-block;
+      padding: 8px 18px;
+      border-radius: var(--radius-md);
+      font-size: var(--text-sm);
+      font-weight: var(--weight-semibold);
+      background: rgba(148,163,184,0.1);
+      border: 1px solid rgba(148,163,184,0.3);
+      color: #94a3b8;
+      cursor: pointer;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: background var(--transition-fast);
+    }
+    .btn-apply-silver:hover { background: rgba(148,163,184,0.18); }
+    .btn-apply-gold {
+      display: inline-block;
+      padding: 8px 18px;
+      border-radius: var(--radius-md);
+      font-size: var(--text-sm);
+      font-weight: var(--weight-semibold);
+      background: var(--magenta);
+      border: 1px solid var(--magenta);
+      color: #fff;
+      cursor: pointer;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: background var(--transition-fast), box-shadow var(--transition-fast);
+    }
+    .btn-apply-gold:hover {
+      background: var(--magenta-dark);
+      box-shadow: var(--shadow-magenta);
+    }
+    .btn-apply-platinum {
+      display: inline-block;
+      padding: 8px 18px;
+      border-radius: var(--radius-md);
+      font-size: var(--text-sm);
+      font-weight: var(--weight-semibold);
+      background: rgba(226,201,126,0.1);
+      border: 1px solid rgba(226,201,126,0.3);
+      color: #e2c97e;
+      cursor: pointer;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: background var(--transition-fast);
+    }
+    .btn-apply-platinum:hover { background: rgba(226,201,126,0.18); }
+
+    .form-group {
+      margin-bottom: var(--space-lg);
+    }
+    .form-label {
+      display: block;
+      font-size: var(--text-sm);
+      font-weight: var(--weight-medium);
+      color: var(--text-primary);
+      margin-bottom: var(--space-xs);
+    }
+    .form-label .req {
+      color: var(--magenta);
+      margin-left: 2px;
+    }
+    .form-textarea {
+      width: 100%;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+      font-family: var(--font-body);
+      font-size: var(--text-sm);
+      padding: 10px 14px;
+      resize: vertical;
+      transition: border-color var(--transition-fast);
+      box-sizing: border-box;
+    }
+    .form-textarea:focus {
+      outline: none;
+      border-color: var(--border-magenta);
+    }
+    .form-textarea::placeholder { color: var(--text-muted); }
+  </style>
+</head>
+<body>
+  <div id="header-placeholder"></div>
+
+  <main id="main-content">
+
+    <!-- ── Hero ── -->
+    <div class="design-hero">
+      <div class="container">
+        <div class="breadcrumb" role="navigation" aria-label="breadcrumb">
+          <a href="index.html">Home</a>
+          <span class="breadcrumb-sep" aria-hidden="true">/</span>
+          <a href="#">Design Concepts</a>
+          <span class="breadcrumb-sep" aria-hidden="true">/</span>
+          <span>Trade Program</span>
+        </div>
+        <div class="design-concept-badge">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          Design Concept
+        </div>
+        <h1>Trade &amp; Installer Program</h1>
+        <p class="hero-subtitle">Exclusive pricing and priority access for professional shops and resellers. Scale your builds with SVK.</p>
+      </div>
+    </div>
+
+    <!-- ── Who This Is For ── -->
+    <section class="section" style="background:var(--bg-secondary);">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-label">Who This Is For</span>
+          <h2>Built for the Professionals Who Build Cars</h2>
+          <p>Whether you're wrenching daily or running a full shop, the SVK trade program gives you tools and pricing that match your volume.</p>
+        </div>
+        <div class="audience-grid">
+          <div class="audience-card">
+            <div class="audience-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--magenta)" stroke-width="1.8"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+            </div>
+            <div>
+              <h3>Tuning &amp; Performance Shops</h3>
+              <p>You install our harnesses for customers. Get reseller pricing and a listing in our installer directory so customers can find you first.</p>
+            </div>
+          </div>
+          <div class="audience-card">
+            <div class="audience-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--magenta)" stroke-width="1.8"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8m-4-4v4"/></svg>
+            </div>
+            <div>
+              <h3>ECU Distributors &amp; Dealers</h3>
+              <p>Bundle SVK harnesses with ECU sales. We'll support your tech customers directly so you close more deals without more support overhead.</p>
+            </div>
+          </div>
+          <div class="audience-card">
+            <div class="audience-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--magenta)" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+            </div>
+            <div>
+              <h3>Track &amp; Race Prep Facilities</h3>
+              <p>Volume pricing for build shops that spec SVK on every build. Priority production slots keep your schedule tight and your customers happy.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Pricing Tiers ── -->
+    <section class="section">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-label">Pricing Tiers</span>
+          <h2>Compare Trade Tiers</h2>
+          <p>All tiers are free to join — no membership fee. Your tier is determined by annual order volume.</p>
+        </div>
+        <div class="pricing-table-wrap">
+          <table class="pricing-table">
+            <thead>
+              <tr>
+                <th class="col-feature">Feature</th>
+                <th><span class="tier-name tier-retail">Retail</span></th>
+                <th><span class="tier-name tier-silver">Trade Silver</span></th>
+                <th class="col-gold"><span class="tier-name tier-gold">Trade Gold</span></th>
+                <th><span class="tier-name tier-platinum">Trade Platinum</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="col-feature">Discount off retail</td>
+                <td><span class="dash">—</span></td>
+                <td>10%</td>
+                <td class="col-gold" style="color:var(--magenta-light);font-weight:600;">18%</td>
+                <td style="color:#e2c97e;font-weight:600;">25%</td>
+              </tr>
+              <tr>
+                <td class="col-feature">Min. orders / year</td>
+                <td><span class="dash">—</span></td>
+                <td>3</td>
+                <td class="col-gold">8</td>
+                <td>20+</td>
+              </tr>
+              <tr>
+                <td class="col-feature">Lead time priority</td>
+                <td>Standard</td>
+                <td>Standard</td>
+                <td class="col-gold" style="color:var(--magenta-light);">+2 days faster</td>
+                <td style="color:#e2c97e;">+1 week faster</td>
+              </tr>
+              <tr>
+                <td class="col-feature">Installer directory listing</td>
+                <td><span class="cross">✕</span></td>
+                <td>Basic</td>
+                <td class="col-gold">Featured</td>
+                <td>Premium + Homepage</td>
+              </tr>
+              <tr>
+                <td class="col-feature">Technical support</td>
+                <td>Email only</td>
+                <td>Email + Chat</td>
+                <td class="col-gold">Direct phone</td>
+                <td>Dedicated rep</td>
+              </tr>
+              <tr>
+                <td class="col-feature">Marketing co-op</td>
+                <td><span class="cross">✕</span></td>
+                <td><span class="cross">✕</span></td>
+                <td class="col-gold"><span class="check">✓</span></td>
+                <td><span class="check">✓</span> + co-branded materials</td>
+              </tr>
+              <tr>
+                <td class="col-feature">Prepaid shipping labels</td>
+                <td><span class="cross">✕</span></td>
+                <td><span class="cross">✕</span></td>
+                <td class="col-gold"><span class="check">✓</span></td>
+                <td><span class="check">✓</span></td>
+              </tr>
+              <tr>
+                <td class="col-feature">Custom pricing on complex builds</td>
+                <td><span class="cross">✕</span></td>
+                <td><span class="cross">✕</span></td>
+                <td class="col-gold">Case by case</td>
+                <td><span class="check">✓</span> Always</td>
+              </tr>
+              <tr>
+                <td class="col-feature">Annual membership fee</td>
+                <td><span class="dash">—</span></td>
+                <td style="color:var(--success);">Free</td>
+                <td class="col-gold" style="color:var(--success);">Free</td>
+                <td style="color:var(--success);">Free</td>
+              </tr>
+              <tr class="btn-row">
+                <td class="col-feature" style="color:var(--text-muted);font-size:var(--text-xs);">Ready to get started?</td>
+                <td><a href="#apply" class="btn-apply-retail">Shop Retail</a></td>
+                <td><a href="#apply" class="btn-apply-silver">Apply Silver</a></td>
+                <td class="col-gold"><a href="#apply" class="btn-apply-gold">Apply Gold</a></td>
+                <td><a href="#apply" class="btn-apply-platinum">Apply Platinum</a></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Benefits ── -->
+    <section class="section" style="background:var(--bg-secondary);">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-label">Trade Benefits</span>
+          <h2>Everything Your Shop Needs</h2>
+          <p>Trade accounts get a full suite of tools and support that retail customers don't have access to.</p>
+        </div>
+        <div class="benefits-grid">
+          <div class="benefit-card">
+            <div class="benefit-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--magenta)" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+            </div>
+            <div>
+              <h4>Priority Production Queue</h4>
+              <p>Skip the standard wait. Trade accounts are slotted ahead of retail orders — your builds ship first.</p>
+            </div>
+          </div>
+          <div class="benefit-card">
+            <div class="benefit-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--magenta)" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            </div>
+            <div>
+              <h4>Dedicated Trade Pricing Portal</h4>
+              <p>Log in to your private portal with pre-applied trade pricing, order history, and invoice management.</p>
+            </div>
+          </div>
+          <div class="benefit-card">
+            <div class="benefit-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--magenta)" stroke-width="2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
+            </div>
+            <div>
+              <h4>Co-Marketing Materials</h4>
+              <p>Gold and Platinum shops receive branded flyers, social content, and SVK Verified badges for your website.</p>
+            </div>
+          </div>
+          <div class="benefit-card">
+            <div class="benefit-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--magenta)" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.44 2 2 0 0 1 3.6 1.28h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.96a16 16 0 0 0 6.09 6.09l.96-.95a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21.72 16.92z"/></svg>
+            </div>
+            <div>
+              <h4>Technical Support Hotline</h4>
+              <p>Gold and Platinum members get a direct phone line to our technical team for install questions and troubleshooting.</p>
+            </div>
+          </div>
+          <div class="benefit-card">
+            <div class="benefit-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--magenta)" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+            </div>
+            <div>
+              <h4>Bulk Connector &amp; Supply Pricing</h4>
+              <p>Order connectors, terminals, and harness supplies at cost. Stock your shop without retail markups.</p>
+            </div>
+          </div>
+          <div class="benefit-card">
+            <div class="benefit-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--magenta)" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            </div>
+            <div>
+              <h4>SVK Verified Installer Badge</h4>
+              <p>Display the SVK Verified badge on your site and social channels. Customers trust shops that use SVK — and now they can find you.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── How It Works ── -->
+    <section class="section">
+      <div class="container">
+        <div class="section-header" style="text-align:center;">
+          <span class="section-label">Process</span>
+          <h2>How It Works</h2>
+          <p>Getting trade access is fast. Most shops are up and ordering within 48 hours.</p>
+        </div>
+        <div class="timeline">
+          <div class="timeline-step">
+            <div class="timeline-node">1</div>
+            <h4>Apply</h4>
+            <p>Submit the form below with your shop details</p>
+          </div>
+          <div class="timeline-step">
+            <div class="timeline-node">2</div>
+            <h4>Reviewed in 48 hrs</h4>
+            <p>We verify your business and select your tier</p>
+          </div>
+          <div class="timeline-step">
+            <div class="timeline-node">3</div>
+            <h4>Account Activated</h4>
+            <p>You receive your trade portal login by email</p>
+          </div>
+          <div class="timeline-step">
+            <div class="timeline-node">4</div>
+            <h4>Access Trade Portal</h4>
+            <p>See discounted pricing and priority options</p>
+          </div>
+          <div class="timeline-step">
+            <div class="timeline-node">5</div>
+            <h4>First Order Placed</h4>
+            <p>Build faster with pricing and support on your side</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Application Form ── -->
+    <section class="section" id="apply" style="background:var(--bg-secondary);">
+      <div class="container">
+        <div class="section-header" style="text-align:center;">
+          <span class="section-label">Get Started</span>
+          <h2>Apply for Trade Access</h2>
+          <p>Fill in the details below. We review all applications within 48 hours.</p>
+        </div>
+        <div class="apply-form-wrap">
+          <form onsubmit="return false;">
+            <div class="form-row-2">
+              <div class="form-group">
+                <label class="form-label" for="biz-name">Business Name <span class="req">*</span></label>
+                <input type="text" class="form-input" id="biz-name" placeholder="e.g. Apex Performance Garage" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="contact-name">Contact Name <span class="req">*</span></label>
+                <input type="text" class="form-input" id="contact-name" placeholder="Your full name" required>
+              </div>
+            </div>
+            <div class="form-row-2">
+              <div class="form-group">
+                <label class="form-label" for="trade-email">Email Address <span class="req">*</span></label>
+                <input type="email" class="form-input" id="trade-email" placeholder="shop@yourdomain.com" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="trade-phone">Phone</label>
+                <input type="tel" class="form-input" id="trade-phone" placeholder="+1 555 000 0000">
+              </div>
+            </div>
+            <div class="form-row-2">
+              <div class="form-group">
+                <label class="form-label" for="trade-web">Website / Instagram</label>
+                <input type="text" class="form-input" id="trade-web" placeholder="https:// or @handle">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="biz-type">Business Type <span class="req">*</span></label>
+                <select class="form-select" id="biz-type" required>
+                  <option value="">Select type...</option>
+                  <option value="tuning">Tuning Shop</option>
+                  <option value="race">Race Prep Facility</option>
+                  <option value="ecu">ECU Dealer / Distributor</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row-2">
+              <div class="form-group">
+                <label class="form-label" for="trade-country">Country</label>
+                <input type="text" class="form-input" id="trade-country" placeholder="United States">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="annual-orders">Expected SVK orders per year <span class="req">*</span></label>
+                <select class="form-select" id="annual-orders" required>
+                  <option value="">Select range...</option>
+                  <option value="1-2">1–2 orders</option>
+                  <option value="3-7">3–7 orders</option>
+                  <option value="8-19">8–19 orders</option>
+                  <option value="20+">20+ orders</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="trade-referral">How did you hear about us?</label>
+              <input type="text" class="form-input" id="trade-referral" placeholder="e.g. Instagram, Google, referral from a customer...">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="trade-about">Tell us about your shop</label>
+              <textarea class="form-textarea" id="trade-about" rows="5" placeholder="What kind of builds do you specialise in? How many cars per year? Any notable projects or customers?"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary btn-lg" style="width:100%;margin-top:var(--space-md);">
+              Submit Application
+            </button>
+            <div class="form-note">
+              We review all applications within 48 hours. You'll receive an email with your trade account credentials if approved. Applications that don't meet our minimum volume threshold may be asked to reapply after completing retail orders.
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── FAQ ── -->
+    <section class="section">
+      <div class="container container-narrow">
+        <div class="section-header" style="text-align:center;">
+          <span class="section-label">FAQ</span>
+          <h2>Trade Program Questions</h2>
+        </div>
+        <div class="faq-list">
+          <div class="faq-item">
+            <button class="faq-question" onclick="toggleFaq(this)">
+              Is there a cost to join the trade program?
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="faq-answer">No. All trade tiers — Silver, Gold, and Platinum — are completely free to join. There are no setup fees, monthly fees, or membership costs. Your tier is determined solely by your annual order volume with SVK Works.</div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-question" onclick="toggleFaq(this)">
+              How do I move up to a higher tier?
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="faq-answer">Tiers are reviewed annually. Once you hit the order threshold for a higher tier, reach out to your account contact and we'll upgrade you immediately. We also proactively review accounts and notify you when you qualify.</div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-question" onclick="toggleFaq(this)">
+              Can my customers see trade pricing on your site?
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="faq-answer">No. Trade pricing is only visible when logged into the trade portal. Your customers browsing the public site will always see standard retail pricing. You control what margin you pass on.</div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-question" onclick="toggleFaq(this)">
+              Do trade accounts get access to new harness models first?
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="faq-answer">Gold and Platinum accounts are first to receive samples of new harness models and are invited to provide pre-launch feedback. This gives your shop a competitive edge when customers ask about new platforms.</div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-question" onclick="toggleFaq(this)">
+              What happens if I don't reach my annual order minimum?
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="faq-answer">We don't penalise shops for a slow year. If your volume drops below your tier threshold, we'll reach out to understand your situation first. We're a small team and we treat our trade partners as long-term relationships, not just numbers.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <div id="footer-placeholder"></div>
+
+  <script defer src="components/header.js"></script>
+  <script defer src="components/footer.js"></script>
+  <script defer src="js/cart.js"></script>
+  <script defer src="js/components.js"></script>
+  <script defer src="js/main.js"></script>
+  <script>
+    function toggleFaq(btn) {
+      const item = btn.closest('.faq-item');
+      item.classList.toggle('open');
+    }
+
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href="#apply"]').forEach(function(link) {
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        const target = document.getElementById('apply');
+        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+  </script>
+</body>
+</html>

@@ -95,12 +95,41 @@ const SVKComponents = {
       });
     }
 
-    // Mobile dropdown toggles
+    // Mobile dropdown toggles + keyboard support
     document.querySelectorAll('.has-dropdown > .nav-link').forEach(link => {
+      // Click: toggle on mobile, allow navigation on desktop
       link.addEventListener('click', (e) => {
         if (window.innerWidth <= 768) {
           e.preventDefault();
           link.parentElement.classList.toggle('open');
+        }
+      });
+      // Keyboard: Enter/Space opens dropdown on any screen size
+      link.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          link.parentElement.classList.toggle('open');
+          // Focus first item in dropdown when opening
+          if (link.parentElement.classList.contains('open')) {
+            const firstItem = link.parentElement.querySelector('.dropdown a');
+            if (firstItem) firstItem.focus();
+          }
+        }
+        // Arrow down also opens and focuses first item
+        if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          link.parentElement.classList.add('open');
+          const firstItem = link.parentElement.querySelector('.dropdown a');
+          if (firstItem) firstItem.focus();
+        }
+      });
+    });
+
+    // Close open dropdowns when focus leaves them
+    document.querySelectorAll('.has-dropdown').forEach(item => {
+      item.addEventListener('focusout', (e) => {
+        if (!item.contains(e.relatedTarget)) {
+          item.classList.remove('open');
         }
       });
     });

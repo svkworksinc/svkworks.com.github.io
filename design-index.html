@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Design Concepts — SVK Works Innovation Review</title>
+  <meta name="description" content="Design concept mockups for SVK Works business expansion — review and approve features before implementation.">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="img/svk-icon.png" type="image/png">
+  <style>
+    .concept-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: var(--space-xl);
+    }
+    .concept-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      transition: all var(--transition-base);
+      display: flex;
+      flex-direction: column;
+    }
+    .concept-card:hover {
+      border-color: var(--border-magenta);
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-lg), 0 0 30px var(--magenta-glow);
+    }
+    .concept-card-thumb {
+      height: 140px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .concept-card-body {
+      padding: var(--space-lg);
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    .concept-card-title {
+      font-size: var(--text-lg);
+      font-weight: var(--weight-bold);
+      margin-bottom: var(--space-sm);
+      color: var(--text-primary);
+    }
+    .concept-card-desc {
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+      line-height: 1.6;
+      flex: 1;
+      margin-bottom: var(--space-lg);
+    }
+    .concept-card-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: var(--space-md);
+    }
+    .impact-badge {
+      font-size: var(--text-xs);
+      font-weight: var(--weight-semibold);
+      padding: 0.2rem 0.6rem;
+      border-radius: var(--radius-full);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .impact-high {
+      background: rgba(233, 30, 140, 0.15);
+      color: var(--magenta);
+      border: 1px solid rgba(233, 30, 140, 0.3);
+    }
+    .impact-medium {
+      background: rgba(245, 158, 11, 0.15);
+      color: #f59e0b;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+    .effort-tag {
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+    }
+    .category-label {
+      font-size: var(--text-xs);
+      font-weight: var(--weight-semibold);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin-bottom: var(--space-xl);
+      margin-top: var(--space-3xl);
+      padding-bottom: var(--space-sm);
+      border-bottom: 1px solid var(--border-color);
+    }
+    .category-label:first-of-type {
+      margin-top: 0;
+    }
+    .notice-banner {
+      background: rgba(233, 30, 140, 0.08);
+      border: 1px solid rgba(233, 30, 140, 0.25);
+      border-radius: var(--radius-lg);
+      padding: var(--space-lg) var(--space-xl);
+      margin-bottom: var(--space-3xl);
+      display: flex;
+      align-items: center;
+      gap: var(--space-lg);
+    }
+    .notice-icon {
+      font-size: 1.5rem;
+      flex-shrink: 0;
+    }
+    .notice-text {
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+      margin: 0;
+    }
+    .notice-text strong {
+      color: var(--magenta);
+    }
+    .summary-stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--space-lg);
+      margin-bottom: var(--space-3xl);
+    }
+    .summary-stat {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: var(--space-lg);
+      text-align: center;
+    }
+    .summary-stat-value {
+      font-size: var(--text-3xl);
+      font-weight: var(--weight-bold);
+      color: var(--magenta);
+    }
+    .summary-stat-label {
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+    @media (max-width: 768px) {
+      .summary-stats { grid-template-columns: repeat(2, 1fr); }
+      .concept-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div id="header-placeholder"></div>
+
+  <main id="main-content">
+    <div class="page-hero">
+      <div class="container">
+        <div class="breadcrumb" role="navigation" aria-label="breadcrumb">
+          <a href="index.html">Home</a>
+          <span class="breadcrumb-sep" aria-hidden="true">/</span>
+          <span>Design Concepts</span>
+        </div>
+        <span class="section-label">Internal Review</span>
+        <h1>Innovation Design Concepts</h1>
+        <p>10 fully designed mockups — each one is a clickable, interactive prototype. Review, approve, and we build the real thing.</p>
+      </div>
+    </div>
+
+    <section class="section">
+      <div class="container">
+
+        <div class="notice-banner">
+          <div class="notice-icon">⚡</div>
+          <p class="notice-text">
+            <strong>These are design mockups, not live features.</strong> Every page below is a fully interactive prototype built in the site's design system. Open each one, click around, and decide what gets built. Nothing here is visible to customers.
+          </p>
+        </div>
+
+        <div class="summary-stats">
+          <div class="summary-stat">
+            <div class="summary-stat-value">10</div>
+            <div class="summary-stat-label">Design Concepts</div>
+          </div>
+          <div class="summary-stat">
+            <div class="summary-stat-value">4</div>
+            <div class="summary-stat-label">High-Impact Features</div>
+          </div>
+          <div class="summary-stat">
+            <div class="summary-stat-value">3</div>
+            <div class="summary-stat-label">Revenue Streams</div>
+          </div>
+          <div class="summary-stat">
+            <div class="summary-stat-value">2</div>
+            <div class="summary-stat-label">Community Features</div>
+          </div>
+        </div>
+
+        <!-- REVENUE / CONVERSION -->
+        <div class="category-label">Revenue & Conversion</div>
+        <div class="concept-grid">
+
+          <div class="concept-card">
+            <div class="concept-card-thumb" style="background: linear-gradient(135deg, #1a0a1f 0%, #2d0f3d 100%);">
+              <span>⚙️</span>
+              <div style="position:absolute;top:12px;right:12px;background:var(--magenta);color:#fff;font-size:10px;font-weight:700;padding:3px 8px;border-radius:99px;text-transform:uppercase;letter-spacing:.05em;">Top Pick</div>
+            </div>
+            <div class="concept-card-body">
+              <div class="concept-card-meta">
+                <span class="impact-badge impact-high">High Impact</span>
+                <span class="effort-tag">4–6 weeks build</span>
+              </div>
+              <div class="concept-card-title">Harness Configurator</div>
+              <p class="concept-card-desc">Multi-step wizard — pick chassis, engine, ECU, add-ons — and get an instant price estimate. Eliminates the email-for-a-quote barrier that kills conversions at 11pm.</p>
+              <a href="design-configurator.html" class="btn btn-primary btn-sm">View Design →</a>
+            </div>
+          </div>
+
+          <div class="concept-card">
+            <div class="concept-card-thumb" style="background: linear-gradient(135deg, #0a1a0f 0%, #0f3020 100%);">
+              <span>✅</span>
+            </div>
+            <div class="concept-card-body">
+              <div class="concept-card-meta">
+                <span class="impact-badge impact-high">High Impact</span>
+                <span class="effort-tag">1–2 weeks build</span>
+              </div>
+              <div class="concept-card-title">Compatibility Checker</div>
+              <p class="concept-card-desc">Dropdown tool — pick your chassis, engine, ECU, and trans — and get an instant compatibility result with a green/yellow/red rating. Handles the #1 pre-sale question at scale.</p>
+              <a href="design-compatibility.html" class="btn btn-primary btn-sm">View Design →</a>
+            </div>
+          </div>
+
+          <div class="concept-card">
+            <div class="concept-card-thumb" style="background: linear-gradient(135deg, #1a1200 0%, #2d2000 100%);">
+              <span>📦</span>
+            </div>
+            <div class="concept-card-body">
+              <div class="concept-card-meta">
+                <span class="impact-badge impact-high">High Impact</span>
+                <span class="effort-tag">2–3 weeks build</span>
+              </div>
+              <div class="concept-card-title">Sub-Harnesses Catalog</div>
+              <p class="concept-card-desc">In-stock, ships-in-3-days plug-and-play sub-harnesses. Power distribution, injector looms, trans harnesses, flex fuel, boost control. Impulse buys for builders mid-project.</p>
+              <a href="design-sub-harnesses.html" class="btn btn-primary btn-sm">View Design →</a>
+            </div>
+          </div>
+
+          <div class="concept-card">
+            <div class="concept-card-thumb" style="background: linear-gradient(135deg, #00101a 0%, #001c2d 100%);">
+              <span>📅</span>
+            </div>
+            <div class="concept-card-body">
+              <div class="concept-card-meta">
+                <span class="impact-badge impact-medium">Medium Impact</span>
+                <span class="effort-tag">1 week build</span>
+              </div>
+              <div class="concept-card-title">Build Slot Waitlist</div>
+              <p class="concept-card-desc">Visual production calendar showing open/full slots. Customers pay $100 (refundable) to lock in their month. Smooths your pipeline and eliminates the "when can I get one?" question.</p>
+              <a href="design-waitlist.html" class="btn btn-primary btn-sm">View Design →</a>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- NEW SERVICES -->
+        <div class="category-label">New Service Lines</div>
+        <div class="concept-grid">
+
+          <div class="concept-card">
+            <div class="concept-card-thumb" style="background: linear-gradient(135deg, #1a0a0a 0%, #2d1515 100%);">
+              <span>🔧</span>
+            </div>
+            <div class="concept-card-body">
+              <div class="concept-card-meta">
+                <span class="impact-badge impact-high">High Impact</span>
+                <span class="effort-tag">Service — no build</span>
+              </div>
+              <div class="concept-card-title">Expanded Services</div>
+              <p class="concept-card-desc">Three new services: Diagnostic Inspection ($175), Repair & Modification (from $95), Annual Health Check ($75). Pure margin — labor only, low parts cost, fills gaps between big builds.</p>
+              <a href="design-services-expanded.html" class="btn btn-primary btn-sm">View Design →</a>
+            </div>
+          </div>
+
+          <div class="concept-card">
+            <div class="concept-card-thumb" style="background: linear-gradient(135deg, #0a0f1a 0%, #0f1a2d 100%);">
+              <span>🏢</span>
+            </div>
+            <div class="concept-card-body">
+              <div class="concept-card-meta">
+                <span class="impact-badge impact-medium">Medium Impact</span>
+                <span class="effort-tag">2 weeks build</span>
+              </div>
+              <div class="concept-card-title">Trade & Wholesale Program</div>
+              <p class="concept-card-desc">Silver / Gold / Platinum tiers for shops and resellers. 10–25% off retail, priority queue, co-marketing, dedicated support. Scales revenue without scaling customer service.</p>
+              <a href="design-wholesale.html" class="btn btn-primary btn-sm">View Design →</a>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- DIGITAL TOOLS -->
+        <div class="category-label">Digital Tools</div>
+        <div class="concept-grid">
+
+          <div class="concept-card">
+            <div class="concept-card-thumb" style="background: linear-gradient(135deg, #0a001a 0%, #180030 100%);">
+              <span>🗂️</span>
+            </div>
+            <div class="concept-card-body">
+              <div class="concept-card-meta">
+                <span class="impact-badge impact-high">High Impact</span>
+                <span class="effort-tag">3–4 weeks build</span>
+              </div>
+              <div class="concept-card-title">Customer Order Portal</div>
+              <p class="concept-card-desc">Logged-in customers track their build in real time — Order Confirmed → Wire Prep → Assembly → Testing → Shipped. Photo updates at each milestone. Eliminates "how's my order?" emails.</p>
+              <a href="design-portal.html" class="btn btn-primary btn-sm">View Design →</a>
+            </div>
+          </div>
+
+          <div class="concept-card">
+            <div class="concept-card-thumb" style="background: linear-gradient(135deg, #001a15 0%, #002d24 100%);">
+              <span>🔌</span>
+            </div>
+            <div class="concept-card-body">
+              <div class="concept-card-meta">
+                <span class="impact-badge impact-medium">Medium Impact</span>
+                <span class="effort-tag">4–5 weeks build</span>
+              </div>
+              <div class="concept-card-title">Interactive Wiring Diagrams</div>
+              <p class="concept-card-desc">Click a wire on the diagram and see the full circuit highlighted — connector pinouts, wire gauge, from/to pins, related circuits. Nobody else has this. Drives massive organic traffic.</p>
+              <a href="design-interactive-diagram.html" class="btn btn-primary btn-sm">View Design →</a>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- COMMUNITY -->
+        <div class="category-label">Community & Brand</div>
+        <div class="concept-grid">
+
+          <div class="concept-card">
+            <div class="concept-card-thumb" style="background: linear-gradient(135deg, #1a0f00 0%, #2d1f00 100%);">
+              <span>🏆</span>
+            </div>
+            <div class="concept-card-body">
+              <div class="concept-card-meta">
+                <span class="impact-badge impact-medium">Medium Impact</span>
+                <span class="effort-tag">1 week build</span>
+              </div>
+              <div class="concept-card-title">Build Spotlight Program</div>
+              <p class="concept-card-desc">Monthly featured customer build — full writeup, gallery, build stats. Customers submit their builds for a chance at a feature, $50 store credit, and a social media blast. Free content engine.</p>
+              <a href="design-build-spotlight.html" class="btn btn-primary btn-sm">View Design →</a>
+            </div>
+          </div>
+
+          <div class="concept-card">
+            <div class="concept-card-thumb" style="background: linear-gradient(135deg, #0a1500 0%, #142300 100%);">
+              <span>🗺️</span>
+            </div>
+            <div class="concept-card-body">
+              <div class="concept-card-meta">
+                <span class="impact-badge impact-medium">Medium Impact</span>
+                <span class="effort-tag">2 weeks build</span>
+              </div>
+              <div class="concept-card-title">SVK Verified Installer Network</div>
+              <p class="concept-card-desc">A directory of approved shops that install SVK harnesses. Shops apply, get a badge and listing, you get referrals from markets you don't advertise in. 24 shops across 12 countries in this mock.</p>
+              <a href="design-verified-network.html" class="btn btn-primary btn-sm">View Design →</a>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- APPROVAL CTA -->
+        <div style="margin-top: var(--space-4xl); padding: var(--space-3xl); background: var(--bg-card); border: 1px solid var(--border-magenta); border-radius: var(--radius-lg); text-align: center;">
+          <span class="section-label">Next Steps</span>
+          <h2 style="margin-bottom: var(--space-md);">Review Everything, Then Decide</h2>
+          <p style="color: var(--text-secondary); max-width: 550px; margin: 0 auto var(--space-xl);">Open each design above, click around, and tell us which ones you want to build. We can tackle them in any order — or all at once if you want to move fast.</p>
+          <div style="display: flex; gap: var(--space-md); justify-content: center; flex-wrap: wrap;">
+            <a href="contact.html" class="btn btn-primary btn-lg">Tell Us Which to Build</a>
+            <a href="index.html" class="btn btn-outline btn-lg">Back to Live Site</a>
+          </div>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <div id="footer-placeholder"></div>
+
+  <script defer src="components/header.js"></script>
+  <script defer src="components/footer.js"></script>
+  <script defer src="js/cart.js"></script>
+  <script defer src="js/components.js"></script>
+  <script defer src="js/main.js"></script>
+</body>
+</html>
