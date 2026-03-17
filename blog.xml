@@ -2,16 +2,16 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>SVK Works — Tech Articles &amp; Guides</title>
-    <link>https://svkworks.com/blog.html</link>
+    <link>https://www.svkworks.com/blog.html</link>
     <description>Wiring tips, swap guides, and tech deep-dives from the SVK Works workshop.</description>
     <language>en-us</language>
-    <atom:link href="https://svkworks.com/blog.xml" rel="self" type="application/rss+xml"/>
+    <atom:link href="https://www.svkworks.com/blog.xml" rel="self" type="application/rss+xml"/>
     <lastBuildDate>Mon, 16 Mar 2026 00:00:00 +0000</lastBuildDate>
 
     <item>
       <title>Why Your Build Needs a Standalone Harness</title>
-      <link>https://svkworks.com/blog-why-standalone-harness.html</link>
-      <guid isPermaLink="true">https://svkworks.com/blog-why-standalone-harness.html</guid>
+      <link>https://www.svkworks.com/blog-why-standalone-harness.html</link>
+      <guid isPermaLink="true">https://www.svkworks.com/blog-why-standalone-harness.html</guid>
       <pubDate>Thu, 15 Jan 2026 00:00:00 +0000</pubDate>
       <category>Tech</category>
       <description>Still running a modified OEM harness? Here's why going standalone is the best investment for your build's reliability and performance.</description>
@@ -20,8 +20,8 @@
 
     <item>
       <title>MK3 Supra 2JZ Swap: Wiring Considerations</title>
-      <link>https://svkworks.com/blog-mk3-2jz-swap-guide.html</link>
-      <guid isPermaLink="true">https://svkworks.com/blog-mk3-2jz-swap-guide.html</guid>
+      <link>https://www.svkworks.com/blog-mk3-2jz-swap-guide.html</link>
+      <guid isPermaLink="true">https://www.svkworks.com/blog-mk3-2jz-swap-guide.html</guid>
       <pubDate>Sat, 20 Dec 2025 00:00:00 +0000</pubDate>
       <category>Guides</category>
       <description>The 2JZ swap into the MK3 Supra is one of the most popular JDM builds. Here's what you need to know about the wiring side of this swap.</description>
@@ -30,8 +30,8 @@
 
     <item>
       <title>Choosing the Right ECU for Your 2JZ Build</title>
-      <link>https://svkworks.com/blog-choosing-ecu.html</link>
-      <guid isPermaLink="true">https://svkworks.com/blog-choosing-ecu.html</guid>
+      <link>https://www.svkworks.com/blog-choosing-ecu.html</link>
+      <guid isPermaLink="true">https://www.svkworks.com/blog-choosing-ecu.html</guid>
       <pubDate>Mon, 10 Nov 2025 00:00:00 +0000</pubDate>
       <category>Tech</category>
       <description>Haltech, Link, AEM, Motec — the options are overwhelming. Here's our breakdown of the most popular ECU choices for 2JZ-powered builds.</description>
@@ -40,8 +40,8 @@
 
     <item>
       <title>Mil-Spec Wiring Explained: TXL vs Raychem Spec 44</title>
-      <link>https://svkworks.com/blog-txl-vs-raychem-spec44.html</link>
-      <guid isPermaLink="true">https://svkworks.com/blog-txl-vs-raychem-spec44.html</guid>
+      <link>https://www.svkworks.com/blog-txl-vs-raychem-spec44.html</link>
+      <guid isPermaLink="true">https://www.svkworks.com/blog-txl-vs-raychem-spec44.html</guid>
       <pubDate>Sun, 05 Oct 2025 00:00:00 +0000</pubDate>
       <category>Tech</category>
       <description>Not all automotive wire is created equal. Here's a deep dive into the two wire types we use at SVK Works — and when each one is the right call for your build.</description>
@@ -50,8 +50,8 @@
 
     <item>
       <title>1UZ-FE Swap Wiring: What You Need to Know</title>
-      <link>https://svkworks.com/blog-1uz-swap-wiring.html</link>
-      <guid isPermaLink="true">https://svkworks.com/blog-1uz-swap-wiring.html</guid>
+      <link>https://www.svkworks.com/blog-1uz-swap-wiring.html</link>
+      <guid isPermaLink="true">https://www.svkworks.com/blog-1uz-swap-wiring.html</guid>
       <pubDate>Sun, 05 Oct 2025 00:00:00 +0000</pubDate>
       <category>Tech</category>
       <description>The 1UZ-FE is a proven V8 swap candidate. Here's a breakdown of the wiring challenges and how a purpose-built harness makes the install clean and reliable.</description>
@@ -60,8 +60,8 @@
 
     <item>
       <title>SC400 Manual Swap: Wiring the CD009 Conversion</title>
-      <link>https://svkworks.com/blog-sc400-cd009-swap-wiring.html</link>
-      <guid isPermaLink="true">https://svkworks.com/blog-sc400-cd009-swap-wiring.html</guid>
+      <link>https://www.svkworks.com/blog-sc400-cd009-swap-wiring.html</link>
+      <guid isPermaLink="true">https://www.svkworks.com/blog-sc400-cd009-swap-wiring.html</guid>
       <pubDate>Thu, 18 Sep 2025 00:00:00 +0000</pubDate>
       <category>Guides</category>
       <description>Swapping a Nissan 350Z CD009 6-speed into the SC400 is one of the cleanest manual conversions available. Here's everything you need to know about the wiring side.</description>
@@ -70,8 +70,8 @@
 
     <item>
       <title>Mil-Spec Connectors: Why They Matter for Motorsport Wiring</title>
-      <link>https://svkworks.com/blog-mil-spec-connectors.html</link>
-      <guid isPermaLink="true">https://svkworks.com/blog-mil-spec-connectors.html</guid>
+      <link>https://www.svkworks.com/blog-mil-spec-connectors.html</link>
+      <guid isPermaLink="true">https://www.svkworks.com/blog-mil-spec-connectors.html</guid>
       <pubDate>Thu, 18 Sep 2025 00:00:00 +0000</pubDate>
       <category>Tech</category>
       <description>Mil-spec connectors are the gold standard for motorsport and high-performance wiring. Here's why they're worth the investment and what makes them different.</description>
