@@ -1,0 +1,1104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interactive Wiring Diagram Viewer — Design Concept | SVK Works</title>
+  <meta name="description" content="Design concept: Click any circuit to trace it through the full harness. Interactive SVG wiring diagram viewer for JDM engine harness builds.">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="img/svk-icon.png" type="image/png">
+  <style>
+    /* ── Design Concept Banner ── */
+    .design-concept-banner {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 9999;
+      background: linear-gradient(90deg, #7c3aed, var(--magenta));
+      color: #fff;
+      text-align: center;
+      font-size: var(--text-xs);
+      font-weight: var(--weight-semibold);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 7px var(--space-md);
+    }
+    body { padding-top: 33px; }
+
+    /* ── Diagram Layout ── */
+    .diagram-layout {
+      display: flex;
+      gap: var(--space-lg);
+      align-items: flex-start;
+    }
+    .diagram-area {
+      flex: 0 0 65%;
+      min-width: 0;
+    }
+    .info-panel {
+      flex: 0 0 calc(35% - var(--space-lg));
+      min-width: 0;
+      position: sticky;
+      top: calc(var(--header-height) + var(--header-top-height) + 33px + var(--space-md));
+    }
+
+    /* ── Car Selector Tabs ── */
+    .car-tabs {
+      display: flex;
+      gap: 0;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      margin-bottom: var(--space-lg);
+    }
+    .car-tab {
+      flex: 1;
+      padding: 10px var(--space-sm);
+      font-size: var(--text-xs);
+      font-weight: var(--weight-semibold);
+      color: var(--text-muted);
+      text-align: center;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      border: none;
+      background: none;
+      border-right: 1px solid var(--border-color);
+      white-space: nowrap;
+    }
+    .car-tab:last-child { border-right: none; }
+    .car-tab:hover { color: var(--text-primary); background: var(--bg-elevated); }
+    .car-tab.active {
+      background: var(--magenta-subtle);
+      color: var(--magenta);
+      border-color: transparent;
+      box-shadow: inset 0 -2px 0 var(--magenta);
+    }
+
+    /* ── Search Bar ── */
+    .diagram-search-wrap {
+      position: relative;
+      margin-bottom: var(--space-md);
+    }
+    .diagram-search-wrap svg {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      pointer-events: none;
+    }
+    .diagram-search {
+      width: 100%;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 10px 14px 10px 42px;
+      font-family: var(--font-body);
+      font-size: var(--text-sm);
+      color: var(--text-primary);
+      outline: none;
+      transition: border-color var(--transition-fast);
+      box-sizing: border-box;
+    }
+    .diagram-search::placeholder { color: var(--text-muted); }
+    .diagram-search:focus { border-color: var(--magenta); }
+
+    /* ── SVG Diagram Container ── */
+    .diagram-container {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      position: relative;
+      overflow: hidden;
+    }
+    .diagram-toolbar {
+      position: absolute;
+      bottom: var(--space-md);
+      right: var(--space-md);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      z-index: 10;
+    }
+    .zoom-btn {
+      width: 32px;
+      height: 32px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: var(--weight-bold);
+      transition: all var(--transition-fast);
+      line-height: 1;
+    }
+    .zoom-btn:hover { border-color: var(--magenta); color: var(--magenta); background: var(--magenta-subtle); }
+    #diagram-svg {
+      width: 100%;
+      cursor: default;
+      display: block;
+      transition: transform 0.2s ease;
+      transform-origin: center center;
+    }
+    .wire-group {
+      cursor: pointer;
+    }
+    .wire-group line,
+    .wire-group polyline,
+    .wire-group path {
+      transition: stroke-width 0.15s ease, filter 0.15s ease, opacity 0.15s ease;
+    }
+    .wire-group:hover line,
+    .wire-group:hover polyline,
+    .wire-group:hover path {
+      stroke-width: 4;
+      filter: drop-shadow(0 0 6px currentColor);
+    }
+    .wire-group.active line,
+    .wire-group.active polyline,
+    .wire-group.active path {
+      stroke-width: 4.5;
+      filter: drop-shadow(0 0 10px currentColor);
+    }
+    .wire-group.dimmed line,
+    .wire-group.dimmed polyline,
+    .wire-group.dimmed path {
+      opacity: 0.18;
+    }
+    .wire-group.search-match line,
+    .wire-group.search-match polyline,
+    .wire-group.search-match path {
+      stroke-width: 4;
+      filter: drop-shadow(0 0 8px currentColor);
+    }
+
+    /* ── Info Panel ── */
+    .info-panel-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      margin-bottom: var(--space-md);
+    }
+    .info-panel-header {
+      padding: var(--space-md) var(--space-lg);
+      border-bottom: 1px solid var(--border-color);
+      background: var(--bg-elevated);
+    }
+    .info-panel-header h3 {
+      font-size: var(--text-sm);
+      font-weight: var(--weight-semibold);
+      color: var(--text-primary);
+      margin: 0;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .info-panel-body { padding: var(--space-lg); }
+    .info-placeholder {
+      text-align: center;
+      padding: var(--space-2xl) var(--space-lg);
+      color: var(--text-muted);
+    }
+    .info-placeholder svg { opacity: 0.3; margin-bottom: var(--space-md); }
+    .info-placeholder p { font-size: var(--text-sm); }
+
+    /* Circuit detail view */
+    .circuit-name {
+      font-size: var(--text-xl);
+      font-weight: var(--weight-bold);
+      color: var(--text-primary);
+      margin-bottom: var(--space-sm);
+      line-height: 1.3;
+    }
+    .circuit-color-stripe {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      margin-bottom: var(--space-lg);
+    }
+    .color-chip {
+      width: 28px;
+      height: 14px;
+      border-radius: 3px;
+      border: 1px solid rgba(255,255,255,0.15);
+    }
+    .circuit-detail-rows { margin-bottom: var(--space-lg); }
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border-color);
+      gap: var(--space-md);
+    }
+    .detail-row:last-child { border-bottom: none; }
+    .detail-key {
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+      font-weight: var(--weight-medium);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      white-space: nowrap;
+      flex-shrink: 0;
+      padding-top: 1px;
+    }
+    .detail-val {
+      font-size: var(--text-sm);
+      color: var(--text-primary);
+      text-align: right;
+      font-weight: var(--weight-medium);
+    }
+    .circuit-function {
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+      line-height: var(--leading-normal);
+      background: var(--bg-elevated);
+      border-radius: var(--radius-sm);
+      padding: var(--space-md);
+      margin-bottom: var(--space-lg);
+    }
+    .related-label {
+      font-size: var(--text-xs);
+      font-weight: var(--weight-semibold);
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: var(--space-sm);
+    }
+    .related-list { list-style: none; padding: 0; margin: 0 0 var(--space-lg); }
+    .related-list li a {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 0;
+      font-size: var(--text-sm);
+      color: var(--magenta);
+      text-decoration: none;
+      border-bottom: 1px solid var(--border-color);
+      transition: color var(--transition-fast);
+    }
+    .related-list li:last-child a { border-bottom: none; }
+    .related-list li a:hover { color: var(--magenta-light); }
+
+    /* Pinout grid */
+    .pinout-section { margin-top: var(--space-lg); }
+    .pinout-label {
+      font-size: var(--text-xs);
+      font-weight: var(--weight-semibold);
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: var(--space-sm);
+    }
+    .pin-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 4px;
+    }
+    .pin-cell {
+      aspect-ratio: 1;
+      border-radius: 4px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 9px;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      line-height: 1.2;
+      text-align: center;
+      padding: 2px;
+    }
+    .pin-cell:hover { border-color: var(--magenta); color: var(--text-primary); }
+    .pin-cell.active {
+      background: var(--magenta-subtle);
+      border-color: var(--magenta);
+      color: var(--magenta);
+      font-weight: var(--weight-semibold);
+    }
+    .pin-cell.used {
+      background: rgba(34, 197, 94, 0.05);
+      border-color: rgba(34, 197, 94, 0.2);
+      color: rgba(34, 197, 94, 0.7);
+    }
+
+    /* ── Recently Viewed ── */
+    .recent-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-md);
+      margin-top: var(--space-lg);
+    }
+    .recent-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: var(--space-lg);
+      cursor: pointer;
+      transition: all var(--transition-base);
+    }
+    .recent-card:hover {
+      border-color: var(--magenta);
+      background: var(--bg-card-hover);
+      transform: translateY(-2px);
+    }
+    .recent-car {
+      font-size: var(--text-xs);
+      color: var(--magenta);
+      font-weight: var(--weight-semibold);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 4px;
+    }
+    .recent-title {
+      font-size: var(--text-sm);
+      font-weight: var(--weight-semibold);
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+    .recent-meta { font-size: var(--text-xs); color: var(--text-muted); }
+
+    /* CTA strip */
+    .diagram-cta {
+      background: var(--bg-card);
+      border: 1px solid var(--border-magenta);
+      border-radius: var(--radius-lg);
+      padding: var(--space-xl) var(--space-2xl);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: var(--space-md);
+      margin-top: var(--space-2xl);
+    }
+    .diagram-cta h3 { font-size: var(--text-xl); font-weight: var(--weight-bold); color: var(--text-primary); margin-bottom: 4px; }
+    .diagram-cta p { font-size: var(--text-sm); color: var(--text-secondary); margin: 0; }
+
+    /* Badge */
+    .badge-concept {
+      background: linear-gradient(90deg, #7c3aed, var(--magenta));
+      color: #fff;
+      font-size: var(--text-xs);
+      font-weight: var(--weight-semibold);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: var(--radius-full);
+      display: inline-block;
+    }
+
+    /* Wire legend */
+    .wire-legend {
+      display: flex;
+      gap: var(--space-md);
+      flex-wrap: wrap;
+      padding: var(--space-md) var(--space-lg);
+      border-top: 1px solid var(--border-color);
+      background: var(--bg-elevated);
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: color var(--transition-fast);
+    }
+    .legend-item:hover { color: var(--text-primary); }
+    .legend-swatch {
+      width: 20px;
+      height: 4px;
+      border-radius: 2px;
+    }
+
+    @media (max-width: 900px) {
+      .diagram-layout { flex-direction: column; }
+      .diagram-area, .info-panel { flex: none; width: 100%; }
+      .info-panel { position: static; }
+      .recent-grid { grid-template-columns: 1fr; }
+      .car-tab { font-size: 10px; padding: 8px 4px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Design Concept Banner -->
+  <div class="design-concept-banner">
+    Design Concept — Not a live feature — For internal review only
+  </div>
+
+  <div id="header-placeholder"></div>
+
+  <main id="main-content">
+    <!-- Hero -->
+    <div class="page-hero">
+      <div class="container">
+        <div class="breadcrumb" role="navigation" aria-label="breadcrumb">
+          <a href="index.html">Home</a><span class="breadcrumb-sep" aria-hidden="true">/</span>
+          <a href="#">Design Concepts</a><span class="breadcrumb-sep" aria-hidden="true">/</span>
+          <span>Interactive Diagram Viewer</span>
+        </div>
+        <div style="margin-top:var(--space-lg);">
+          <div style="margin-bottom:var(--space-md);">
+            <span class="badge-concept">Design Concept</span>
+          </div>
+          <h1 style="margin:0 0 var(--space-xs);">Interactive Wiring Diagrams</h1>
+          <p style="color:var(--text-secondary);font-size:var(--text-lg);margin:0;max-width:580px;">Click any circuit to trace it through the entire harness. Inspect wire specs, pin assignments, and related circuits.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Diagram Section -->
+    <section class="section" style="padding-top:var(--space-xl);">
+      <div class="container" style="max-width:var(--container-max);">
+        <div class="diagram-layout">
+
+          <!-- ── LEFT: Diagram Area ── -->
+          <div class="diagram-area">
+
+            <!-- Car Tabs -->
+            <div class="car-tabs" role="tablist">
+              <button class="car-tab active" role="tab" onclick="switchCar(this, 'mk4-supra')">MK4 Supra</button>
+              <button class="car-tab" role="tab" onclick="switchCar(this, 'mk3-supra')">MK3 Supra</button>
+              <button class="car-tab" role="tab" onclick="switchCar(this, 'sc300-400')">SC300/400</button>
+              <button class="car-tab" role="tab" onclick="switchCar(this, 'gs300')">GS300</button>
+              <button class="car-tab" role="tab" onclick="switchCar(this, 'is300')">IS300</button>
+            </div>
+
+            <!-- Search -->
+            <div class="diagram-search-wrap">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input type="text" class="diagram-search" id="wire-search" placeholder="Search by signal name, pin, or function..." oninput="handleSearch(this.value)">
+            </div>
+
+            <!-- SVG Container -->
+            <div class="diagram-container">
+              <svg id="diagram-svg" viewBox="0 0 820 500" xmlns="http://www.w3.org/2000/svg" aria-label="Wiring harness diagram">
+                <defs>
+                  <!-- Grid pattern -->
+                  <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+                    <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="1"/>
+                  </pattern>
+                </defs>
+
+                <!-- Background -->
+                <rect width="820" height="500" fill="#0e0e16"/>
+                <rect width="820" height="500" fill="url(#grid)"/>
+
+                <!-- ══ WIRE GROUPS ══ -->
+
+                <!-- 12V Power (Red) -->
+                <g class="wire-group" id="wire-12v-power" data-circuit="12v-power" data-label="12V Main Power Supply" data-color="#ef4444" onclick="selectWire('12v-power')" aria-label="12V Power wire">
+                  <title>12V Main Power — Click to inspect</title>
+                  <line x1="160" y1="178" x2="340" y2="195" stroke="#ef4444" stroke-width="2.5" stroke-linecap="round"/>
+                  <line x1="480" y1="195" x2="660" y2="178" stroke="#ef4444" stroke-width="2.5" stroke-linecap="round"/>
+                  <!-- Power branch up to ECU top -->
+                  <polyline points="410,195 410,155 340,155" fill="none" stroke="#ef4444" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  <!-- Hover area (invisible thick line) -->
+                  <line x1="160" y1="178" x2="340" y2="195" stroke="transparent" stroke-width="14"/>
+                  <line x1="480" y1="195" x2="660" y2="178" stroke="transparent" stroke-width="14"/>
+                </g>
+
+                <!-- Ground (Black) -->
+                <g class="wire-group" id="wire-ground" data-circuit="ground" data-label="Chassis Ground" data-color="#6b7280" onclick="selectWire('ground')" aria-label="Ground wire">
+                  <title>Chassis Ground — Click to inspect</title>
+                  <line x1="160" y1="198" x2="340" y2="215" stroke="#9ca3af" stroke-width="2.5" stroke-linecap="round"/>
+                  <line x1="480" y1="215" x2="660" y2="198" stroke="#9ca3af" stroke-width="2.5" stroke-linecap="round"/>
+                  <line x1="410" y1="270" x2="410" y2="340" stroke="#9ca3af" stroke-width="2.5" stroke-linecap="round"/>
+                  <line x1="160" y1="198" x2="340" y2="215" stroke="transparent" stroke-width="14"/>
+                  <line x1="480" y1="215" x2="660" y2="198" stroke="transparent" stroke-width="14"/>
+                </g>
+
+                <!-- Injector Drive Cyl 1 (Yellow) -->
+                <g class="wire-group" id="wire-inj1" data-circuit="inj1" data-label="Injector Drive — Cyl. 1" data-color="#eab308" onclick="selectWire('inj1')" aria-label="Injector 1 wire">
+                  <title>Injector Drive Cyl.1 — Click to inspect</title>
+                  <polyline points="340,270 280,270 220,330 220,378" fill="none" stroke="#eab308" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  <polyline points="340,270 280,270 220,330 220,378" fill="none" stroke="transparent" stroke-width="14"/>
+                </g>
+
+                <!-- Injector Drive Cyl 2 (Yellow variant) -->
+                <g class="wire-group" id="wire-inj2" data-circuit="inj2" data-label="Injector Drive — Cyl. 2" data-color="#ca8a04" onclick="selectWire('inj2')" aria-label="Injector 2 wire">
+                  <title>Injector Drive Cyl.2 — Click to inspect</title>
+                  <polyline points="360,270 310,290 260,350 260,378" fill="none" stroke="#ca8a04" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  <polyline points="360,270 310,290 260,350 260,378" fill="none" stroke="transparent" stroke-width="14"/>
+                </g>
+
+                <!-- Injector Drive Cyl 3 -->
+                <g class="wire-group" id="wire-inj3" data-circuit="inj3" data-label="Injector Drive — Cyl. 3" data-color="#d97706" onclick="selectWire('inj3')" aria-label="Injector 3 wire">
+                  <title>Injector Drive Cyl.3 — Click to inspect</title>
+                  <polyline points="410,270 410,310 460,350 560,378" fill="none" stroke="#d97706" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  <polyline points="410,270 410,310 460,350 560,378" fill="none" stroke="transparent" stroke-width="14"/>
+                </g>
+
+                <!-- CPS / RPM signal (Green) -->
+                <g class="wire-group" id="wire-cps" data-circuit="cps" data-label="CPS — Crank Position Signal" data-color="#22c55e" onclick="selectWire('cps')" aria-label="CPS signal wire">
+                  <title>Crank Position Sensor — Click to inspect</title>
+                  <polyline points="160,248 200,248 240,310 280,340 280,378" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  <polyline points="160,248 200,248 240,310 280,340 280,378" fill="none" stroke="transparent" stroke-width="14"/>
+                </g>
+
+                <!-- TPS signal (Green 2) -->
+                <g class="wire-group" id="wire-tps" data-circuit="tps" data-label="TPS — Throttle Position Signal" data-color="#16a34a" onclick="selectWire('tps')" aria-label="TPS wire">
+                  <title>Throttle Position Sensor — Click to inspect</title>
+                  <polyline points="160,268 210,268 260,290 340,230" fill="none" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  <polyline points="160,268" fill="none" stroke="transparent" stroke-width="14"/>
+                  <line x1="160" y1="268" x2="340" y2="230" stroke="transparent" stroke-width="14"/>
+                </g>
+
+                <!-- CAN Bus (Blue) -->
+                <g class="wire-group" id="wire-can" data-circuit="can" data-label="CAN Bus — High / Low" data-color="#3b82f6" onclick="selectWire('can')" aria-label="CAN Bus wire">
+                  <title>CAN Bus H/L — Click to inspect</title>
+                  <polyline points="480,230 580,230 660,218" fill="none" stroke="#3b82f6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  <polyline points="480,230 580,268 660,268" fill="none" stroke="#60a5fa" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  <line x1="480" y1="230" x2="660" y2="218" stroke="transparent" stroke-width="14"/>
+                  <line x1="480" y1="268" x2="660" y2="268" stroke="transparent" stroke-width="14"/>
+                </g>
+
+                <!-- IAT signal (Green 3) -->
+                <g class="wire-group" id="wire-iat" data-circuit="iat" data-label="IAT — Intake Air Temp Sensor" data-color="#4ade80" onclick="selectWire('iat')" aria-label="IAT wire">
+                  <title>Intake Air Temp Sensor — Click to inspect</title>
+                  <polyline points="340,250 290,250 200,320 160,348" fill="none" stroke="#4ade80" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  <line x1="340" y1="250" x2="160" y2="348" stroke="transparent" stroke-width="14"/>
+                </g>
+
+                <!-- Wideband O2 (Green 4) -->
+                <g class="wire-group" id="wire-wb" data-circuit="wb" data-label="Wideband O2 Sensor Signal" data-color="#86efac" onclick="selectWire('wb')" aria-label="Wideband wire">
+                  <title>Wideband O2 Sensor — Click to inspect</title>
+                  <polyline points="480,250 560,260 620,320 660,348" fill="none" stroke="#86efac" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  <line x1="480" y1="250" x2="660" y2="348" stroke="transparent" stroke-width="14"/>
+                </g>
+
+
+                <!-- ══ CONNECTOR BLOCKS ══ -->
+
+                <!-- Engine Bay Connector Block (Left) -->
+                <g id="block-engine">
+                  <rect x="60" y="150" width="130" height="240" rx="8" fill="#16161f" stroke="rgba(255,255,255,0.12)" stroke-width="1.5"/>
+                  <rect x="60" y="150" width="130" height="28" rx="8" fill="#1e1e2a"/>
+                  <text x="125" y="169" text-anchor="middle" fill="#e91e8c" font-size="10" font-family="Inter,sans-serif" font-weight="600" letter-spacing="0.05em">C1 ENGINE BAY</text>
+                  <!-- Pin dots -->
+                  <circle cx="90" cy="195" r="4" fill="#ef4444" opacity="0.8"/>
+                  <circle cx="90" cy="215" r="4" fill="#9ca3af" opacity="0.8"/>
+                  <circle cx="90" cy="235" r="4" fill="#9ca3af" opacity="0.6"/>
+                  <circle cx="90" cy="255" r="4" fill="#22c55e" opacity="0.8"/>
+                  <circle cx="90" cy="275" r="4" fill="#16a34a" opacity="0.8"/>
+                  <circle cx="90" cy="295" r="4" fill="#4ade80" opacity="0.8"/>
+                  <circle cx="90" cy="315" r="4" fill="#eab308" opacity="0.6"/>
+                  <circle cx="90" cy="335" r="4" fill="#ca8a04" opacity="0.6"/>
+                  <circle cx="90" cy="355" r="4" fill="#9ca3af" opacity="0.4"/>
+                  <text x="102" y="199" fill="#6b6b80" font-size="8.5" font-family="Inter,sans-serif">+12V Main</text>
+                  <text x="102" y="219" fill="#6b6b80" font-size="8.5" font-family="Inter,sans-serif">GND 1</text>
+                  <text x="102" y="239" fill="#6b6b80" font-size="8.5" font-family="Inter,sans-serif">GND 2</text>
+                  <text x="102" y="259" fill="#6b6b80" font-size="8.5" font-family="Inter,sans-serif">CPS+</text>
+                  <text x="102" y="279" fill="#6b6b80" font-size="8.5" font-family="Inter,sans-serif">TPS Sig</text>
+                  <text x="102" y="299" fill="#6b6b80" font-size="8.5" font-family="Inter,sans-serif">IAT Sig</text>
+                  <text x="102" y="319" fill="#6b6b80" font-size="8.5" font-family="Inter,sans-serif">INJ 1</text>
+                  <text x="102" y="339" fill="#6b6b80" font-size="8.5" font-family="Inter,sans-serif">INJ 2</text>
+                  <text x="102" y="359" fill="#6b6b80" font-size="8.5" font-family="Inter,sans-serif">SPARE</text>
+                </g>
+
+                <!-- ECU Block (Center) -->
+                <g id="block-ecu">
+                  <rect x="330" y="155" width="160" height="130" rx="8" fill="#16161f" stroke="rgba(233,30,140,0.3)" stroke-width="1.5"/>
+                  <rect x="330" y="155" width="160" height="30" rx="8" fill="#1a0a18"/>
+                  <rect x="330" y="183" width="160" height="2" fill="rgba(233,30,140,0.2)"/>
+                  <text x="410" y="175" text-anchor="middle" fill="#e91e8c" font-size="11" font-family="Inter,sans-serif" font-weight="700" letter-spacing="0.05em">ECU — LINK G4X</text>
+                  <text x="410" y="205" text-anchor="middle" fill="#6b6b80" font-size="9" font-family="Inter,sans-serif">100-pin connector</text>
+                  <!-- Connector sides indicators -->
+                  <text x="410" y="225" text-anchor="middle" fill="#a0a0b5" font-size="9" font-family="Inter,sans-serif">Conn A (34-pin)</text>
+                  <text x="410" y="242" text-anchor="middle" fill="#a0a0b5" font-size="9" font-family="Inter,sans-serif">Conn B (34-pin)</text>
+                  <text x="410" y="259" text-anchor="middle" fill="#a0a0b5" font-size="9" font-family="Inter,sans-serif">Conn C (32-pin)</text>
+                  <!-- Port marks -->
+                  <rect x="336" y="192" width="6" height="90" rx="2" fill="#e91e8c" opacity="0.25"/>
+                  <rect x="478" y="192" width="6" height="90" rx="2" fill="#e91e8c" opacity="0.25"/>
+                </g>
+
+                <!-- Cabin Connector Block (Right) -->
+                <g id="block-cabin">
+                  <rect x="630" y="150" width="130" height="240" rx="8" fill="#16161f" stroke="rgba(255,255,255,0.12)" stroke-width="1.5"/>
+                  <rect x="630" y="150" width="130" height="28" rx="8" fill="#1e1e2a"/>
+                  <text x="695" y="169" text-anchor="middle" fill="#3b82f6" font-size="10" font-family="Inter,sans-serif" font-weight="600" letter-spacing="0.04em">C2 CABIN</text>
+                  <!-- Pin dots -->
+                  <circle cx="760" cy="195" r="4" fill="#ef4444" opacity="0.8"/>
+                  <circle cx="760" cy="215" r="4" fill="#9ca3af" opacity="0.8"/>
+                  <circle cx="760" cy="235" r="4" fill="#3b82f6" opacity="0.8"/>
+                  <circle cx="760" cy="255" r="4" fill="#60a5fa" opacity="0.8"/>
+                  <circle cx="760" cy="275" r="4" fill="#86efac" opacity="0.8"/>
+                  <circle cx="760" cy="295" r="4" fill="#9ca3af" opacity="0.4"/>
+                  <circle cx="760" cy="315" r="4" fill="#d97706" opacity="0.8"/>
+                  <circle cx="760" cy="335" r="4" fill="#9ca3af" opacity="0.4"/>
+                  <circle cx="760" cy="355" r="4" fill="#9ca3af" opacity="0.4"/>
+                  <text x="640" y="199" fill="#6b6b80" font-size="8.5" font-family="Inter,sans-serif">+12V Main</text>
+                  <text x="640" y="219" fill="#6b6b80" font-size="8.5" font-family="Inter,sans-serif">GND</text>
+                  <text x="640" y="239" fill="#6b6b80" font-size="8.5" font-family="Inter,sans-serif">CAN H</text>
+                  <text x="640" y="259" fill="#6b6b80" font-size="8.5" font-family="Inter,sans-serif">CAN L</text>
+                  <text x="640" y="279" fill="#6b6b80" font-size="8.5" font-family="Inter,sans-serif">WB O2</text>
+                  <text x="640" y="299" fill="#6b6b80" font-size="8.5" font-family="Inter,sans-serif">SPARE</text>
+                  <text x="640" y="319" fill="#6b6b80" font-size="8.5" font-family="Inter,sans-serif">INJ 3</text>
+                  <text x="640" y="339" fill="#6b6b80" font-size="8.5" font-family="Inter,sans-serif">SPARE</text>
+                  <text x="640" y="359" fill="#6b6b80" font-size="8.5" font-family="Inter,sans-serif">SPARE</text>
+                </g>
+
+                <!-- Sensors Block (Bottom Left) -->
+                <g id="block-sensors">
+                  <rect x="120" y="380" width="220" height="82" rx="8" fill="#16161f" stroke="rgba(255,255,255,0.12)" stroke-width="1.5"/>
+                  <rect x="120" y="380" width="220" height="26" rx="8" fill="#1e1e2a"/>
+                  <text x="230" y="397" text-anchor="middle" fill="#22c55e" font-size="10" font-family="Inter,sans-serif" font-weight="600" letter-spacing="0.04em">C3 SENSOR SUITE</text>
+                  <text x="135" y="420" fill="#6b6b80" font-size="9" font-family="Inter,sans-serif">CPS  TPS  IAT  MAP  CLT</text>
+                  <text x="135" y="437" fill="#6b6b80" font-size="9" font-family="Inter,sans-serif">FPR  OPS  WB  FLEX  VVT</text>
+                  <text x="135" y="453" fill="#6b6b80" font-size="9" font-family="Inter,sans-serif">Knock  CAM+  CAM-  SPARE</text>
+                </g>
+
+                <!-- Injectors Block (Bottom Right) -->
+                <g id="block-injectors">
+                  <rect x="480" y="380" width="220" height="82" rx="8" fill="#16161f" stroke="rgba(255,255,255,0.12)" stroke-width="1.5"/>
+                  <rect x="480" y="380" width="220" height="26" rx="8" fill="#1e1e2a"/>
+                  <text x="590" y="397" text-anchor="middle" fill="#eab308" font-size="10" font-family="Inter,sans-serif" font-weight="600" letter-spacing="0.04em">C4 INJECTORS / COILS</text>
+                  <text x="495" y="420" fill="#6b6b80" font-size="9" font-family="Inter,sans-serif">INJ1  INJ2  INJ3  INJ4  INJ5  INJ6</text>
+                  <text x="495" y="437" fill="#6b6b80" font-size="9" font-family="Inter,sans-serif">IGN1  IGN2  IGN3  IGN4  IGN5  IGN6</text>
+                  <text x="495" y="453" fill="#6b6b80" font-size="9" font-family="Inter,sans-serif">+12V  GND  FP Relay  Boost Sol.</text>
+                </g>
+
+                <!-- Legend labels on wires -->
+                <text x="215" y="167" fill="#ef4444" font-size="8" font-family="Inter,sans-serif" opacity="0.7">+12V</text>
+                <text x="215" y="183" fill="#9ca3af" font-size="8" font-family="Inter,sans-serif" opacity="0.7">GND</text>
+                <text x="590" y="167" fill="#ef4444" font-size="8" font-family="Inter,sans-serif" opacity="0.7">+12V</text>
+                <text x="590" y="226" fill="#3b82f6" font-size="8" font-family="Inter,sans-serif" opacity="0.7">CAN H</text>
+                <text x="590" y="263" fill="#60a5fa" font-size="8" font-family="Inter,sans-serif" opacity="0.7">CAN L</text>
+              </svg>
+
+              <!-- Wire Legend -->
+              <div class="wire-legend">
+                <div class="legend-item" onclick="filterByColor('red')" title="12V Power circuits">
+                  <div class="legend-swatch" style="background:#ef4444;"></div>
+                  <span>12V Power</span>
+                </div>
+                <div class="legend-item" onclick="filterByColor('ground')" title="Ground circuits">
+                  <div class="legend-swatch" style="background:#9ca3af;"></div>
+                  <span>Ground</span>
+                </div>
+                <div class="legend-item" onclick="filterByColor('signal')" title="Sensor signal circuits">
+                  <div class="legend-swatch" style="background:#22c55e;"></div>
+                  <span>Signals</span>
+                </div>
+                <div class="legend-item" onclick="filterByColor('can')" title="CAN Bus circuits">
+                  <div class="legend-swatch" style="background:#3b82f6;"></div>
+                  <span>CAN Bus</span>
+                </div>
+                <div class="legend-item" onclick="filterByColor('injector')" title="Injector drive circuits">
+                  <div class="legend-swatch" style="background:#eab308;"></div>
+                  <span>Injector Drives</span>
+                </div>
+                <div class="legend-item" style="margin-left:auto;" onclick="clearSelection()" title="Clear selection">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                  <span>Clear</span>
+                </div>
+              </div>
+
+              <!-- Zoom controls -->
+              <div class="diagram-toolbar">
+                <button class="zoom-btn" onclick="zoomIn()" title="Zoom in">+</button>
+                <button class="zoom-btn" onclick="zoomOut()" title="Zoom out">−</button>
+                <button class="zoom-btn" onclick="zoomReset()" title="Reset zoom" style="font-size:11px;font-weight:600;">⌂</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── RIGHT: Info Panel ── -->
+          <div class="info-panel">
+
+            <!-- Circuit Info Box -->
+            <div class="info-panel-box">
+              <div class="info-panel-header">
+                <h3>Circuit Inspector</h3>
+              </div>
+              <div class="info-panel-body" id="info-body">
+                <div class="info-placeholder" id="info-placeholder">
+                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="display:block;margin:0 auto;">
+                    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+                  </svg>
+                  <p>Select a circuit on the diagram to inspect its full path, wire spec, and pin assignments.</p>
+                </div>
+                <div id="circuit-detail" style="display:none;"></div>
+              </div>
+            </div>
+
+            <!-- Connector Pinout Box -->
+            <div class="info-panel-box" id="pinout-box" style="display:none;">
+              <div class="info-panel-header">
+                <h3 id="pinout-title">Connector Pinout</h3>
+              </div>
+              <div class="info-panel-body">
+                <div id="pinout-grid"></div>
+              </div>
+            </div>
+
+            <!-- View PDF -->
+            <div id="pdf-btn-wrap" style="display:none;margin-top:var(--space-sm);">
+              <button class="btn btn-secondary" style="width:100%;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                View in PDF
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- ── Recently Viewed ── -->
+        <div style="margin-top:var(--space-3xl);">
+          <div class="section-header fade-in" style="margin-bottom:var(--space-lg);">
+            <span class="section-label">Recently Viewed</span>
+            <h2 style="font-size:var(--text-2xl);">Diagrams You've Opened</h2>
+          </div>
+          <div class="recent-grid">
+            <div class="recent-card" onclick="selectWire('inj1')">
+              <div class="recent-car">MK4 Supra — 2JZ-GTE</div>
+              <div class="recent-title">Injector Drive Circuit — All 6 Cylinders</div>
+              <div class="recent-meta">Last viewed: today &middot; 12 circuits</div>
+            </div>
+            <div class="recent-card" onclick="selectWire('can')">
+              <div class="recent-car">SC400 — 1UZ-FE</div>
+              <div class="recent-title">CAN Bus Topology — Haltech Elite</div>
+              <div class="recent-meta">Last viewed: 2 days ago &middot; 4 circuits</div>
+            </div>
+            <div class="recent-card" onclick="selectWire('cps')">
+              <div class="recent-car">IS300 — 2JZ-GE</div>
+              <div class="recent-title">Crank &amp; Cam Position Signals</div>
+              <div class="recent-meta">Last viewed: 5 days ago &middot; 6 circuits</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── CTA ── -->
+        <div class="diagram-cta">
+          <div>
+            <h3>Need a diagram for your car?</h3>
+            <p>We can build a custom interactive diagram for your chassis, engine, and ECU combination.</p>
+          </div>
+          <a href="contact.html" class="btn btn-primary">
+            Request a Diagram
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </a>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <div id="footer-placeholder"></div>
+
+  <script defer src="components/header.js"></script>
+  <script defer src="components/footer.js"></script>
+  <script defer src="js/cart.js"></script>
+  <script defer src="js/components.js"></script>
+  <script defer src="js/main.js"></script>
+
+  <script>
+    // ══ Circuit data ══
+    const CIRCUITS = {
+      '12v-power': {
+        name: '12V Main Power Supply',
+        spec: '2.0mm TXL, Red',
+        color: '#ef4444',
+        colorName: 'Red',
+        from: 'Fuse Box / Main Relay Pin 87',
+        to: 'ECU Pin A-01 / C1 Pin 1 / C2 Pin 1',
+        fn: 'Primary switched 12V supply to the ECU and all ECU-dependent systems. Energized when the main relay closes after ignition-on signal is confirmed.',
+        related: ['Relay Control Circuit', 'ECU Power Ground', 'Injector +12V Rail'],
+        pinout: { connector: 'C1 Engine Bay', active: [0], pins: ['12V','GND1','GND2','CPS+','CPS-','TPS','IAT','MAP','CLT','FPR','OPS','Knock','SPARE','SPARE','SPARE','SPARE','SPARE','SPARE'] },
+      },
+      'ground': {
+        name: 'Chassis Ground',
+        spec: '2.0mm TXL, Black',
+        color: '#9ca3af',
+        colorName: 'Black',
+        from: 'ECU Pin A-02',
+        to: 'Chassis Ground Star Point (battery negative rail)',
+        fn: 'Common chassis ground reference for all ECU circuits. Low-resistance path back to battery negative. All ECU grounds must share the same star ground point to avoid offset errors.',
+        related: ['Sensor Ground (5V ref)', 'ECU +12V Supply', 'Injector Ground'],
+        pinout: { connector: 'C1 Engine Bay', active: [1, 2], pins: ['12V','GND1','GND2','CPS+','CPS-','TPS','IAT','MAP','CLT','FPR','OPS','Knock','SPARE','SPARE','SPARE','SPARE','SPARE','SPARE'] },
+      },
+      'inj1': {
+        name: 'Injector Drive — Cyl. 1',
+        spec: '0.5mm TXL, Pink/White stripe',
+        color: '#eab308',
+        colorName: 'Yellow (Pink/White stripe)',
+        from: 'ECU Pin B-12',
+        to: 'Injector 1 Connector Pin 2',
+        fn: 'Low-side injector driver for cylinder 1. ECU provides a switched ground path to trigger the injector solenoid. Peak-and-hold or saturated drive depending on injector type selected in ECU config.',
+        related: ['Injector Drive — Cyl. 2', 'Injector Drive — Cyl. 3', 'Injector +12V Rail', 'Injector Ground'],
+        pinout: { connector: 'C4 Injectors/Coils', active: [0], pins: ['INJ1','INJ2','INJ3','INJ4','INJ5','INJ6','IGN1','IGN2','IGN3','IGN4','IGN5','IGN6','+12V','GND','FP Rel','Boost','SPARE','SPARE'] },
+      },
+      'inj2': {
+        name: 'Injector Drive — Cyl. 2',
+        spec: '0.5mm TXL, Pink/Black stripe',
+        color: '#ca8a04',
+        colorName: 'Yellow-Dark (Pink/Black stripe)',
+        from: 'ECU Pin B-13',
+        to: 'Injector 2 Connector Pin 2',
+        fn: 'Low-side injector driver for cylinder 2. Shares the common +12V injector rail with all other injectors. ECU controls pulse width and timing independently per cylinder.',
+        related: ['Injector Drive — Cyl. 1', 'Injector Drive — Cyl. 3', 'Injector +12V Rail'],
+        pinout: { connector: 'C4 Injectors/Coils', active: [1], pins: ['INJ1','INJ2','INJ3','INJ4','INJ5','INJ6','IGN1','IGN2','IGN3','IGN4','IGN5','IGN6','+12V','GND','FP Rel','Boost','SPARE','SPARE'] },
+      },
+      'inj3': {
+        name: 'Injector Drive — Cyl. 3',
+        spec: '0.5mm TXL, Orange/White stripe',
+        color: '#d97706',
+        colorName: 'Amber (Orange/White stripe)',
+        from: 'ECU Pin B-14',
+        to: 'Injector 3 Connector Pin 2',
+        fn: 'Low-side injector driver for cylinder 3. Routed through C4 connector block on the injector sub-harness.',
+        related: ['Injector Drive — Cyl. 1', 'Injector Drive — Cyl. 2', 'Fuel Pump Relay'],
+        pinout: { connector: 'C4 Injectors/Coils', active: [2], pins: ['INJ1','INJ2','INJ3','INJ4','INJ5','INJ6','IGN1','IGN2','IGN3','IGN4','IGN5','IGN6','+12V','GND','FP Rel','Boost','SPARE','SPARE'] },
+      },
+      'cps': {
+        name: 'CPS — Crank Position Signal',
+        spec: '0.5mm TXL, White/Green stripe',
+        color: '#22c55e',
+        colorName: 'Green (White/Green stripe)',
+        from: 'Crank Sensor Pin 1',
+        to: 'ECU Pin C-04',
+        fn: 'Primary engine speed and position signal from the Variable Reluctance (VR) crank sensor. 36-1 reluctor wheel on the 2JZ crankshaft. Signal is conditioned by the ECU internal VR conditioner circuit. Critical for accurate ignition timing and fuel injection.',
+        related: ['CPS Ground', 'CAM Position Signal', 'VR Conditioner'],
+        pinout: { connector: 'C3 Sensor Suite', active: [0], pins: ['CPS+','CPS-','TPS Sig','TPS +5V','TPS GND','IAT','MAP+','MAP-','CLT','Oil Prs','Wideband','Flex','Knock+','Knock-','VVT','SPARE','SPARE','SPARE'] },
+      },
+      'tps': {
+        name: 'TPS — Throttle Position Signal',
+        spec: '0.5mm TXL, Yellow/Green stripe',
+        color: '#16a34a',
+        colorName: 'Dark Green (Yellow/Green stripe)',
+        from: 'TPS Connector Pin 3',
+        to: 'ECU Pin C-07',
+        fn: '0–5V analog signal from the throttle position sensor. Used by the ECU for load calculation, accel/decel enrichment, and idle control. Reference 5V and ground are supplied by separate ECU pins.',
+        related: ['TPS +5V Ref', 'TPS Ground', 'IACV Control', 'MAP Sensor'],
+        pinout: { connector: 'C3 Sensor Suite', active: [2, 3, 4], pins: ['CPS+','CPS-','TPS Sig','TPS +5V','TPS GND','IAT','MAP+','MAP-','CLT','Oil Prs','Wideband','Flex','Knock+','Knock-','VVT','SPARE','SPARE','SPARE'] },
+      },
+      'can': {
+        name: 'CAN Bus — High / Low',
+        spec: '0.5mm TXL, Blue/White & Blue/Yellow (twisted pair)',
+        color: '#3b82f6',
+        colorName: 'Blue pair (twisted)',
+        from: 'ECU CAN Port (Pin A-24 / A-25)',
+        to: 'C2 Cabin Bulkhead Pin 3 / Pin 4',
+        fn: 'Differential CAN Bus 2.0B running at 500 kbit/s. Connects ECU to dash logger, PDM, and any external CAN devices in the cabin. Must be twisted pair throughout — do not split the run. Terminated with 120Ω at each end.',
+        related: ['CAN GND', 'Dash Logger Supply', 'PDM CAN Port'],
+        pinout: { connector: 'C2 Cabin Bulkhead', active: [2, 3], pins: ['+12V','GND','CAN H','CAN L','Wideband','SPARE','INJ3','SPARE','SPARE','Tach Out','Speedo','CEL','SPARE','SPARE','SPARE','SPARE','SPARE','SPARE'] },
+      },
+      'iat': {
+        name: 'IAT — Intake Air Temperature',
+        spec: '0.5mm TXL, Grey/Red stripe',
+        color: '#4ade80',
+        colorName: 'Bright Green (Grey/Red stripe)',
+        from: 'IAT Sensor Pin 1',
+        to: 'ECU Pin C-06',
+        fn: 'Thermistor-type temperature sensor signal. ECU applies a pull-up resistor internally. Resistance decreases as temperature increases. Used for fuel and ignition correction at cold-start and during warm-up.',
+        related: ['CLT Sensor Signal', 'Sensor Ground', 'IAT +5V Ref'],
+        pinout: { connector: 'C3 Sensor Suite', active: [5], pins: ['CPS+','CPS-','TPS Sig','TPS +5V','TPS GND','IAT','MAP+','MAP-','CLT','Oil Prs','Wideband','Flex','Knock+','Knock-','VVT','SPARE','SPARE','SPARE'] },
+      },
+      'wb': {
+        name: 'Wideband O2 Sensor Signal',
+        spec: '0.5mm TXL, Purple/White stripe',
+        color: '#86efac',
+        colorName: 'Pale Green (Purple/White stripe)',
+        from: 'Wideband Controller Analog Out Pin',
+        to: 'ECU Pin C-11 / C2 Cabin Pin 5',
+        fn: '0–5V linear analog output from the wideband lambda controller (e.g. Innovate LC-2 or built-in Bosch LSU 4.9). Represents Lambda 0.5–1.5 across 0–5V range. Calibration must match the ECU\'s input scaling table.',
+        related: ['Wideband +12V Supply', 'Wideband Ground', 'Wideband Heater Drive'],
+        pinout: { connector: 'C2 Cabin Bulkhead', active: [4], pins: ['+12V','GND','CAN H','CAN L','Wideband','SPARE','INJ3','SPARE','SPARE','Tach Out','Speedo','CEL','SPARE','SPARE','SPARE','SPARE','SPARE','SPARE'] },
+      },
+    };
+
+    // Car tab content labels for diagram (simplified)
+    const CAR_LABELS = {
+      'mk4-supra': 'MK4 Supra — 2JZ-GTE / Link G4X',
+      'mk3-supra': 'MK3 Supra — 7M-GTE / Haltech Elite',
+      'sc300-400': 'SC300/400 — 2JZ-GE / 1UZ-FE',
+      'gs300': 'GS300 — 2JZ-GE / MaxxECU',
+      'is300': 'IS300 — 2JZ-GE / EMU Black',
+    };
+
+    let activeWireId = null;
+    let zoomLevel = 1;
+
+    // ── Select a wire ──
+    function selectWire(id) {
+      const data = CIRCUITS[id];
+      if (!data) return;
+
+      activeWireId = id;
+
+      // Update SVG visual state
+      document.querySelectorAll('.wire-group').forEach(g => {
+        g.classList.remove('active', 'dimmed');
+        if (g.dataset.circuit === id) g.classList.add('active');
+        else g.classList.add('dimmed');
+      });
+
+      // Update info panel
+      document.getElementById('info-placeholder').style.display = 'none';
+      const detail = document.getElementById('circuit-detail');
+      detail.style.display = 'block';
+
+      detail.innerHTML = `
+        <div class="circuit-name">${data.name}</div>
+        <div class="circuit-color-stripe">
+          <div class="color-chip" style="background:${data.color};"></div>
+          <span style="font-size:var(--text-xs);color:var(--text-muted);">${data.spec}</span>
+        </div>
+        <div class="circuit-detail-rows">
+          <div class="detail-row">
+            <span class="detail-key">From</span>
+            <span class="detail-val">${data.from}</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-key">To</span>
+            <span class="detail-val">${data.to}</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-key">Wire</span>
+            <span class="detail-val">${data.spec}</span>
+          </div>
+        </div>
+        <div class="circuit-function">${data.fn}</div>
+        <div class="related-label">Related Circuits</div>
+        <ul class="related-list">
+          ${data.related.map(r => `<li><a href="#" onclick="return false;" style="pointer-events:none;color:var(--text-muted);">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+            ${r}
+          </a></li>`).join('')}
+        </ul>
+      `;
+
+      // Show pinout
+      renderPinout(data.pinout);
+      document.getElementById('pdf-btn-wrap').style.display = 'block';
+    }
+
+    function renderPinout(pinoutData) {
+      if (!pinoutData) return;
+      const box = document.getElementById('pinout-box');
+      box.style.display = 'block';
+      document.getElementById('pinout-title').textContent = pinoutData.connector + ' — Pinout';
+
+      const grid = document.getElementById('pinout-grid');
+      grid.innerHTML = `<div class="pin-grid">
+        ${pinoutData.pins.map((pin, i) => {
+          const isActive = pinoutData.active.includes(i);
+          const isUsed = !pin.startsWith('SPARE');
+          return `<div class="pin-cell ${isActive ? 'active' : isUsed ? 'used' : ''}" title="Pin ${i+1}: ${pin}">
+            <span style="font-size:8px;color:inherit;opacity:0.7">${i+1}</span>
+            <span style="font-size:7.5px;color:inherit;">${pin}</span>
+          </div>`;
+        }).join('')}
+      </div>`;
+    }
+
+    // ── Clear selection ──
+    function clearSelection() {
+      activeWireId = null;
+      document.querySelectorAll('.wire-group').forEach(g => {
+        g.classList.remove('active', 'dimmed', 'search-match');
+      });
+      document.getElementById('info-placeholder').style.display = '';
+      document.getElementById('circuit-detail').style.display = 'none';
+      document.getElementById('pinout-box').style.display = 'none';
+      document.getElementById('pdf-btn-wrap').style.display = 'none';
+      document.getElementById('wire-search').value = '';
+    }
+
+    // ── Search handler ──
+    function handleSearch(query) {
+      const q = query.toLowerCase().trim();
+      if (!q) {
+        document.querySelectorAll('.wire-group').forEach(g => {
+          g.classList.remove('dimmed', 'search-match');
+        });
+        return;
+      }
+
+      document.querySelectorAll('.wire-group').forEach(g => {
+        const id = g.dataset.circuit;
+        const data = CIRCUITS[id];
+        if (!data) return;
+
+        const searchable = [
+          data.name, data.spec, data.from, data.to, data.fn, ...data.related
+        ].join(' ').toLowerCase();
+
+        const matches = searchable.includes(q) || id.includes(q);
+        g.classList.toggle('search-match', matches);
+        g.classList.toggle('dimmed', !matches);
+      });
+    }
+
+    // ── Filter by color group ──
+    function filterByColor(type) {
+      const colorMap = {
+        'red': ['12v-power'],
+        'ground': ['ground'],
+        'signal': ['cps', 'tps', 'iat', 'wb'],
+        'can': ['can'],
+        'injector': ['inj1', 'inj2', 'inj3'],
+      };
+      const group = colorMap[type] || [];
+
+      document.querySelectorAll('.wire-group').forEach(g => {
+        const id = g.dataset.circuit;
+        const match = group.includes(id);
+        g.classList.remove('active', 'search-match');
+        g.classList.toggle('dimmed', !match);
+        if (match) g.classList.add('search-match');
+      });
+    }
+
+    // ── Car tab switching ──
+    function switchCar(btn, carId) {
+      document.querySelectorAll('.car-tab').forEach(t => t.classList.remove('active'));
+      btn.classList.add('active');
+
+      // In production this would load different diagram data.
+      // For the concept, reset the view with a visual cue.
+      clearSelection();
+      const label = CAR_LABELS[carId] || carId;
+      if (typeof SVKCart !== 'undefined') {
+        SVKCart.showToast('Diagram: ' + label);
+      }
+    }
+
+    // ── Zoom controls ──
+    function zoomIn() {
+      zoomLevel = Math.min(zoomLevel + 0.25, 2.5);
+      applyZoom();
+    }
+    function zoomOut() {
+      zoomLevel = Math.max(zoomLevel - 0.25, 0.5);
+      applyZoom();
+    }
+    function zoomReset() {
+      zoomLevel = 1;
+      applyZoom();
+    }
+    function applyZoom() {
+      document.getElementById('diagram-svg').style.transform = `scale(${zoomLevel})`;
+    }
+
+    // Keyboard shortcut: Escape clears selection
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') clearSelection();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Harness Services — Diagnostic, Repair &amp; Annual Inspection | SVK Works</title>
+  <meta name="description" content="Send us your harness for a full diagnostic report, repair and modification, or annual health check. Expert harness inspection, repair, and service by SVK Works.">
+  <link rel="canonical" href="https://www.svkworks.com/design-services-expanded.html">
+  <meta property="og:site_name" content="SVK Works">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Harness Services — SVK Works">
+  <meta property="og:description" content="Diagnostic inspection, repair &amp; modification, and annual health checks for your wiring harness. Mail-in service, fast turnaround.">
+  <meta property="og:url" content="https://www.svkworks.com/design-services-expanded.html">
+  <meta property="og:image" content="https://www.svkworks.com/img/og-default.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Harness Services — SVK Works">
+  <meta name="twitter:description" content="Diagnostic inspection, repair &amp; modification, and annual health checks for your wiring harness.">
+  <meta name="twitter:image" content="https://www.svkworks.com/img/og-default.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="img/svk-icon.png" type="image/png">
+  <style>
+    /* ── Services page–specific styles ── */
+
+    /* Design concept badge */
+    .design-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(233, 30, 140, 0.1);
+      border: 1px solid var(--border-magenta);
+      color: var(--magenta-light);
+      font-size: var(--text-xs);
+      font-weight: var(--weight-semibold);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: var(--radius-full);
+      margin-bottom: var(--space-md);
+    }
+
+    /* ── Large Service Card ── */
+    .service-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      transition: border-color var(--transition-base);
+      margin-bottom: var(--space-xl);
+    }
+    .service-card:hover { border-color: var(--border-magenta); }
+
+    .service-card-inner {
+      display: grid;
+      grid-template-columns: 1fr 320px;
+    }
+
+    /* Left content panel */
+    .service-content {
+      padding: var(--space-2xl);
+      border-right: 1px solid var(--border-color);
+    }
+    .service-icon-wrap {
+      width: 56px;
+      height: 56px;
+      border-radius: var(--radius-lg);
+      background: var(--magenta-subtle);
+      border: 1px solid var(--border-magenta);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: var(--space-lg);
+    }
+    .service-number {
+      font-size: var(--text-xs);
+      font-weight: var(--weight-semibold);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--magenta);
+      margin-bottom: var(--space-sm);
+    }
+    .service-title {
+      font-size: var(--text-2xl);
+      font-weight: var(--weight-bold);
+      color: var(--text-primary);
+      margin: 0 0 var(--space-md);
+      line-height: var(--leading-snug);
+    }
+    .service-desc {
+      font-size: var(--text-base);
+      color: var(--text-secondary);
+      line-height: var(--leading-normal);
+      margin-bottom: var(--space-xl);
+    }
+    .service-list-heading {
+      font-size: var(--text-xs);
+      font-weight: var(--weight-semibold);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: var(--space-md);
+    }
+    .service-checklist {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-sm) var(--space-lg);
+    }
+    .service-checklist li {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-sm);
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+      line-height: var(--leading-snug);
+    }
+    .service-checklist li svg {
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .service-checklist.single-col {
+      grid-template-columns: 1fr;
+    }
+
+    /* Right pricing panel */
+    .service-pricing {
+      padding: var(--space-2xl) var(--space-xl);
+      background: var(--bg-secondary);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-lg);
+    }
+    .service-price-display {
+      text-align: center;
+      padding-bottom: var(--space-lg);
+      border-bottom: 1px solid var(--border-color);
+    }
+    .service-price-label {
+      font-size: var(--text-xs);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin-bottom: var(--space-xs);
+    }
+    .service-price-value {
+      font-size: var(--text-4xl);
+      font-weight: var(--weight-bold);
+      color: var(--magenta);
+      line-height: 1;
+      letter-spacing: -0.03em;
+    }
+    .service-price-sub {
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+      margin-top: var(--space-xs);
+    }
+    .service-detail-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+    }
+    .service-detail-list li {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+    }
+    .service-detail-list li svg { flex-shrink: 0; }
+    .service-cta-btn {
+      background: var(--magenta);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-md);
+      padding: 0.75rem 1.25rem;
+      font-size: var(--text-base);
+      font-weight: var(--weight-semibold);
+      cursor: pointer;
+      transition: background var(--transition-fast), box-shadow var(--transition-fast);
+      font-family: var(--font-body);
+      text-align: center;
+      text-decoration: none;
+      display: block;
+      margin-top: auto;
+    }
+    .service-cta-btn:hover {
+      background: var(--magenta-dark);
+      box-shadow: var(--shadow-magenta);
+    }
+    .service-note {
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+      line-height: var(--leading-normal);
+      padding-top: var(--space-sm);
+      border-top: 1px solid var(--border-color);
+    }
+
+    /* ── How to Send ── */
+    .send-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      position: relative;
+      max-width: 640px;
+      margin: 0 auto;
+    }
+    .send-step {
+      display: flex;
+      gap: var(--space-xl);
+      align-items: flex-start;
+      padding-bottom: var(--space-xl);
+      position: relative;
+    }
+    .send-step:last-child { padding-bottom: 0; }
+    .send-step-left {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex-shrink: 0;
+    }
+    .send-step-num {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-full);
+      background: var(--bg-elevated);
+      border: 2px solid var(--border-magenta);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: var(--text-sm);
+      font-weight: var(--weight-bold);
+      color: var(--magenta);
+      z-index: 1;
+      position: relative;
+    }
+    .send-step-line {
+      width: 2px;
+      flex: 1;
+      background: var(--border-color);
+      min-height: 28px;
+      margin-top: 4px;
+    }
+    .send-step:last-child .send-step-line { display: none; }
+    .send-step-body { padding-top: 8px; }
+    .send-step-body h4 {
+      font-size: var(--text-base);
+      font-weight: var(--weight-semibold);
+      color: var(--text-primary);
+      margin: 0 0 var(--space-xs);
+    }
+    .send-step-body p {
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+      line-height: var(--leading-normal);
+      margin: 0;
+    }
+
+    /* ── FAQ ── */
+    .faq-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-lg);
+    }
+    .faq-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: var(--space-lg);
+      transition: border-color var(--transition-base);
+    }
+    .faq-item:hover { border-color: var(--border-magenta); }
+    .faq-q {
+      font-size: var(--text-base);
+      font-weight: var(--weight-semibold);
+      color: var(--text-primary);
+      margin: 0 0 var(--space-sm);
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-sm);
+    }
+    .faq-q::before {
+      content: 'Q';
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 22px;
+      height: 22px;
+      background: var(--magenta-subtle);
+      border: 1px solid var(--border-magenta);
+      border-radius: var(--radius-sm);
+      font-size: var(--text-xs);
+      font-weight: var(--weight-bold);
+      color: var(--magenta);
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .faq-a {
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+      line-height: var(--leading-normal);
+      margin: 0;
+      padding-left: 30px;
+    }
+
+    /* ── Contact Form CTA ── */
+    .contact-cta-block {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-xl);
+      padding: var(--space-2xl);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-3xl);
+      align-items: start;
+      background-image: radial-gradient(ellipse at 5% 50%, var(--magenta-subtle) 0%, transparent 55%);
+    }
+    .contact-cta-intro h3 {
+      font-size: var(--text-2xl);
+      font-weight: var(--weight-bold);
+      margin: 0 0 var(--space-md);
+      line-height: var(--leading-snug);
+    }
+    .contact-cta-intro p {
+      font-size: var(--text-base);
+      color: var(--text-secondary);
+      line-height: var(--leading-normal);
+      margin: 0 0 var(--space-lg);
+    }
+    .trust-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+    }
+    .trust-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-full);
+      padding: 4px 12px;
+      font-size: var(--text-xs);
+      color: var(--text-secondary);
+    }
+    .contact-form-box { display: flex; flex-direction: column; gap: var(--space-md); }
+
+    @media (max-width: 900px) {
+      .service-card-inner { grid-template-columns: 1fr; }
+      .service-content { border-right: none; border-bottom: 1px solid var(--border-color); }
+      .service-checklist { grid-template-columns: 1fr; }
+      .faq-grid { grid-template-columns: 1fr; }
+      .contact-cta-block { grid-template-columns: 1fr; gap: var(--space-2xl); }
+    }
+  </style>
+</head>
+<body>
+  <div id="header-placeholder"></div>
+
+  <main id="main-content">
+
+    <!-- ── Hero ── -->
+    <div class="page-hero">
+      <div class="container">
+        <div class="breadcrumb" role="navigation" aria-label="breadcrumb">
+          <a href="index.html">Home</a><span class="breadcrumb-sep" aria-hidden="true">/</span>
+          <a href="#">Design Concepts</a><span class="breadcrumb-sep" aria-hidden="true">/</span>
+          <span>Harness Services</span>
+        </div>
+        <div class="design-badge">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg>
+          Design Concept
+        </div>
+        <h1>Harness Services</h1>
+        <p>Send us your harness — we'll fix it, inspect it, or modify it.</p>
+      </div>
+    </div>
+
+    <!-- ── Services ── -->
+    <section class="section">
+      <div class="container">
+
+        <!-- ┌─────────────────────────────────────────────────────────────┐ -->
+        <!-- │  SERVICE 1 — DIAGNOSTIC INSPECTION                         │ -->
+        <!-- └─────────────────────────────────────────────────────────────┘ -->
+        <div class="service-card">
+          <div class="service-card-inner">
+
+            <!-- Left: content -->
+            <div class="service-content">
+              <div class="service-icon-wrap">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--magenta)" stroke-width="1.8">
+                  <circle cx="11" cy="11" r="8"/>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                  <line x1="8" y1="11" x2="14" y2="11"/>
+                  <line x1="11" y1="8" x2="11" y2="14"/>
+                </svg>
+              </div>
+              <p class="service-number">Service 01</p>
+              <h2 class="service-title">Harness Diagnostic Report</h2>
+              <p class="service-desc">Mail us your harness. We test every circuit, document every pin, identify failures and corrosion, and return a full PDF report with photos. Whether you're buying a used car or chasing a gremlin, this is the answer.</p>
+
+              <p class="service-list-heading">What's Included</p>
+              <ul class="service-checklist">
+                <li>
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--magenta)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                  Full continuity test on every circuit
+                </li>
+                <li>
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--magenta)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                  Pin-to-pin resistance measurement
+                </li>
+                <li>
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--magenta)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                  Connector condition inspection with photos
+                </li>
+                <li>
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--magenta)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                  Corrosion and chafing report
+                </li>
+                <li>
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--magenta)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                  Full PDF documentation
+                </li>
+                <li>
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--magenta)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                  5–7 business day turnaround
+                </li>
+              </ul>
+            </div>
+
+            <!-- Right: pricing -->
+            <div class="service-pricing">
+              <div class="service-price-display">
+                <p class="service-price-label">Flat Rate</p>
+                <div class="service-price-value">$175</div>
+                <p class="service-price-sub">per harness, return shipping not included</p>
+              </div>
+              <ul class="service-detail-list">
+                <li>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                  Harness returned with PDF report
+                </li>
+                <li>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                  5–7 business day turnaround
+                </li>
+                <li>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--magenta)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                  Ship your harness via any carrier
+                </li>
+                <li>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--magenta)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                  We recommend insuring your shipment
+                </li>
+              </ul>
+              <a href="contact.html" class="service-cta-btn">
+                Book Inspection
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-left:6px;vertical-align:middle;"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              </a>
+              <p class="service-note">After booking you'll receive a mailing address and packing instructions. Report delivered digitally within 24h of completing inspection.</p>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ┌─────────────────────────────────────────────────────────────┐ -->
+        <!-- │  SERVICE 2 — REPAIR & MODIFICATION                         │ -->
+        <!-- └─────────────────────────────────────────────────────────────┘ -->
+        <div class="service-card">
+          <div class="service-card-inner">
+
+            <!-- Left: content -->
+            <div class="service-content">
+              <div class="service-icon-wrap">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--magenta)" stroke-width="1.8">
+                  <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+                </svg>
+              </div>
+              <p class="service-number">Service 02</p>
+              <h2 class="service-title">Repair or Modify Your Harness</h2>
+              <p class="service-desc">Broken connector? Wrong ECU pin? Need to extend a section or reroute through the firewall? We handle harness surgery. Send it in with a description of what you need and we'll assess and quote before any work begins.</p>
+
+              <p class="service-list-heading">Examples of Work</p>
+              <ul class="service-checklist">
+                <li>
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--magenta)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                  Connector replacement (OEM or mil-spec)
+                </li>
+                <li>
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--magenta)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                  Pin extraction and reinsertion
+                </li>
+                <li>
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--magenta)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                  Section splice and extension
+                </li>
+                <li>
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--magenta)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                  ECU connector swap
+                </li>
+                <li>
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--magenta)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                  Bulkhead rerouting
+                </li>
+                <li>
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--magenta)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                  Corrosion repair
+                </li>
+              </ul>
+            </div>
+
+            <!-- Right: pricing -->
+            <div class="service-pricing">
+              <div class="service-price-display">
+                <p class="service-price-label">Starting From</p>
+                <div class="service-price-value" style="font-size:var(--text-3xl);">From $95</div>
+                <p class="service-price-sub">+ return shipping. Final price quoted after inspection.</p>
+              </div>
+              <ul class="service-detail-list">
+                <li>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                  Quote provided after receiving harness
+                </li>
+                <li>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                  1–2 week turnaround on most repairs
+                </li>
+                <li>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                  No work done without your approval
+                </li>
+                <li>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--magenta)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                  Works with all brands, not just SVK harnesses
+                </li>
+              </ul>
+              <a href="contact.html" class="service-cta-btn">
+                Request Repair
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-left:6px;vertical-align:middle;"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              </a>
+              <p class="service-note">Describe your issue in the request form. We'll follow up within 1 business day with next steps and the mailing address.</p>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ┌─────────────────────────────────────────────────────────────┐ -->
+        <!-- │  SERVICE 3 — ANNUAL INSPECTION                             │ -->
+        <!-- └─────────────────────────────────────────────────────────────┘ -->
+        <div class="service-card">
+          <div class="service-card-inner">
+
+            <!-- Left: content -->
+            <div class="service-content">
+              <div class="service-icon-wrap">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--magenta)" stroke-width="1.8">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                  <polyline points="9 12 11 14 15 10"/>
+                </svg>
+              </div>
+              <p class="service-number">Service 03</p>
+              <h2 class="service-title">Annual Harness Health Check</h2>
+              <p class="service-desc">Race cars and track builds take a beating. Send your SVK harness in once a year — we inspect every connector, test critical circuits, re-loom any wear points, and return it with a clean bill of health and a new inspection sticker.</p>
+
+              <p class="service-list-heading">What's Checked</p>
+              <ul class="service-checklist">
+                <li>
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--magenta)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                  All connector retaining clips
+                </li>
+                <li>
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--magenta)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                  Wire chafing at bulkhead pass-throughs
+                </li>
+                <li>
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--magenta)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                  ECU connector pin tension
+                </li>
+                <li>
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--magenta)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                  Ground circuit resistance
+                </li>
+                <li>
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--magenta)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                  Injector and coil circuits
+                </li>
+                <li>
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--magenta)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                  Battery and main power loom
+                </li>
+              </ul>
+            </div>
+
+            <!-- Right: pricing -->
+            <div class="service-pricing">
+              <div class="service-price-display">
+                <p class="service-price-label">Flat Rate</p>
+                <div class="service-price-value">$75</div>
+                <p class="service-price-sub">SVK Works harnesses only</p>
+              </div>
+              <ul class="service-detail-list">
+                <li>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                  3–5 business day turnaround
+                </li>
+                <li>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                  Returned with new inspection sticker
+                </li>
+                <li>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                  Minor re-looming included at no charge
+                </li>
+                <li>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--magenta)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                  Applies to SVK harnesses only — see repair service for other brands
+                </li>
+              </ul>
+              <a href="contact.html" class="service-cta-btn">
+                Schedule Inspection
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-left:6px;vertical-align:middle;"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              </a>
+              <p class="service-note">Recommended annually for track and race use. SVK harnesses built prior to 2022 may incur a small materials surcharge if re-looming is extensive.</p>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ── How to Send Your Harness ── -->
+    <section class="section" style="background:var(--bg-secondary);">
+      <div class="container">
+        <div class="section-header fade-in">
+          <span class="section-label">Mail-In Process</span>
+          <h2>How to Send Your Harness</h2>
+          <p>The full process from booking to getting your harness back.</p>
+        </div>
+
+        <div class="send-steps">
+
+          <div class="send-step fade-in">
+            <div class="send-step-left">
+              <div class="send-step-num">1</div>
+              <div class="send-step-line"></div>
+            </div>
+            <div class="send-step-body">
+              <h4>Book Your Service Online</h4>
+              <p>Click the relevant button above, fill out the short form, and select your service type. You'll receive a confirmation email within one business day.</p>
+            </div>
+          </div>
+
+          <div class="send-step fade-in">
+            <div class="send-step-left">
+              <div class="send-step-num">2</div>
+              <div class="send-step-line"></div>
+            </div>
+            <div class="send-step-body">
+              <h4>Package Your Harness</h4>
+              <p>Print and include the booking confirmation form inside the box. Coil the harness loosely, wrap with bubble wrap, and use a rigid box. Label clearly with your booking reference.</p>
+            </div>
+          </div>
+
+          <div class="send-step fade-in">
+            <div class="send-step-left">
+              <div class="send-step-num">3</div>
+              <div class="send-step-line"></div>
+            </div>
+            <div class="send-step-body">
+              <h4>Ship to Our Facility</h4>
+              <p>Use any carrier. We recommend insuring the shipment for the harness replacement value. A prepaid return label option is available at checkout for an additional fee.</p>
+            </div>
+          </div>
+
+          <div class="send-step fade-in">
+            <div class="send-step-left">
+              <div class="send-step-num">4</div>
+              <div class="send-step-line"></div>
+            </div>
+            <div class="send-step-body">
+              <h4>We Complete the Service</h4>
+              <p>We'll email you when your harness arrives and again when work is complete. For repairs, you'll receive a quote before we touch anything. Service time starts from receipt, not booking.</p>
+            </div>
+          </div>
+
+          <div class="send-step fade-in">
+            <div class="send-step-left">
+              <div class="send-step-num">5</div>
+              <div class="send-step-line"></div>
+            </div>
+            <div class="send-step-body">
+              <h4>Receive Your Harness + Report</h4>
+              <p>Your harness ships back with your digital report or inspection documentation. PDF reports are also emailed directly so you always have a copy on file.</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ── FAQ ── -->
+    <section class="section">
+      <div class="container container-narrow">
+        <div class="section-header fade-in">
+          <span class="section-label">FAQ</span>
+          <h2>Common Questions</h2>
+        </div>
+
+        <div class="faq-grid">
+
+          <div class="faq-item fade-in">
+            <p class="faq-q">Do you accept harnesses from any manufacturer?</p>
+            <p class="faq-a">The Diagnostic Inspection and Repair services accept any harness regardless of brand or origin. The Annual Inspection is exclusively for SVK Works harnesses — use the Repair service for other brands.</p>
+          </div>
+
+          <div class="faq-item fade-in">
+            <p class="faq-q">Should I insure my shipment?</p>
+            <p class="faq-a">Yes. We strongly recommend insuring your harness for its replacement value. SVK Works is not responsible for loss or damage during transit to our facility. We take full responsibility once it arrives.</p>
+          </div>
+
+          <div class="faq-item fade-in">
+            <p class="faq-q">Is there a warranty on repair work?</p>
+            <p class="faq-a">Yes. All repair and modification work is covered by a 12-month workmanship warranty. If a repair we performed fails within that period due to our workmanship, we'll fix it at no charge (you cover return shipping).</p>
+          </div>
+
+          <div class="faq-item fade-in">
+            <p class="faq-q">How long does return shipping take?</p>
+            <p class="faq-a">We ship returns via ground courier by default (3–5 business days in the continental US). Expedited return shipping is available. International returns are shipped via tracked air freight.</p>
+          </div>
+
+          <div class="faq-item fade-in" style="grid-column: span 2;">
+            <p class="faq-q">Can I get a diagnostic inspection and then decide on repair separately?</p>
+            <p class="faq-a">Absolutely. This is a common workflow — book the Diagnostic Inspection first, receive the report, then decide whether to proceed with repairs and at what scope. The $175 diagnostic fee applies regardless of whether you proceed with repair. If you do book a repair within 30 days of receiving your diagnostic report, we credit the diagnostic fee toward the repair cost.</p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Contact CTA ── -->
+    <section class="section" style="background:var(--bg-secondary);">
+      <div class="container">
+        <div class="contact-cta-block">
+          <div class="contact-cta-intro">
+            <h3>Not sure which service you need?</h3>
+            <p>Describe your issue and we'll recommend the right option — no obligation. Most issues are easy to triage over email before you ship anything.</p>
+            <div class="trust-pills">
+              <span class="trust-pill">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--magenta)" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                Reply within 1 business day
+              </span>
+              <span class="trust-pill">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--magenta)" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                No commitment required
+              </span>
+              <span class="trust-pill">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--magenta)" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                Free advice
+              </span>
+            </div>
+          </div>
+
+          <div class="contact-form-box">
+            <div class="form-group">
+              <label class="form-label" for="svc-name">Your Name</label>
+              <input type="text" class="form-input" id="svc-name" placeholder="First and last name" autocomplete="name">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="svc-email">Email Address</label>
+              <input type="email" class="form-input" id="svc-email" placeholder="your@email.com" autocomplete="email">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="svc-issue">Describe Your Issue</label>
+              <textarea class="form-textarea" id="svc-issue" rows="5" placeholder="Tell us what's going on — intermittent fault, broken connector, want to know if your harness is healthy before a track day, etc."></textarea>
+            </div>
+            <button type="button" class="btn btn-primary btn-lg" style="width:100%;" onclick="submitServiceInquiry()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:6px;vertical-align:middle;"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+              Send My Question
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <div id="footer-placeholder"></div>
+
+  <!-- Toast -->
+  <div class="toast-notification" id="svc-toast" role="status" aria-live="polite" style="
+    position:fixed;bottom:var(--space-xl);right:var(--space-xl);
+    background:var(--bg-elevated);border:1px solid var(--border-magenta);
+    border-radius:var(--radius-lg);padding:var(--space-md) var(--space-lg);
+    display:flex;align-items:center;gap:var(--space-md);
+    box-shadow:var(--shadow-lg);z-index:9999;
+    transform:translateY(20px);opacity:0;
+    transition:transform var(--transition-base),opacity var(--transition-base);
+    pointer-events:none;min-width:240px;">
+    <div style="width:32px;height:32px;border-radius:var(--radius-full);background:rgba(34,197,94,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+    </div>
+    <div>
+      <strong id="svc-toast-title" style="display:block;font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--text-primary);">Message sent!</strong>
+      <span id="svc-toast-sub" style="font-size:var(--text-xs);color:var(--text-muted);">We'll be in touch within 1 business day.</span>
+    </div>
+  </div>
+
+  <script defer src="components/header.js"></script>
+  <script defer src="components/footer.js"></script>
+  <script defer src="js/cart.js"></script>
+  <script defer src="js/components.js"></script>
+  <script defer src="js/main.js"></script>
+  <script>
+    function submitServiceInquiry() {
+      const name  = document.getElementById('svc-name').value.trim();
+      const email = document.getElementById('svc-email').value.trim();
+      const issue = document.getElementById('svc-issue').value.trim();
+
+      if (!email || !email.includes('@')) {
+        if (typeof SVKCart !== 'undefined') {
+          SVKCart.showToast('Please enter a valid email address.');
+        }
+        document.getElementById('svc-email').focus();
+        return;
+      }
+
+      // Build mailto
+      const subject = 'SVK Harness Service Inquiry' + (name ? ' — ' + name : '');
+      let body = 'SVK Works Harness Service Inquiry\n';
+      body += '===================================\n\n';
+      body += 'Name: ' + (name || 'Not provided') + '\n';
+      body += 'Email: ' + email + '\n\n';
+      body += 'Issue Description:\n' + (issue || 'Not provided') + '\n';
+
+      window.location.href = 'mailto:info@svkworks.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+
+      // Show toast
+      const toast = document.getElementById('svc-toast');
+      toast.style.transform = 'translateY(0)';
+      toast.style.opacity   = '1';
+      setTimeout(() => {
+        toast.style.transform = 'translateY(20px)';
+        toast.style.opacity   = '0';
+      }, 3500);
+    }
+  </script>
+</body>
+</html>
