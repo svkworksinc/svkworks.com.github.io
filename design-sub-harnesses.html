@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sub-Harnesses &amp; Looms — In-Stock, Ships in 3 Days | SVK Works</title>
+  <meta name="description" content="Pre-made, in-stock sub-harnesses and plug-and-play wiring looms. Power distribution, injector drivers, sensor harnesses, transmission looms and more. Ships within 3 business days.">
+  <link rel="canonical" href="https://www.svkworks.com/design-sub-harnesses.html">
+  <meta property="og:site_name" content="SVK Works">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Sub-Harnesses &amp; Looms — SVK Works">
+  <meta property="og:description" content="In-stock plug-and-play sub-harnesses. Ships within 3 business days. No wait, no quotes — just plug in and go.">
+  <meta property="og:url" content="https://www.svkworks.com/design-sub-harnesses.html">
+  <meta property="og:image" content="https://www.svkworks.com/img/og-default.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Sub-Harnesses &amp; Looms — SVK Works">
+  <meta name="twitter:description" content="In-stock plug-and-play sub-harnesses. Ships within 3 business days.">
+  <meta name="twitter:image" content="https://www.svkworks.com/img/og-default.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="img/svk-icon.png" type="image/png">
+  <style>
+    /* ── Sub-Harness page–specific styles ── */
+
+    /* Value prop strip */
+    .value-strip {
+      background: var(--bg-secondary);
+      border-top: 1px solid var(--border-color);
+      border-bottom: 1px solid var(--border-color);
+    }
+    .value-strip-inner {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+    }
+    .value-item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+      padding: var(--space-lg) var(--space-xl);
+      border-right: 1px solid var(--border-color);
+    }
+    .value-item:last-child { border-right: none; }
+    .value-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-md);
+      background: var(--magenta-subtle);
+      border: 1px solid var(--border-magenta);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .value-item h4 {
+      font-size: var(--text-sm);
+      font-weight: var(--weight-semibold);
+      color: var(--text-primary);
+      margin: 0 0 2px;
+    }
+    .value-item p {
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+      margin: 0;
+    }
+
+    /* Product image placeholder */
+    .sub-product-image {
+      height: 160px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius-md) var(--radius-md) 0 0;
+      position: relative;
+      overflow: hidden;
+    }
+    .sub-product-image::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.35) 100%);
+    }
+    .sub-product-image svg {
+      opacity: 0.55;
+      position: relative;
+      z-index: 1;
+    }
+    .img-power    { background: #1a0d10; }
+    .img-sensor   { background: #0a0f1a; }
+    .img-trans    { background: #0d1015; }
+    .img-fuel     { background: #0f1508; }
+    .img-ignition { background: #150f08; }
+    .img-universal{ background: #0f0a18; }
+
+    /* Sub-harness product card overrides */
+    .sub-product-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      transition: border-color var(--transition-base), transform var(--transition-base), box-shadow var(--transition-base);
+      display: flex;
+      flex-direction: column;
+    }
+    .sub-product-card:hover {
+      border-color: var(--border-magenta);
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-magenta);
+    }
+    .sub-product-body {
+      padding: var(--space-lg);
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      gap: var(--space-sm);
+    }
+    .sub-product-name {
+      font-size: var(--text-base);
+      font-weight: var(--weight-semibold);
+      color: var(--text-primary);
+      margin: 0;
+      line-height: var(--leading-snug);
+    }
+    .sub-product-desc {
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+      line-height: var(--leading-normal);
+      margin: 0;
+      flex: 1;
+    }
+    .sub-product-meta {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      flex-wrap: wrap;
+      margin-top: var(--space-xs);
+    }
+    .badge-instock {
+      background: rgba(34, 197, 94, 0.12);
+      color: #22c55e;
+      border: 1px solid rgba(34, 197, 94, 0.25);
+      font-size: var(--text-xs);
+      font-weight: var(--weight-semibold);
+      padding: 2px 8px;
+      border-radius: var(--radius-full);
+      letter-spacing: 0.02em;
+    }
+    .badge-lowstock {
+      background: rgba(245, 158, 11, 0.12);
+      color: #f59e0b;
+      border: 1px solid rgba(245, 158, 11, 0.25);
+      font-size: var(--text-xs);
+      font-weight: var(--weight-semibold);
+      padding: 2px 8px;
+      border-radius: var(--radius-full);
+      letter-spacing: 0.02em;
+    }
+    .ships-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+    }
+    .sub-product-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-sm);
+      padding-top: var(--space-md);
+      border-top: 1px solid var(--border-color);
+      margin-top: var(--space-sm);
+    }
+    .sub-product-price {
+      font-size: var(--text-xl);
+      font-weight: var(--weight-bold);
+      color: var(--magenta);
+      letter-spacing: -0.02em;
+    }
+    .sub-product-actions {
+      display: flex;
+      gap: var(--space-sm);
+      align-items: center;
+    }
+    .btn-cart {
+      background: var(--magenta);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-md);
+      padding: 0.45rem 0.9rem;
+      font-size: var(--text-sm);
+      font-weight: var(--weight-semibold);
+      cursor: pointer;
+      transition: background var(--transition-fast), box-shadow var(--transition-fast);
+      font-family: var(--font-body);
+      white-space: nowrap;
+    }
+    .btn-cart:hover {
+      background: var(--magenta-dark);
+      box-shadow: var(--shadow-magenta);
+    }
+    .btn-save {
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-color);
+      background: transparent;
+      cursor: pointer;
+      color: var(--text-muted);
+      transition: color var(--transition-fast), border-color var(--transition-fast);
+    }
+    .btn-save:hover {
+      color: var(--magenta);
+      border-color: var(--border-magenta);
+    }
+
+    /* Sub-harness product grid */
+    .sub-product-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-lg);
+    }
+
+    /* CTA card */
+    .cta-custom-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-magenta);
+      border-radius: var(--radius-xl);
+      padding: var(--space-2xl);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-xl);
+      flex-wrap: wrap;
+      margin-top: var(--space-2xl);
+      background-image: radial-gradient(ellipse at 80% 50%, var(--magenta-subtle) 0%, transparent 65%);
+    }
+    .cta-custom-card h3 {
+      font-size: var(--text-xl);
+      font-weight: var(--weight-bold);
+      margin: 0 0 var(--space-sm);
+    }
+    .cta-custom-card p {
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+      margin: 0;
+      max-width: 480px;
+    }
+
+    /* How it works */
+    .how-steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-xl);
+      position: relative;
+    }
+    .how-steps::before {
+      content: '';
+      position: absolute;
+      top: 28px;
+      left: calc(16.67% + 28px);
+      right: calc(16.67% + 28px);
+      height: 1px;
+      background: var(--border-color);
+    }
+    .how-step {
+      text-align: center;
+      position: relative;
+    }
+    .step-num {
+      width: 56px;
+      height: 56px;
+      border-radius: var(--radius-full);
+      background: var(--bg-elevated);
+      border: 2px solid var(--border-magenta);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto var(--space-md);
+      font-size: var(--text-lg);
+      font-weight: var(--weight-bold);
+      color: var(--magenta);
+      position: relative;
+      z-index: 1;
+    }
+    .how-step h4 {
+      font-size: var(--text-base);
+      font-weight: var(--weight-semibold);
+      color: var(--text-primary);
+      margin: 0 0 var(--space-xs);
+    }
+    .how-step p {
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+      margin: 0;
+      line-height: var(--leading-normal);
+    }
+
+    /* Toast */
+    .toast-notification {
+      position: fixed;
+      bottom: var(--space-xl);
+      right: var(--space-xl);
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-magenta);
+      border-radius: var(--radius-lg);
+      padding: var(--space-md) var(--space-lg);
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+      box-shadow: var(--shadow-lg);
+      z-index: 9999;
+      transform: translateY(20px);
+      opacity: 0;
+      transition: transform var(--transition-base), opacity var(--transition-base);
+      pointer-events: none;
+      min-width: 220px;
+    }
+    .toast-notification.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    .toast-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-full);
+      background: rgba(34, 197, 94, 0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .toast-text {
+      flex: 1;
+    }
+    .toast-text strong {
+      display: block;
+      font-size: var(--text-sm);
+      font-weight: var(--weight-semibold);
+      color: var(--text-primary);
+    }
+    .toast-text span {
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+    }
+
+    /* Hero design concept badge */
+    .design-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(233, 30, 140, 0.1);
+      border: 1px solid var(--border-magenta);
+      color: var(--magenta-light);
+      font-size: var(--text-xs);
+      font-weight: var(--weight-semibold);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: var(--radius-full);
+      margin-bottom: var(--space-md);
+    }
+
+    @media (max-width: 900px) {
+      .value-strip-inner { grid-template-columns: 1fr; }
+      .value-item { border-right: none; border-bottom: 1px solid var(--border-color); }
+      .value-item:last-child { border-bottom: none; }
+      .sub-product-grid { grid-template-columns: repeat(2, 1fr); }
+      .how-steps { grid-template-columns: 1fr; }
+      .how-steps::before { display: none; }
+    }
+    @media (max-width: 600px) {
+      .sub-product-grid { grid-template-columns: 1fr; }
+      .cta-custom-card { flex-direction: column; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+  <div id="header-placeholder"></div>
+
+  <main id="main-content">
+
+    <!-- ── Hero ── -->
+    <div class="page-hero">
+      <div class="container">
+        <div class="breadcrumb" role="navigation" aria-label="breadcrumb">
+          <a href="index.html">Home</a><span class="breadcrumb-sep" aria-hidden="true">/</span>
+          <a href="#">Design Concepts</a><span class="breadcrumb-sep" aria-hidden="true">/</span>
+          <span>Sub-Harnesses</span>
+        </div>
+        <div class="design-badge">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg>
+          Design Concept
+        </div>
+        <h1>Sub-Harnesses &amp; Looms</h1>
+        <p>In-stock, ship within 3 business days. No wait, no quotes — just plug in and go.</p>
+      </div>
+    </div>
+
+    <!-- ── Value Strip ── -->
+    <div class="value-strip">
+      <div class="container">
+        <div class="value-strip-inner">
+          <div class="value-item">
+            <div class="value-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--magenta)" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            </div>
+            <div>
+              <h4>Ships in 3 Days</h4>
+              <p>All items in stock, packed and dispatched fast.</p>
+            </div>
+          </div>
+          <div class="value-item">
+            <div class="value-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--magenta)" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            </div>
+            <div>
+              <h4>Mil-Spec Connectors</h4>
+              <p>Deutsch DT, DTM, and Autosport series throughout.</p>
+            </div>
+          </div>
+          <div class="value-item">
+            <div class="value-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--magenta)" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            </div>
+            <div>
+              <h4>2-Year Warranty</h4>
+              <p>Every sub-harness covered against defects.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Filter + Grid ── -->
+    <section class="section">
+      <div class="container">
+
+        <div class="filter-bar">
+          <div class="filter-tabs" id="sub-filter">
+            <button class="filter-tab active" data-filter="all">All</button>
+            <button class="filter-tab" data-filter="power">Power / Ground</button>
+            <button class="filter-tab" data-filter="sensor">Sensor</button>
+            <button class="filter-tab" data-filter="transmission">Transmission</button>
+            <button class="filter-tab" data-filter="fuel">Fuel</button>
+            <button class="filter-tab" data-filter="ignition">Ignition</button>
+            <button class="filter-tab" data-filter="universal">Universal</button>
+          </div>
+        </div>
+
+        <div class="sub-product-grid" id="sub-grid">
+
+          <!-- 1. Universal Power Distribution Harness -->
+          <div class="sub-product-card fade-in" data-category="power">
+            <div class="sub-product-image img-power">
+              <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#e91e8c" stroke-width="1.5">
+                <rect x="2" y="7" width="20" height="10" rx="2"/>
+                <path d="M7 7V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v2"/>
+                <path d="M12 12v3m-3-3h6"/>
+              </svg>
+            </div>
+            <div class="sub-product-body">
+              <h3 class="sub-product-name">Universal Power Distribution Harness</h3>
+              <p class="sub-product-desc">Pre-fused 12-circuit power distribution loom. Works with any standalone ECU.</p>
+              <div class="sub-product-meta">
+                <span class="badge-instock">In Stock</span>
+                <span class="ships-tag">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  Ships in 3 days
+                </span>
+              </div>
+              <div class="sub-product-footer">
+                <span class="sub-product-price">$185</span>
+                <div class="sub-product-actions">
+                  <button class="btn-cart" onclick="addToCart(this, 'Universal Power Distribution Harness', 185)">Add to Cart</button>
+                  <button class="btn-save" aria-label="Save to wishlist">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 2. 2JZ Coil-on-Plug Retrofit Harness -->
+          <div class="sub-product-card fade-in" data-category="ignition">
+            <div class="sub-product-image img-ignition">
+              <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#e91e8c" stroke-width="1.5">
+                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+              </svg>
+            </div>
+            <div class="sub-product-body">
+              <h3 class="sub-product-name">2JZ Coil-on-Plug Retrofit Harness</h3>
+              <p class="sub-product-desc">Converts stock COP to individual coil connectors. Fits 1JZ and 2JZ.</p>
+              <div class="sub-product-meta">
+                <span class="badge-instock">In Stock</span>
+                <span class="ships-tag">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  Ships in 3 days
+                </span>
+              </div>
+              <div class="sub-product-footer">
+                <span class="sub-product-price">$145</span>
+                <div class="sub-product-actions">
+                  <button class="btn-cart" onclick="addToCart(this, '2JZ Coil-on-Plug Retrofit Harness', 145)">Add to Cart</button>
+                  <button class="btn-save" aria-label="Save to wishlist">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3. CD009 Transmission Harness -->
+          <div class="sub-product-card fade-in" data-category="transmission">
+            <div class="sub-product-image img-trans">
+              <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#e91e8c" stroke-width="1.5">
+                <circle cx="6" cy="12" r="3"/><circle cx="18" cy="12" r="3"/>
+                <path d="M6 9V6m0 9v3m12-9V6m0 9v3M9 12h6"/>
+              </svg>
+            </div>
+            <div class="sub-product-body">
+              <h3 class="sub-product-name">CD009 Transmission Harness</h3>
+              <p class="sub-product-desc">Complete reverse lockout + VSS harness for Nissan CD009 swap.</p>
+              <div class="sub-product-meta">
+                <span class="badge-instock">In Stock</span>
+                <span class="ships-tag">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  Ships in 3 days
+                </span>
+              </div>
+              <div class="sub-product-footer">
+                <span class="sub-product-price">$210</span>
+                <div class="sub-product-actions">
+                  <button class="btn-cart" onclick="addToCart(this, 'CD009 Transmission Harness', 210)">Add to Cart</button>
+                  <button class="btn-save" aria-label="Save to wishlist">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 4. OBDII Diagnostic Port Tail -->
+          <div class="sub-product-card fade-in" data-category="universal">
+            <div class="sub-product-image img-universal">
+              <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#e91e8c" stroke-width="1.5">
+                <rect x="3" y="8" width="18" height="8" rx="2"/>
+                <path d="M7 8V6m4 2V6m4 2V6M7 16v2m4-2v2m4-2v2"/>
+              </svg>
+            </div>
+            <div class="sub-product-body">
+              <h3 class="sub-product-name">OBDII Diagnostic Port Tail</h3>
+              <p class="sub-product-desc">Clean OBDII port integration for any standalone ECU.</p>
+              <div class="sub-product-meta">
+                <span class="badge-instock">In Stock</span>
+                <span class="ships-tag">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  Ships in 3 days
+                </span>
+              </div>
+              <div class="sub-product-footer">
+                <span class="sub-product-price">$45</span>
+                <div class="sub-product-actions">
+                  <button class="btn-cart" onclick="addToCart(this, 'OBDII Diagnostic Port Tail', 45)">Add to Cart</button>
+                  <button class="btn-save" aria-label="Save to wishlist">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 5. Wideband O2 Sub-Harness -->
+          <div class="sub-product-card fade-in" data-category="sensor">
+            <div class="sub-product-image img-sensor">
+              <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#e91e8c" stroke-width="1.5">
+                <circle cx="12" cy="12" r="3"/>
+                <path d="M12 1v4m0 14v4M4.22 4.22l2.83 2.83m9.9 9.9 2.83 2.83M1 12h4m14 0h4M4.22 19.78l2.83-2.83m9.9-9.9 2.83-2.83"/>
+              </svg>
+            </div>
+            <div class="sub-product-body">
+              <h3 class="sub-product-name">Wideband O2 Sub-Harness</h3>
+              <p class="sub-product-desc">AEM / Innovate / PLX compatible. 3-meter loom with firewall grommet.</p>
+              <div class="sub-product-meta">
+                <span class="badge-instock">In Stock</span>
+                <span class="ships-tag">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  Ships in 3 days
+                </span>
+              </div>
+              <div class="sub-product-footer">
+                <span class="sub-product-price">$75</span>
+                <div class="sub-product-actions">
+                  <button class="btn-cart" onclick="addToCart(this, 'Wideband O2 Sub-Harness', 75)">Add to Cart</button>
+                  <button class="btn-save" aria-label="Save to wishlist">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 6. Boost Control Solenoid Harness -->
+          <div class="sub-product-card fade-in" data-category="sensor">
+            <div class="sub-product-image img-sensor">
+              <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#e91e8c" stroke-width="1.5">
+                <path d="M12 2a10 10 0 1 1 0 20A10 10 0 0 1 12 2z"/>
+                <path d="M12 8v4l3 3"/>
+                <circle cx="12" cy="12" r="2" fill="#e91e8c" opacity="0.4"/>
+              </svg>
+            </div>
+            <div class="sub-product-body">
+              <h3 class="sub-product-name">Boost Control Solenoid Harness</h3>
+              <p class="sub-product-desc">Tial, Turbosmart, or Grimmspeed solenoid. Weatherproof connector.</p>
+              <div class="sub-product-meta">
+                <span class="badge-instock">In Stock</span>
+                <span class="ships-tag">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  Ships in 3 days
+                </span>
+              </div>
+              <div class="sub-product-footer">
+                <span class="sub-product-price">$65</span>
+                <div class="sub-product-actions">
+                  <button class="btn-cart" onclick="addToCart(this, 'Boost Control Solenoid Harness', 65)">Add to Cart</button>
+                  <button class="btn-save" aria-label="Save to wishlist">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 7. Flex Fuel Sensor Harness -->
+          <div class="sub-product-card fade-in" data-category="fuel">
+            <div class="sub-product-image img-fuel">
+              <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#e91e8c" stroke-width="1.5">
+                <path d="M3 22V8l4-4h10l4 4v14H3z"/>
+                <path d="M8 22V12h8v10"/>
+                <path d="M16 6l3 3"/>
+              </svg>
+            </div>
+            <div class="sub-product-body">
+              <h3 class="sub-product-name">Flex Fuel Sensor Harness</h3>
+              <p class="sub-product-desc">Continental / GM flex fuel sensor loom. Signal output ready.</p>
+              <div class="sub-product-meta">
+                <span class="badge-instock">In Stock</span>
+                <span class="ships-tag">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  Ships in 3 days
+                </span>
+              </div>
+              <div class="sub-product-footer">
+                <span class="sub-product-price">$85</span>
+                <div class="sub-product-actions">
+                  <button class="btn-cart" onclick="addToCart(this, 'Flex Fuel Sensor Harness', 85)">Add to Cart</button>
+                  <button class="btn-save" aria-label="Save to wishlist">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 8. Idle Control Valve Harness -->
+          <div class="sub-product-card fade-in" data-category="sensor">
+            <div class="sub-product-image img-sensor">
+              <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#e91e8c" stroke-width="1.5">
+                <path d="M18 8h1a4 4 0 0 1 0 8h-1"/>
+                <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/>
+                <line x1="6" y1="1" x2="6" y2="4"/>
+                <line x1="10" y1="1" x2="10" y2="4"/>
+                <line x1="14" y1="1" x2="14" y2="4"/>
+              </svg>
+            </div>
+            <div class="sub-product-body">
+              <h3 class="sub-product-name">Idle Control Valve Harness</h3>
+              <p class="sub-product-desc">Universal IAC / ISC harness. Fits 2-wire and 3-wire valves.</p>
+              <div class="sub-product-meta">
+                <span class="badge-instock">In Stock</span>
+                <span class="ships-tag">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  Ships in 3 days
+                </span>
+              </div>
+              <div class="sub-product-footer">
+                <span class="sub-product-price">$55</span>
+                <div class="sub-product-actions">
+                  <button class="btn-cart" onclick="addToCart(this, 'Idle Control Valve Harness', 55)">Add to Cart</button>
+                  <button class="btn-save" aria-label="Save to wishlist">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 9. Injector Driver Sub-Harness (4-cyl) -->
+          <div class="sub-product-card fade-in" data-category="fuel">
+            <div class="sub-product-image img-fuel">
+              <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#e91e8c" stroke-width="1.5">
+                <path d="M12 2v6m0 0c-3.31 0-6 1.34-6 3v9c0 1.66 2.69 3 6 3s6-1.34 6-3V11c0-1.66-2.69-3-6-3z"/>
+                <ellipse cx="12" cy="11" rx="6" ry="3"/>
+              </svg>
+            </div>
+            <div class="sub-product-body">
+              <h3 class="sub-product-name">Injector Driver Sub-Harness (4-cyl)</h3>
+              <p class="sub-product-desc">4-injector loom with EV1 / EV6 / Denso connector options.</p>
+              <div class="sub-product-meta">
+                <span class="badge-instock">In Stock</span>
+                <span class="ships-tag">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  Ships in 3 days
+                </span>
+              </div>
+              <div class="sub-product-footer">
+                <span class="sub-product-price">$120</span>
+                <div class="sub-product-actions">
+                  <button class="btn-cart" onclick="addToCart(this, 'Injector Driver Sub-Harness (4-cyl)', 120)">Add to Cart</button>
+                  <button class="btn-save" aria-label="Save to wishlist">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 10. Injector Driver Sub-Harness (6-cyl) -->
+          <div class="sub-product-card fade-in" data-category="fuel">
+            <div class="sub-product-image img-fuel">
+              <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#e91e8c" stroke-width="1.5">
+                <path d="M12 2v6m0 0c-3.31 0-6 1.34-6 3v9c0 1.66 2.69 3 6 3s6-1.34 6-3V11c0-1.66-2.69-3-6-3z"/>
+                <ellipse cx="12" cy="11" rx="6" ry="3"/>
+                <path d="M6 14h12"/>
+              </svg>
+            </div>
+            <div class="sub-product-body">
+              <h3 class="sub-product-name">Injector Driver Sub-Harness (6-cyl)</h3>
+              <p class="sub-product-desc">6-injector loom with EV1 / EV6 / Denso connector options.</p>
+              <div class="sub-product-meta">
+                <span class="badge-instock">In Stock</span>
+                <span class="ships-tag">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  Ships in 3 days
+                </span>
+              </div>
+              <div class="sub-product-footer">
+                <span class="sub-product-price">$155</span>
+                <div class="sub-product-actions">
+                  <button class="btn-cart" onclick="addToCart(this, 'Injector Driver Sub-Harness (6-cyl)', 155)">Add to Cart</button>
+                  <button class="btn-save" aria-label="Save to wishlist">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 11. E-Throttle Body Harness — Low Stock -->
+          <div class="sub-product-card fade-in" data-category="sensor">
+            <div class="sub-product-image img-sensor">
+              <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#e91e8c" stroke-width="1.5">
+                <circle cx="12" cy="12" r="9"/>
+                <path d="M12 8v4l2.5 2.5"/>
+                <path d="M16.24 7.76A6 6 0 0 1 18 12"/>
+              </svg>
+            </div>
+            <div class="sub-product-body">
+              <h3 class="sub-product-name">E-Throttle Body Harness</h3>
+              <p class="sub-product-desc">Universal DBW harness for Bosch 60mm+ throttle bodies.</p>
+              <div class="sub-product-meta">
+                <span class="badge-lowstock">Low Stock</span>
+                <span class="ships-tag">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  Ships in 3 days
+                </span>
+              </div>
+              <div class="sub-product-footer">
+                <span class="sub-product-price">$95</span>
+                <div class="sub-product-actions">
+                  <button class="btn-cart" onclick="addToCart(this, 'E-Throttle Body Harness', 95)">Add to Cart</button>
+                  <button class="btn-save" aria-label="Save to wishlist">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 12. Dual Fuel Pump Controller Harness -->
+          <div class="sub-product-card fade-in" data-category="fuel">
+            <div class="sub-product-image img-fuel">
+              <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#e91e8c" stroke-width="1.5">
+                <rect x="3" y="11" width="8" height="11" rx="1"/>
+                <rect x="13" y="11" width="8" height="11" rx="1"/>
+                <path d="M7 11V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v6"/>
+                <path d="M12 7v4"/>
+              </svg>
+            </div>
+            <div class="sub-product-body">
+              <h3 class="sub-product-name">Dual Fuel Pump Controller Harness</h3>
+              <p class="sub-product-desc">Staged dual pump wiring with relay and fusing included.</p>
+              <div class="sub-product-meta">
+                <span class="badge-instock">In Stock</span>
+                <span class="ships-tag">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  Ships in 3 days
+                </span>
+              </div>
+              <div class="sub-product-footer">
+                <span class="sub-product-price">$135</span>
+                <div class="sub-product-actions">
+                  <button class="btn-cart" onclick="addToCart(this, 'Dual Fuel Pump Controller Harness', 135)">Add to Cart</button>
+                  <button class="btn-save" aria-label="Save to wishlist">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- /sub-grid -->
+
+        <!-- Custom CTA Card -->
+        <div class="cta-custom-card">
+          <div>
+            <h3>Can't find what you need?</h3>
+            <p>We build fully custom sub-harnesses to your exact spec — specific connector types, lead lengths, shielding, and loom diameter. Typically 2-week turnaround from approval.</p>
+          </div>
+          <a href="contact.html" class="btn btn-primary" style="white-space:nowrap;flex-shrink:0;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:6px;"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            Get a Quote
+          </a>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ── How it Works ── -->
+    <section class="section" style="background:var(--bg-secondary);">
+      <div class="container">
+        <div class="section-header fade-in">
+          <span class="section-label">Simple Process</span>
+          <h2>How it Works</h2>
+          <p>From click to install in under a week.</p>
+        </div>
+        <div class="how-steps">
+          <div class="how-step fade-in">
+            <div class="step-num">1</div>
+            <h4>Order Online</h4>
+            <p>Select your harness, add to cart, and check out. No configurator, no waiting for quotes.</p>
+          </div>
+          <div class="how-step fade-in">
+            <div class="step-num">2</div>
+            <h4>We Build &amp; Test</h4>
+            <p>Every harness is assembled, continuity-tested, and visually inspected before it leaves the bench.</p>
+          </div>
+          <div class="how-step fade-in">
+            <div class="step-num">3</div>
+            <h4>Ships in 3 Days</h4>
+            <p>Packed securely and dispatched within 3 business days via tracked courier.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <div id="footer-placeholder"></div>
+
+  <!-- Toast notification -->
+  <div class="toast-notification" id="cart-toast" role="status" aria-live="polite">
+    <div class="toast-icon">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+    </div>
+    <div class="toast-text">
+      <strong id="toast-title">Added to cart!</strong>
+      <span id="toast-sub">Item added to your cart.</span>
+    </div>
+  </div>
+
+  <script defer src="components/header.js"></script>
+  <script defer src="components/footer.js"></script>
+  <script defer src="js/cart.js"></script>
+  <script defer src="js/components.js"></script>
+  <script defer src="js/main.js"></script>
+  <script>
+    // ── Filter tabs ──
+    document.addEventListener('DOMContentLoaded', () => {
+      const grid  = document.getElementById('sub-grid');
+      const cards = Array.from(grid.querySelectorAll('.sub-product-card'));
+
+      document.querySelectorAll('#sub-filter .filter-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+          document.querySelectorAll('#sub-filter .filter-tab').forEach(t => t.classList.remove('active'));
+          tab.classList.add('active');
+          const f = tab.dataset.filter;
+          cards.forEach(card => {
+            const show = f === 'all' || card.dataset.category === f;
+            card.style.display = show ? '' : 'none';
+          });
+          if (typeof SVKMain !== 'undefined') SVKMain.observeAnimations();
+        });
+      });
+    });
+
+    // ── Add to Cart ──
+    function addToCart(btn, name, price) {
+      // Attempt to use site's cart system if available
+      if (typeof SVKCart !== 'undefined' && typeof SVKCart.addItem === 'function') {
+        SVKCart.addItem({ name, price, qty: 1 });
+      }
+      showToast(name, price);
+    }
+
+    // ── Toast ──
+    let toastTimer = null;
+    function showToast(name, price) {
+      const toast = document.getElementById('cart-toast');
+      const title = document.getElementById('toast-title');
+      const sub   = document.getElementById('toast-sub');
+      title.textContent = 'Added to cart!';
+      sub.textContent   = name + ' — $' + price;
+      toast.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove('show'), 3200);
+    }
+  </script>
+</body>
+</html>

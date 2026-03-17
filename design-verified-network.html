@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SVK Verified Installer Network | Find a Trusted Shop | SVK Works</title>
+  <meta name="description" content="Find a verified SVK Works installer near you. Our network of approved shops specializes in JDM harness installation across North America, Europe, Australia, and Asia.">
+  <link rel="canonical" href="https://www.svkworks.com/design-verified-network.html">
+  <meta property="og:site_name" content="SVK Works">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="SVK Verified Installer Network — SVK Works">
+  <meta property="og:description" content="Find a trusted shop near you that specializes in SVK Works harness installation.">
+  <meta property="og:url" content="https://www.svkworks.com/design-verified-network.html">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="SVK Verified Installer Network — SVK Works">
+  <meta name="twitter:description" content="Find a trusted shop near you that specializes in SVK Works harness installation.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="img/svk-icon.png" type="image/png">
+  <style>
+    /* ── Page-specific styles ── */
+    .stats-strip {
+      background: var(--bg-secondary);
+      border-top: 1px solid var(--border-color);
+      border-bottom: 1px solid var(--border-color);
+    }
+    .stats-strip-inner {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 0;
+    }
+    .stat-item {
+      flex: 1;
+      min-width: 160px;
+      padding: var(--space-xl) var(--space-lg);
+      text-align: center;
+      border-right: 1px solid var(--border-color);
+      position: relative;
+    }
+    .stat-item:last-child { border-right: none; }
+    .stat-value {
+      display: block;
+      font-size: var(--text-3xl);
+      font-weight: var(--weight-bold);
+      color: var(--magenta);
+      line-height: 1;
+      margin-bottom: var(--space-xs);
+    }
+    .stat-label {
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+      font-weight: var(--weight-medium);
+      letter-spacing: 0.03em;
+    }
+
+    /* ── Filter Row ── */
+    .filter-row {
+      display: flex;
+      gap: var(--space-md);
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .filter-row .form-input,
+    .filter-row .form-select {
+      margin-bottom: 0;
+    }
+    .filter-search {
+      flex: 1;
+      min-width: 240px;
+    }
+
+    /* ── Map Placeholder ── */
+    .map-wrapper {
+      position: relative;
+      width: 100%;
+      height: 420px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+    .map-grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+    }
+    .map-grid::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+      background-size: 8px 8px;
+    }
+    .map-dot {
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      background: var(--magenta);
+      border-radius: 50%;
+      box-shadow: 0 0 10px var(--magenta-glow), 0 0 20px var(--magenta-glow);
+      transform: translate(-50%, -50%);
+    }
+    .map-dot::after {
+      content: '';
+      position: absolute;
+      inset: -4px;
+      border-radius: 50%;
+      border: 1px solid rgba(233, 30, 140, 0.4);
+      animation: pulse-ring 2s ease-out infinite;
+    }
+    .map-dot-secondary {
+      width: 8px;
+      height: 8px;
+      background: rgba(233, 30, 140, 0.6);
+      box-shadow: 0 0 6px var(--magenta-glow);
+    }
+    @keyframes pulse-ring {
+      0% { transform: scale(1); opacity: 0.6; }
+      100% { transform: scale(2.5); opacity: 0; }
+    }
+    .map-overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      padding: var(--space-lg);
+      background: linear-gradient(to top, rgba(10,10,15,0.7) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .map-overlay-label {
+      font-size: var(--text-sm);
+      color: var(--text-muted);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .map-title {
+      position: absolute;
+      top: var(--space-lg);
+      left: var(--space-lg);
+      font-size: var(--text-lg);
+      font-weight: var(--weight-semibold);
+      color: var(--text-primary);
+    }
+    .map-count-badge {
+      position: absolute;
+      top: var(--space-lg);
+      right: var(--space-lg);
+      background: var(--magenta);
+      color: #fff;
+      font-size: var(--text-xs);
+      font-weight: var(--weight-bold);
+      padding: var(--space-xs) var(--space-sm);
+      border-radius: var(--radius-full);
+      letter-spacing: 0.04em;
+    }
+
+    /* ── Shop Grid ── */
+    .shop-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-lg);
+    }
+    @media (max-width: 768px) {
+      .shop-grid { grid-template-columns: 1fr; }
+    }
+    .shop-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: var(--space-xl);
+      transition: border-color var(--transition-base), transform var(--transition-base), box-shadow var(--transition-base);
+      position: relative;
+    }
+    .shop-card:hover {
+      border-color: var(--border-magenta);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-magenta);
+    }
+    .shop-card-header {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-md);
+      margin-bottom: var(--space-md);
+    }
+    .shop-avatar {
+      width: 56px;
+      height: 56px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: var(--text-lg);
+      font-weight: var(--weight-bold);
+      color: #fff;
+      flex-shrink: 0;
+      letter-spacing: 0.03em;
+    }
+    .shop-info { flex: 1; min-width: 0; }
+    .shop-name {
+      font-size: var(--text-lg);
+      font-weight: var(--weight-semibold);
+      color: var(--text-primary);
+      margin-bottom: 2px;
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      flex-wrap: wrap;
+    }
+    .shop-location {
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+    }
+    .verified-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      font-size: var(--text-xs);
+      font-weight: var(--weight-semibold);
+      color: var(--magenta);
+      background: var(--magenta-subtle);
+      border: 1px solid var(--border-magenta);
+      padding: 2px 8px;
+      border-radius: var(--radius-full);
+      white-space: nowrap;
+    }
+    .preferred-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      font-size: var(--text-xs);
+      font-weight: var(--weight-semibold);
+      color: #f59e0b;
+      background: rgba(245, 158, 11, 0.1);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      padding: 2px 8px;
+      border-radius: var(--radius-full);
+      white-space: nowrap;
+    }
+    .shop-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-xs);
+      margin-bottom: var(--space-md);
+    }
+    .shop-tag {
+      font-size: var(--text-xs);
+      color: var(--text-secondary);
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-color);
+      padding: 3px 10px;
+      border-radius: var(--radius-full);
+    }
+    .shop-stats {
+      display: flex;
+      align-items: center;
+      gap: var(--space-lg);
+      margin-bottom: var(--space-md);
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+    }
+    .shop-rating {
+      color: #f59e0b;
+      font-weight: var(--weight-semibold);
+    }
+    .shop-actions {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      flex-wrap: wrap;
+    }
+    .link-subdued {
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: color var(--transition-fast);
+    }
+    .link-subdued:hover { color: var(--magenta); }
+
+    /* ── Benefits / Application ── */
+    .apply-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-3xl);
+      align-items: start;
+    }
+    @media (max-width: 900px) {
+      .apply-grid { grid-template-columns: 1fr; gap: var(--space-xl); }
+    }
+    .benefit-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+    }
+    .benefit-item {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-md);
+      padding: var(--space-md);
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+    }
+    .benefit-icon {
+      width: 36px;
+      height: 36px;
+      background: var(--magenta-subtle);
+      border: 1px solid var(--border-magenta);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .benefit-text strong {
+      display: block;
+      color: var(--text-primary);
+      font-size: var(--text-sm);
+      font-weight: var(--weight-semibold);
+      margin-bottom: 2px;
+    }
+    .benefit-text span {
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+    }
+
+    /* ── FAQ ── */
+    .faq-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-lg);
+    }
+    @media (max-width: 768px) {
+      .faq-grid { grid-template-columns: 1fr; }
+    }
+    .faq-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: var(--space-xl);
+    }
+    .faq-q {
+      font-size: var(--text-base);
+      font-weight: var(--weight-semibold);
+      color: var(--text-primary);
+      margin-bottom: var(--space-sm);
+      display: flex;
+      gap: var(--space-sm);
+      align-items: flex-start;
+    }
+    .faq-q-mark {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 22px;
+      height: 22px;
+      background: var(--magenta);
+      border-radius: 50%;
+      font-size: var(--text-xs);
+      font-weight: var(--weight-bold);
+      color: #fff;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .faq-a {
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+      line-height: var(--leading-normal);
+      padding-left: calc(22px + var(--space-sm));
+    }
+
+    /* ── Hero ── */
+    .page-hero {
+      background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+      border-bottom: 1px solid var(--border-color);
+      padding: var(--space-3xl) 0 var(--space-2xl);
+      position: relative;
+      overflow: hidden;
+    }
+    .page-hero::before {
+      content: '';
+      position: absolute;
+      top: -120px;
+      right: -120px;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(233,30,140,0.07) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-concept-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-xs);
+      font-size: var(--text-xs);
+      font-weight: var(--weight-bold);
+      color: #f59e0b;
+      background: rgba(245, 158, 11, 0.12);
+      border: 1px solid rgba(245, 158, 11, 0.35);
+      padding: 4px 12px;
+      border-radius: var(--radius-full);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: var(--space-lg);
+    }
+    .page-hero h1 {
+      font-size: var(--text-4xl);
+      font-weight: var(--weight-bold);
+      color: var(--text-primary);
+      line-height: var(--leading-tight);
+      margin-bottom: var(--space-md);
+    }
+    .page-hero .hero-sub {
+      font-size: var(--text-lg);
+      color: var(--text-secondary);
+      max-width: 560px;
+      line-height: var(--leading-normal);
+    }
+    .section-label {
+      display: inline-block;
+      font-size: var(--text-xs);
+      font-weight: var(--weight-bold);
+      color: var(--magenta);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: var(--space-sm);
+    }
+  </style>
+</head>
+<body>
+  <div id="header-placeholder"></div>
+
+  <main id="main-content">
+
+    <!-- Hero -->
+    <div class="page-hero">
+      <div class="container">
+        <div class="breadcrumb" role="navigation" aria-label="breadcrumb">
+          <a href="index.html">Home</a><span class="breadcrumb-sep" aria-hidden="true">/</span>
+          <a href="#">Design Concepts</a><span class="breadcrumb-sep" aria-hidden="true">/</span>
+          <span>SVK Verified Network</span>
+        </div>
+        <div style="margin-top: var(--space-xl);">
+          <div class="hero-concept-badge">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            Design Concept
+          </div>
+          <h1>SVK Verified<br>Installer Network</h1>
+          <p class="hero-sub">Find a trusted shop near you that specializes in SVK Works harness installation. Every shop in our network is vetted, trained, and approved.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats Strip -->
+    <div class="stats-strip">
+      <div class="container">
+        <div class="stats-strip-inner">
+          <div class="stat-item">
+            <span class="stat-value">24</span>
+            <span class="stat-label">Verified Shops</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-value">12</span>
+            <span class="stat-label">Countries</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-value">500+</span>
+            <span class="stat-label">Installs Completed</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-value">4.9★</span>
+            <span class="stat-label">Average Rating</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filter Row -->
+    <section class="section" style="padding-bottom: var(--space-lg);">
+      <div class="container">
+        <div class="filter-row">
+          <div class="filter-search" style="position:relative;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2" style="position:absolute;left:14px;top:50%;transform:translateY(-50%);pointer-events:none;"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" class="form-input" placeholder="Search by city, state, or country" style="padding-left: 42px; margin-bottom:0;">
+          </div>
+          <select class="form-select" style="margin-bottom:0; min-width:200px;">
+            <option>Specialty: All</option>
+            <option>2JZ Builds</option>
+            <option>K-Series Swaps</option>
+            <option>V8 Swaps</option>
+            <option>Track / Race</option>
+          </select>
+          <select class="form-select" style="margin-bottom:0; min-width:200px;">
+            <option>Region: All</option>
+            <option>North America</option>
+            <option>Europe</option>
+            <option>Australia</option>
+            <option>Asia</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <!-- Map Placeholder -->
+    <section class="section" style="padding-top: var(--space-md);">
+      <div class="container">
+        <div class="map-wrapper">
+          <div class="map-grid"></div>
+          <!-- Magenta location dots — approximate world positions -->
+          <div class="map-dot" style="left:17%;top:38%;"></div><!-- Seattle -->
+          <div class="map-dot map-dot-secondary" style="left:14%;top:46%;"></div><!-- Los Angeles -->
+          <div class="map-dot map-dot-secondary" style="left:19%;top:34%;"></div><!-- Toronto -->
+          <div class="map-dot map-dot-secondary" style="left:38%;top:25%;"></div><!-- Birmingham -->
+          <div class="map-dot" style="left:44%;top:22%;"></div><!-- Stockholm -->
+          <div class="map-dot map-dot-secondary" style="left:72%;top:30%;"></div><!-- Tokyo -->
+          <div class="map-dot" style="left:78%;top:66%;"></div><!-- Brisbane -->
+          <div class="map-dot map-dot-secondary" style="left:59%;top:42%;"></div><!-- Dubai -->
+          <!-- Extra subtle secondary dots -->
+          <div class="map-dot map-dot-secondary" style="left:36%;top:28%; width:6px;height:6px;opacity:0.5;"></div>
+          <div class="map-dot map-dot-secondary" style="left:40%;top:24%; width:6px;height:6px;opacity:0.5;"></div>
+          <div class="map-dot map-dot-secondary" style="left:68%;top:35%; width:6px;height:6px;opacity:0.5;"></div>
+          <div class="map-dot map-dot-secondary" style="left:22%;top:42%; width:6px;height:6px;opacity:0.5;"></div>
+          <span class="map-title">Installer Locations</span>
+          <span class="map-count-badge">24 Active</span>
+          <div class="map-overlay">
+            <span class="map-overlay-label">Full interactive map coming soon</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Shop Directory -->
+    <section class="section" style="padding-top: var(--space-lg);">
+      <div class="container">
+        <div class="section-header fade-in" style="margin-bottom: var(--space-xl);">
+          <span class="section-label">Verified Installers</span>
+          <h2>Shop Directory</h2>
+          <p>All shops are approved, trained, and regularly reviewed. Installs backed by SVK Works.</p>
+        </div>
+
+        <div class="shop-grid">
+
+          <!-- 1: HKS Auto Works -->
+          <div class="shop-card">
+            <div class="shop-card-header">
+              <div class="shop-avatar" style="background: linear-gradient(135deg, #e91e8c, #c4176f);">HA</div>
+              <div class="shop-info">
+                <div class="shop-name">
+                  HKS Auto Works
+                  <span class="verified-badge">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                    Verified
+                  </span>
+                </div>
+                <div class="shop-location">🇺🇸 Seattle, WA, USA</div>
+              </div>
+            </div>
+            <div style="margin-bottom: var(--space-sm);">
+              <span class="preferred-badge">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="#f59e0b" stroke="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                Official SVK Preferred Partner
+              </span>
+            </div>
+            <div class="shop-tags">
+              <span class="shop-tag">2JZ</span>
+              <span class="shop-tag">Supra Builds</span>
+              <span class="shop-tag">Track Prep</span>
+            </div>
+            <div class="shop-stats">
+              <span><strong style="color:var(--text-primary);">47</strong> installs</span>
+              <span class="shop-rating">★ 4.9</span>
+            </div>
+            <div class="shop-actions">
+              <a href="#" class="btn btn-primary" style="font-size:var(--text-sm); padding: 8px 18px;">View Shop</a>
+              <a href="#" class="link-subdued">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px;margin-right:3px;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                Get Directions
+              </a>
+            </div>
+          </div>
+
+          <!-- 2: Torque Brothers -->
+          <div class="shop-card">
+            <div class="shop-card-header">
+              <div class="shop-avatar" style="background: linear-gradient(135deg, #3b3b5c, #2a2a42);">TB</div>
+              <div class="shop-info">
+                <div class="shop-name">
+                  Torque Brothers
+                  <span class="verified-badge">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                    Verified
+                  </span>
+                </div>
+                <div class="shop-location">🇺🇸 Los Angeles, CA, USA</div>
+              </div>
+            </div>
+            <div class="shop-tags">
+              <span class="shop-tag">K-Series</span>
+              <span class="shop-tag">Honda / Acura</span>
+            </div>
+            <div class="shop-stats">
+              <span><strong style="color:var(--text-primary);">31</strong> installs</span>
+              <span class="shop-rating">★ 4.8</span>
+            </div>
+            <div class="shop-actions">
+              <a href="#" class="btn btn-primary" style="font-size:var(--text-sm); padding: 8px 18px;">View Shop</a>
+              <a href="#" class="link-subdued">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px;margin-right:3px;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                Get Directions
+              </a>
+            </div>
+          </div>
+
+          <!-- 3: Apex Dynamics -->
+          <div class="shop-card">
+            <div class="shop-card-header">
+              <div class="shop-avatar" style="background: linear-gradient(135deg, #1a3a5c, #0f2540);">AD</div>
+              <div class="shop-info">
+                <div class="shop-name">
+                  Apex Dynamics
+                  <span class="verified-badge">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                    Verified
+                  </span>
+                </div>
+                <div class="shop-location">🇦🇺 Brisbane, QLD, Australia</div>
+              </div>
+            </div>
+            <div class="shop-tags">
+              <span class="shop-tag">JDM Imports</span>
+              <span class="shop-tag">RHD Conversions</span>
+            </div>
+            <div class="shop-stats">
+              <span><strong style="color:var(--text-primary);">28</strong> installs</span>
+              <span class="shop-rating">★ 5.0</span>
+            </div>
+            <div class="shop-actions">
+              <a href="#" class="btn btn-primary" style="font-size:var(--text-sm); padding: 8px 18px;">View Shop</a>
+              <a href="#" class="link-subdued">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px;margin-right:3px;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                Get Directions
+              </a>
+            </div>
+          </div>
+
+          <!-- 4: Wiring Werks -->
+          <div class="shop-card">
+            <div class="shop-card-header">
+              <div class="shop-avatar" style="background: linear-gradient(135deg, #3a2060, #25134a);">WW</div>
+              <div class="shop-info">
+                <div class="shop-name">
+                  Wiring Werks
+                  <span class="verified-badge">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                    Verified
+                  </span>
+                </div>
+                <div class="shop-location">🇬🇧 Birmingham, UK</div>
+              </div>
+            </div>
+            <div class="shop-tags">
+              <span class="shop-tag">Track Builds</span>
+              <span class="shop-tag">Motorsport Prep</span>
+            </div>
+            <div class="shop-stats">
+              <span><strong style="color:var(--text-primary);">22</strong> installs</span>
+              <span class="shop-rating">★ 4.7</span>
+            </div>
+            <div class="shop-actions">
+              <a href="#" class="btn btn-primary" style="font-size:var(--text-sm); padding: 8px 18px;">View Shop</a>
+              <a href="#" class="link-subdued">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px;margin-right:3px;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                Get Directions
+              </a>
+            </div>
+          </div>
+
+          <!-- 5: JDM House Tokyo -->
+          <div class="shop-card">
+            <div class="shop-card-header">
+              <div class="shop-avatar" style="background: linear-gradient(135deg, #c4176f, #8b0e4f);">JH</div>
+              <div class="shop-info">
+                <div class="shop-name">
+                  JDM House Tokyo
+                  <span class="verified-badge">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                    Verified
+                  </span>
+                </div>
+                <div class="shop-location">🇯🇵 Tokyo, Japan</div>
+              </div>
+            </div>
+            <div class="shop-tags">
+              <span class="shop-tag">Supra</span>
+              <span class="shop-tag">Soarer</span>
+              <span class="shop-tag">Lexus SC</span>
+            </div>
+            <div class="shop-stats">
+              <span><strong style="color:var(--text-primary);">19</strong> installs</span>
+              <span class="shop-rating">★ 4.9</span>
+            </div>
+            <div class="shop-actions">
+              <a href="#" class="btn btn-primary" style="font-size:var(--text-sm); padding: 8px 18px;">View Shop</a>
+              <a href="#" class="link-subdued">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px;margin-right:3px;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                Get Directions
+              </a>
+            </div>
+          </div>
+
+          <!-- 6: Nordic Motorsport -->
+          <div class="shop-card">
+            <div class="shop-card-header">
+              <div class="shop-avatar" style="background: linear-gradient(135deg, #1e3a5f, #102540);">NM</div>
+              <div class="shop-info">
+                <div class="shop-name">
+                  Nordic Motorsport
+                  <span class="verified-badge">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                    Verified
+                  </span>
+                </div>
+                <div class="shop-location">🇸🇪 Stockholm, Sweden</div>
+              </div>
+            </div>
+            <div class="shop-tags">
+              <span class="shop-tag">Time Attack</span>
+              <span class="shop-tag">Drift Builds</span>
+            </div>
+            <div class="shop-stats">
+              <span><strong style="color:var(--text-primary);">15</strong> installs</span>
+              <span class="shop-rating">★ 4.8</span>
+            </div>
+            <div class="shop-actions">
+              <a href="#" class="btn btn-primary" style="font-size:var(--text-sm); padding: 8px 18px;">View Shop</a>
+              <a href="#" class="link-subdued">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px;margin-right:3px;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                Get Directions
+              </a>
+            </div>
+          </div>
+
+          <!-- 7: Speed Culture -->
+          <div class="shop-card">
+            <div class="shop-card-header">
+              <div class="shop-avatar" style="background: linear-gradient(135deg, #3b1f60, #27134a);">SC</div>
+              <div class="shop-info">
+                <div class="shop-name">
+                  Speed Culture
+                  <span class="verified-badge">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                    Verified
+                  </span>
+                </div>
+                <div class="shop-location">🇨🇦 Toronto, ON, Canada</div>
+              </div>
+            </div>
+            <div class="shop-tags">
+              <span class="shop-tag">2JZ Swaps</span>
+              <span class="shop-tag">Road Legal</span>
+            </div>
+            <div class="shop-stats">
+              <span><strong style="color:var(--text-primary);">24</strong> installs</span>
+              <span class="shop-rating">★ 4.9</span>
+            </div>
+            <div class="shop-actions">
+              <a href="#" class="btn btn-primary" style="font-size:var(--text-sm); padding: 8px 18px;">View Shop</a>
+              <a href="#" class="link-subdued">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px;margin-right:3px;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                Get Directions
+              </a>
+            </div>
+          </div>
+
+          <!-- 8: Turbo Garage -->
+          <div class="shop-card">
+            <div class="shop-card-header">
+              <div class="shop-avatar" style="background: linear-gradient(135deg, #5c3a10, #3d2508);">TG</div>
+              <div class="shop-info">
+                <div class="shop-name">
+                  Turbo Garage
+                  <span class="verified-badge">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                    Verified
+                  </span>
+                </div>
+                <div class="shop-location">🇦🇪 Dubai, UAE</div>
+              </div>
+            </div>
+            <div class="shop-tags">
+              <span class="shop-tag">Luxury JDM</span>
+              <span class="shop-tag">Show Builds</span>
+            </div>
+            <div class="shop-stats">
+              <span><strong style="color:var(--text-primary);">11</strong> installs</span>
+              <span class="shop-rating">★ 5.0</span>
+            </div>
+            <div class="shop-actions">
+              <a href="#" class="btn btn-primary" style="font-size:var(--text-sm); padding: 8px 18px;">View Shop</a>
+              <a href="#" class="link-subdued">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px;margin-right:3px;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                Get Directions
+              </a>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Become a Verified Installer -->
+    <section class="section" style="background: var(--bg-secondary); border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color);">
+      <div class="container">
+        <div class="section-header fade-in" style="margin-bottom: var(--space-3xl);">
+          <span class="section-label">Partner Program</span>
+          <h2>Become an SVK Verified Installer</h2>
+          <p>Join the global network of trusted shops. We support you with tools, pricing, and marketing to grow your business.</p>
+        </div>
+
+        <div class="apply-grid">
+          <!-- Benefits -->
+          <div>
+            <h3 style="font-size: var(--text-xl); margin-bottom: var(--space-xl); color: var(--text-primary);">Installer Benefits</h3>
+            <ul class="benefit-list">
+              <li class="benefit-item">
+                <div class="benefit-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--magenta)" stroke-width="2"><path d="M20 12V22H4V12"/><path d="M22 7H2v5h20V7z"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>
+                </div>
+                <div class="benefit-text">
+                  <strong>Installer Pricing Access</strong>
+                  <span>Exclusive trade pricing on all SVK Works harnesses and accessories.</span>
+                </div>
+              </li>
+              <li class="benefit-item">
+                <div class="benefit-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--magenta)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                </div>
+                <div class="benefit-text">
+                  <strong>Listed in the Directory</strong>
+                  <span>Featured on this page — searchable by customers worldwide looking for local installers.</span>
+                </div>
+              </li>
+              <li class="benefit-item">
+                <div class="benefit-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--magenta)" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                </div>
+                <div class="benefit-text">
+                  <strong>Co-Marketing Support</strong>
+                  <span>Joint social posts, featured builds, and shared promotions from SVK Works channels.</span>
+                </div>
+              </li>
+              <li class="benefit-item">
+                <div class="benefit-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--magenta)" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13.5 19.79 19.79 0 0 1 1.61 4.93 2 2 0 0 1 3.6 2.73h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 10a16 16 0 0 0 6 6l.93-.93a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 21.73 17z"/></svg>
+                </div>
+                <div class="benefit-text">
+                  <strong>Direct Technical Support Line</strong>
+                  <span>Priority phone and email access to SVK Works engineering for complex installs.</span>
+                </div>
+              </li>
+              <li class="benefit-item">
+                <div class="benefit-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--magenta)" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+                </div>
+                <div class="benefit-text">
+                  <strong>SVK Verified Decal Kit</strong>
+                  <span>Official SVK Verified signage and decals for your shop and vehicles.</span>
+                </div>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Application Form -->
+          <div>
+            <h3 style="font-size: var(--text-xl); margin-bottom: var(--space-xl); color: var(--text-primary);">Apply Now</h3>
+            <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: var(--space-xl);">
+              <div class="form-group">
+                <label class="form-label" for="shop-name">Shop Name *</label>
+                <input type="text" class="form-input" id="shop-name" placeholder="Your shop name">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="contact-name">Contact Name *</label>
+                <input type="text" class="form-input" id="contact-name" placeholder="Your full name">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="contact-email">Email Address *</label>
+                <input type="email" class="form-input" id="contact-email" placeholder="shop@example.com">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="shop-location">Location *</label>
+                <input type="text" class="form-input" id="shop-location" placeholder="City, State/Province, Country">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="years-business">Years in Business</label>
+                <select class="form-select" id="years-business">
+                  <option value="">Select range</option>
+                  <option>Less than 1 year</option>
+                  <option>1–3 years</option>
+                  <option>3–5 years</option>
+                  <option>5–10 years</option>
+                  <option>10+ years</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="shop-experience">Describe Your Shop's Experience *</label>
+                <textarea class="form-textarea" id="shop-experience" rows="4" placeholder="Tell us about your experience with JDM platforms, standalone ECU installs, and wiring harness work..."></textarea>
+              </div>
+              <button class="btn btn-primary" style="width:100%;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                Submit Application
+              </button>
+              <p style="font-size: var(--text-xs); color: var(--text-muted); text-align:center; margin-top: var(--space-md);">We review applications within 5–7 business days.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="section">
+      <div class="container container-narrow">
+        <div class="section-header fade-in" style="margin-bottom: var(--space-xl);">
+          <span class="section-label">FAQ</span>
+          <h2>Frequently Asked Questions</h2>
+        </div>
+        <div class="faq-grid">
+          <div class="faq-card">
+            <div class="faq-q">
+              <span class="faq-q-mark">?</span>
+              How do I get verified?
+            </div>
+            <p class="faq-a">Submit your application using the form above. Our team will review your shop's background, experience with JDM platforms, and wiring harness work. If approved, you'll be contacted with next steps and onboarding materials.</p>
+          </div>
+          <div class="faq-card">
+            <div class="faq-q">
+              <span class="faq-q-mark">?</span>
+              Is there a fee to join?
+            </div>
+            <p class="faq-a">No. The SVK Verified Installer program is completely free to join. There are no membership fees, monthly charges, or required purchase minimums. We want great installers in the network, full stop.</p>
+          </div>
+          <div class="faq-card">
+            <div class="faq-q">
+              <span class="faq-q-mark">?</span>
+              What are the requirements?
+            </div>
+            <p class="faq-a">Shops must have demonstrable experience with standalone ECU installations and JDM engine management wiring. A professional shop space and willingness to follow SVK installation guidelines are required. We may request photos or references.</p>
+          </div>
+          <div class="faq-card">
+            <div class="faq-q">
+              <span class="faq-q-mark">?</span>
+              How long does approval take?
+            </div>
+            <p class="faq-a">Most applications are reviewed within 5–7 business days. If we have questions, a member of the SVK Works team will reach out directly. Once approved, your shop is listed in the directory within 48 hours.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <div id="footer-placeholder"></div>
+
+  <script defer src="components/header.js"></script>
+  <script defer src="components/footer.js"></script>
+  <script defer src="js/cart.js"></script>
+  <script defer src="js/components.js"></script>
+  <script defer src="js/main.js"></script>
+</body>
+</html>

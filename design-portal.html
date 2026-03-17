@@ -1,0 +1,1097 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Customer Order Portal — Design Concept | SVK Works</title>
+  <meta name="description" content="Design concept: Customer order tracking portal for SVK Works wiring harness builds. View build progress, photos, and milestone updates.">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="img/svk-icon.png" type="image/png">
+  <style>
+    /* ── Design Concept Banner ── */
+    .design-concept-banner {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 9999;
+      background: linear-gradient(90deg, #7c3aed, var(--magenta));
+      color: #fff;
+      text-align: center;
+      font-size: var(--text-xs);
+      font-weight: var(--weight-semibold);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 7px var(--space-md);
+    }
+    body { padding-top: 33px; }
+
+    /* ── Portal Layout ── */
+    .portal-layout {
+      display: flex;
+      gap: var(--space-lg);
+      align-items: flex-start;
+    }
+
+    /* ── Orders Sidebar ── */
+    .orders-sidebar {
+      width: 280px;
+      flex-shrink: 0;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+    .sidebar-header {
+      padding: var(--space-md) var(--space-lg);
+      border-bottom: 1px solid var(--border-color);
+      background: var(--bg-elevated);
+    }
+    .sidebar-header h3 {
+      font-size: var(--text-sm);
+      font-weight: var(--weight-semibold);
+      color: var(--text-primary);
+      margin: 0;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .order-item {
+      padding: var(--space-md) var(--space-lg);
+      border-bottom: 1px solid var(--border-color);
+      cursor: pointer;
+      transition: background var(--transition-fast);
+    }
+    .order-item:last-child { border-bottom: none; }
+    .order-item:hover { background: var(--bg-card-hover); }
+    .order-item.active {
+      background: var(--magenta-subtle);
+      border-left: 3px solid var(--magenta);
+      padding-left: calc(var(--space-lg) - 3px);
+    }
+    .order-item-number {
+      font-size: var(--text-xs);
+      font-weight: var(--weight-semibold);
+      color: var(--text-muted);
+      letter-spacing: 0.05em;
+      margin-bottom: 4px;
+    }
+    .order-item.active .order-item-number { color: var(--magenta); }
+    .order-item-name {
+      font-size: var(--text-sm);
+      font-weight: var(--weight-medium);
+      color: var(--text-primary);
+      line-height: 1.4;
+      margin-bottom: 8px;
+    }
+    .order-status-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .status-dot.in-progress {
+      background: var(--magenta);
+      box-shadow: 0 0 6px var(--magenta);
+      animation: pulse-dot 2s ease-in-out infinite;
+    }
+    .status-dot.shipped {
+      background: var(--success);
+      box-shadow: 0 0 6px var(--success);
+    }
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; box-shadow: 0 0 6px var(--magenta); }
+      50% { opacity: 0.6; box-shadow: 0 0 14px var(--magenta); }
+    }
+    .status-label {
+      font-size: var(--text-xs);
+      font-weight: var(--weight-semibold);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .status-label.in-progress { color: var(--magenta); }
+    .status-label.shipped { color: var(--success); }
+
+    /* ── Order Detail Panel ── */
+    .order-detail {
+      flex: 1;
+      min-width: 0;
+    }
+    .order-detail-header {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: var(--space-lg) var(--space-xl);
+      margin-bottom: var(--space-lg);
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: var(--space-md);
+    }
+    .order-meta-title {
+      font-size: var(--text-2xl);
+      font-weight: var(--weight-bold);
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+    .order-meta-sub {
+      font-size: var(--text-sm);
+      color: var(--text-muted);
+    }
+    .order-header-stats {
+      display: flex;
+      gap: var(--space-xl);
+      flex-wrap: wrap;
+    }
+    .stat-block { text-align: right; }
+    .stat-label {
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 2px;
+    }
+    .stat-value {
+      font-size: var(--text-lg);
+      font-weight: var(--weight-semibold);
+      color: var(--text-primary);
+    }
+    .stat-value.price { color: var(--magenta); }
+
+    /* ── Milestone Timeline ── */
+    .timeline-section {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: var(--space-xl);
+      margin-bottom: var(--space-lg);
+    }
+    .timeline-section h3 {
+      font-size: var(--text-base);
+      font-weight: var(--weight-semibold);
+      color: var(--text-primary);
+      margin-bottom: var(--space-xl);
+    }
+    .milestone-track {
+      display: flex;
+      align-items: flex-start;
+      position: relative;
+      overflow-x: auto;
+      padding-bottom: var(--space-sm);
+    }
+    .milestone-track::before {
+      content: '';
+      position: absolute;
+      top: 18px;
+      left: 18px;
+      right: 18px;
+      height: 2px;
+      background: var(--border-color);
+      z-index: 0;
+    }
+    .milestone-step {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+      min-width: 100px;
+    }
+    .milestone-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: var(--weight-bold);
+      margin-bottom: var(--space-sm);
+      position: relative;
+      flex-shrink: 0;
+    }
+    .milestone-icon.done {
+      background: rgba(34, 197, 94, 0.15);
+      border: 2px solid var(--success);
+      color: var(--success);
+    }
+    .milestone-icon.current {
+      background: var(--magenta-subtle);
+      border: 2px solid var(--magenta);
+      color: var(--magenta);
+    }
+    .milestone-icon.pending {
+      background: var(--bg-elevated);
+      border: 2px solid var(--border-color);
+      color: var(--text-muted);
+    }
+    .milestone-pulse {
+      position: absolute;
+      top: -4px; left: -4px; right: -4px; bottom: -4px;
+      border-radius: 50%;
+      border: 2px solid var(--magenta);
+      animation: milestone-pulse 2s ease-in-out infinite;
+    }
+    @keyframes milestone-pulse {
+      0%, 100% { opacity: 0.8; transform: scale(1); }
+      50% { opacity: 0; transform: scale(1.4); }
+    }
+    .milestone-label {
+      font-size: var(--text-xs);
+      font-weight: var(--weight-medium);
+      color: var(--text-secondary);
+      text-align: center;
+      line-height: 1.35;
+      max-width: 90px;
+    }
+    .milestone-step.done .milestone-label { color: var(--success); }
+    .milestone-step.current .milestone-label { color: var(--magenta); font-weight: var(--weight-semibold); }
+    .milestone-date {
+      font-size: 10px;
+      color: var(--text-muted);
+      text-align: center;
+      margin-top: 3px;
+    }
+
+    /* ── Current Step Card ── */
+    .current-step-card {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-magenta);
+      border-radius: var(--radius-lg);
+      padding: var(--space-lg) var(--space-xl);
+      margin-top: var(--space-lg);
+    }
+    .current-step-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--magenta-subtle);
+      border: 1px solid var(--border-magenta);
+      border-radius: var(--radius-full);
+      padding: 4px 12px;
+      font-size: var(--text-xs);
+      font-weight: var(--weight-semibold);
+      color: var(--magenta);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: var(--space-md);
+    }
+    .current-step-title {
+      font-size: var(--text-xl);
+      font-weight: var(--weight-bold);
+      color: var(--text-primary);
+      margin-bottom: var(--space-xs);
+    }
+    .current-step-desc {
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+      margin-bottom: var(--space-lg);
+    }
+    .shop-photo-placeholder {
+      background: #12121a;
+      border: 1px dashed var(--border-color);
+      border-radius: var(--radius-md);
+      height: 180px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-sm);
+      color: var(--text-muted);
+      margin-bottom: var(--space-lg);
+    }
+    .shop-photo-placeholder svg { opacity: 0.4; }
+    .shop-photo-placeholder span { font-size: var(--text-sm); }
+    .builder-note {
+      background: var(--bg-card);
+      border-left: 3px solid var(--magenta);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      padding: var(--space-md) var(--space-lg);
+    }
+    .builder-note-label {
+      font-size: var(--text-xs);
+      font-weight: var(--weight-semibold);
+      color: var(--magenta);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 6px;
+    }
+    .builder-note-text {
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+      line-height: var(--leading-normal);
+      font-style: italic;
+    }
+
+    /* ── Completed Steps Gallery ── */
+    .completed-section {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: var(--space-xl);
+      margin-bottom: var(--space-lg);
+    }
+    .completed-section h3 {
+      font-size: var(--text-base);
+      font-weight: var(--weight-semibold);
+      color: var(--text-primary);
+      margin-bottom: var(--space-lg);
+    }
+    .completed-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-md);
+    }
+    .completed-card {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+    .completed-photo {
+      height: 110px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+      font-style: italic;
+    }
+    .completed-photo.step1 { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); }
+    .completed-photo.step2 { background: linear-gradient(135deg, #0f3460 0%, #16213e 100%); }
+    .completed-card-body { padding: var(--space-md); }
+    .completed-card-step {
+      font-size: var(--text-xs);
+      color: var(--success);
+      font-weight: var(--weight-semibold);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 4px;
+    }
+    .completed-card-title {
+      font-size: var(--text-sm);
+      font-weight: var(--weight-semibold);
+      color: var(--text-primary);
+      margin-bottom: 6px;
+    }
+    .completed-card-note {
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+      line-height: 1.5;
+      font-style: italic;
+    }
+
+    /* ── Specs Table ── */
+    .specs-section {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: var(--space-xl);
+      margin-bottom: var(--space-lg);
+    }
+    .specs-section h3 {
+      font-size: var(--text-base);
+      font-weight: var(--weight-semibold);
+      color: var(--text-primary);
+      margin-bottom: var(--space-lg);
+    }
+    .specs-table { width: 100%; border-collapse: collapse; }
+    .specs-table tr { border-bottom: 1px solid var(--border-color); }
+    .specs-table tr:last-child { border-bottom: none; }
+    .specs-table td {
+      padding: 10px var(--space-md);
+      font-size: var(--text-sm);
+    }
+    .specs-table td:first-child {
+      color: var(--text-muted);
+      font-weight: var(--weight-medium);
+      width: 140px;
+      white-space: nowrap;
+    }
+    .specs-table td:last-child { color: var(--text-primary); }
+
+    /* ── Message Builder Button ── */
+    .portal-actions {
+      display: flex;
+      gap: var(--space-md);
+      flex-wrap: wrap;
+    }
+
+    /* ── Shipped Order State ── */
+    .tracking-card {
+      background: var(--bg-elevated);
+      border: 1px solid rgba(34, 197, 94, 0.25);
+      border-radius: var(--radius-lg);
+      padding: var(--space-xl);
+      margin-bottom: var(--space-lg);
+    }
+    .tracking-header {
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+      margin-bottom: var(--space-lg);
+    }
+    .tracking-icon {
+      width: 48px;
+      height: 48px;
+      background: rgba(34, 197, 94, 0.1);
+      border: 2px solid var(--success);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--success);
+      flex-shrink: 0;
+    }
+    .tracking-title {
+      font-size: var(--text-xl);
+      font-weight: var(--weight-bold);
+      color: var(--text-primary);
+    }
+    .tracking-subtitle { font-size: var(--text-sm); color: var(--success); }
+    .tracking-number-row {
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: var(--space-md) var(--space-lg);
+      margin-bottom: var(--space-md);
+    }
+    .tracking-number-label { font-size: var(--text-xs); color: var(--text-muted); margin-bottom: 2px; }
+    .tracking-number-value { font-family: var(--font-mono); font-size: var(--text-base); color: var(--text-primary); font-weight: var(--weight-semibold); }
+    .copy-btn {
+      margin-left: auto;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-color);
+      color: var(--text-secondary);
+      border-radius: var(--radius-sm);
+      padding: 4px 10px;
+      font-size: var(--text-xs);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+    .copy-btn:hover { border-color: var(--magenta); color: var(--magenta); }
+
+    /* ── Star Rating ── */
+    .rate-section {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: var(--space-xl);
+      margin-bottom: var(--space-lg);
+      text-align: center;
+    }
+    .rate-section h3 {
+      font-size: var(--text-base);
+      font-weight: var(--weight-semibold);
+      color: var(--text-primary);
+      margin-bottom: var(--space-xs);
+    }
+    .rate-section p { font-size: var(--text-sm); color: var(--text-muted); margin-bottom: var(--space-lg); }
+    .star-row {
+      display: flex;
+      justify-content: center;
+      gap: var(--space-sm);
+      margin-bottom: var(--space-lg);
+    }
+    .star-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--border-color);
+      transition: color var(--transition-fast), transform var(--transition-fast);
+      padding: 2px;
+    }
+    .star-btn:hover, .star-btn.active { color: #f59e0b; transform: scale(1.2); }
+    .star-btn svg { width: 32px; height: 32px; }
+
+    /* ── Modal ── */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: var(--bg-overlay);
+      z-index: 9000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-xl);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity var(--transition-base);
+    }
+    .modal-overlay.open { opacity: 1; pointer-events: all; }
+    .modal-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-xl);
+      padding: var(--space-2xl);
+      width: 100%;
+      max-width: 520px;
+      transform: translateY(20px);
+      transition: transform var(--transition-base);
+      box-shadow: var(--shadow-lg);
+    }
+    .modal-overlay.open .modal-box { transform: translateY(0); }
+    .modal-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: var(--space-lg);
+    }
+    .modal-title {
+      font-size: var(--text-xl);
+      font-weight: var(--weight-bold);
+      color: var(--text-primary);
+    }
+    .modal-close {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-color);
+      color: var(--text-secondary);
+      border-radius: var(--radius-sm);
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 18px;
+      transition: all var(--transition-fast);
+      line-height: 1;
+    }
+    .modal-close:hover { border-color: var(--magenta); color: var(--magenta); }
+    .modal-subtitle { font-size: var(--text-sm); color: var(--text-muted); margin-bottom: var(--space-lg); }
+
+    /* ── Hero User Tag ── */
+    .user-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-full);
+      padding: 5px 12px 5px 8px;
+      font-size: var(--text-xs);
+      color: var(--text-secondary);
+    }
+    .user-avatar {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--magenta);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: var(--weight-bold);
+    }
+
+    /* ── Badge ── */
+    .badge-concept {
+      background: linear-gradient(90deg, #7c3aed, var(--magenta));
+      color: #fff;
+      font-size: var(--text-xs);
+      font-weight: var(--weight-semibold);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: var(--radius-full);
+      display: inline-block;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .portal-layout { flex-direction: column; }
+      .orders-sidebar { width: 100%; }
+      .order-header-stats { justify-content: flex-start; }
+      .stat-block { text-align: left; }
+      .completed-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Design Concept Banner -->
+  <div class="design-concept-banner">
+    Design Concept — Not a live feature — For internal review only
+  </div>
+
+  <div id="header-placeholder"></div>
+
+  <main id="main-content">
+    <!-- Hero -->
+    <div class="page-hero">
+      <div class="container">
+        <div class="breadcrumb" role="navigation" aria-label="breadcrumb">
+          <a href="index.html">Home</a><span class="breadcrumb-sep" aria-hidden="true">/</span>
+          <a href="#">Design Concepts</a><span class="breadcrumb-sep" aria-hidden="true">/</span>
+          <span>Customer Portal</span>
+        </div>
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:var(--space-md);margin-top:var(--space-lg);">
+          <div>
+            <div style="display:flex;align-items:center;gap:var(--space-md);margin-bottom:var(--space-md);">
+              <span class="badge-concept">Design Concept</span>
+            </div>
+            <h1 style="margin:0 0 var(--space-xs);">My Orders</h1>
+            <p style="color:var(--text-secondary);font-size:var(--text-lg);margin:0;">Track your harness build — live updates, shop photos, and milestones.</p>
+          </div>
+          <div class="user-tag">
+            <div class="user-avatar">MT</div>
+            <span>Logged in as: <strong style="color:var(--text-primary);">Mike T.</strong></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Portal Body -->
+    <section class="section" style="padding-top:var(--space-xl);">
+      <div class="container">
+        <div class="portal-layout">
+
+          <!-- ── Sidebar ── -->
+          <aside class="orders-sidebar">
+            <div class="sidebar-header">
+              <h3>Your Orders</h3>
+            </div>
+            <div class="order-item active" id="sidebar-2891" onclick="selectOrder('2891')">
+              <div class="order-item-number">#SVK-2891</div>
+              <div class="order-item-name">MK4 Supra 2JZ-GTE<br>Link G4X</div>
+              <div class="order-status-row">
+                <div class="status-dot in-progress"></div>
+                <span class="status-label in-progress">In Progress</span>
+              </div>
+            </div>
+            <div class="order-item" id="sidebar-2744" onclick="selectOrder('2744')">
+              <div class="order-item-number">#SVK-2744</div>
+              <div class="order-item-name">SC400 1UZ-FE<br>Haltech Elite</div>
+              <div class="order-status-row">
+                <div class="status-dot shipped"></div>
+                <span class="status-label shipped">Shipped</span>
+              </div>
+            </div>
+          </aside>
+
+          <!-- ── Detail Panel ── -->
+          <div class="order-detail">
+
+            <!-- ORDER 2891 -->
+            <div id="order-2891">
+
+              <!-- Header -->
+              <div class="order-detail-header">
+                <div>
+                  <div style="display:flex;align-items:center;gap:var(--space-md);margin-bottom:var(--space-xs);">
+                    <div class="order-meta-title">#SVK-2891</div>
+                    <span class="badge" style="background:var(--magenta-subtle);color:var(--magenta);border:1px solid var(--border-magenta);">In Progress</span>
+                  </div>
+                  <div class="order-meta-sub">MK4 Toyota Supra JZA80 — 2JZ-GTE / Link G4X Standalone</div>
+                </div>
+                <div class="order-header-stats">
+                  <div class="stat-block">
+                    <div class="stat-label">Placed</div>
+                    <div class="stat-value">Jan 14, 2026</div>
+                  </div>
+                  <div class="stat-block">
+                    <div class="stat-label">Total</div>
+                    <div class="stat-value price">$1,340</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Timeline -->
+              <div class="timeline-section">
+                <h3>Build Progress</h3>
+                <div class="milestone-track">
+                  <!-- Step 1: done -->
+                  <div class="milestone-step done">
+                    <div class="milestone-icon done">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                    </div>
+                    <div class="milestone-label">Order Confirmed</div>
+                    <div class="milestone-date">Jan 14</div>
+                  </div>
+                  <!-- Step 2: done -->
+                  <div class="milestone-step done">
+                    <div class="milestone-icon done">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                    </div>
+                    <div class="milestone-label">Wire Prep &amp; Materials</div>
+                    <div class="milestone-date">Jan 18</div>
+                  </div>
+                  <!-- Step 3: current -->
+                  <div class="milestone-step current">
+                    <div class="milestone-icon current">
+                      <div class="milestone-pulse"></div>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+                    </div>
+                    <div class="milestone-label">Assembly in Progress</div>
+                    <div class="milestone-date">Est. Jan 28</div>
+                  </div>
+                  <!-- Step 4: pending -->
+                  <div class="milestone-step pending">
+                    <div class="milestone-icon pending">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/></svg>
+                    </div>
+                    <div class="milestone-label">Quality Testing</div>
+                    <div class="milestone-date">Est. Feb 3</div>
+                  </div>
+                  <!-- Step 5: pending -->
+                  <div class="milestone-step pending">
+                    <div class="milestone-icon pending">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+                    </div>
+                    <div class="milestone-label">Shipped</div>
+                    <div class="milestone-date">Est. Feb 6</div>
+                  </div>
+                </div>
+
+                <!-- Current step detail -->
+                <div class="current-step-card">
+                  <div class="current-step-tag">
+                    <div class="status-dot in-progress" style="animation:none;width:6px;height:6px;"></div>
+                    Current Step
+                  </div>
+                  <div class="current-step-title">Assembly in Progress</div>
+                  <div class="current-step-desc">Your harness is being built. The builder is working through the chassis sub-harness and ECU connector assembly.</div>
+
+                  <div class="shop-photo-placeholder">
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                      <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                      <circle cx="12" cy="13" r="4"/>
+                    </svg>
+                    <span>Shop update photo coming soon</span>
+                  </div>
+
+                  <div class="builder-note">
+                    <div class="builder-note-label">Note from the Builder</div>
+                    <div class="builder-note-text">"All wire gauge verified, ECU connector crimped. Moving to chassis sub-harness tomorrow."</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Completed Steps Gallery -->
+              <div class="completed-section">
+                <h3>Completed Milestones</h3>
+                <div class="completed-grid">
+                  <div class="completed-card">
+                    <div class="completed-photo step1">
+                      <span style="padding:var(--space-md);text-align:center;">Order Confirmed — Jan 14, 2026</span>
+                    </div>
+                    <div class="completed-card-body">
+                      <div class="completed-card-step">&#10003; Step 1 Complete</div>
+                      <div class="completed-card-title">Order Confirmed</div>
+                      <div class="completed-card-note">"Received payment and verified all specs with customer. LHD, R154, Link G4X, 2JZ-GTE non-VVTi. Milspec connector included."</div>
+                    </div>
+                  </div>
+                  <div class="completed-card">
+                    <div class="completed-photo step2">
+                      <span style="padding:var(--space-md);text-align:center;">Wire Prep — Jan 18, 2026</span>
+                    </div>
+                    <div class="completed-card-body">
+                      <div class="completed-card-step">&#10003; Step 2 Complete</div>
+                      <div class="completed-card-title">Wire Prep &amp; Materials</div>
+                      <div class="completed-card-note">"All TXL wire cut to length, color-coded per circuit. Sumitomo connectors and milspec autosport connector staged."</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Order Specs -->
+              <div class="specs-section">
+                <h3>Order Specifications</h3>
+                <table class="specs-table">
+                  <tr><td>Chassis</td><td>MK4 Toyota Supra JZA80 — LHD</td></tr>
+                  <tr><td>Engine</td><td>2JZ-GTE Non-VVTi</td></tr>
+                  <tr><td>ECU</td><td>Link G4X</td></tr>
+                  <tr><td>Transmission</td><td>R154 5-Speed Manual</td></tr>
+                  <tr><td>Add-ons</td><td>Milspec Autosport Connector, Flex Fuel Sensor, Boost Solenoid, Bosch LSU 4.9 Wideband</td></tr>
+                  <tr><td>Wire Spec</td><td>TXL Cross-Linked Polyethylene, 0.5–2.0mm gauge</td></tr>
+                  <tr><td>Connector Spec</td><td>OEM Sumitomo + Milspec Autosport Bulkhead</td></tr>
+                </table>
+              </div>
+
+              <!-- Actions -->
+              <div class="portal-actions">
+                <button class="btn btn-primary" onclick="openModal()">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                  Message the Builder
+                </button>
+                <button class="btn btn-secondary">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download Invoice
+                </button>
+              </div>
+            </div>
+
+            <!-- ORDER 2744 (hidden by default) -->
+            <div id="order-2744" style="display:none;">
+
+              <!-- Header -->
+              <div class="order-detail-header">
+                <div>
+                  <div style="display:flex;align-items:center;gap:var(--space-md);margin-bottom:var(--space-xs);">
+                    <div class="order-meta-title">#SVK-2744</div>
+                    <span class="badge badge-success">Shipped</span>
+                  </div>
+                  <div class="order-meta-sub">Lexus SC400 — 1UZ-FE / Haltech Elite 2500</div>
+                </div>
+                <div class="order-header-stats">
+                  <div class="stat-block">
+                    <div class="stat-label">Placed</div>
+                    <div class="stat-value">Nov 3, 2025</div>
+                  </div>
+                  <div class="stat-block">
+                    <div class="stat-label">Total</div>
+                    <div class="stat-value price">$1,720</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Tracking Card -->
+              <div class="tracking-card">
+                <div class="tracking-header">
+                  <div class="tracking-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+                  </div>
+                  <div>
+                    <div class="tracking-title">Your harness has shipped!</div>
+                    <div class="tracking-subtitle">Estimated delivery: Jan 22–24, 2026</div>
+                  </div>
+                </div>
+
+                <div class="tracking-number-row">
+                  <div>
+                    <div class="tracking-number-label">UPS Tracking Number</div>
+                    <div class="tracking-number-value">1Z 999 AA1 01 2345 6784</div>
+                  </div>
+                  <button class="copy-btn" onclick="copyTracking(this)">Copy</button>
+                </div>
+
+                <div style="display:flex;gap:var(--space-md);flex-wrap:wrap;">
+                  <a href="#" class="btn btn-primary btn-sm">
+                    Track Package
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                  </a>
+                  <button class="btn btn-secondary btn-sm">Download Invoice</button>
+                </div>
+              </div>
+
+              <!-- Timeline (all complete) -->
+              <div class="timeline-section">
+                <h3>Build Complete</h3>
+                <div class="milestone-track">
+                  <div class="milestone-step done">
+                    <div class="milestone-icon done">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                    </div>
+                    <div class="milestone-label">Order Confirmed</div>
+                    <div class="milestone-date">Nov 3</div>
+                  </div>
+                  <div class="milestone-step done">
+                    <div class="milestone-icon done">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                    </div>
+                    <div class="milestone-label">Wire Prep &amp; Materials</div>
+                    <div class="milestone-date">Nov 8</div>
+                  </div>
+                  <div class="milestone-step done">
+                    <div class="milestone-icon done">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                    </div>
+                    <div class="milestone-label">Assembly Complete</div>
+                    <div class="milestone-date">Nov 22</div>
+                  </div>
+                  <div class="milestone-step done">
+                    <div class="milestone-icon done">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                    </div>
+                    <div class="milestone-label">Quality Testing</div>
+                    <div class="milestone-date">Nov 28</div>
+                  </div>
+                  <div class="milestone-step done">
+                    <div class="milestone-icon done">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                    </div>
+                    <div class="milestone-label">Shipped</div>
+                    <div class="milestone-date">Dec 1</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Rate Your Build -->
+              <div class="rate-section">
+                <h3>Rate Your Build</h3>
+                <p>How did your SVK harness turn out? Your feedback helps us improve.</p>
+                <div class="star-row">
+                  <button class="star-btn" data-star="1" onclick="rateStar(1)">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                  </button>
+                  <button class="star-btn" data-star="2" onclick="rateStar(2)">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                  </button>
+                  <button class="star-btn" data-star="3" onclick="rateStar(3)">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                  </button>
+                  <button class="star-btn" data-star="4" onclick="rateStar(4)">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                  </button>
+                  <button class="star-btn" data-star="5" onclick="rateStar(5)">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                  </button>
+                </div>
+                <div id="star-feedback" style="min-height:24px;font-size:var(--text-sm);color:var(--text-secondary);"></div>
+                <div style="margin-top:var(--space-md);">
+                  <textarea class="form-textarea" rows="3" placeholder="Tell us about your experience (optional)..."></textarea>
+                </div>
+                <div style="margin-top:var(--space-md);">
+                  <button class="btn btn-primary">Submit Review</button>
+                </div>
+              </div>
+
+              <!-- Specs -->
+              <div class="specs-section">
+                <h3>Order Specifications</h3>
+                <table class="specs-table">
+                  <tr><td>Chassis</td><td>Lexus SC400 Z30 — LHD</td></tr>
+                  <tr><td>Engine</td><td>1UZ-FE VVTi</td></tr>
+                  <tr><td>ECU</td><td>Haltech Elite 2500</td></tr>
+                  <tr><td>Transmission</td><td>W58 5-Speed Manual</td></tr>
+                  <tr><td>Add-ons</td><td>A/C Support, Fuel Pump Relay Kit, Bosch LSU 4.9 Wideband, Oil Pressure Sensor</td></tr>
+                  <tr><td>Wire Spec</td><td>TXL Cross-Linked Polyethylene, 0.5–2.0mm gauge</td></tr>
+                  <tr><td>Connector Spec</td><td>OEM Sumitomo connectors throughout</td></tr>
+                </table>
+              </div>
+
+            </div>
+            <!-- /order-2744 -->
+
+          </div>
+          <!-- /order-detail -->
+
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Message Builder Modal -->
+  <div class="modal-overlay" id="message-modal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <div>
+          <div class="modal-title">Message the Builder</div>
+        </div>
+        <button class="modal-close" onclick="closeModal()">&#10005;</button>
+      </div>
+      <div class="modal-subtitle">Re: Order #SVK-2891 — MK4 Supra 2JZ-GTE / Link G4X</div>
+      <div class="form-group">
+        <label class="form-label" for="msg-subject">Subject</label>
+        <input type="text" class="form-input" id="msg-subject" value="Question about my harness build">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="msg-body">Message</label>
+        <textarea class="form-textarea" id="msg-body" rows="5" placeholder="Type your message to the builder..."></textarea>
+      </div>
+      <div style="display:flex;gap:var(--space-md);justify-content:flex-end;">
+        <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="sendMessage()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          Send Message
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div id="footer-placeholder"></div>
+
+  <script defer src="components/header.js"></script>
+  <script defer src="components/footer.js"></script>
+  <script defer src="js/cart.js"></script>
+  <script defer src="js/components.js"></script>
+  <script defer src="js/main.js"></script>
+
+  <script>
+    // ── Order Switching ──
+    function selectOrder(id) {
+      // Sidebar active state
+      document.querySelectorAll('.order-item').forEach(el => el.classList.remove('active'));
+      document.getElementById('sidebar-' + id).classList.add('active');
+
+      // Panel visibility
+      document.getElementById('order-2891').style.display = 'none';
+      document.getElementById('order-2744').style.display = 'none';
+      document.getElementById('order-' + id).style.display = 'block';
+    }
+
+    // ── Modal ──
+    function openModal() {
+      document.getElementById('message-modal').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeModal() {
+      document.getElementById('message-modal').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+    function sendMessage() {
+      const body = document.getElementById('msg-body').value.trim();
+      if (!body) { alert('Please enter a message.'); return; }
+      closeModal();
+      // In production this would call an API
+      if (typeof SVKCart !== 'undefined') {
+        SVKCart.showToast('Message sent to builder.');
+      } else {
+        alert('Message sent!');
+      }
+    }
+
+    // Close modal on overlay click
+    document.getElementById('message-modal').addEventListener('click', function(e) {
+      if (e.target === this) closeModal();
+    });
+
+    // ── Tracking copy ──
+    function copyTracking(btn) {
+      const num = btn.previousElementSibling.querySelector('.tracking-number-value').textContent;
+      navigator.clipboard.writeText(num).catch(() => {});
+      btn.textContent = 'Copied!';
+      setTimeout(() => { btn.textContent = 'Copy'; }, 1800);
+    }
+
+    // ── Star Rating ──
+    let selectedRating = 0;
+    const starFeedback = ['', 'Poor — we want to hear more.', 'Below expectations.', 'Good build.', 'Great build!', 'Outstanding — thank you!'];
+
+    function rateStar(n) {
+      selectedRating = n;
+      document.querySelectorAll('.star-btn').forEach((btn, i) => {
+        btn.classList.toggle('active', i < n);
+      });
+      document.getElementById('star-feedback').textContent = starFeedback[n] || '';
+    }
+
+    // Star hover effects
+    document.querySelectorAll('.star-btn').forEach((btn, index) => {
+      btn.addEventListener('mouseenter', () => {
+        document.querySelectorAll('.star-btn').forEach((b, i) => {
+          b.style.color = i <= index ? '#f59e0b' : '';
+        });
+      });
+      btn.addEventListener('mouseleave', () => {
+        document.querySelectorAll('.star-btn').forEach((b, i) => {
+          b.style.color = i < selectedRating ? '#f59e0b' : '';
+        });
+      });
+    });
+  </script>
+</body>
+</html>
