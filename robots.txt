@@ -7,4 +7,4 @@ Disallow: /cart.html
 Disallow: /search.html
 Disallow: /product.html
 
-Sitemap: https://svkworks.com/sitemap.xml
+Sitemap: https://www.svkworks.com/sitemap.xml
