@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1a0d1a"/>
+      <stop offset="1" stop-color="#0a0a12"/>
+    </linearGradient>
+    <linearGradient id="glow" x1="0.5" y1="0" x2="0.5" y2="1">
+      <stop offset="0" stop-color="#cc1484" stop-opacity="0.08"/>
+      <stop offset="1" stop-color="#cc1484" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <rect width="200" height="200" fill="url(#bg)"/>
+  <rect width="200" height="200" fill="url(#glow)"/>
+  <rect x="1" y="1" width="198" height="198" fill="none" stroke="#cc1484" stroke-width="0.5" stroke-opacity="0.3"/>
+  <g stroke="#cc1484" stroke-width="2.5" fill="none">
+        <rect x="65" y="65" width="70" height="50" rx="4"/>
+        <line x1="75" y1="75" x2="95" y2="75"/>
+        <line x1="75" y1="83" x2="125" y2="83"/>
+        <line x1="75" y1="91" x2="110" y2="91"/>
+        <rect x="105" y="70" width="22" height="18" rx="2" fill="#cc1484" fill-opacity="0.2"/>
+        <line x1="80" y1="115" x2="80" y2="125"/>
+        <line x1="90" y1="115" x2="90" y2="125"/>
+        <line x1="100" y1="115" x2="100" y2="125"/>
+        <line x1="110" y1="115" x2="110" y2="125"/>
+        <line x1="120" y1="115" x2="120" y2="125"/>
+      </g>
+  <text x="100" y="152" text-anchor="middle" fill="#e91e8c" font-size="13" font-family="Inter, system-ui, sans-serif" font-weight="600">Hondata KPro</text>
+  <text x="100" y="170" text-anchor="middle" fill="#666680" font-size="10" font-family="Inter, system-ui, sans-serif">ECU Upgrade</text>
+  <text x="100" y="190" text-anchor="middle" fill="#333350" font-size="8" font-family="Inter, system-ui, sans-serif">[ replace with photo ]</text>
+</svg>
