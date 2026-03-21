@@ -146,11 +146,11 @@
               <label class="calc-label">Engine Variant</label>
               <select class="calc-select" id="opt-engine">
                 <option value="">Select Engine</option>
-                <option value="K20A" data-img="img/options/engine/k20a.webp">K20A</option>
-                <option value="K20A2" data-img="img/options/engine/k20a2.webp">K20A2 (RSX Type S)</option>
-                <option value="K20C1" data-img="img/options/engine/k20c1.webp">K20C1 (Civic Type R)</option>
-                <option value="K24A2" data-img="img/options/engine/k24a2.webp">K24A2 (TSX)</option>
-                <option value="K24Z" data-img="img/options/engine/k24z.webp">K24Z</option>
+                <option value="K20A">K20A</option>
+                <option value="K20A2">K20A2 (RSX Type S)</option>
+                <option value="K20C1">K20C1 (Civic Type R)</option>
+                <option value="K24A2">K24A2 (TSX)</option>
+                <option value="K24Z">K24Z</option>
                 <option value="Other">Other (Please Specify)</option>
               </select>
             </div>
@@ -227,6 +227,14 @@
                 <option value="Yes" data-img="img/options/misc/milspec-yes.webp">Yes (+$350)</option>
               </select>
             </div>
+
+            <div class="calc-group">
+              <label class="calc-label">Knock Sensors</label>
+              <select class="calc-select" id="opt-knock">
+                <option value="OEM Knock Sensors">OEM Knock Sensors</option>
+                <option value="Bosch Knock Sensors (+$15)" data-img="img/options/misc/knock-bosch.webp">Bosch Knock Sensors (+$15)</option>
+              </select>
+            </div>
           </div>
 
           <div class="calculator-summary">
@@ -291,7 +299,8 @@
         ['Build Level', 'opt-level'],
         ['Throttle Type', 'opt-throttle'],
         ['Coil Type', 'opt-coils'],
-        ['Milspec Connector', 'opt-milspec']
+        ['Milspec Connector', 'opt-milspec'],
+        ['Knock Sensors', 'opt-knock']
       ];
 
       const optionsData = {};

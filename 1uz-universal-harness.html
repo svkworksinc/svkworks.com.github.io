@@ -142,9 +142,9 @@
               <label class="calc-label">Engine Variant</label>
               <select class="calc-select" id="opt-engine">
                 <option value="">Select Engine</option>
-                <option value="1UZ-FE Non-VVTi" data-img="img/options/engine/1uz-na.webp">1UZ-FE Non-VVT-i</option>
-                <option value="1UZ-FE VVTi" data-img="img/options/engine/1uz-vvti.webp">1UZ-FE VVT-i</option>
-                <option value="3UZ-FE VVTi" data-img="img/options/engine/3uz-vvti.webp">3UZ-FE VVT-i</option>
+                <option value="1UZ-FE Non-VVTi">1UZ-FE Non-VVT-i</option>
+                <option value="1UZ-FE VVTi">1UZ-FE VVT-i</option>
+                <option value="3UZ-FE VVTi">3UZ-FE VVT-i</option>
                 <option value="Other">Other (Please Specify)</option>
               </select>
             </div>
@@ -215,6 +215,14 @@
                 <option value="Yes" data-img="img/options/misc/milspec-yes.webp">Yes (+$350)</option>
               </select>
             </div>
+
+            <div class="calc-group">
+              <label class="calc-label">Knock Sensors</label>
+              <select class="calc-select" id="opt-knock">
+                <option value="OEM Knock Sensors">OEM Knock Sensors</option>
+                <option value="Bosch Knock Sensors (+$15)" data-img="img/options/misc/knock-bosch.webp">Bosch Knock Sensors (+$15)</option>
+              </select>
+            </div>
           </div>
 
           <div class="calculator-summary">
@@ -279,7 +287,8 @@
         ['A/C Retention', 'opt-ac'],
         ['Coil Type', 'opt-coils'],
         ['Lead Length', 'opt-lead'],
-        ['Milspec Connector', 'opt-milspec']
+        ['Milspec Connector', 'opt-milspec'],
+        ['Knock Sensors', 'opt-knock']
       ];
 
       const optionsData = {};
