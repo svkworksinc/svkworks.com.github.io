@@ -112,9 +112,11 @@
       wrapper.dataset.label       = opt.text.replace(/\s*\(\+\$[\d,]+\)/, '').trim();
 
       const img = document.createElement('img');
-      img.src   = opt.dataset.img;
-      img.alt   = wrapper.dataset.label;
+      img.src     = opt.dataset.img;
+      img.alt     = wrapper.dataset.label;
       img.loading = 'lazy';
+      img.width   = 64;
+      img.height  = 64;
       // Hide thumb if image fails to load (no placeholder needed)
       img.onerror = () => { wrapper.style.display = 'none'; };
 

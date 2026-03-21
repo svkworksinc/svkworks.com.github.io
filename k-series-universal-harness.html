@@ -164,7 +164,7 @@
               <label class="calc-label">ECU / Standalone</label>
               <select class="calc-select" id="opt-ecu">
                 <option value="">Select ECU</option>
-                <option value="Haltech Elite" data-img="img/options/ecu/haltech-elite.webp">Haltech Elite</option>
+                <option value="Haltech 2500" data-img="img/options/ecu/haltech-elite-2500.webp">Haltech 2500</option>
                 <option value="Link G4X" data-img="img/options/ecu/link-g4x.webp">Link G4X</option>
                 <option value="AEM Infinity" data-img="img/options/ecu/aem-infinity.webp">AEM Infinity</option>
                 <option value="Motec M1" data-img="img/options/ecu/motec-m1.webp">Motec M1</option>
@@ -181,12 +181,10 @@
             </div>
 
             <div class="calc-group">
-              <label class="calc-label">Build Level</label>
-              <select class="calc-select" id="opt-level">
-                <option value="">Select Build Level</option>
-                <option value="Street">Street — TXL wire, standard connectors</option>
-                <option value="Track">Track — TXL wire, Deutsch connectors</option>
-                <option value="Full Race">Full Race — Raychem Spec 44, Autosport connectors</option>
+              <label class="calc-label">Wire Type</label>
+              <select class="calc-select" id="opt-wire">
+                <option value="TXL">TXL Mil-Spec (Standard)</option>
+                <option value="Raychem Spec 44">Raychem Spec 44 (Race Grade)</option>
               </select>
             </div>
 
@@ -204,10 +202,56 @@
             <div class="calc-group">
               <label class="calc-label">Coil Type</label>
               <select class="calc-select" id="opt-coils">
-                <option value="">Select Coil Type</option>
-                <option value="Stock K-series" data-img="img/options/coils/k-series-cop.webp">Stock K-series COP</option>
+                <option value="Stock K-series">Stock K-Series Coils</option>
                 <option value="IGN1A" data-img="img/options/coils/ign1a.webp">IGN1A</option>
                 <option value="R35 VR38" data-img="img/options/coils/vr38-r35.webp">R35 / VR38 Coils</option>
+                <option value="Other">Other (Please Specify)</option>
+              </select>
+            </div>
+
+            <div class="calc-group">
+              <label class="calc-label">Wideband O2</label>
+              <select class="calc-select" id="opt-wideband">
+                <option value="None">None</option>
+                <option value="Bosch LSU 4.9" data-img="img/options/wideband/bosch-lsu-49.webp">Bosch LSU 4.9 (+$40)</option>
+                <option value="Bosch LSU 4.2 (Old Version)" data-img="img/options/wideband/bosch-lsu-42.webp">Bosch LSU 4.2 (Old Version) (+$40)</option>
+              </select>
+            </div>
+
+            <div class="calc-group">
+              <label class="calc-label">A/C Retention</label>
+              <select class="calc-select" id="opt-ac">
+                <option value="No">No</option>
+                <option value="Yes">Yes</option>
+              </select>
+            </div>
+
+            <div class="calc-group">
+              <label class="calc-label">VTEC / VTC Solenoid</label>
+              <select class="calc-select" id="opt-vtec">
+                <option value="OEM">OEM VTEC / VTC Solenoid</option>
+                <option value="External (Specify)">External Solenoid (Specify)</option>
+              </select>
+            </div>
+
+            <div class="calc-group">
+              <label class="calc-label">Launch Control / Clutch Switch</label>
+              <select class="calc-select" id="opt-launch">
+                <option value="No">No</option>
+                <option value="Yes">Yes — Wire Clutch Switch Input</option>
+              </select>
+            </div>
+
+            <div class="calc-group">
+              <label class="calc-label">Fuel Pressure / Oil Pressure / Temp Sensors
+                <span class="calc-hint">Additional analog sensor inputs wired to your ECU</span>
+              </label>
+              <select class="calc-select" id="opt-sensors">
+                <option value="None">None</option>
+                <option value="1 Sensor">1 Sensor (+$30)</option>
+                <option value="2 Sensors">2 Sensors (+$60)</option>
+                <option value="3 Sensors">3 Sensors (+$90)</option>
+                <option value="4 Sensors">4 Sensors (+$120)</option>
                 <option value="Other">Other (Please Specify)</option>
               </select>
             </div>
@@ -296,9 +340,15 @@
         ['Target Chassis', 'opt-chassis'],
         ['ECU / Standalone', 'opt-ecu'],
         ['Transmission', 'opt-trans'],
-        ['Build Level', 'opt-level'],
+        ['Wire Type', 'opt-wire'],
         ['Throttle Type', 'opt-throttle'],
         ['Coil Type', 'opt-coils'],
+        ['Wideband O2', 'opt-wideband'],
+        ['A/C Retention', 'opt-ac'],
+        ['VTEC / VTC Solenoid', 'opt-vtec'],
+        ['Launch Control / Clutch Switch', 'opt-launch'],
+        ['Sensors', 'opt-sensors'],
+        ['Boost Solenoid', 'opt-boost'],
         ['Milspec Connector', 'opt-milspec'],
         ['Knock Sensors', 'opt-knock']
       ];
