@@ -158,12 +158,12 @@
               <label class="calc-label">ECU / Standalone</label>
               <select class="calc-select" id="opt-ecu">
                 <option value="">Select ECU</option>
-                <option value="Haltech Elite">Haltech Elite</option>
-                <option value="Link G4X">Link G4X</option>
-                <option value="AEM Infinity">AEM Infinity</option>
-                <option value="Motec M1">Motec M1</option>
-                <option value="MaxxECU">MaxxECU</option>
-                <option value="ECUMaster EMU Black">ECUMaster EMU Black</option>
+                <option value="Haltech Elite" data-img="img/options/ecu/haltech-elite.webp">Haltech Elite</option>
+                <option value="Link G4X" data-img="img/options/ecu/link-g4x.webp">Link G4X</option>
+                <option value="AEM Infinity" data-img="img/options/ecu/aem-infinity.webp">AEM Infinity</option>
+                <option value="Motec M1" data-img="img/options/ecu/motec-m1.webp">Motec M1</option>
+                <option value="MaxxECU" data-img="img/options/ecu/maxxecu.webp">MaxxECU</option>
+                <option value="ECUMaster EMU Black" data-img="img/options/ecu/ecumaster-emu-black.webp">ECUMaster EMU Black</option>
                 <option value="Other">Other (Please Specify)</option>
               </select>
             </div>
@@ -185,8 +185,8 @@
               <label class="calc-label">Coil Type</label>
               <select class="calc-select" id="opt-coils">
                 <option value="">Select Coil Type</option>
-                <option value="Stock 1UZ">Stock 1UZ Coils</option>
-                <option value="LS Coils">LS Coils</option>
+                <option value="Stock 1UZ" data-img="img/options/coils/stock-2jz.webp">Stock 1UZ Coils</option>
+                <option value="LS Coils" data-img="img/options/coils/ign1a.webp">LS Coils</option>
                 <option value="Other">Other (Please Specify)</option>
               </select>
             </div>
@@ -204,7 +204,7 @@
               <label class="calc-label">Boost Solenoid</label>
               <select class="calc-select" id="opt-boost">
                 <option value="No">No</option>
-                <option value="Yes (+$20)">Yes (+$20)</option>
+                <option value="Yes (+$20)" data-img="img/options/misc/boost-solenoid.webp">Yes (+$20)</option>
               </select>
             </div>
 
@@ -212,7 +212,15 @@
               <label class="calc-label">Milspec Autosport Connector</label>
               <select class="calc-select" id="opt-milspec">
                 <option value="No">No</option>
-                <option value="Yes">Yes (+$350)</option>
+                <option value="Yes" data-img="img/options/misc/milspec-yes.webp">Yes (+$350)</option>
+              </select>
+            </div>
+
+            <div class="calc-group">
+              <label class="calc-label">Knock Sensors</label>
+              <select class="calc-select" id="opt-knock">
+                <option value="OEM Knock Sensors">OEM Knock Sensors</option>
+                <option value="Bosch Knock Sensors (+$15)" data-img="img/options/misc/knock-bosch.webp">Bosch Knock Sensors (+$15)</option>
               </select>
             </div>
           </div>
@@ -259,6 +267,7 @@
   <script defer src="js/products.js"></script>
   <script defer src="js/search.js"></script>
   <script defer src="js/main.js"></script>
+  <script defer src="js/calc-option-images.js"></script>
   <script>
     async function emailOrder() {
       const name = document.getElementById('customer-name').value || 'Not provided';
@@ -278,7 +287,8 @@
         ['A/C Retention', 'opt-ac'],
         ['Coil Type', 'opt-coils'],
         ['Lead Length', 'opt-lead'],
-        ['Milspec Connector', 'opt-milspec']
+        ['Milspec Connector', 'opt-milspec'],
+        ['Knock Sensors', 'opt-knock']
       ];
 
       const optionsData = {};
