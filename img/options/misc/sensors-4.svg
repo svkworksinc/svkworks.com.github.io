@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1a0d1a"/>
+      <stop offset="1" stop-color="#0a0a12"/>
+    </linearGradient>
+    <linearGradient id="glow" x1="0.5" y1="0" x2="0.5" y2="1">
+      <stop offset="0" stop-color="#cc1484" stop-opacity="0.08"/>
+      <stop offset="1" stop-color="#cc1484" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <rect width="200" height="200" fill="url(#bg)"/>
+  <rect width="200" height="200" fill="url(#glow)"/>
+  <rect x="1" y="1" width="198" height="198" fill="none" stroke="#cc1484" stroke-width="0.5" stroke-opacity="0.3"/>
+  <g stroke="#cc1484" stroke-width="2.5" fill="none">
+        <circle cx="100" cy="88" r="22"/>
+        <circle cx="100" cy="88" r="12"/>
+        <circle cx="100" cy="88" r="4" fill="#cc1484"/>
+        <line x1="100" y1="88" x2="115" y2="73"/>
+        <line x1="100" y1="66" x2="100" y2="55"/>
+        <line x1="78" y1="110" x2="122" y2="110"/>
+      </g>
+  <text x="100" y="152" text-anchor="middle" fill="#e91e8c" font-size="13" font-family="Inter, system-ui, sans-serif" font-weight="600">4 Sensors</text>
+  <text x="100" y="170" text-anchor="middle" fill="#666680" font-size="10" font-family="Inter, system-ui, sans-serif">Analog Inputs</text>
+  <text x="100" y="190" text-anchor="middle" fill="#333350" font-size="8" font-family="Inter, system-ui, sans-serif">[ replace with photo ]</text>
+</svg>
