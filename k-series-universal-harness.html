@@ -205,6 +205,7 @@
                 <option value="Stock K-series">Stock K-Series Coils</option>
                 <option value="IGN1A" data-img="img/options/coils/ign1a.webp">IGN1A</option>
                 <option value="R35 VR38" data-img="img/options/coils/vr38-r35.webp">R35 / VR38 Coils</option>
+                <option value="GM LQ9 Coils">GM LQ9 Coils</option>
                 <option value="Other">Other (Please Specify)</option>
               </select>
             </div>
@@ -273,10 +274,20 @@
             </div>
 
             <div class="calc-group">
+              <label class="calc-label">Air Fuel Metering</label>
+              <select class="calc-select" id="opt-afm">
+                <option value="OEM 5-pin 2JZ VVT-i MAF Sensor">OEM 5-pin 2JZ VVT-i MAF Sensor</option>
+                <option value="Internal MAP Sensor on Standalone">Internal MAP Sensor on Standalone</option>
+                <option value="External MAP Sensor">External MAP Sensor</option>
+              </select>
+            </div>
+
+            <div class="calc-group">
               <label class="calc-label">Knock Sensors</label>
               <select class="calc-select" id="opt-knock">
-                <option value="OEM Knock Sensors">OEM Knock Sensors</option>
-                <option value="Bosch Knock Sensors (+$15)" data-img="img/options/misc/knock-bosch.webp">Bosch Knock Sensors (+$15)</option>
+                <option value="OEM Knock Sensor">OEM Knock Sensor</option>
+                <option value="Bosch Knock Sensor 2 Wire (+$15)" data-img="img/options/misc/knock-bosch.webp">Bosch Knock Sensor 2 Wire (+$15)</option>
+                <option value="Different Knock Sensors">Different Knock Sensors (Please Specify)</option>
               </select>
             </div>
           </div>
@@ -348,6 +359,7 @@
         ['VTEC / VTC Solenoid', 'opt-vtec'],
         ['Launch Control / Clutch Switch', 'opt-launch'],
         ['Sensors', 'opt-sensors'],
+        ['Air Fuel Metering', 'opt-afm'],
         ['Boost Solenoid', 'opt-boost'],
         ['Milspec Connector', 'opt-milspec'],
         ['Knock Sensors', 'opt-knock']
