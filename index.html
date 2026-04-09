@@ -379,25 +379,6 @@
       </div>
     </section>
 
-    <!-- Newsletter Capture -->
-    <section class="section">
-      <div class="container">
-        <div class="cta-box fade-in">
-          <span class="section-label">Stay in the Loop</span>
-          <h2>Build Tips. Product Drops. First Access.</h2>
-          <p>Join 500+ builders getting wiring guides, tech write-ups, and early access to new harness releases — straight to your inbox.</p>
-          <form class="newsletter-form" action="https://api.web3forms.com/submit" method="POST" onsubmit="handleNewsletterSubmit(event, this)">
-            <input type="hidden" name="access_key" value="d9f073ce-bd0c-4285-9bbd-abb6a1008d41">
-            <input type="hidden" name="subject" value="Newsletter Signup — SVK Works">
-            <input type="hidden" name="redirect" value="false">
-            <input type="email" name="email" placeholder="your@email.com" required autocomplete="email">
-            <button type="submit" class="btn btn-primary">Subscribe</button>
-          </form>
-          <p style="font-size:var(--text-xs);color:var(--text-muted);margin-top:var(--space-md);">No spam. Unsubscribe anytime.</p>
-        </div>
-      </div>
-    </section>
-
     <!-- Social CTA -->
     <section class="cta-section">
       <div class="container">
@@ -434,23 +415,6 @@
   <script defer src="js/products.js"></script>
   <script defer src="js/search.js"></script>
   <script defer src="js/main.js"></script>
-  <script>
-    async function handleNewsletterSubmit(e, form) {
-      e.preventDefault();
-      const btn = form.querySelector('button[type=submit]');
-      btn.textContent = 'Subscribing...';
-      btn.disabled = true;
-      try {
-        const res = await fetch('https://api.web3forms.com/submit', { method: 'POST', body: new FormData(form) });
-        const data = await res.json();
-        if (data.success) {
-          form.innerHTML = '<p style="color:var(--success);font-weight:var(--weight-semibold);">You\'re in! Check your inbox for a confirmation.</p>';
-        } else {
-          btn.textContent = 'Subscribe'; btn.disabled = false;
-        }
-      } catch { btn.textContent = 'Subscribe'; btn.disabled = false; }
-    }
-  </script>
   <script>
     document.addEventListener('DOMContentLoaded', async () => {
       // Wait for products to load
