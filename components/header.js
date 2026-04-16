@@ -35,6 +35,9 @@ const SVK_HEADER_HTML = `
               <li><a href="/mk4-supra.html">MK4 Supra</a></li>
               <li><a href="/mk3-supra.html">MK3 Supra</a></li>
               <li><a href="/sc300.html">SC300 / SC400 / Soarer</a></li>
+              <li><a href="/2jz-universal-harness.html">2JZ Universal Swap</a></li>
+              <li><a href="/1uz-universal-harness.html">1UZ Universal Swap</a></li>
+              <li><a href="/k-series-universal-harness.html">K-Series Universal Swap</a></li>
               <li><a href="/harnesses.html">View All</a></li>
             </ul>
           </li>
