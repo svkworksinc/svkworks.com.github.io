@@ -3,7 +3,7 @@
   <!-- Homepage -->
   <url>
     <loc>https://www.svkworks.com/</loc>
-    <lastmod>2026-03-11</lastmod>
+    <lastmod>2026-04-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
@@ -11,75 +11,75 @@
   <!-- Core Product Pages (highest priority) -->
   <url>
     <loc>https://www.svkworks.com/mk4-supra.html</loc>
-    <lastmod>2026-03-11</lastmod>
+    <lastmod>2026-04-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://www.svkworks.com/mk3-supra.html</loc>
-    <lastmod>2026-03-11</lastmod>
+    <lastmod>2026-04-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://www.svkworks.com/sc300.html</loc>
-    <lastmod>2026-03-11</lastmod>
+    <lastmod>2026-04-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://www.svkworks.com/harnesses.html</loc>
-    <lastmod>2026-03-11</lastmod>
+    <lastmod>2026-04-16</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.9</priority>
   </url>
 
   <!-- Additional Product Pages -->
   <url>
     <loc>https://www.svkworks.com/1uz-universal-harness.html</loc>
-    <lastmod>2026-03-11</lastmod>
+    <lastmod>2026-04-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.svkworks.com/k-series-universal-harness.html</loc>
-    <lastmod>2026-03-11</lastmod>
+    <lastmod>2026-04-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.svkworks.com/milspec-connector.html</loc>
-    <lastmod>2026-03-11</lastmod>
+    <lastmod>2026-04-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.svkworks.com/8hp-transmission.html</loc>
-    <lastmod>2026-03-11</lastmod>
+    <lastmod>2026-04-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.svkworks.com/mk4-supra-cupholder.html</loc>
-    <lastmod>2026-03-11</lastmod>
+    <lastmod>2026-04-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.svkworks.com/connectors.html</loc>
-    <lastmod>2026-03-15</lastmod>
+    <lastmod>2026-04-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.svkworks.com/other-parts.html</loc>
-    <lastmod>2026-03-11</lastmod>
+    <lastmod>2026-04-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.svkworks.com/3d-parts.html</loc>
-    <lastmod>2026-03-11</lastmod>
+    <lastmod>2026-04-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -87,43 +87,43 @@
   <!-- Service Pages -->
   <url>
     <loc>https://www.svkworks.com/services.html</loc>
-    <lastmod>2026-03-11</lastmod>
+    <lastmod>2026-04-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.svkworks.com/service-custom-harness.html</loc>
-    <lastmod>2026-03-11</lastmod>
+    <lastmod>2026-04-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.svkworks.com/service-connector-assembly.html</loc>
-    <lastmod>2026-03-11</lastmod>
+    <lastmod>2026-04-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.svkworks.com/service-3d-printing.html</loc>
-    <lastmod>2026-03-11</lastmod>
+    <lastmod>2026-04-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.svkworks.com/service-wiring-repair.html</loc>
-    <lastmod>2026-03-11</lastmod>
+    <lastmod>2026-04-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.svkworks.com/service-ecu-repair.html</loc>
-    <lastmod>2026-03-11</lastmod>
+    <lastmod>2026-04-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.svkworks.com/service-harness-conversion.html</loc>
-    <lastmod>2026-03-11</lastmod>
+    <lastmod>2026-04-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -131,31 +131,31 @@
   <!-- Build Showcase Pages -->
   <url>
     <loc>https://www.svkworks.com/builds.html</loc>
-    <lastmod>2026-03-11</lastmod>
+    <lastmod>2026-04-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://www.svkworks.com/build-1997-mk4-supra.html</loc>
-    <lastmod>2026-03-11</lastmod>
+    <lastmod>2026-04-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://www.svkworks.com/build-1989-mk3-supra.html</loc>
-    <lastmod>2026-03-11</lastmod>
+    <lastmod>2026-04-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://www.svkworks.com/build-1998-sc400.html</loc>
-    <lastmod>2026-03-11</lastmod>
+    <lastmod>2026-04-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://www.svkworks.com/build-2002-mr-s.html</loc>
-    <lastmod>2026-03-11</lastmod>
+    <lastmod>2026-04-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -163,99 +163,99 @@
   <!-- Blog Pages -->
   <url>
     <loc>https://www.svkworks.com/blog.html</loc>
-    <lastmod>2026-03-11</lastmod>
+    <lastmod>2026-04-16</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.svkworks.com/blog-why-standalone-harness.html</loc>
-    <lastmod>2026-01-15</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.6</priority>
+    <lastmod>2026-04-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.svkworks.com/blog-mk3-2jz-swap-guide.html</loc>
-    <lastmod>2025-12-20</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.6</priority>
+    <lastmod>2026-04-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.svkworks.com/blog-choosing-ecu.html</loc>
-    <lastmod>2025-11-10</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.6</priority>
+    <lastmod>2026-04-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.svkworks.com/blog-txl-vs-raychem-spec44.html</loc>
-    <lastmod>2025-10-05</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.6</priority>
+    <lastmod>2026-04-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.svkworks.com/blog-sc400-cd009-swap-wiring.html</loc>
-    <lastmod>2025-09-18</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.6</priority>
+    <lastmod>2026-04-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.svkworks.com/blog-1uz-swap-wiring.html</loc>
-    <lastmod>2025-10-05</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.6</priority>
+    <lastmod>2026-04-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.svkworks.com/blog-mil-spec-connectors.html</loc>
-    <lastmod>2025-09-18</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.6</priority>
+    <lastmod>2026-04-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
   </url>
 
   <!-- Resources & Wiring Diagrams -->
   <url>
     <loc>https://www.svkworks.com/resources.html</loc>
-    <lastmod>2026-03-12</lastmod>
+    <lastmod>2026-04-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.svkworks.com/wiring-diagram-mk4-supra.html</loc>
-    <lastmod>2026-03-12</lastmod>
+    <lastmod>2026-04-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.svkworks.com/wiring-diagram-mk3-supra.html</loc>
-    <lastmod>2026-03-12</lastmod>
+    <lastmod>2026-04-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.svkworks.com/wiring-diagram-sc300-sc400.html</loc>
-    <lastmod>2026-03-12</lastmod>
+    <lastmod>2026-04-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.svkworks.com/wiring-diagram-gs300.html</loc>
-    <lastmod>2026-03-12</lastmod>
+    <lastmod>2026-04-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.svkworks.com/wiring-diagram-is300.html</loc>
-    <lastmod>2026-03-12</lastmod>
+    <lastmod>2026-04-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.svkworks.com/wiring-diagram-ls400.html</loc>
-    <lastmod>2026-03-12</lastmod>
+    <lastmod>2026-04-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.svkworks.com/wiring-diagram-mr2.html</loc>
-    <lastmod>2026-03-12</lastmod>
+    <lastmod>2026-04-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -263,31 +263,31 @@
   <!-- Info Pages -->
   <url>
     <loc>https://www.svkworks.com/about.html</loc>
-    <lastmod>2026-03-11</lastmod>
+    <lastmod>2026-04-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://www.svkworks.com/faq.html</loc>
-    <lastmod>2026-03-11</lastmod>
+    <lastmod>2026-04-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.svkworks.com/support.html</loc>
-    <lastmod>2026-03-11</lastmod>
+    <lastmod>2026-04-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://www.svkworks.com/contact.html</loc>
-    <lastmod>2026-03-11</lastmod>
+    <lastmod>2026-04-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://www.svkworks.com/terms.html</loc>
-    <lastmod>2026-03-11</lastmod>
+    <lastmod>2026-04-16</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
