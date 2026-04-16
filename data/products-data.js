@@ -207,6 +207,32 @@ const SVK_PRODUCTS_DATA = {
       "page": "k-series-universal-harness.html"
     },
     {
+      "id": "2jz-universal-standalone",
+      "name": "2JZ-GTE / 2JZ-GE Universal Swap Harness",
+      "slug": "2jz-universal-harness",
+      "category": "universal-harness",
+      "engine": "2JZ",
+      "tags": ["2jz", "2jz-gte", "2jz-ge", "toyota", "universal", "swap", "standalone", "custom", "vvti", "turbo"],
+      "price": 0,
+      "image": "img/supraHarness1.jpg",
+      "images": ["img/supraHarness1.jpg"],
+      "badge": "Custom Order",
+      "shortDesc": "Universal standalone harness for 2JZ-GTE and 2JZ-GE swaps into any chassis. VVTi and Non-VVTi — contact us for a quote.",
+      "description": "Custom-built standalone wiring harness for 2JZ-GTE and 2JZ-GE engine swap applications. Built with extended leads for any chassis. Every harness is built to order based on your specific ECU, injectors, coils, and accessory requirements.",
+      "specs": {
+        "Engine": "2JZ-GTE / 2JZ-GE VVTi / Non-VVTi",
+        "Chassis": "Universal / Custom",
+        "Wire Type": "TXL or Raychem Spec 44",
+        "Connector Type": "OEM Toyota / Sumitomo",
+        "ECU Compatibility": "Haltech, Link, MaxxECU, ECUMaster, AEM, Motec",
+        "Lead Time": "5-7 weeks"
+      },
+      "options": {},
+      "inStock": true,
+      "featured": true,
+      "page": "2jz-universal-harness.html"
+    },
+    {
       "id": "1uz-universal-standalone",
       "name": "1UZ-FE Universal Swap Harness",
       "slug": "1uz-universal-standalone",
