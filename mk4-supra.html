@@ -331,10 +331,11 @@
                 <option value="150" data-img="img/options/ecu/haltech-elite-2500.webp">Haltech Elite 2500 (+$150)</option>
                 <option value="150" data-img="img/options/ecu/ecumaster-emu-black.webp">ECUMaster EMU Black (+$150)</option>
                 <option value="150" data-img="img/options/ecu/link-g4x.webp">Link G4X (+$150)</option>
-                <option value="220" data-img="img/options/ecu/maxxecu.webp">MaxxECU (+$220)</option>
+                <option value="220" data-img="img/options/ecu/maxxecu.webp">MaxxECU (Please specify which version) (+$220)</option>
                 <option value="170" data-img="img/options/ecu/fueltech-ft550.webp">FuelTech FT550 (+$170)</option>
                 <option value="450" data-img="img/options/ecu/dual-ecu.webp">Dual ECU Setup: Stock ECU Runs Auto Transmission (+$450)</option>
                 <option value="200" data-img="img/options/ecu/ecumaster-emu-pro.webp">ECUMaster EMU Pro (+$200)</option>
+                <option value="150" data-img="img/options/ecu/ecumaster-classic.webp">ECUMaster Classic (+$150)</option>
                 <option value="0">Other (Please Specify in Email)</option>
               </select>
             </div>
@@ -488,9 +489,36 @@
             <div class="calc-group">
               <label class="calc-label">Knock Sensors</label>
               <select class="calc-select price-option">
-                <option value="0">OEM Knock Sensor</option>
+                <option value="0" data-img="img/options/misc/knock-oem.webp">OEM Knock Sensor</option>
                 <option value="15" data-img="img/options/misc/knock-bosch.webp">Bosch Knock Sensor 2 Wire (+$15)</option>
                 <option value="0">Different Knock Sensors (Please Specify)</option>
+              </select>
+            </div>
+
+            <div class="calc-group">
+              <label class="calc-label">Coolant Temp Sensor</label>
+              <select class="calc-select price-option">
+                <option value="0">Select Connector Type</option>
+                <option value="0" data-img="img/options/misc/coolant-temp-plastic.webp">Plastic Connector</option>
+                <option value="0" data-img="img/options/misc/coolant-temp-metal.webp">Metal Connector</option>
+              </select>
+            </div>
+
+            <div class="calc-group">
+              <label class="calc-label">Oil Pressure Sensor</label>
+              <select class="calc-select price-option">
+                <option value="0">Select Connector Type</option>
+                <option value="0" data-img="img/options/misc/oil-pressure-plastic.webp">Plastic Connector</option>
+                <option value="0" data-img="img/options/misc/oil-pressure-metal.webp">Metal Connector</option>
+              </select>
+            </div>
+
+            <div class="calc-group">
+              <label class="calc-label">Alternator</label>
+              <select class="calc-select price-option">
+                <option value="0">Select Alternator Style</option>
+                <option value="0" data-img="img/options/misc/alternator-new.webp">New Style</option>
+                <option value="0" data-img="img/options/misc/alternator-old.webp">Old Style</option>
               </select>
             </div>
 
@@ -498,7 +526,16 @@
               <label class="calc-label">Universal 5 Point Grounding Kit</label>
               <select class="calc-select price-option">
                 <option value="0">No</option>
-                <option value="49">Yes (+$49)</option>
+                <option value="49" data-img="img/options/misc/grounding-kit.webp">Yes (+$49)</option>
+              </select>
+            </div>
+
+            <div class="calc-group" style="opacity:0.45;pointer-events:none;">
+              <label class="calc-label">Fan Controller
+                <span class="calc-hint">Coming soon — currently being sourced</span>
+              </label>
+              <select class="calc-select price-option" disabled>
+                <option value="0">Coming Soon</option>
               </select>
             </div>
           </div>
