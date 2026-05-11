@@ -6,17 +6,13 @@
   <title>SVK Works — Invoice Tool</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    /* ─── App Shell ─────────────────────────────────────── */
     :root {
       --magenta: #e91e8c;
-      --magenta-dark: #c4176f;
-      --magenta-light: #f54daa;
       --bg: #0a0a0f;
-      --bg-2: #111118;
       --bg-card: #16161f;
       --bg-elevated: #1e1e2a;
       --border: rgba(255,255,255,0.08);
@@ -25,12 +21,10 @@
       --text-2: #a0a0b5;
       --text-3: #6b6b80;
       --green: #22c55e;
-      --yellow: #f59e0b;
       --red: #ef4444;
       --blue: #3b82f6;
       --radius: 10px;
       --radius-sm: 6px;
-      --shadow: 0 4px 24px rgba(0,0,0,0.5);
       --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     }
 
@@ -39,8 +33,8 @@
       background: var(--bg);
       color: var(--text);
       min-height: 100vh;
-      font-size: 14px;
-      line-height: 1.5;
+      font-size: 13px;
+      line-height: 1.4;
     }
 
     /* ─── Toolbar ────────────────────────────────────────── */
@@ -48,39 +42,36 @@
       position: sticky;
       top: 0;
       z-index: 100;
-      background: rgba(10,10,15,0.92);
+      background: rgba(10,10,15,0.95);
       backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border);
-      padding: 10px 24px;
+      padding: 9px 20px;
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
       flex-wrap: wrap;
     }
-
     .toolbar-brand {
       font-weight: 700;
-      font-size: 15px;
+      font-size: 14px;
       color: var(--magenta);
       margin-right: auto;
       letter-spacing: -0.02em;
     }
-
     .status-select {
       background: var(--bg-elevated);
       border: 1px solid var(--border);
       color: var(--text);
       font-family: var(--font);
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 600;
-      padding: 6px 10px;
+      padding: 5px 9px;
       border-radius: var(--radius-sm);
       cursor: pointer;
       outline: none;
       text-transform: uppercase;
       letter-spacing: 0.05em;
     }
-
     .status-select.draft   { border-color: var(--text-3); color: var(--text-2); }
     .status-select.sent    { border-color: var(--blue);   color: var(--blue); }
     .status-select.paid    { border-color: var(--green);  color: var(--green); }
@@ -89,11 +80,11 @@
     .btn {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      padding: 7px 14px;
+      gap: 5px;
+      padding: 6px 12px;
       border-radius: var(--radius-sm);
       font-family: var(--font);
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 600;
       cursor: pointer;
       border: none;
@@ -101,32 +92,14 @@
       white-space: nowrap;
     }
     .btn:active { transform: scale(0.97); }
-    .btn:hover { opacity: 0.85; }
+    .btn:hover  { opacity: 0.82; }
+    .btn-ghost  { background: var(--bg-elevated); color: var(--text-2); border: 1px solid var(--border); }
 
-    .btn-ghost {
-      background: var(--bg-elevated);
-      color: var(--text-2);
-      border: 1px solid var(--border);
-    }
-    .btn-primary {
-      background: var(--magenta);
-      color: #fff;
-    }
-    .btn-success {
-      background: var(--green);
-      color: #fff;
-    }
-    .btn-danger {
-      background: transparent;
-      color: var(--red);
-      border: 1px solid rgba(239,68,68,0.3);
-    }
-
-    /* ─── Page Layout ────────────────────────────────────── */
+    /* ─── Page ───────────────────────────────────────────── */
     .page {
-      max-width: 900px;
-      margin: 32px auto 80px;
-      padding: 0 20px;
+      max-width: 860px;
+      margin: 24px auto 60px;
+      padding: 0 16px;
     }
 
     /* ─── Invoice Card ───────────────────────────────────── */
@@ -134,244 +107,181 @@
       background: var(--bg-card);
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      box-shadow: var(--shadow);
+      box-shadow: 0 4px 24px rgba(0,0,0,0.5);
       overflow: hidden;
     }
 
-    /* ─── Editable Fields ────────────────────────────────── */
+    /* ─── Editable fields ────────────────────────────────── */
     [contenteditable] {
       outline: none;
-      border-radius: 4px;
-      padding: 2px 4px;
-      margin: -2px -4px;
+      border-radius: 3px;
+      padding: 1px 3px;
+      margin: -1px -3px;
       transition: background .15s, box-shadow .15s;
       cursor: text;
     }
-    [contenteditable]:hover {
-      background: rgba(255,255,255,0.04);
-    }
-    [contenteditable]:focus {
-      background: rgba(233,30,140,0.07);
-      box-shadow: 0 0 0 1px var(--border-focus);
-    }
-    [contenteditable]:empty::before {
-      content: attr(data-placeholder);
-      color: var(--text-3);
-      pointer-events: none;
-    }
+    [contenteditable]:hover  { background: rgba(255,255,255,0.04); }
+    [contenteditable]:focus  { background: rgba(233,30,140,0.07); box-shadow: 0 0 0 1px var(--border-focus); }
+    [contenteditable]:empty::before { content: attr(data-placeholder); color: var(--text-3); pointer-events: none; }
 
-    /* ─── Invoice Header ─────────────────────────────────── */
+    /* ─── Header ─────────────────────────────────────────── */
     .inv-header {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 32px;
-      padding: 36px 40px 28px;
+      gap: 24px;
+      padding: 24px 32px 20px;
       border-bottom: 1px solid var(--border);
     }
-
-    .inv-logo-block { display: flex; flex-direction: column; gap: 10px; }
-
+    .inv-logo-block { display: flex; flex-direction: column; gap: 8px; }
     .inv-logo {
-      height: 44px;
+      height: 48px;
       width: auto;
       object-fit: contain;
       object-position: left center;
     }
-
-    .company-name {
-      font-size: 20px;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      line-height: 1.2;
-    }
-
     .company-details {
-      font-size: 12px;
+      font-size: 11px;
       color: var(--text-2);
-      line-height: 1.8;
+      line-height: 1.7;
     }
-
     .inv-meta { text-align: right; }
-
     .inv-title {
-      font-size: 34px;
+      font-size: 30px;
       font-weight: 800;
       letter-spacing: -0.03em;
       color: var(--magenta);
       line-height: 1;
-      margin-bottom: 16px;
+      margin-bottom: 12px;
     }
-
-    .inv-meta-rows { display: flex; flex-direction: column; gap: 4px; }
-
+    .inv-meta-rows { display: flex; flex-direction: column; gap: 3px; }
     .inv-meta-row {
       display: flex;
       align-items: baseline;
       justify-content: flex-end;
-      gap: 10px;
-      font-size: 13px;
+      gap: 8px;
+      font-size: 12px;
     }
-
-    .inv-meta-label {
-      color: var(--text-3);
-      font-weight: 500;
-      min-width: 80px;
-      text-align: right;
-    }
-
-    .inv-meta-value {
-      color: var(--text);
-      font-weight: 600;
-      min-width: 120px;
-      text-align: right;
-    }
+    .inv-meta-label { color: var(--text-3); font-weight: 500; min-width: 76px; text-align: right; }
+    .inv-meta-value { color: var(--text); font-weight: 600; min-width: 110px; text-align: right; }
 
     input.inv-input {
       background: transparent;
       border: none;
       color: var(--text);
       font-family: var(--font);
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 600;
       text-align: right;
-      width: 130px;
-      padding: 2px 4px;
-      margin: -2px -4px;
-      border-radius: 4px;
-      transition: background .15s, box-shadow .15s;
+      width: 120px;
+      padding: 1px 3px;
+      margin: -1px -3px;
+      border-radius: 3px;
       outline: none;
+      transition: background .15s, box-shadow .15s;
     }
-    input.inv-input:hover { background: rgba(255,255,255,0.04); }
-    input.inv-input:focus {
-      background: rgba(233,30,140,0.07);
-      box-shadow: 0 0 0 1px var(--border-focus);
-    }
+    input.inv-input:hover  { background: rgba(255,255,255,0.04); }
+    input.inv-input:focus  { background: rgba(233,30,140,0.07); box-shadow: 0 0 0 1px var(--border-focus); }
     input[type="date"].inv-input { color-scheme: dark; }
 
-    /* ─── Bill-To / Ship-To ──────────────────────────────── */
+    /* ─── Parties ────────────────────────────────────────── */
     .inv-parties {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 32px;
-      padding: 28px 40px;
+      gap: 24px;
+      padding: 16px 32px;
       border-bottom: 1px solid var(--border);
     }
-
-    .party-block {}
     .party-label {
-      font-size: 10px;
+      font-size: 9px;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.1em;
       color: var(--magenta);
-      margin-bottom: 10px;
+      margin-bottom: 6px;
     }
     .party-name {
-      font-size: 15px;
+      font-size: 13px;
       font-weight: 700;
-      margin-bottom: 4px;
+      margin-bottom: 3px;
     }
-    .party-details {
-      font-size: 12px;
-      color: var(--text-2);
-      line-height: 1.8;
-    }
+    .party-details { font-size: 11px; color: var(--text-2); line-height: 1.7; }
 
-    /* ─── Build Details / Lead Time / Notes ──────────────── */
+    /* ─── Details strip ──────────────────────────────────── */
     .inv-details {
       display: grid;
       grid-template-columns: 1fr 1fr 1fr;
-      gap: 20px;
-      padding: 20px 40px;
+      gap: 16px;
+      padding: 10px 32px;
       border-bottom: 1px solid var(--border);
-      background: rgba(255,255,255,0.015);
+      background: rgba(255,255,255,0.012);
     }
-
-    .detail-block {}
     .detail-label {
-      font-size: 10px;
+      font-size: 9px;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.1em;
       color: var(--text-3);
-      margin-bottom: 6px;
+      margin-bottom: 3px;
     }
-    .detail-value {
-      font-size: 13px;
-      color: var(--text);
-      font-weight: 500;
-    }
+    .detail-value { font-size: 11px; color: var(--text); font-weight: 500; }
 
-    /* ─── Line Items Table ───────────────────────────────── */
-    .inv-items { padding: 0 40px; }
+    /* ─── Line items ─────────────────────────────────────── */
+    .inv-items { padding: 0 32px; }
 
     .items-table {
       width: 100%;
       border-collapse: collapse;
-      margin: 24px 0 0;
+      margin: 14px 0 0;
     }
-
     .items-table th {
-      font-size: 10px;
+      font-size: 9px;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.1em;
       color: var(--text-3);
-      padding: 8px 10px;
+      padding: 6px 8px;
       border-bottom: 1px solid var(--border);
       text-align: left;
     }
     .items-table th.right { text-align: right; }
-
     .items-table td {
-      padding: 10px 10px;
-      border-bottom: 1px solid rgba(255,255,255,0.04);
+      padding: 7px 8px;
+      border-bottom: 1px solid rgba(255,255,255,0.035);
       vertical-align: top;
     }
-
-    .col-num   { width: 36px; color: var(--text-3); font-size: 12px; text-align: center; }
-    .col-item  { width: 22%; font-weight: 600; font-size: 13px; }
-    .col-desc  { color: var(--text-2); font-size: 12px; }
-    .col-qty   { width: 60px; text-align: right; }
-    .col-rate  { width: 90px; text-align: right; }
-    .col-amount{ width: 90px; text-align: right; font-weight: 600; }
-    .col-del   { width: 32px; text-align: center; }
-
-    .row-amount {
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--text);
-      text-align: right;
-    }
+    .col-num    { width: 28px; color: var(--text-3); font-size: 11px; text-align: center; }
+    .col-item   { width: 22%; font-weight: 600; font-size: 12px; }
+    .col-desc   { font-size: 11px; color: var(--text-2); }
+    .col-qty    { width: 52px; text-align: right; }
+    .col-rate   { width: 80px; text-align: right; }
+    .col-amount { width: 80px; text-align: right; font-weight: 600; font-size: 12px; }
+    .col-del    { width: 28px; text-align: center; }
 
     .qty-input, .rate-input {
       background: transparent;
       border: none;
       color: var(--text);
       font-family: var(--font);
-      font-size: 13px;
+      font-size: 12px;
       text-align: right;
       width: 100%;
-      padding: 2px 4px;
-      border-radius: 4px;
+      padding: 1px 3px;
+      border-radius: 3px;
       outline: none;
       transition: background .15s, box-shadow .15s;
     }
     .qty-input:hover, .rate-input:hover { background: rgba(255,255,255,0.04); }
-    .qty-input:focus, .rate-input:focus {
-      background: rgba(233,30,140,0.07);
-      box-shadow: 0 0 0 1px var(--border-focus);
-    }
+    .qty-input:focus, .rate-input:focus { background: rgba(233,30,140,0.07); box-shadow: 0 0 0 1px var(--border-focus); }
 
     .del-row-btn {
       background: none;
       border: none;
       color: var(--text-3);
       cursor: pointer;
-      font-size: 16px;
+      font-size: 15px;
       line-height: 1;
-      padding: 2px 4px;
-      border-radius: 4px;
+      padding: 1px 3px;
+      border-radius: 3px;
       transition: color .15s, background .15s;
     }
     .del-row-btn:hover { color: var(--red); background: rgba(239,68,68,0.08); }
@@ -379,168 +289,141 @@
     .add-row-btn {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
       background: none;
       border: 1px dashed rgba(255,255,255,0.1);
       color: var(--text-3);
       font-family: var(--font);
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 500;
       cursor: pointer;
-      padding: 8px 12px;
+      padding: 6px 10px;
       border-radius: var(--radius-sm);
       width: 100%;
-      margin: 8px 0 24px;
+      margin: 6px 0 14px;
       transition: color .15s, border-color .15s, background .15s;
     }
-    .add-row-btn:hover {
-      color: var(--magenta);
-      border-color: var(--magenta);
-      background: rgba(233,30,140,0.05);
-    }
+    .add-row-btn:hover { color: var(--magenta); border-color: var(--magenta); background: rgba(233,30,140,0.05); }
 
     /* ─── Totals ─────────────────────────────────────────── */
     .inv-totals {
       display: flex;
       justify-content: flex-end;
-      padding: 0 40px 28px;
+      padding: 0 32px 16px;
     }
-
-    .totals-table {
-      width: 280px;
-      border-collapse: collapse;
-    }
-    .totals-table td {
-      padding: 5px 8px;
-      font-size: 13px;
-    }
-    .totals-table .t-label { color: var(--text-2); text-align: right; padding-right: 20px; }
+    .totals-table { width: 260px; border-collapse: collapse; }
+    .totals-table td { padding: 3px 6px; font-size: 12px; }
+    .totals-table .t-label { color: var(--text-2); text-align: right; padding-right: 16px; }
     .totals-table .t-value { text-align: right; font-weight: 500; white-space: nowrap; }
-    .totals-table .t-edit-value {
-      text-align: right;
-    }
+    .totals-table .t-edit-value { text-align: right; }
     .totals-table .t-edit-value input {
       background: transparent;
       border: none;
       color: var(--text);
       font-family: var(--font);
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 500;
       text-align: right;
-      width: 90px;
-      padding: 2px 4px;
-      border-radius: 4px;
+      width: 80px;
+      padding: 1px 3px;
+      border-radius: 3px;
       outline: none;
       transition: background .15s, box-shadow .15s;
     }
     .totals-table .t-edit-value input:hover { background: rgba(255,255,255,0.04); }
-    .totals-table .t-edit-value input:focus {
-      background: rgba(233,30,140,0.07);
-      box-shadow: 0 0 0 1px var(--border-focus);
-    }
-    .totals-divider td {
-      border-top: 1px solid var(--border);
-      padding-top: 10px !important;
-    }
-    .totals-total td {
-      font-size: 16px;
-      font-weight: 700;
-      padding-top: 6px;
-    }
+    .totals-table .t-edit-value input:focus  { background: rgba(233,30,140,0.07); box-shadow: 0 0 0 1px var(--border-focus); }
+    .totals-divider td { border-top: 1px solid var(--border); padding-top: 7px !important; }
+    .totals-total td { font-size: 15px; font-weight: 700; padding-top: 4px; }
     .totals-total .t-label { color: var(--text); }
     .totals-total .t-value { color: var(--magenta); }
 
-    /* ─── Bottom Sections ────────────────────────────────── */
+    /* ─── Bottom ─────────────────────────────────────────── */
     .inv-bottom {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 24px;
-      padding: 24px 40px;
+      gap: 20px;
+      padding: 14px 32px;
       border-top: 1px solid var(--border);
-      background: rgba(255,255,255,0.015);
+      background: rgba(255,255,255,0.012);
     }
-
     .section-label {
-      font-size: 10px;
+      font-size: 9px;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.1em;
       color: var(--magenta);
-      margin-bottom: 12px;
+      margin-bottom: 8px;
     }
-
-    .payment-rows { display: flex; flex-direction: column; gap: 6px; }
-    .payment-row {
-      display: flex;
-      gap: 8px;
-      align-items: baseline;
-      font-size: 12px;
-    }
-    .payment-key {
-      color: var(--text-3);
-      min-width: 100px;
-      font-weight: 500;
-    }
+    .payment-rows { display: flex; flex-direction: column; gap: 4px; }
+    .payment-row { display: flex; gap: 6px; align-items: baseline; font-size: 11px; }
+    .payment-key { color: var(--text-3); min-width: 90px; font-weight: 500; }
     .payment-val { color: var(--text-2); }
 
     /* ─── Footer ─────────────────────────────────────────── */
     .inv-footer {
-      padding: 16px 40px;
+      padding: 10px 32px;
       border-top: 1px solid var(--border);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 16px;
+      gap: 12px;
     }
-    .inv-footer-note {
-      font-size: 11px;
-      color: var(--text-3);
-      font-style: italic;
-    }
-    .inv-footer-brand {
-      font-size: 11px;
-      color: var(--text-3);
-      font-weight: 600;
+    .inv-footer-note { font-size: 10px; color: var(--text-3); font-style: italic; }
+    .inv-footer-brand { font-size: 10px; color: var(--text-3); font-weight: 600; }
+
+    /* ─── Print ──────────────────────────────────────────── */
+    @page {
+      size: A4;
+      margin: 10mm 12mm;
     }
 
-    /* ─── Print Styles ───────────────────────────────────── */
     @media print {
-      body { background: #fff; color: #111; }
+      body { background: #fff; color: #111; font-size: 11px; }
       .toolbar, .add-row-btn, .del-row-btn, .no-print { display: none !important; }
-      .invoice-card {
-        border: none;
-        box-shadow: none;
-        background: #fff;
-      }
+      .invoice-card { border: none; box-shadow: none; background: #fff; border-radius: 0; }
       .page { margin: 0; padding: 0; max-width: 100%; }
       :root {
         --bg-card: #fff;
         --bg-elevated: #f5f5f5;
         --text: #111;
         --text-2: #444;
-        --text-3: #888;
-        --border: #e5e5e5;
+        --text-3: #777;
+        --border: #ddd;
         --magenta: #c4176f;
       }
       [contenteditable] { background: none !important; box-shadow: none !important; }
-      input { background: none !important; box-shadow: none !important; }
-      .inv-bottom { background: #fafafa; }
-      .inv-details { background: #fafafa; }
+      input { background: none !important; box-shadow: none !important; color: #111 !important; }
+      input[type="date"] { color-scheme: light; }
+      .inv-bottom  { background: #f9f9f9; }
+      .inv-details { background: #f9f9f9; }
+
+      /* Tighten further for print */
+      .inv-header  { padding: 16px 24px 14px; }
+      .inv-parties { padding: 10px 24px; }
+      .inv-details { padding: 8px 24px; }
+      .inv-items   { padding: 0 24px; }
+      .inv-totals  { padding: 0 24px 10px; }
+      .inv-bottom  { padding: 10px 24px; }
+      .inv-footer  { padding: 7px 24px; }
+      .items-table { margin-top: 10px; }
+      .items-table td { padding: 5px 6px; }
+      .items-table th { padding: 4px 6px; }
+      .add-row-btn { margin: 4px 0 10px; }
+      .inv-title   { font-size: 26px; margin-bottom: 8px; }
+      .inv-logo    { height: 40px; }
+      .totals-table td { padding: 2px 5px; }
     }
 
     /* ─── Responsive ─────────────────────────────────────── */
-    @media (max-width: 680px) {
-      .inv-header, .inv-parties, .inv-details, .inv-bottom {
-        grid-template-columns: 1fr;
-        padding: 20px;
-      }
+    @media (max-width: 640px) {
+      .inv-header, .inv-parties, .inv-details, .inv-bottom { grid-template-columns: 1fr; padding: 16px; }
       .inv-meta { text-align: left; }
       .inv-meta-row { justify-content: flex-start; }
       input.inv-input { text-align: left; }
-      .inv-items, .inv-totals, .inv-footer { padding-left: 20px; padding-right: 20px; }
+      .inv-items, .inv-totals, .inv-footer { padding-left: 16px; padding-right: 16px; }
       .inv-totals { justify-content: stretch; }
       .totals-table { width: 100%; }
-      .items-table .col-desc { display: none; }
+      .col-desc { display: none; }
     }
   </style>
 </head>
@@ -558,27 +441,23 @@
   </select>
 
   <button class="btn btn-ghost" onclick="newInvoice()">
-    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-    New Invoice
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    New
   </button>
-
   <button class="btn btn-ghost" onclick="saveInvoice()">
-    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
     Save
   </button>
-
   <button class="btn btn-ghost" onclick="loadInvoice()">
-    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
     Load
   </button>
-
   <button class="btn btn-ghost" onclick="window.print()">
-    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
     Print / PDF
   </button>
-
   <button class="btn btn-ghost" onclick="copyEmailSummary()">
-    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
     Copy Summary
   </button>
 </div>
@@ -587,16 +466,13 @@
 <div class="page">
 <div class="invoice-card" id="invoice">
 
-  <!-- Header -->
+  <!-- Header: Logo left, Invoice meta right -->
   <div class="inv-header">
     <div class="inv-logo-block">
       <img src="/img/svk-logo.png" alt="SVK Works" class="inv-logo" onerror="this.style.display='none'">
-      <div class="company-name" contenteditable="true" data-placeholder="Company Name">SVK Works</div>
-      <div class="company-details" contenteditable="true" data-placeholder="Address / Contact">
-info@svkworks.com
+      <div class="company-details" contenteditable="true" data-placeholder="Address / Contact">info@svkworks.com
 svkworks.com
-Instagram: @svkworks
-      </div>
+Instagram: @svkworks</div>
     </div>
 
     <div class="inv-meta">
@@ -622,28 +498,24 @@ Instagram: @svkworks
     </div>
   </div>
 
-  <!-- Bill To -->
+  <!-- Billed To + Vehicle Info -->
   <div class="inv-parties">
     <div class="party-block">
       <div class="party-label">Billed To</div>
       <div class="party-name" contenteditable="true" data-placeholder="Customer Full Name">Customer Name</div>
-      <div class="party-details" contenteditable="true" data-placeholder="Address, city, state, zip&#10;Email&#10;Phone">
-Email
-Phone
-      </div>
+      <div class="party-details" contenteditable="true" data-placeholder="Email&#10;Phone&#10;Address">Email
+Phone</div>
     </div>
     <div class="party-block">
       <div class="party-label">Build / Vehicle Info</div>
       <div class="party-name" contenteditable="true" data-placeholder="e.g. 1997 MK4 Supra JZA80">Vehicle</div>
-      <div class="party-details" contenteditable="true" data-placeholder="Engine, transmission, ECU, special notes...">
-Engine
+      <div class="party-details" contenteditable="true" data-placeholder="Engine, transmission, ECU...">Engine
 Transmission
-ECU
-      </div>
+ECU</div>
     </div>
   </div>
 
-  <!-- Quick Details Strip -->
+  <!-- Details Strip -->
   <div class="inv-details">
     <div class="detail-block">
       <div class="detail-label">Lead Time</div>
@@ -651,11 +523,11 @@ ECU
     </div>
     <div class="detail-block">
       <div class="detail-label">Build Status</div>
-      <div class="detail-value" contenteditable="true" data-placeholder="e.g. In Queue / In Progress">In Queue</div>
+      <div class="detail-value" contenteditable="true" data-placeholder="In Queue / In Progress">In Queue</div>
     </div>
     <div class="detail-block">
       <div class="detail-label">Deposit Required</div>
-      <div class="detail-value" id="deposit-display">50% upfront — calculated below</div>
+      <div class="detail-value" id="deposit-display">50% — calculated below</div>
     </div>
   </div>
 
@@ -676,7 +548,7 @@ ECU
       <tbody id="line-items"></tbody>
     </table>
     <button class="add-row-btn no-print" onclick="addRow()">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
       Add Line Item
     </button>
   </div>
@@ -690,44 +562,45 @@ ECU
           <td class="t-value" id="subtotal">$0.00</td>
         </tr>
         <tr>
-          <td class="t-label">Discount</td>
-          <td class="t-edit-value"><input type="number" id="discount" value="0" min="0" step="0.01" onchange="recalc()" oninput="recalc()" placeholder="0"></td>
+          <td class="t-label">Discount ($)</td>
+          <td class="t-edit-value"><input type="number" id="discount" value="0" min="0" step="0.01" oninput="recalc()" placeholder="0"></td>
         </tr>
         <tr>
-          <td class="t-label">Shipping</td>
-          <td class="t-edit-value"><input type="number" id="shipping" value="0" min="0" step="0.01" onchange="recalc()" oninput="recalc()" placeholder="0"></td>
+          <td class="t-label">Shipping ($)</td>
+          <td class="t-edit-value"><input type="number" id="shipping" value="0" min="0" step="0.01" oninput="recalc()" placeholder="0"></td>
         </tr>
         <tr>
-          <td class="t-label">Tax (0%)</td>
-          <td class="t-edit-value"><input type="number" id="tax-rate" value="0" min="0" max="100" step="0.01" onchange="recalc()" oninput="recalc()" placeholder="0"> <span style="color:var(--text-3);font-size:11px;">%</span></td>
+          <td class="t-label">Tax (%)</td>
+          <td class="t-edit-value">
+            <input type="number" id="tax-rate" value="0" min="0" max="100" step="0.01" oninput="recalc()" placeholder="0">
+            <span style="color:var(--text-3);font-size:10px;">%</span>
+          </td>
         </tr>
-        <tr class="totals-divider">
-          <td></td><td></td>
-        </tr>
+        <tr class="totals-divider"><td></td><td></td></tr>
         <tr class="totals-total">
           <td class="t-label">Total</td>
           <td class="t-value" id="grand-total">$0.00</td>
         </tr>
         <tr>
-          <td class="t-label" style="color:var(--text-3);font-size:12px;">50% Deposit</td>
-          <td class="t-value" id="deposit-amt" style="color:var(--text-2);font-size:12px;">$0.00</td>
+          <td class="t-label" style="color:var(--text-3);font-size:11px;">50% Deposit</td>
+          <td class="t-value" id="deposit-amt" style="color:var(--text-2);font-size:11px;">$0.00</td>
         </tr>
         <tr>
-          <td class="t-label" style="color:var(--text-3);font-size:12px;">Balance Due</td>
-          <td class="t-value" id="balance-amt" style="color:var(--text-2);font-size:12px;">$0.00</td>
+          <td class="t-label" style="color:var(--text-3);font-size:11px;">Balance Due</td>
+          <td class="t-value" id="balance-amt" style="color:var(--text-2);font-size:11px;">$0.00</td>
         </tr>
       </tbody>
     </table>
   </div>
 
-  <!-- Payment + Notes -->
+  <!-- Payment Details + Notes -->
   <div class="inv-bottom">
     <div>
       <div class="section-label">Payment Details</div>
       <div class="payment-rows">
         <div class="payment-row">
-          <span class="payment-key">Accepted Methods</span>
-          <span class="payment-val" contenteditable="true" data-placeholder="e.g. Zelle, PayPal, Bank Transfer">Zelle, PayPal F&amp;F, Bank Transfer</span>
+          <span class="payment-key">Methods</span>
+          <span class="payment-val" contenteditable="true" data-placeholder="Zelle, PayPal, etc.">Zelle, PayPal F&amp;F, Bank Transfer</span>
         </div>
         <div class="payment-row">
           <span class="payment-key">Zelle / PayPal</span>
@@ -735,44 +608,39 @@ ECU
         </div>
         <div class="payment-row">
           <span class="payment-key">Bank / Wire</span>
-          <span class="payment-val" contenteditable="true" data-placeholder="Routing / Account or bank name">Contact for wire details</span>
+          <span class="payment-val" contenteditable="true" data-placeholder="Bank details">Contact for wire details</span>
         </div>
         <div class="payment-row">
           <span class="payment-key">Deposit Policy</span>
-          <span class="payment-val" contenteditable="true" data-placeholder="e.g. 50% to start, balance on completion">50% to start build, balance due before shipping</span>
+          <span class="payment-val" contenteditable="true" data-placeholder="Deposit terms">50% to start, balance before shipping</span>
         </div>
         <div class="payment-row">
-          <span class="payment-key">Late Payment</span>
-          <span class="payment-val" contenteditable="true" data-placeholder="e.g. 1.5% monthly after due date">Build may be paused if deposit is not received</span>
+          <span class="payment-key">Non-Payment</span>
+          <span class="payment-val" contenteditable="true" data-placeholder="Late payment policy">Build paused if deposit not received</span>
         </div>
       </div>
     </div>
 
     <div>
       <div class="section-label">Notes &amp; Terms</div>
-      <div style="font-size:12px; color:var(--text-2); line-height:1.8;" contenteditable="true" data-placeholder="Add any notes, warranty terms, or special conditions here...">
-All harnesses are custom built to order. Lead time begins upon receipt of deposit. Harnesses are tested for continuity before shipment. No returns on custom-built items. Warranty covers manufacturing defects for 1 year from date of delivery. SVK Works is not liable for installation errors or vehicle damage resulting from improper installation.
-      </div>
+      <div style="font-size:11px;color:var(--text-2);line-height:1.65;" contenteditable="true" data-placeholder="Notes, warranty, terms...">All harnesses are custom built to order. Lead time begins upon deposit. Tested for continuity before shipment. No returns on custom items. Warranty covers manufacturing defects for 1 year from delivery. SVK Works is not liable for installation errors or vehicle damage from improper installation.</div>
     </div>
   </div>
 
   <!-- Footer -->
   <div class="inv-footer">
-    <div class="inv-footer-note" contenteditable="true" data-placeholder="Thank you note...">
-      Thank you for choosing SVK Works — we appreciate your business.
-    </div>
+    <div class="inv-footer-note" contenteditable="true" data-placeholder="Thank you note...">Thank you for choosing SVK Works — we appreciate your business.</div>
     <div class="inv-footer-brand">svkworks.com</div>
   </div>
 
-</div><!-- /invoice-card -->
-</div><!-- /page -->
+</div>
+</div>
 
 <script>
-  // ─── Default line items ──────────────────────────────────
   const DEFAULT_ROWS = [
     { item: 'MK4 Supra Engine Harness', desc: 'Custom plug-and-play standalone harness — 2JZ-GTE', qty: 1, rate: 1450 },
-    { item: 'ECU Option', desc: 'Haltech Elite 2500 wiring integration', qty: 1, rate: 150 },
-    { item: 'Milspec Connector', desc: 'Autosport connector with firewall plate', qty: 1, rate: 350 },
+    { item: 'ECU Option',               desc: 'Haltech Elite 2500 wiring integration',              qty: 1, rate: 150  },
+    { item: 'Milspec Connector',         desc: 'Autosport connector with firewall plate',            qty: 1, rate: 350  },
   ];
 
   let rowCount = 0;
@@ -789,10 +657,10 @@ All harnesses are custom built to order. Lead time begins upon receipt of deposi
     tr.innerHTML = `
       <td class="col-num">${tbody.rows.length + 1}</td>
       <td class="col-item"><span contenteditable="true" data-placeholder="Item name" oninput="recalc()">${item}</span></td>
-      <td class="col-desc"><span contenteditable="true" data-placeholder="Optional description" oninput="recalc()">${desc}</span></td>
+      <td class="col-desc"><span contenteditable="true" data-placeholder="Description" oninput="recalc()">${desc}</span></td>
       <td class="col-qty"><input class="qty-input" type="number" value="${qty}" min="0" step="1" oninput="recalc()"></td>
       <td class="col-rate"><input class="rate-input" type="number" value="${rate}" min="0" step="0.01" oninput="recalc()"></td>
-      <td class="col-amount row-amount" id="amt-${rowCount}">$0.00</td>
+      <td class="col-amount" id="amt-${rowCount}">$0.00</td>
       <td class="col-del no-print"><button class="del-row-btn" onclick="removeRow(this)" title="Remove">×</button></td>
     `;
     tbody.appendChild(tr);
@@ -800,15 +668,12 @@ All harnesses are custom built to order. Lead time begins upon receipt of deposi
     renumberRows();
   }
 
-  function removeRow(btn) {
-    btn.closest('tr').remove();
-    recalc();
-    renumberRows();
-  }
+  function removeRow(btn) { btn.closest('tr').remove(); recalc(); renumberRows(); }
 
   function renumberRows() {
-    const rows = document.querySelectorAll('#line-items tr');
-    rows.forEach((r, i) => { r.querySelector('.col-num').textContent = i + 1; });
+    document.querySelectorAll('#line-items tr').forEach((r, i) => {
+      r.querySelector('.col-num').textContent = i + 1;
+    });
   }
 
   function recalc() {
@@ -817,88 +682,73 @@ All harnesses are custom built to order. Lead time begins upon receipt of deposi
       const qty  = parseFloat(tr.querySelector('.qty-input')?.value)  || 0;
       const rate = parseFloat(tr.querySelector('.rate-input')?.value) || 0;
       const amt  = qty * rate;
-      const amtCell = tr.querySelector('[id^="amt-"]');
-      if (amtCell) amtCell.textContent = fmt(amt);
+      const cell = tr.querySelector('[id^="amt-"]');
+      if (cell) cell.textContent = fmt(amt);
       subtotal += amt;
     });
-
-    const discount  = parseFloat(document.getElementById('discount').value)  || 0;
-    const shipping  = parseFloat(document.getElementById('shipping').value)   || 0;
-    const taxRate   = parseFloat(document.getElementById('tax-rate').value)   || 0;
-    const taxed     = (subtotal - discount) * (taxRate / 100);
-    const total     = subtotal - discount + taxed + shipping;
-    const deposit   = total * 0.5;
-    const balance   = total - deposit;
+    const discount = parseFloat(document.getElementById('discount').value)  || 0;
+    const shipping = parseFloat(document.getElementById('shipping').value)  || 0;
+    const taxRate  = parseFloat(document.getElementById('tax-rate').value)  || 0;
+    const taxed    = (subtotal - discount) * (taxRate / 100);
+    const total    = subtotal - discount + taxed + shipping;
+    const deposit  = total * 0.5;
+    const balance  = total - deposit;
 
     document.getElementById('subtotal').textContent    = fmt(subtotal);
     document.getElementById('grand-total').textContent = fmt(total);
     document.getElementById('deposit-amt').textContent = fmt(deposit);
     document.getElementById('balance-amt').textContent = fmt(balance);
-    document.getElementById('deposit-display').textContent = `50% deposit = ${fmt(deposit)}`;
+    document.getElementById('deposit-display').textContent = `50% = ${fmt(deposit)}`;
   }
 
-  // ─── Status badge ────────────────────────────────────────
-  function updateStatus(sel) {
-    sel.className = 'status-select ' + sel.value;
-  }
+  function updateStatus(sel) { sel.className = 'status-select ' + sel.value; }
 
-  // ─── Dates ───────────────────────────────────────────────
   function setDates() {
-    const today = new Date();
-    const due   = new Date();
+    const today = new Date(), due = new Date();
     due.setDate(today.getDate() + 30);
-    const fmt = d => d.toISOString().split('T')[0];
-    document.getElementById('inv-date').value = fmt(today);
-    document.getElementById('inv-due').value  = fmt(due);
+    const f = d => d.toISOString().split('T')[0];
+    document.getElementById('inv-date').value = f(today);
+    document.getElementById('inv-due').value  = f(due);
   }
 
-  // ─── Invoice number ──────────────────────────────────────
   function nextInvoiceNumber() {
-    const saved = localStorage.getItem('svk_inv_counter');
-    const n = saved ? parseInt(saved) + 1 : 1;
+    const n = parseInt(localStorage.getItem('svk_inv_counter') || '0') + 1;
     localStorage.setItem('svk_inv_counter', n);
     return 'SVK-' + String(n).padStart(3, '0');
   }
 
-  // ─── New Invoice ─────────────────────────────────────────
   function newInvoice() {
     if (!confirm('Start a new invoice? Unsaved changes will be lost.')) return;
     document.getElementById('line-items').innerHTML = '';
     rowCount = 0;
     DEFAULT_ROWS.forEach(r => addRow(r.item, r.desc, r.qty, r.rate));
     document.getElementById('inv-number').value = nextInvoiceNumber();
-    document.getElementById('inv-po').value = '';
-    document.getElementById('discount').value = 0;
-    document.getElementById('shipping').value = 0;
-    document.getElementById('tax-rate').value = 0;
-    document.querySelectorAll('[contenteditable]').forEach(el => {
-      if (el.dataset.reset) el.textContent = el.dataset.reset;
-    });
-    document.querySelector('.party-block .party-name').textContent = 'Customer Name';
-    document.querySelector('.party-block .party-details').textContent = '\nEmail\nPhone';
-    document.querySelectorAll('.party-block')[1].querySelector('.party-name').textContent = 'Vehicle';
-    document.querySelectorAll('.party-block')[1].querySelector('.party-details').textContent = '\nEngine\nTransmission\nECU';
+    document.getElementById('inv-po').value      = '';
+    document.getElementById('discount').value    = 0;
+    document.getElementById('shipping').value    = 0;
+    document.getElementById('tax-rate').value    = 0;
+    const pb = document.querySelectorAll('.party-block');
+    pb[0].querySelector('.party-name').textContent    = 'Customer Name';
+    pb[0].querySelector('.party-details').textContent = 'Email\nPhone';
+    pb[1].querySelector('.party-name').textContent    = 'Vehicle';
+    pb[1].querySelector('.party-details').textContent = 'Engine\nTransmission\nECU';
     setDates();
     recalc();
   }
 
-  // ─── Save / Load ─────────────────────────────────────────
   function saveInvoice() {
     const rows = [];
-    document.querySelectorAll('#line-items tr').forEach(tr => {
-      rows.push({
-        item: tr.querySelector('.col-item span')?.innerText || '',
-        desc: tr.querySelector('.col-desc span')?.innerText || '',
-        qty:  tr.querySelector('.qty-input')?.value || 1,
-        rate: tr.querySelector('.rate-input')?.value || 0,
-      });
-    });
-
+    document.querySelectorAll('#line-items tr').forEach(tr => rows.push({
+      item: tr.querySelector('.col-item span')?.innerText || '',
+      desc: tr.querySelector('.col-desc span')?.innerText || '',
+      qty:  tr.querySelector('.qty-input')?.value  || 1,
+      rate: tr.querySelector('.rate-input')?.value || 0,
+    }));
     const data = {
-      number:   document.getElementById('inv-number').value,
-      date:     document.getElementById('inv-date').value,
-      due:      document.getElementById('inv-due').value,
-      po:       document.getElementById('inv-po').value,
+      number: document.getElementById('inv-number').value,
+      date:   document.getElementById('inv-date').value,
+      due:    document.getElementById('inv-due').value,
+      po:     document.getElementById('inv-po').value,
       discount: document.getElementById('discount').value,
       shipping: document.getElementById('shipping').value,
       taxRate:  document.getElementById('tax-rate').value,
@@ -906,88 +756,72 @@ All harnesses are custom built to order. Lead time begins upon receipt of deposi
       rows,
       editables: [],
     };
-
     document.querySelectorAll('[contenteditable]').forEach((el, i) => {
       data.editables.push({ i, html: el.innerHTML });
     });
-
     const key = 'svk_invoice_' + data.number;
     localStorage.setItem(key, JSON.stringify(data));
     localStorage.setItem('svk_last_invoice', key);
-
-    showToast('Invoice ' + data.number + ' saved.');
+    showToast('Saved ' + data.number);
   }
 
   function loadInvoice() {
-    const key = prompt('Enter invoice key to load (e.g. SVK-001), or leave blank to load last saved:');
-    const storageKey = key ? ('svk_invoice_' + key.trim().toUpperCase()) : localStorage.getItem('svk_last_invoice');
-    if (!storageKey) { showToast('No saved invoice found.', true); return; }
-    const raw = localStorage.getItem(storageKey);
-    if (!raw) { showToast('Invoice not found: ' + storageKey, true); return; }
-
+    const key = prompt('Invoice number to load (e.g. SVK-001), blank = last saved:');
+    const sk  = key ? ('svk_invoice_' + key.trim().toUpperCase()) : localStorage.getItem('svk_last_invoice');
+    if (!sk) { showToast('No saved invoice found.', true); return; }
+    const raw = localStorage.getItem(sk);
+    if (!raw) { showToast('Not found: ' + sk, true); return; }
     const data = JSON.parse(raw);
-    document.getElementById('inv-number').value = data.number || '';
-    document.getElementById('inv-date').value   = data.date   || '';
-    document.getElementById('inv-due').value    = data.due    || '';
-    document.getElementById('inv-po').value     = data.po     || '';
+    document.getElementById('inv-number').value = data.number  || '';
+    document.getElementById('inv-date').value   = data.date    || '';
+    document.getElementById('inv-due').value    = data.due     || '';
+    document.getElementById('inv-po').value     = data.po      || '';
     document.getElementById('discount').value   = data.discount || 0;
     document.getElementById('shipping').value   = data.shipping || 0;
     document.getElementById('tax-rate').value   = data.taxRate  || 0;
-
     const sel = document.getElementById('status-select');
     sel.value = data.status || 'draft';
     updateStatus(sel);
-
     document.getElementById('line-items').innerHTML = '';
     rowCount = 0;
     (data.rows || []).forEach(r => addRow(r.item, r.desc, r.qty, r.rate));
-
-    const editables = document.querySelectorAll('[contenteditable]');
-    (data.editables || []).forEach(({ i, html }) => {
-      if (editables[i]) editables[i].innerHTML = html;
-    });
-
+    const els = document.querySelectorAll('[contenteditable]');
+    (data.editables || []).forEach(({ i, html }) => { if (els[i]) els[i].innerHTML = html; });
     recalc();
     showToast('Loaded ' + data.number);
   }
 
-  // ─── Copy email summary ──────────────────────────────────
   function copyEmailSummary() {
     const num   = document.getElementById('inv-number').value;
     const date  = document.getElementById('inv-date').value;
     const due   = document.getElementById('inv-due').value;
     const total = document.getElementById('grand-total').textContent;
     const dep   = document.getElementById('deposit-amt').textContent;
-
     let lines = [`Invoice ${num} | Date: ${date} | Due: ${due}`, `Total: ${total}  |  Deposit: ${dep}`, '', 'Line Items:'];
     document.querySelectorAll('#line-items tr').forEach((tr, i) => {
-      const item = tr.querySelector('.col-item span')?.innerText || '';
-      const amt  = tr.querySelector('[id^="amt-"]')?.textContent || '';
-      lines.push(`  ${i+1}. ${item}  ${amt}`);
+      lines.push(`  ${i+1}. ${tr.querySelector('.col-item span')?.innerText || ''}  ${tr.querySelector('[id^="amt-"]')?.textContent || ''}`);
     });
-    lines.push('', 'Thank you for your business — SVK Works');
-
+    lines.push('', 'Thank you — SVK Works');
     navigator.clipboard.writeText(lines.join('\n'))
-      .then(() => showToast('Summary copied to clipboard!'))
-      .catch(() => showToast('Copy failed — try manually.', true));
+      .then(() => showToast('Summary copied!'))
+      .catch(() => showToast('Copy failed.', true));
   }
 
-  // ─── Toast ───────────────────────────────────────────────
   function showToast(msg, err = false) {
     const t = document.createElement('div');
     t.textContent = msg;
     Object.assign(t.style, {
-      position: 'fixed', bottom: '24px', right: '24px', zIndex: 9999,
+      position:'fixed', bottom:'20px', right:'20px', zIndex:'9999',
       background: err ? 'var(--red)' : 'var(--green)',
-      color: '#fff', padding: '10px 18px', borderRadius: '8px',
-      font: '600 13px/1 var(--font)', boxShadow: '0 4px 16px rgba(0,0,0,0.4)',
-      transition: 'opacity .3s', opacity: '1',
+      color:'#fff', padding:'9px 16px', borderRadius:'7px',
+      font:'600 12px/1 var(--font)', boxShadow:'0 4px 16px rgba(0,0,0,0.4)',
+      transition:'opacity .3s', opacity:'1',
     });
     document.body.appendChild(t);
-    setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 300); }, 2500);
+    setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 300); }, 2200);
   }
 
-  // ─── Init ────────────────────────────────────────────────
+  // Init
   setDates();
   document.getElementById('inv-number').value = nextInvoiceNumber();
   DEFAULT_ROWS.forEach(r => addRow(r.item, r.desc, r.qty, r.rate));
