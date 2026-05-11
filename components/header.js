@@ -15,6 +15,7 @@ const SVK_HEADER_HTML = `
         <div class="header-top-links">
           <a href="/support.html">Support</a>
           <a href="/resources.html">Resources</a>
+          <a href="/terms.html">Terms &amp; Conditions</a>
         </div>
       </div>
     </div>
