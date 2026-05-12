@@ -1,0 +1,2225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SVK Works — Harness Designer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --magenta: #e91e8c;
+    --magenta-2: #c4176f;
+    --magenta-glow: rgba(233,30,140,0.35);
+    --bg: #0a0a0f;
+    --bg-1: #0f0f17;
+    --bg-2: #14141d;
+    --bg-3: #1a1a24;
+    --bg-4: #22222e;
+    --border: rgba(255,255,255,0.07);
+    --border-2: rgba(255,255,255,0.12);
+    --text: #e8e8f0;
+    --text-2: #9090a8;
+    --text-3: #5a5a70;
+    --green: #22c55e;
+    --yellow: #f59e0b;
+    --red: #ef4444;
+    --blue: #3b82f6;
+    --cyan: #06b6d4;
+    --shadow: 0 8px 28px rgba(0,0,0,0.6);
+    --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --mono: 'JetBrains Mono', ui-monospace, monospace;
+  }
+
+  html, body {
+    height: 100%;
+    overflow: hidden;
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--text);
+    font-size: 13px;
+    line-height: 1.4;
+    user-select: none;
+  }
+
+  /* ─── Layout ───────────────────────────────────────────── */
+  .app {
+    display: grid;
+    grid-template-rows: 44px 1fr 26px;
+    grid-template-columns: 240px 1fr 280px;
+    grid-template-areas:
+      "topbar topbar topbar"
+      "left center right"
+      "status status status";
+    height: 100vh;
+    width: 100vw;
+  }
+
+  /* ─── Topbar ───────────────────────────────────────────── */
+  .topbar {
+    grid-area: topbar;
+    background: var(--bg-1);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    gap: 6px;
+    z-index: 100;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 800;
+    font-size: 13px;
+    letter-spacing: -0.01em;
+    padding: 0 14px 0 4px;
+    margin-right: 6px;
+    border-right: 1px solid var(--border);
+    height: 100%;
+    color: var(--text);
+  }
+  .brand-logo {
+    width: 22px;
+    height: 22px;
+    background: var(--magenta);
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-weight: 900;
+    font-size: 11px;
+  }
+  .brand-name { color: var(--magenta); }
+  .brand-sub { color: var(--text-3); font-weight: 500; }
+
+  .tool-group {
+    display: flex;
+    align-items: center;
+    gap: 1px;
+    height: 30px;
+    padding: 0 4px;
+    border-right: 1px solid var(--border);
+    margin-right: 4px;
+  }
+  .tool-group:last-child { border-right: none; margin-right: 0; }
+
+  .tool-btn, .menu-btn {
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--text-2);
+    font-family: var(--font);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    height: 28px;
+    white-space: nowrap;
+    transition: background .12s, color .12s, border-color .12s;
+  }
+  .tool-btn:hover, .menu-btn:hover {
+    background: var(--bg-3);
+    color: var(--text);
+  }
+  .tool-btn svg, .menu-btn svg { width: 13px; height: 13px; stroke-width: 2; }
+  .tool-btn.active {
+    background: rgba(233,30,140,0.15);
+    color: var(--magenta);
+    border-color: rgba(233,30,140,0.3);
+  }
+  .tool-btn[disabled] { opacity: 0.4; pointer-events: none; }
+  .tool-btn .shortcut {
+    color: var(--text-3);
+    font-family: var(--mono);
+    font-size: 10px;
+    margin-left: 2px;
+  }
+  .tool-btn.active .shortcut { color: var(--magenta); opacity: 0.7; }
+
+  .spacer { flex: 1; }
+
+  .project-name {
+    font-size: 12px;
+    color: var(--text-2);
+    font-weight: 500;
+    padding: 4px 10px;
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    outline: none;
+    min-width: 200px;
+    font-family: var(--font);
+  }
+  .project-name:focus { border-color: var(--magenta); color: var(--text); }
+
+  /* ─── Sidebar (left) ───────────────────────────────────── */
+  .left-panel {
+    grid-area: left;
+    background: var(--bg-1);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .panel-header {
+    padding: 10px 14px 8px;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 700;
+    color: var(--text-3);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .panel-tabs {
+    display: flex;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+  }
+  .panel-tab {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: var(--text-3);
+    font-family: var(--font);
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 8px 6px;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: color .12s, border-color .12s;
+  }
+  .panel-tab:hover { color: var(--text-2); }
+  .panel-tab.active {
+    color: var(--magenta);
+    border-bottom-color: var(--magenta);
+  }
+
+  .palette-search {
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  .palette-search input {
+    width: 100%;
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: var(--font);
+    font-size: 11px;
+    padding: 5px 9px;
+    border-radius: 4px;
+    outline: none;
+  }
+  .palette-search input:focus { border-color: var(--magenta); }
+  .palette-search input::placeholder { color: var(--text-3); }
+
+  .palette {
+    flex: 1;
+    overflow-y: auto;
+    padding: 6px 0;
+  }
+  .palette-cat {
+    border-bottom: 1px solid var(--border);
+  }
+  .palette-cat-header {
+    background: var(--bg-2);
+    padding: 6px 14px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-2);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    user-select: none;
+  }
+  .palette-cat-header:hover { color: var(--text); background: var(--bg-3); }
+  .palette-cat-header .caret {
+    transition: transform .15s;
+    color: var(--text-3);
+    font-size: 9px;
+  }
+  .palette-cat.collapsed .caret { transform: rotate(-90deg); }
+  .palette-cat.collapsed .palette-items { display: none; }
+  .palette-cat-count {
+    margin-left: auto;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-3);
+    font-weight: 600;
+  }
+
+  .palette-items {
+    padding: 4px 0;
+  }
+  .palette-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 12px;
+    cursor: grab;
+    transition: background .1s;
+    font-size: 11px;
+    color: var(--text-2);
+  }
+  .palette-item:hover {
+    background: rgba(233,30,140,0.08);
+    color: var(--text);
+  }
+  .palette-item:active { cursor: grabbing; }
+  .palette-item img {
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+    background: var(--bg-3);
+    border-radius: 4px;
+    padding: 2px;
+    flex-shrink: 0;
+  }
+  .palette-item-name {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* ─── Canvas (center) ──────────────────────────────────── */
+  .canvas-wrap {
+    grid-area: center;
+    position: relative;
+    overflow: hidden;
+    background: var(--bg);
+  }
+  .canvas-svg {
+    width: 100%;
+    height: 100%;
+    cursor: default;
+    display: block;
+  }
+  .canvas-svg.mode-wire { cursor: crosshair; }
+  .canvas-svg.mode-pan,
+  .canvas-svg.panning { cursor: grabbing; }
+  .canvas-svg.mode-place { cursor: copy; }
+
+  .canvas-overlay {
+    position: absolute;
+    pointer-events: none;
+    z-index: 10;
+  }
+  .canvas-overlay-tl { top: 12px; left: 12px; }
+  .canvas-overlay-tr { top: 12px; right: 12px; display: flex; flex-direction: column; gap: 8px; align-items: flex-end; }
+  .canvas-overlay-bl { bottom: 12px; left: 12px; display: flex; flex-direction: column; gap: 6px; }
+
+  .canvas-help {
+    pointer-events: auto;
+    background: rgba(20,20,29,0.92);
+    backdrop-filter: blur(8px);
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    padding: 8px 12px;
+    font-size: 11px;
+    color: var(--text-2);
+    font-weight: 500;
+    box-shadow: var(--shadow);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .canvas-help kbd {
+    background: var(--bg-3);
+    border: 1px solid var(--border);
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text);
+  }
+
+  .zoom-pill {
+    pointer-events: auto;
+    background: rgba(20,20,29,0.92);
+    backdrop-filter: blur(8px);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 4px 4px;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    box-shadow: var(--shadow);
+  }
+  .zoom-btn {
+    width: 24px;
+    height: 24px;
+    border: none;
+    background: transparent;
+    color: var(--text-2);
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 700;
+    transition: background .12s, color .12s;
+  }
+  .zoom-btn:hover { background: var(--bg-3); color: var(--text); }
+  .zoom-val {
+    min-width: 50px;
+    text-align: center;
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text);
+    padding: 0 6px;
+  }
+
+  /* ─── Selection / Wire styles ──────────────────────────── */
+  .component-group { cursor: move; }
+  .component-group.mode-wire-hover .comp-bg { stroke: var(--magenta); stroke-width: 2; }
+  .component-group .comp-bg {
+    fill: var(--bg-2);
+    stroke: var(--border-2);
+    stroke-width: 1;
+    rx: 6;
+  }
+  .component-group.selected .comp-bg {
+    stroke: var(--magenta);
+    stroke-width: 2;
+    filter: drop-shadow(0 0 4px var(--magenta-glow));
+  }
+  .component-group .comp-label {
+    fill: var(--text);
+    font: 600 11px var(--font);
+    text-anchor: middle;
+    pointer-events: none;
+  }
+  .component-group .comp-sublabel {
+    fill: var(--text-3);
+    font: 500 9px var(--mono);
+    text-anchor: middle;
+    pointer-events: none;
+  }
+
+  .wire-line { fill: none; stroke-width: 2.5; cursor: pointer; transition: stroke-width .1s; }
+  .wire-line:hover { stroke-width: 4; }
+  .wire-line.selected { stroke-width: 4; filter: drop-shadow(0 0 4px currentColor); }
+  .wire-handle {
+    fill: var(--bg);
+    stroke: var(--magenta);
+    stroke-width: 1.5;
+    cursor: move;
+  }
+  .wire-label {
+    fill: var(--text);
+    font: 600 10px var(--mono);
+    text-anchor: middle;
+    pointer-events: none;
+    paint-order: stroke;
+    stroke: var(--bg);
+    stroke-width: 3;
+  }
+  .wire-label-bg {
+    fill: var(--bg);
+    stroke: var(--border);
+    rx: 3;
+  }
+  .temp-wire {
+    fill: none;
+    stroke: var(--magenta);
+    stroke-width: 2;
+    stroke-dasharray: 5 3;
+    pointer-events: none;
+    opacity: 0.8;
+  }
+  .temp-cursor-dot {
+    fill: var(--magenta);
+    pointer-events: none;
+  }
+
+  /* ─── Right Panel ──────────────────────────────────────── */
+  .right-panel {
+    grid-area: right;
+    background: var(--bg-1);
+    border-left: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .right-content { flex: 1; overflow-y: auto; }
+  .right-content > section { display: none; }
+  .right-content > section.active { display: block; }
+
+  .prop-empty {
+    padding: 30px 20px;
+    text-align: center;
+    color: var(--text-3);
+    font-size: 11px;
+  }
+  .prop-empty svg { width: 32px; height: 32px; opacity: 0.4; margin-bottom: 10px; }
+
+  .prop-section {
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .prop-section-title {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-3);
+    margin-bottom: 8px;
+  }
+  .prop-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+  }
+  .prop-row:last-child { margin-bottom: 0; }
+  .prop-label {
+    font-size: 11px;
+    color: var(--text-2);
+    min-width: 60px;
+    flex-shrink: 0;
+  }
+  .prop-input, .prop-select {
+    flex: 1;
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: var(--font);
+    font-size: 11px;
+    padding: 4px 7px;
+    border-radius: 4px;
+    outline: none;
+    min-width: 0;
+  }
+  .prop-input:focus, .prop-select:focus { border-color: var(--magenta); }
+  .prop-value {
+    flex: 1;
+    font-size: 11px;
+    font-family: var(--mono);
+    color: var(--text);
+    text-align: right;
+  }
+  .prop-value.magenta { color: var(--magenta); font-weight: 700; }
+
+  .swatch-grid {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 4px;
+    margin-top: 4px;
+  }
+  .swatch {
+    aspect-ratio: 1;
+    border-radius: 3px;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: transform .1s;
+  }
+  .swatch:hover { transform: scale(1.15); }
+  .swatch.active { border-color: #fff; box-shadow: 0 0 0 1px var(--bg-1); }
+
+  .gauge-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 3px;
+  }
+  .gauge-btn {
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    color: var(--text-2);
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 600;
+    padding: 4px 0;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all .12s;
+  }
+  .gauge-btn:hover { background: var(--bg-3); color: var(--text); }
+  .gauge-btn.active { background: var(--magenta); color: #fff; border-color: var(--magenta); }
+
+  /* ─── BOM Table ────────────────────────────────────────── */
+  .bom-list {
+    padding: 6px 0;
+  }
+  .bom-row {
+    display: grid;
+    grid-template-columns: 1fr 36px;
+    gap: 8px;
+    padding: 7px 14px;
+    border-bottom: 1px solid var(--border);
+    font-size: 11px;
+    align-items: center;
+  }
+  .bom-row.bom-sub {
+    background: var(--bg-2);
+    font-weight: 700;
+    color: var(--text-3);
+    text-transform: uppercase;
+    font-size: 9px;
+    letter-spacing: 0.08em;
+    padding: 5px 14px;
+  }
+  .bom-name { color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .bom-count { font-family: var(--mono); color: var(--text-2); text-align: right; }
+  .bom-total {
+    padding: 10px 14px;
+    background: var(--bg-2);
+    font-size: 12px;
+    color: var(--text);
+    font-weight: 700;
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+  }
+  .bom-total .v { color: var(--magenta); font-family: var(--mono); }
+
+  /* ─── Project info ─────────────────────────────────────── */
+  .project-info textarea {
+    width: 100%;
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: var(--font);
+    font-size: 11px;
+    padding: 6px 8px;
+    border-radius: 4px;
+    outline: none;
+    resize: vertical;
+    min-height: 60px;
+  }
+  .project-info textarea:focus { border-color: var(--magenta); }
+
+  /* ─── Status bar ───────────────────────────────────────── */
+  .status {
+    grid-area: status;
+    background: var(--bg-1);
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    padding: 0 14px;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-3);
+    gap: 18px;
+  }
+  .status-item { display: flex; align-items: center; gap: 6px; }
+  .status-item .label { color: var(--text-3); }
+  .status-item .val   { color: var(--text); }
+  .status-item .dot   { width: 6px; height: 6px; border-radius: 50%; background: var(--green); }
+
+  /* ─── Modal ────────────────────────────────────────────── */
+  .modal-bg {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(6px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    display: none;
+  }
+  .modal-bg.open { display: flex; }
+  .modal {
+    background: var(--bg-1);
+    border: 1px solid var(--border-2);
+    border-radius: 10px;
+    width: 480px;
+    max-width: 90vw;
+    max-height: 80vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.7);
+  }
+  .modal-head {
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .modal-title {
+    font-size: 14px;
+    font-weight: 700;
+  }
+  .modal-close {
+    background: none;
+    border: none;
+    color: var(--text-3);
+    cursor: pointer;
+    font-size: 18px;
+    padding: 0 4px;
+  }
+  .modal-close:hover { color: var(--text); }
+  .modal-body { padding: 16px 18px; overflow-y: auto; flex: 1; }
+  .modal-foot {
+    padding: 12px 18px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+  }
+  .modal .btn {
+    padding: 7px 14px;
+    border-radius: 5px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: var(--bg-2);
+    color: var(--text-2);
+    font-family: var(--font);
+  }
+  .modal .btn:hover { background: var(--bg-3); color: var(--text); }
+  .modal .btn.primary { background: var(--magenta); border-color: var(--magenta); color: #fff; }
+  .modal .btn.primary:hover { background: var(--magenta-2); }
+  .modal .btn.danger  { color: var(--red); border-color: rgba(239,68,68,0.3); }
+
+  .saved-list { display: flex; flex-direction: column; gap: 4px; }
+  .saved-item {
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    padding: 10px 12px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    transition: background .12s;
+  }
+  .saved-item:hover { background: var(--bg-3); }
+  .saved-name { flex: 1; font-size: 12px; font-weight: 600; }
+  .saved-meta { font-family: var(--mono); font-size: 10px; color: var(--text-3); }
+  .saved-del {
+    background: none;
+    border: none;
+    color: var(--text-3);
+    cursor: pointer;
+    padding: 4px 6px;
+    border-radius: 3px;
+  }
+  .saved-del:hover { color: var(--red); background: rgba(239,68,68,0.1); }
+
+  /* ─── Context Menu ─────────────────────────────────────── */
+  .ctx-menu {
+    position: fixed;
+    background: var(--bg-2);
+    border: 1px solid var(--border-2);
+    border-radius: 6px;
+    padding: 4px;
+    min-width: 160px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+    z-index: 500;
+    display: none;
+  }
+  .ctx-menu.open { display: block; }
+  .ctx-item {
+    padding: 6px 12px;
+    font-size: 11px;
+    color: var(--text-2);
+    cursor: pointer;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .ctx-item:hover { background: var(--bg-3); color: var(--text); }
+  .ctx-item.danger:hover { background: rgba(239,68,68,0.1); color: var(--red); }
+  .ctx-sep { height: 1px; background: var(--border); margin: 4px 0; }
+  .ctx-shortcut { font-family: var(--mono); font-size: 10px; color: var(--text-3); }
+
+  /* ─── Toast ────────────────────────────────────────────── */
+  .toast-stack {
+    position: fixed;
+    bottom: 40px;
+    right: 20px;
+    z-index: 2000;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .toast {
+    background: var(--bg-2);
+    border: 1px solid var(--border-2);
+    color: var(--text);
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+    animation: toastIn .25s ease;
+    border-left: 3px solid var(--green);
+  }
+  .toast.err { border-left-color: var(--red); }
+  .toast.info { border-left-color: var(--blue); }
+  @keyframes toastIn {
+    from { opacity: 0; transform: translateX(20px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  /* ─── Scrollbars ───────────────────────────────────────── */
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--bg-3); border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--bg-4); }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ══ Topbar ════════════════════════════════════════════ -->
+  <div class="topbar">
+    <div class="brand">
+      <div class="brand-logo">SVK</div>
+      <div>
+        <div class="brand-name">SVK Works</div>
+      </div>
+      <span class="brand-sub">Harness Designer</span>
+    </div>
+
+    <div class="tool-group">
+      <button class="menu-btn" onclick="newProject()" title="New Project">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        New
+      </button>
+      <button class="menu-btn" onclick="openSaveModal()" title="Save (Ctrl+S)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+        Save
+      </button>
+      <button class="menu-btn" onclick="openLoadModal()" title="Open">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+        Open
+      </button>
+      <button class="menu-btn" onclick="exportJSON()" title="Export JSON">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Export
+      </button>
+      <button class="menu-btn" onclick="exportPNG()" title="Export Image">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        PNG
+      </button>
+      <button class="menu-btn" onclick="window.print()" title="Print">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+        Print
+      </button>
+    </div>
+
+    <div class="tool-group">
+      <button class="tool-btn" id="tool-select" onclick="setMode('select')" title="Select (V)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 3l7.07 16.97 2.51-7.39 7.39-2.51L3 3z"/></svg>
+        Select <span class="shortcut">V</span>
+      </button>
+      <button class="tool-btn" id="tool-wire" onclick="setMode('wire')" title="Draw Wire (W)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 12 Q 9 6, 12 12 T 19 12"/><circle cx="5" cy="12" r="1.5" fill="currentColor"/><circle cx="19" cy="12" r="1.5" fill="currentColor"/></svg>
+        Wire <span class="shortcut">W</span>
+      </button>
+      <button class="tool-btn" id="tool-pan" onclick="setMode('pan')" title="Pan (H or Space)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 9V5a2 2 0 0 1 2-2h0a2 2 0 0 1 2 2v6m0-4a2 2 0 0 1 4 0v3m0-3a2 2 0 0 1 4 0v8a4 4 0 0 1-4 4h-2c-2 0-3-1-4-3l-3-4a2 2 0 0 1 4-2"/></svg>
+        Pan <span class="shortcut">H</span>
+      </button>
+    </div>
+
+    <div class="tool-group">
+      <button class="menu-btn" onclick="undo()" id="btn-undo" title="Undo (Ctrl+Z)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-15-6.7L3 13"/></svg>
+        Undo
+      </button>
+      <button class="menu-btn" onclick="redo()" id="btn-redo" title="Redo (Ctrl+Shift+Z)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 7v6h-6"/><path d="M3 17a9 9 0 0 1 15-6.7L21 13"/></svg>
+        Redo
+      </button>
+    </div>
+
+    <div class="tool-group">
+      <button class="tool-btn" id="toggle-grid" onclick="toggleGrid()" title="Toggle Grid (G)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        Grid
+      </button>
+      <button class="tool-btn active" id="toggle-snap" onclick="toggleSnap()" title="Toggle Snap (S)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="2"/><path d="M12 6V2M12 22v-4M6 12H2M22 12h-4"/></svg>
+        Snap
+      </button>
+      <button class="tool-btn" id="toggle-lengths" onclick="toggleLengths()" title="Toggle Wire Lengths">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M2 12h20"/><path d="M5 8v8M19 8v8M9 10v4M14 10v4"/></svg>
+        Lengths
+      </button>
+    </div>
+
+    <div class="spacer"></div>
+
+    <input class="project-name" id="project-name" type="text" value="Untitled Harness" placeholder="Project name...">
+  </div>
+
+  <!-- ══ Left Panel: Palette ════════════════════════════════ -->
+  <div class="left-panel">
+    <div class="panel-header">Component Library
+      <span style="color:var(--text-3);font-weight:500;text-transform:none;letter-spacing:0;font-size:10px;" id="palette-count">0</span>
+    </div>
+    <div class="palette-search">
+      <input type="text" id="palette-filter" placeholder="Search components..." oninput="filterPalette(this.value)">
+    </div>
+    <div class="palette" id="palette"></div>
+  </div>
+
+  <!-- ══ Center: Canvas ════════════════════════════════════ -->
+  <div class="canvas-wrap" id="canvas-wrap">
+    <svg class="canvas-svg" id="canvas-svg" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <pattern id="grid-small" width="20" height="20" patternUnits="userSpaceOnUse">
+          <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(255,255,255,0.02)" stroke-width="1"/>
+        </pattern>
+        <pattern id="grid-large" width="100" height="100" patternUnits="userSpaceOnUse">
+          <rect width="100" height="100" fill="url(#grid-small)"/>
+          <path d="M 100 0 L 0 0 0 100" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+        </pattern>
+      </defs>
+      <rect id="grid-bg" x="-10000" y="-10000" width="20000" height="20000" fill="url(#grid-large)"/>
+      <g id="world"></g>
+    </svg>
+
+    <div class="canvas-overlay canvas-overlay-tl">
+      <div class="canvas-help" id="canvas-help">
+        <span><kbd>V</kbd> Select &nbsp;<kbd>W</kbd> Wire &nbsp;<kbd>Space</kbd> Pan &nbsp;<kbd>Del</kbd> Delete</span>
+      </div>
+    </div>
+
+    <div class="canvas-overlay canvas-overlay-tr">
+      <div class="zoom-pill">
+        <button class="zoom-btn" onclick="zoomBy(0.8)">−</button>
+        <span class="zoom-val" id="zoom-val">100%</span>
+        <button class="zoom-btn" onclick="zoomBy(1.25)">+</button>
+        <button class="zoom-btn" onclick="fitView()" title="Fit to view" style="font-size:11px;">⌖</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ Right Panel: Tabs ═════════════════════════════════ -->
+  <div class="right-panel">
+    <div class="panel-tabs">
+      <button class="panel-tab active" data-tab="props" onclick="setTab('props')">Properties</button>
+      <button class="panel-tab" data-tab="bom" onclick="setTab('bom')">BOM</button>
+      <button class="panel-tab" data-tab="project" onclick="setTab('project')">Project</button>
+    </div>
+
+    <div class="right-content">
+      <section class="active" id="tab-props">
+        <div class="prop-empty" id="prop-empty">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 3l7.07 16.97 2.51-7.39 7.39-2.51L3 3z"/></svg>
+          <div>Select a component or wire to edit its properties</div>
+        </div>
+        <div id="prop-content"></div>
+      </section>
+
+      <section id="tab-bom">
+        <div class="bom-total">
+          <span>Total Wire</span>
+          <span class="v" id="bom-total-length">0 mm</span>
+        </div>
+        <div class="bom-list" id="bom-list"></div>
+      </section>
+
+      <section id="tab-project">
+        <div class="prop-section project-info">
+          <div class="prop-section-title">Project Details</div>
+          <div class="prop-row" style="flex-direction:column;align-items:stretch;">
+            <span class="prop-label" style="margin-bottom:4px;">Customer / Build</span>
+            <input class="prop-input" id="proj-customer" placeholder="Customer name / build">
+          </div>
+          <div class="prop-row" style="flex-direction:column;align-items:stretch;">
+            <span class="prop-label" style="margin-bottom:4px;">Vehicle</span>
+            <input class="prop-input" id="proj-vehicle" placeholder="Year, make, model">
+          </div>
+          <div class="prop-row" style="flex-direction:column;align-items:stretch;">
+            <span class="prop-label" style="margin-bottom:4px;">Engine / ECU</span>
+            <input class="prop-input" id="proj-engine" placeholder="e.g. 2JZ-GTE / Haltech Elite 2500">
+          </div>
+          <div class="prop-row" style="flex-direction:column;align-items:stretch;">
+            <span class="prop-label" style="margin-bottom:4px;">Notes</span>
+            <textarea id="proj-notes" placeholder="Special requirements, deadlines, notes..."></textarea>
+          </div>
+        </div>
+
+        <div class="prop-section">
+          <div class="prop-section-title">Canvas Settings</div>
+          <div class="prop-row">
+            <span class="prop-label">Scale</span>
+            <select class="prop-select" id="scale-units" onchange="setScale()">
+              <option value="2">2 mm/px (1:2)</option>
+              <option value="5" selected>5 mm/px (1:5)</option>
+              <option value="10">10 mm/px (1:10)</option>
+              <option value="25.4">1 inch/px</option>
+            </select>
+          </div>
+          <div class="prop-row">
+            <span class="prop-label">Display</span>
+            <select class="prop-select" id="display-units" onchange="render()">
+              <option value="mm" selected>millimeters</option>
+              <option value="cm">centimeters</option>
+              <option value="in">inches</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="prop-section">
+          <div class="prop-section-title">Statistics</div>
+          <div class="prop-row">
+            <span class="prop-label">Components</span>
+            <span class="prop-value" id="stat-comps">0</span>
+          </div>
+          <div class="prop-row">
+            <span class="prop-label">Wires</span>
+            <span class="prop-value" id="stat-wires">0</span>
+          </div>
+          <div class="prop-row">
+            <span class="prop-label">Total Length</span>
+            <span class="prop-value magenta" id="stat-length">0 mm</span>
+          </div>
+          <div class="prop-row">
+            <span class="prop-label">Avg / Wire</span>
+            <span class="prop-value" id="stat-avg">— mm</span>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <!-- ══ Status Bar ════════════════════════════════════════ -->
+  <div class="status">
+    <div class="status-item"><span class="dot"></span><span class="val" id="status-mode">SELECT</span></div>
+    <div class="status-item"><span class="label">Cursor</span><span class="val" id="status-cursor">0, 0</span></div>
+    <div class="status-item"><span class="label">Zoom</span><span class="val" id="status-zoom">100%</span></div>
+    <div class="status-item"><span class="label">Comp</span><span class="val" id="status-comps">0</span></div>
+    <div class="status-item"><span class="label">Wires</span><span class="val" id="status-wires">0</span></div>
+    <div class="status-item"><span class="label">Total</span><span class="val" id="status-length">0 mm</span></div>
+    <div style="margin-left:auto;" class="status-item"><span class="val" id="status-hint">Drag a component from the palette, or press W to start wiring</span></div>
+  </div>
+</div>
+
+<!-- ══ Modals ════════════════════════════════════════════════ -->
+<div class="modal-bg" id="modal-save">
+  <div class="modal">
+    <div class="modal-head"><div class="modal-title">Save Project</div><button class="modal-close" onclick="closeModal()">×</button></div>
+    <div class="modal-body">
+      <div class="prop-row" style="flex-direction:column;align-items:stretch;">
+        <span class="prop-label" style="margin-bottom:6px;">Project Name</span>
+        <input class="prop-input" id="save-name" placeholder="My Harness Project">
+      </div>
+      <div style="font-size:11px;color:var(--text-3);margin-top:10px;">Projects are saved to this browser. Use Export to download a JSON backup.</div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" onclick="closeModal()">Cancel</button>
+      <button class="btn primary" onclick="confirmSave()">Save</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="modal-load">
+  <div class="modal">
+    <div class="modal-head"><div class="modal-title">Open Project</div><button class="modal-close" onclick="closeModal()">×</button></div>
+    <div class="modal-body">
+      <div class="saved-list" id="saved-list"></div>
+      <div style="margin-top:14px;border-top:1px solid var(--border);padding-top:12px;">
+        <div style="font-size:11px;color:var(--text-2);margin-bottom:6px;">Or import from JSON file:</div>
+        <input type="file" id="import-file" accept=".json" onchange="importJSON(event)" style="font-size:11px;color:var(--text-2);">
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" onclick="closeModal()">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- Context Menu -->
+<div class="ctx-menu" id="ctx-menu"></div>
+
+<!-- Toasts -->
+<div class="toast-stack" id="toasts"></div>
+
+<script>
+/* ─────────────────────────────────────────────────────────────
+   SVK WORKS — HARNESS DESIGNER
+   Single-file vector harness mocking tool with wire routing,
+   component library, BOM, save/load, export.
+───────────────────────────────────────────────────────────── */
+
+// ─── Component palette catalog ────────────────────────────────
+const PALETTE = {
+  'ECU / Standalone': [
+    { name:'Haltech Elite 2500', img:'/img/options/ecu/haltech-elite-2500.webp' },
+    { name:'ECUMaster EMU Black', img:'/img/options/ecu/ecumaster-emu-black.webp' },
+    { name:'ECUMaster EMU Pro', img:'/img/options/ecu/ecumaster-emu-pro.webp' },
+    { name:'ECUMaster Classic', img:'/img/options/ecu/ecumaster-classic.webp' },
+    { name:'Link G4X', img:'/img/options/ecu/link-g4x.webp' },
+    { name:'MaxxECU', img:'/img/options/ecu/maxxecu.webp' },
+    { name:'FuelTech FT550', img:'/img/options/ecu/fueltech-ft550.webp' },
+    { name:'AEM Infinity', img:'/img/options/ecu/aem-infinity.webp' },
+    { name:'MoTeC M1', img:'/img/options/ecu/motec-m1.webp' },
+    { name:'Hondata KPro', img:'/img/options/ecu/hondata-kpro.webp' },
+    { name:'Dual ECU Setup', img:'/img/options/ecu/dual-ecu.webp' },
+  ],
+  'Engine': [
+    { name:'2JZ-GTE VVT-i', img:'/img/options/engine/2jzgte-vvti.webp' },
+    { name:'2JZ-GTE Non VVT-i', img:'/img/options/engine/2jzgte-nonvvti.webp' },
+    { name:'2JZ-GE VVT-i', img:'/img/options/engine/2jzge-vvti.webp' },
+    { name:'2JZ-GE Non VVT-i', img:'/img/options/engine/2jzge-nonvvti.webp' },
+    { name:'1JZ-GTE VVT-i', img:'/img/options/engine/1jzgte-vvti.webp' },
+    { name:'1JZ-GTE Non VVT-i', img:'/img/options/engine/1jzgte-nonvvti.webp' },
+    { name:'7M-GTE', img:'/img/options/engine/7m-gte.webp' },
+    { name:'1UZ VVT-i', img:'/img/options/engine/1uz-vvti.webp' },
+    { name:'3UZ VVT-i', img:'/img/options/engine/3uz-vvti.webp' },
+    { name:'K20A', img:'/img/options/engine/k20a.webp' },
+    { name:'K20A2', img:'/img/options/engine/k20a2.webp' },
+    { name:'K20C1', img:'/img/options/engine/k20c1.webp' },
+    { name:'K24A2', img:'/img/options/engine/k24a2.webp' },
+    { name:'K24Z', img:'/img/options/engine/k24z.webp' },
+  ],
+  'Transmission': [
+    { name:'R154', img:'/img/options/transmission/r154.webp' },
+    { name:'W58', img:'/img/options/transmission/w58.webp' },
+    { name:'V160', img:'/img/options/transmission/v160.webp' },
+    { name:'ZF 8HP', img:'/img/options/transmission/zf-8hp.webp' },
+    { name:'CD009', img:'/img/options/transmission/cd009.webp' },
+    { name:'T56', img:'/img/options/transmission/t56.webp' },
+    { name:'Stock Auto', img:'/img/options/transmission/stock-auto.webp' },
+  ],
+  'Ignition Coils': [
+    { name:'Stock 2JZ Coils', img:'/img/options/coils/stock-2jz.webp' },
+    { name:'VR38 / R35 Coils', img:'/img/options/coils/vr38-r35.webp' },
+    { name:'IGN1A Coils', img:'/img/options/coils/ign1a.webp' },
+    { name:'1NZ / 1ZZ Coils', img:'/img/options/coils/1nz-1zz.webp' },
+    { name:'Audi R8 Coils', img:'/img/options/coils/audi-r8.webp' },
+    { name:'GM LQ9 Coils', img:'/img/options/coils/lq9.webp' },
+  ],
+  'Injectors': [
+    { name:'Fuel Injector Clinic', img:'/img/options/injectors/fic.webp' },
+    { name:'Injector Dynamics', img:'/img/options/injectors/id.webp' },
+    { name:'ID2000', img:'/img/options/injectors/ID2000.webp' },
+    { name:'Stock 2JZ', img:'/img/options/injectors/stock-2jz.webp' },
+    { name:'Bosch EV1', img:'/img/options/injectors/ev1.webp' },
+    { name:'Denso / Power Enterprise', img:'/img/options/injectors/denso.webp' },
+  ],
+  'Throttle / DBW': [
+    { name:'OEM VVT-i TPS + IACV', img:'/img/options/throttle/oem-vvti-tps-iacv.webp' },
+    { name:'OEM Non-VVTi TB', img:'/img/options/throttle/oem-nonvvti-tb.webp' },
+    { name:'Aftermarket TPS + IACV', img:'/img/options/throttle/aftermarket-tps-iacv.webp' },
+    { name:'Bosch DBW + Pedal', img:'/img/options/throttle/bosch-dbw.webp' },
+    { name:'Cable TB', img:'/img/options/throttle/cable-tb.webp' },
+    { name:'ITBs', img:'/img/options/throttle/itbs.webp' },
+  ],
+  'Wideband': [
+    { name:'Bosch LSU 4.2', img:'/img/options/wideband/bosch-lsu-42.webp' },
+    { name:'Bosch LSU 4.9', img:'/img/options/wideband/bosch-lsu-49.webp' },
+  ],
+  'Sensors': [
+    { name:'OEM Knock Sensor', img:'/img/options/misc/knock-oem.webp' },
+    { name:'Bosch Knock Sensor', img:'/img/options/misc/knock-bosch.webp' },
+    { name:'Water Temp (Plastic)', img:'/img/options/misc/coolant-temp-plastic.webp' },
+    { name:'Water Temp (Metal)', img:'/img/options/misc/coolant-temp-metal.webp' },
+    { name:'Oil Pressure (Plastic)', img:'/img/options/misc/oil-pressure-plastic.webp' },
+    { name:'Oil Pressure (Metal)', img:'/img/options/misc/oil-pressure-metal.webp' },
+    { name:'Flex Fuel Sensor', img:'/img/options/misc/flex-fuel.webp' },
+    { name:'Boost Solenoid', img:'/img/options/misc/boost-solenoid.webp' },
+    { name:'Sensor (Generic 1)', img:'/img/options/misc/sensors-1.webp' },
+    { name:'Sensor (Generic 2)', img:'/img/options/misc/sensors-2.webp' },
+    { name:'Sensor (Generic 3)', img:'/img/options/misc/sensors-3.webp' },
+    { name:'Sensor (Generic 4)', img:'/img/options/misc/sensors-4.webp' },
+  ],
+  'Alternator': [
+    { name:'New Style Alternator', img:'/img/options/misc/alternator-new.webp' },
+    { name:'Old Style Alternator', img:'/img/options/misc/alternator-old.webp' },
+    { name:'4-Pin Sequoia Alternator', img:'/img/options/misc/alternator-sequoia.webp' },
+  ],
+  'Connectors & Kits': [
+    { name:'Milspec Autosport Connector', img:'/img/options/misc/milspec-yes.webp' },
+    { name:'Relay Kit', img:'/img/options/misc/relay-kit.webp' },
+    { name:'Universal Grounding Kit', img:'/img/options/misc/grounding-kit.webp' },
+  ],
+};
+
+// ─── Wire colors (industry-standard auto harness) ─────────────
+const WIRE_COLORS = [
+  '#e63946', '#000000', '#ffffff', '#facc15',
+  '#22c55e', '#3b82f6', '#a855f7', '#f97316',
+  '#a78bfa', '#06b6d4', '#94a3b8', '#854d0e',
+  '#ec4899', '#f43f5e', '#10b981', '#ca8a04',
+];
+const WIRE_GAUGES = ['22', '20', '18', '16', '14', '12'];
+
+// ─── State ────────────────────────────────────────────────────
+let state = {
+  components: [],  // { id, type, name, img, x, y, w, h, rotation, label }
+  wires: [],       // { id, points:[{x,y}], color, gauge, label, lengthOverride }
+  selected: null,  // { type, id }
+  pan: { x: 0, y: 0 },
+  zoom: 1,
+  mode: 'select',
+  gridVisible: true,
+  snap: true,
+  showLengths: true,
+  scale: 5,        // mm per px
+  displayUnit: 'mm',
+  project: { name: 'Untitled Harness', customer: '', vehicle: '', engine: '', notes: '' },
+};
+
+let history = [];
+let historyIdx = -1;
+let nextId = 1;
+
+// Interaction state
+let isDragging = false;
+let dragStart = null;
+let dragTarget = null;
+let isPanning = false;
+let panStart = null;
+let tempWire = null;        // { points: [...], color, gauge }
+let cursorWorld = { x: 0, y: 0 };
+let hoverHandle = null;     // for wire handle dragging
+let dragHandle = null;      // { wireId, idx }
+let spacePressed = false;
+let prevModeBeforePan = null;
+
+const SVG_NS = 'http://www.w3.org/2000/svg';
+const svg = document.getElementById('canvas-svg');
+const world = document.getElementById('world');
+const canvasWrap = document.getElementById('canvas-wrap');
+
+// ─── Utility ──────────────────────────────────────────────────
+function uid() { return 'id_' + (nextId++).toString(36) + '_' + Math.random().toString(36).slice(2, 6); }
+function snap(v) { return state.snap ? Math.round(v / 20) * 20 : v; }
+function dist(a, b) { return Math.hypot(a.x - b.x, a.y - b.y); }
+
+function formatLength(pxLength) {
+  let mm = pxLength * state.scale;
+  if (state.displayUnit === 'cm') return (mm / 10).toFixed(1) + ' cm';
+  if (state.displayUnit === 'in') return (mm / 25.4).toFixed(2) + '"';
+  return Math.round(mm) + ' mm';
+}
+
+function wirePathLength(w) {
+  let total = 0;
+  for (let i = 1; i < w.points.length; i++) total += dist(w.points[i-1], w.points[i]);
+  return total;
+}
+
+function screenToWorld(sx, sy) {
+  const rect = svg.getBoundingClientRect();
+  return {
+    x: (sx - rect.left - state.pan.x) / state.zoom,
+    y: (sy - rect.top - state.pan.y) / state.zoom,
+  };
+}
+
+function getEventWorldPos(e) {
+  return screenToWorld(e.clientX, e.clientY);
+}
+
+// ─── History ──────────────────────────────────────────────────
+function snapshot() {
+  history = history.slice(0, historyIdx + 1);
+  history.push(JSON.stringify({ c: state.components, w: state.wires }));
+  if (history.length > 100) history.shift();
+  historyIdx = history.length - 1;
+  updateUndoBtns();
+}
+function undo() {
+  if (historyIdx <= 0) return;
+  historyIdx--;
+  const s = JSON.parse(history[historyIdx]);
+  state.components = s.c;
+  state.wires = s.w;
+  state.selected = null;
+  render();
+  renderProps();
+  renderBom();
+  updateUndoBtns();
+}
+function redo() {
+  if (historyIdx >= history.length - 1) return;
+  historyIdx++;
+  const s = JSON.parse(history[historyIdx]);
+  state.components = s.c;
+  state.wires = s.w;
+  state.selected = null;
+  render();
+  renderProps();
+  renderBom();
+  updateUndoBtns();
+}
+function updateUndoBtns() {
+  document.getElementById('btn-undo').disabled = historyIdx <= 0;
+  document.getElementById('btn-redo').disabled = historyIdx >= history.length - 1;
+}
+
+// ─── Palette ──────────────────────────────────────────────────
+function buildPalette() {
+  const el = document.getElementById('palette');
+  el.innerHTML = '';
+  let total = 0;
+  for (const [cat, items] of Object.entries(PALETTE)) {
+    total += items.length;
+    const catEl = document.createElement('div');
+    catEl.className = 'palette-cat';
+    catEl.innerHTML = `
+      <div class="palette-cat-header" onclick="this.parentElement.classList.toggle('collapsed')">
+        <span class="caret">▾</span>
+        <span>${cat}</span>
+        <span class="palette-cat-count">${items.length}</span>
+      </div>
+      <div class="palette-items"></div>
+    `;
+    const list = catEl.querySelector('.palette-items');
+    items.forEach((item) => {
+      const it = document.createElement('div');
+      it.className = 'palette-item';
+      it.dataset.cat = cat;
+      it.dataset.name = item.name.toLowerCase();
+      it.innerHTML = `
+        <img src="${item.img}" alt="" onerror="this.style.opacity=0.3">
+        <span class="palette-item-name">${item.name}</span>
+      `;
+      it.draggable = true;
+      it.addEventListener('dragstart', (e) => {
+        e.dataTransfer.setData('application/json', JSON.stringify({ name: item.name, img: item.img, cat }));
+        e.dataTransfer.effectAllowed = 'copy';
+      });
+      it.addEventListener('click', () => placeComponentAtCenter(item, cat));
+      list.appendChild(it);
+    });
+    el.appendChild(catEl);
+  }
+  document.getElementById('palette-count').textContent = total;
+}
+
+function filterPalette(q) {
+  q = q.trim().toLowerCase();
+  document.querySelectorAll('.palette-item').forEach(it => {
+    const match = !q || it.dataset.name.includes(q) || it.dataset.cat.toLowerCase().includes(q);
+    it.style.display = match ? '' : 'none';
+  });
+  // hide empty categories
+  document.querySelectorAll('.palette-cat').forEach(cat => {
+    const visible = Array.from(cat.querySelectorAll('.palette-item')).some(i => i.style.display !== 'none');
+    cat.style.display = visible ? '' : 'none';
+    if (q && visible) cat.classList.remove('collapsed');
+  });
+}
+
+function placeComponentAtCenter(item, cat) {
+  const rect = canvasWrap.getBoundingClientRect();
+  const center = screenToWorld(rect.left + rect.width/2, rect.top + rect.height/2);
+  addComponent(item, cat, snap(center.x - 50), snap(center.y - 30));
+}
+
+function addComponent(item, cat, x, y) {
+  state.components.push({
+    id: uid(),
+    type: cat,
+    name: item.name,
+    img: item.img,
+    x, y,
+    w: 100,
+    h: 80,
+    rotation: 0,
+  });
+  snapshot();
+  render();
+  renderBom();
+  updateStats();
+}
+
+// ─── Drag from palette to canvas ──────────────────────────────
+canvasWrap.addEventListener('dragover', (e) => { e.preventDefault(); e.dataTransfer.dropEffect = 'copy'; });
+canvasWrap.addEventListener('drop', (e) => {
+  e.preventDefault();
+  const data = e.dataTransfer.getData('application/json');
+  if (!data) return;
+  const item = JSON.parse(data);
+  const pos = getEventWorldPos(e);
+  addComponent(item, item.cat, snap(pos.x - 50), snap(pos.y - 40));
+});
+
+// ─── Render ───────────────────────────────────────────────────
+function render() {
+  world.innerHTML = '';
+  // Apply pan/zoom
+  world.setAttribute('transform', `translate(${state.pan.x},${state.pan.y}) scale(${state.zoom})`);
+  document.getElementById('grid-bg').style.display = state.gridVisible ? '' : 'none';
+
+  // Wires
+  state.wires.forEach(w => renderWire(w));
+
+  // Components
+  state.components.forEach(c => renderComponent(c));
+
+  // Temp wire
+  if (tempWire && tempWire.points.length > 0) {
+    const pts = [...tempWire.points, cursorWorld].map(p => `${p.x},${p.y}`).join(' ');
+    const tw = document.createElementNS(SVG_NS, 'polyline');
+    tw.setAttribute('points', pts);
+    tw.setAttribute('class', 'temp-wire');
+    tw.setAttribute('stroke', tempWire.color);
+    world.appendChild(tw);
+
+    // Length indicator
+    let totalPx = 0;
+    for (let i = 1; i < tempWire.points.length; i++) totalPx += dist(tempWire.points[i-1], tempWire.points[i]);
+    if (tempWire.points.length > 0) totalPx += dist(tempWire.points[tempWire.points.length-1], cursorWorld);
+    const lbl = document.createElementNS(SVG_NS, 'text');
+    lbl.textContent = formatLength(totalPx);
+    lbl.setAttribute('x', cursorWorld.x + 10);
+    lbl.setAttribute('y', cursorWorld.y - 10);
+    lbl.setAttribute('class', 'wire-label');
+    lbl.setAttribute('text-anchor', 'start');
+    world.appendChild(lbl);
+
+    // cursor dot
+    const dot = document.createElementNS(SVG_NS, 'circle');
+    dot.setAttribute('cx', cursorWorld.x);
+    dot.setAttribute('cy', cursorWorld.y);
+    dot.setAttribute('r', 3 / state.zoom);
+    dot.setAttribute('class', 'temp-cursor-dot');
+    world.appendChild(dot);
+  }
+
+  // Selected wire handles
+  if (state.selected && state.selected.type === 'wire') {
+    const w = state.wires.find(w => w.id === state.selected.id);
+    if (w) w.points.forEach((p, i) => {
+      const c = document.createElementNS(SVG_NS, 'circle');
+      c.setAttribute('cx', p.x);
+      c.setAttribute('cy', p.y);
+      c.setAttribute('r', 5 / state.zoom);
+      c.setAttribute('class', 'wire-handle');
+      c.dataset.wireId = w.id;
+      c.dataset.idx = i;
+      c.addEventListener('mousedown', (e) => {
+        e.stopPropagation();
+        dragHandle = { wireId: w.id, idx: i };
+      });
+      world.appendChild(c);
+    });
+  }
+
+  updateZoomDisplay();
+  updateStats();
+}
+
+function renderComponent(c) {
+  const g = document.createElementNS(SVG_NS, 'g');
+  g.setAttribute('class', 'component-group' + (state.selected && state.selected.type === 'comp' && state.selected.id === c.id ? ' selected' : ''));
+  g.setAttribute('transform', `translate(${c.x},${c.y}) rotate(${c.rotation || 0} ${c.w/2} ${c.h/2})`);
+  g.dataset.id = c.id;
+
+  // Background
+  const bg = document.createElementNS(SVG_NS, 'rect');
+  bg.setAttribute('class', 'comp-bg');
+  bg.setAttribute('x', 0); bg.setAttribute('y', 0);
+  bg.setAttribute('width', c.w); bg.setAttribute('height', c.h);
+  bg.setAttribute('rx', 6);
+  g.appendChild(bg);
+
+  // Image
+  const img = document.createElementNS(SVG_NS, 'image');
+  img.setAttribute('href', c.img);
+  img.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', c.img);
+  img.setAttribute('x', 8); img.setAttribute('y', 6);
+  img.setAttribute('width', c.w - 16); img.setAttribute('height', c.h - 28);
+  img.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+  g.appendChild(img);
+
+  // Label
+  const lbl = document.createElementNS(SVG_NS, 'text');
+  lbl.setAttribute('class', 'comp-label');
+  lbl.setAttribute('x', c.w/2);
+  lbl.setAttribute('y', c.h - 8);
+  const nm = (c.label || c.name);
+  lbl.textContent = nm.length > 18 ? nm.slice(0,17) + '…' : nm;
+  g.appendChild(lbl);
+
+  // Component is draggable in select mode
+  g.addEventListener('mousedown', (e) => {
+    if (state.mode === 'wire') {
+      // start/continue wire at the component's center attachment
+      e.stopPropagation();
+      const anchor = { x: c.x + c.w/2, y: c.y + c.h/2 };
+      handleWireClick(anchor, c.id);
+      return;
+    }
+    if (state.mode !== 'select') return;
+    e.stopPropagation();
+    selectComponent(c.id);
+    isDragging = true;
+    dragTarget = { type: 'comp', id: c.id, ox: c.x, oy: c.y };
+    const wp = getEventWorldPos(e);
+    dragStart = wp;
+  });
+
+  g.addEventListener('contextmenu', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    selectComponent(c.id);
+    openContextMenu(e.clientX, e.clientY, [
+      { label: 'Rotate 90°', shortcut:'R', action: () => rotateComponent(c.id) },
+      { label: 'Duplicate', shortcut:'⌘D', action: () => duplicateComponent(c.id) },
+      { sep: true },
+      { label: 'Delete', shortcut:'Del', danger: true, action: () => deleteSelected() },
+    ]);
+  });
+
+  world.appendChild(g);
+}
+
+function renderWire(w) {
+  const isSel = state.selected && state.selected.type === 'wire' && state.selected.id === w.id;
+  const pts = w.points.map(p => `${p.x},${p.y}`).join(' ');
+
+  // Hit area (wider, transparent)
+  const hit = document.createElementNS(SVG_NS, 'polyline');
+  hit.setAttribute('points', pts);
+  hit.setAttribute('stroke', 'transparent');
+  hit.setAttribute('stroke-width', 12);
+  hit.setAttribute('fill', 'none');
+  hit.style.cursor = 'pointer';
+  hit.addEventListener('mousedown', (e) => {
+    if (state.mode !== 'select') return;
+    e.stopPropagation();
+    selectWire(w.id);
+  });
+  hit.addEventListener('contextmenu', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    selectWire(w.id);
+    openContextMenu(e.clientX, e.clientY, [
+      { label: 'Edit Label', action: () => promptWireLabel(w.id) },
+      { label: 'Add Midpoint', action: () => addMidpoint(w.id) },
+      { sep: true },
+      { label: 'Delete', shortcut:'Del', danger: true, action: () => deleteSelected() },
+    ]);
+  });
+  world.appendChild(hit);
+
+  // Visible line
+  const line = document.createElementNS(SVG_NS, 'polyline');
+  line.setAttribute('points', pts);
+  line.setAttribute('class', 'wire-line' + (isSel ? ' selected' : ''));
+  line.setAttribute('stroke', w.color);
+  line.setAttribute('stroke-width', Math.max(2, parseInt(w.gauge) ? 22 - parseInt(w.gauge) * 0.6 : 2.5));
+  world.appendChild(line);
+
+  // Length / label
+  if (state.showLengths && w.points.length >= 2) {
+    const midI = Math.floor(w.points.length / 2);
+    let mx, my;
+    if (w.points.length % 2 === 0) {
+      mx = (w.points[midI-1].x + w.points[midI].x) / 2;
+      my = (w.points[midI-1].y + w.points[midI].y) / 2;
+    } else {
+      mx = w.points[midI].x;
+      my = w.points[midI].y;
+    }
+    const lenPx = wirePathLength(w);
+    const text = (w.label ? w.label + ' · ' : '') + formatLength(lenPx);
+    const t = document.createElementNS(SVG_NS, 'text');
+    t.textContent = text;
+    t.setAttribute('x', mx);
+    t.setAttribute('y', my - 6);
+    t.setAttribute('class', 'wire-label');
+    world.appendChild(t);
+  }
+}
+
+// ─── Selection ────────────────────────────────────────────────
+function selectComponent(id) {
+  state.selected = { type: 'comp', id };
+  setTab('props', true);
+  render();
+  renderProps();
+}
+function selectWire(id) {
+  state.selected = { type: 'wire', id };
+  setTab('props', true);
+  render();
+  renderProps();
+}
+function clearSelection() {
+  state.selected = null;
+  render();
+  renderProps();
+}
+
+// ─── Render Props panel ──────────────────────────────────────
+function renderProps() {
+  const empty = document.getElementById('prop-empty');
+  const content = document.getElementById('prop-content');
+  if (!state.selected) {
+    empty.style.display = 'block';
+    content.innerHTML = '';
+    return;
+  }
+  empty.style.display = 'none';
+  if (state.selected.type === 'comp') {
+    const c = state.components.find(x => x.id === state.selected.id);
+    if (!c) return;
+    content.innerHTML = `
+      <div class="prop-section">
+        <div class="prop-section-title">Component</div>
+        <div class="prop-row"><span class="prop-label">Type</span><span class="prop-value">${c.type}</span></div>
+        <div class="prop-row"><span class="prop-label">Name</span><span class="prop-value" style="text-align:right;font-family:var(--font);">${c.name}</span></div>
+        <div class="prop-row"><span class="prop-label">Label</span><input class="prop-input" value="${escapeHtml(c.label || '')}" placeholder="Custom label" oninput="updateComponent('${c.id}', 'label', this.value)"></div>
+      </div>
+      <div class="prop-section">
+        <div class="prop-section-title">Transform</div>
+        <div class="prop-row"><span class="prop-label">X</span><input class="prop-input" type="number" value="${c.x}" oninput="updateComponent('${c.id}', 'x', parseFloat(this.value) || 0)"></div>
+        <div class="prop-row"><span class="prop-label">Y</span><input class="prop-input" type="number" value="${c.y}" oninput="updateComponent('${c.id}', 'y', parseFloat(this.value) || 0)"></div>
+        <div class="prop-row"><span class="prop-label">Width</span><input class="prop-input" type="number" value="${c.w}" min="40" oninput="updateComponent('${c.id}', 'w', parseFloat(this.value) || 100)"></div>
+        <div class="prop-row"><span class="prop-label">Height</span><input class="prop-input" type="number" value="${c.h}" min="40" oninput="updateComponent('${c.id}', 'h', parseFloat(this.value) || 80)"></div>
+        <div class="prop-row"><span class="prop-label">Rotate</span><input class="prop-input" type="number" value="${c.rotation || 0}" step="15" oninput="updateComponent('${c.id}', 'rotation', parseFloat(this.value) || 0)"></div>
+      </div>
+      <div class="prop-section">
+        <div class="prop-row" style="gap:6px;">
+          <button class="btn" style="flex:1;padding:6px;background:var(--bg-2);border:1px solid var(--border);color:var(--text-2);border-radius:4px;font-size:11px;cursor:pointer;" onclick="rotateComponent('${c.id}')">Rotate 90°</button>
+          <button class="btn" style="flex:1;padding:6px;background:var(--bg-2);border:1px solid var(--border);color:var(--text-2);border-radius:4px;font-size:11px;cursor:pointer;" onclick="duplicateComponent('${c.id}')">Duplicate</button>
+        </div>
+        <div class="prop-row" style="margin-top:6px;">
+          <button class="btn" style="flex:1;padding:6px;background:transparent;border:1px solid rgba(239,68,68,0.3);color:var(--red);border-radius:4px;font-size:11px;cursor:pointer;" onclick="deleteSelected()">Delete Component</button>
+        </div>
+      </div>
+    `;
+  } else if (state.selected.type === 'wire') {
+    const w = state.wires.find(x => x.id === state.selected.id);
+    if (!w) return;
+    const pxLen = wirePathLength(w);
+    const swatches = WIRE_COLORS.map(c => `<div class="swatch ${c === w.color ? 'active' : ''}" style="background:${c}" onclick="updateWire('${w.id}','color','${c}')"></div>`).join('');
+    const gauges = WIRE_GAUGES.map(g => `<button class="gauge-btn ${g === w.gauge ? 'active' : ''}" onclick="updateWire('${w.id}','gauge','${g}')">${g}</button>`).join('');
+    content.innerHTML = `
+      <div class="prop-section">
+        <div class="prop-section-title">Wire</div>
+        <div class="prop-row"><span class="prop-label">Label</span><input class="prop-input" value="${escapeHtml(w.label || '')}" placeholder="e.g. SIG, GND, +12V" oninput="updateWire('${w.id}', 'label', this.value)"></div>
+        <div class="prop-row"><span class="prop-label">Length</span><span class="prop-value magenta">${formatLength(pxLen)}</span></div>
+        <div class="prop-row"><span class="prop-label">Segments</span><span class="prop-value">${w.points.length - 1}</span></div>
+      </div>
+      <div class="prop-section">
+        <div class="prop-section-title">Color</div>
+        <div class="swatch-grid">${swatches}</div>
+      </div>
+      <div class="prop-section">
+        <div class="prop-section-title">Gauge (AWG)</div>
+        <div class="gauge-grid">${gauges}</div>
+      </div>
+      <div class="prop-section">
+        <div class="prop-row" style="gap:6px;">
+          <button class="btn" style="flex:1;padding:6px;background:var(--bg-2);border:1px solid var(--border);color:var(--text-2);border-radius:4px;font-size:11px;cursor:pointer;" onclick="addMidpoint('${w.id}')">+ Midpoint</button>
+          <button class="btn" style="flex:1;padding:6px;background:var(--bg-2);border:1px solid var(--border);color:var(--text-2);border-radius:4px;font-size:11px;cursor:pointer;" onclick="duplicateWire('${w.id}')">Duplicate</button>
+        </div>
+        <div class="prop-row" style="margin-top:6px;">
+          <button class="btn" style="flex:1;padding:6px;background:transparent;border:1px solid rgba(239,68,68,0.3);color:var(--red);border-radius:4px;font-size:11px;cursor:pointer;" onclick="deleteSelected()">Delete Wire</button>
+        </div>
+      </div>
+    `;
+  }
+}
+
+function escapeHtml(s) {
+  return (s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function updateComponent(id, prop, val) {
+  const c = state.components.find(x => x.id === id);
+  if (!c) return;
+  c[prop] = val;
+  render();
+  renderBom();
+}
+function updateWire(id, prop, val) {
+  const w = state.wires.find(x => x.id === id);
+  if (!w) return;
+  w[prop] = val;
+  render();
+  renderProps();
+  renderBom();
+}
+function rotateComponent(id) {
+  const c = state.components.find(x => x.id === id);
+  if (!c) return;
+  c.rotation = ((c.rotation || 0) + 90) % 360;
+  snapshot(); render(); renderProps();
+}
+function duplicateComponent(id) {
+  const c = state.components.find(x => x.id === id);
+  if (!c) return;
+  const nc = { ...c, id: uid(), x: c.x + 30, y: c.y + 30 };
+  state.components.push(nc);
+  state.selected = { type: 'comp', id: nc.id };
+  snapshot(); render(); renderProps(); renderBom();
+}
+function duplicateWire(id) {
+  const w = state.wires.find(x => x.id === id);
+  if (!w) return;
+  const nw = { ...w, id: uid(), points: w.points.map(p => ({ x: p.x + 30, y: p.y + 30 })) };
+  state.wires.push(nw);
+  state.selected = { type: 'wire', id: nw.id };
+  snapshot(); render(); renderProps(); renderBom();
+}
+function addMidpoint(id) {
+  const w = state.wires.find(x => x.id === id);
+  if (!w) return;
+  // Add a point at the midpoint of the longest segment
+  let bestI = 0, bestLen = 0;
+  for (let i = 1; i < w.points.length; i++) {
+    const d = dist(w.points[i-1], w.points[i]);
+    if (d > bestLen) { bestLen = d; bestI = i; }
+  }
+  const mp = { x: (w.points[bestI-1].x + w.points[bestI].x)/2, y: (w.points[bestI-1].y + w.points[bestI].y)/2 };
+  w.points.splice(bestI, 0, mp);
+  snapshot(); render(); renderProps();
+}
+function promptWireLabel(id) {
+  const w = state.wires.find(x => x.id === id);
+  if (!w) return;
+  const nv = prompt('Wire label:', w.label || '');
+  if (nv === null) return;
+  w.label = nv;
+  snapshot(); render(); renderProps(); renderBom();
+}
+function deleteSelected() {
+  if (!state.selected) return;
+  if (state.selected.type === 'comp') state.components = state.components.filter(c => c.id !== state.selected.id);
+  else if (state.selected.type === 'wire') state.wires = state.wires.filter(w => w.id !== state.selected.id);
+  state.selected = null;
+  snapshot(); render(); renderProps(); renderBom();
+}
+
+// ─── Mode / tools ─────────────────────────────────────────────
+function setMode(m) {
+  state.mode = m;
+  ['select','wire','pan'].forEach(x => {
+    const b = document.getElementById('tool-' + x);
+    if (b) b.classList.toggle('active', x === m);
+  });
+  svg.classList.remove('mode-select','mode-wire','mode-pan','mode-place');
+  svg.classList.add('mode-' + m);
+  document.getElementById('status-mode').textContent = m.toUpperCase();
+  if (m !== 'wire' && tempWire) { tempWire = null; render(); }
+  updateHint();
+}
+
+function updateHint() {
+  const h = document.getElementById('status-hint');
+  if (state.mode === 'wire') {
+    h.textContent = tempWire ? 'Click to add waypoint · Double-click or Enter to finish · Esc to cancel' : 'Click on a component or canvas to start a wire';
+  } else if (state.mode === 'pan') {
+    h.textContent = 'Drag to pan · scroll to zoom';
+  } else {
+    h.textContent = 'Drag from palette · click to select · right-click for menu';
+  }
+}
+
+function toggleGrid()    { state.gridVisible = !state.gridVisible; document.getElementById('toggle-grid').classList.toggle('active', state.gridVisible); render(); }
+function toggleSnap()    { state.snap = !state.snap; document.getElementById('toggle-snap').classList.toggle('active', state.snap); }
+function toggleLengths() { state.showLengths = !state.showLengths; document.getElementById('toggle-lengths').classList.toggle('active', state.showLengths); render(); }
+function setScale()      { state.scale = parseFloat(document.getElementById('scale-units').value); render(); renderProps(); renderBom(); updateStats(); }
+
+// ─── Zoom / Pan ───────────────────────────────────────────────
+function zoomBy(factor, cx, cy) {
+  const rect = svg.getBoundingClientRect();
+  if (cx === undefined) { cx = rect.width / 2; cy = rect.height / 2; }
+  const oldZoom = state.zoom;
+  const newZoom = Math.min(4, Math.max(0.15, oldZoom * factor));
+  if (newZoom === oldZoom) return;
+  // Zoom around point cx,cy
+  state.pan.x = cx - (cx - state.pan.x) * (newZoom / oldZoom);
+  state.pan.y = cy - (cy - state.pan.y) * (newZoom / oldZoom);
+  state.zoom = newZoom;
+  render();
+}
+function updateZoomDisplay() {
+  const z = Math.round(state.zoom * 100) + '%';
+  document.getElementById('zoom-val').textContent = z;
+  document.getElementById('status-zoom').textContent = z;
+}
+function fitView() {
+  if (state.components.length === 0 && state.wires.length === 0) {
+    state.pan = { x: 0, y: 0 };
+    state.zoom = 1;
+    render();
+    return;
+  }
+  let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+  state.components.forEach(c => {
+    minX = Math.min(minX, c.x); minY = Math.min(minY, c.y);
+    maxX = Math.max(maxX, c.x + c.w); maxY = Math.max(maxY, c.y + c.h);
+  });
+  state.wires.forEach(w => w.points.forEach(p => {
+    minX = Math.min(minX, p.x); minY = Math.min(minY, p.y);
+    maxX = Math.max(maxX, p.x); maxY = Math.max(maxY, p.y);
+  }));
+  const rect = svg.getBoundingClientRect();
+  const pad = 60;
+  const z = Math.min(4, Math.max(0.15, Math.min((rect.width - pad*2) / (maxX - minX), (rect.height - pad*2) / (maxY - minY))));
+  state.zoom = z;
+  state.pan.x = (rect.width - (maxX - minX) * z) / 2 - minX * z;
+  state.pan.y = (rect.height - (maxY - minY) * z) / 2 - minY * z;
+  render();
+}
+
+// ─── Canvas mouse handling ────────────────────────────────────
+svg.addEventListener('mousedown', (e) => {
+  if (e.button === 1 || (e.button === 0 && (state.mode === 'pan' || spacePressed))) {
+    isPanning = true;
+    svg.classList.add('panning');
+    panStart = { x: e.clientX - state.pan.x, y: e.clientY - state.pan.y };
+    e.preventDefault();
+    return;
+  }
+  if (e.button !== 0) return;
+  const wp = getEventWorldPos(e);
+
+  if (state.mode === 'wire') {
+    handleWireClick(wp);
+    return;
+  }
+  // Otherwise: click on empty canvas
+  clearSelection();
+});
+
+function handleWireClick(point, compId) {
+  if (!tempWire) {
+    tempWire = { points: [{ x: snap(point.x), y: snap(point.y) }], color: '#e63946', gauge: '18' };
+    updateHint();
+  } else {
+    tempWire.points.push({ x: snap(point.x), y: snap(point.y) });
+  }
+  render();
+}
+
+function finishWire() {
+  if (!tempWire || tempWire.points.length < 2) { tempWire = null; render(); return; }
+  state.wires.push({
+    id: uid(),
+    points: tempWire.points,
+    color: tempWire.color,
+    gauge: tempWire.gauge,
+    label: '',
+  });
+  tempWire = null;
+  snapshot(); render(); renderBom(); updateStats();
+  updateHint();
+}
+function cancelWire() {
+  tempWire = null; render(); updateHint();
+}
+
+svg.addEventListener('dblclick', (e) => {
+  if (state.mode === 'wire' && tempWire) {
+    e.preventDefault();
+    finishWire();
+  }
+});
+
+svg.addEventListener('mousemove', (e) => {
+  cursorWorld = getEventWorldPos(e);
+  document.getElementById('status-cursor').textContent = `${Math.round(cursorWorld.x)}, ${Math.round(cursorWorld.y)} (${formatLength(0)} pos)`;
+
+  if (isPanning) {
+    state.pan.x = e.clientX - panStart.x;
+    state.pan.y = e.clientY - panStart.y;
+    render();
+    return;
+  }
+
+  if (dragHandle) {
+    const w = state.wires.find(x => x.id === dragHandle.wireId);
+    if (w) {
+      w.points[dragHandle.idx] = { x: snap(cursorWorld.x), y: snap(cursorWorld.y) };
+      render(); renderProps();
+    }
+    return;
+  }
+
+  if (isDragging && dragTarget && dragTarget.type === 'comp') {
+    const c = state.components.find(x => x.id === dragTarget.id);
+    if (c) {
+      c.x = snap(dragTarget.ox + (cursorWorld.x - dragStart.x));
+      c.y = snap(dragTarget.oy + (cursorWorld.y - dragStart.y));
+      render();
+    }
+    return;
+  }
+
+  if (state.mode === 'wire' && tempWire) {
+    render();
+  }
+});
+
+window.addEventListener('mouseup', (e) => {
+  if (isPanning) { isPanning = false; svg.classList.remove('panning'); return; }
+  if (dragHandle) { dragHandle = null; snapshot(); return; }
+  if (isDragging) { isDragging = false; dragTarget = null; snapshot(); return; }
+});
+
+svg.addEventListener('wheel', (e) => {
+  e.preventDefault();
+  const rect = svg.getBoundingClientRect();
+  zoomBy(e.deltaY < 0 ? 1.12 : 1/1.12, e.clientX - rect.left, e.clientY - rect.top);
+}, { passive: false });
+
+// ─── Keyboard ─────────────────────────────────────────────────
+window.addEventListener('keydown', (e) => {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+  const meta = e.ctrlKey || e.metaKey;
+
+  if (meta && e.key === 'z' && !e.shiftKey) { e.preventDefault(); undo(); return; }
+  if (meta && (e.key === 'y' || (e.key === 'z' && e.shiftKey))) { e.preventDefault(); redo(); return; }
+  if (meta && e.key === 's') { e.preventDefault(); openSaveModal(); return; }
+  if (meta && e.key === 'd') { e.preventDefault();
+    if (state.selected?.type === 'comp') duplicateComponent(state.selected.id);
+    else if (state.selected?.type === 'wire') duplicateWire(state.selected.id);
+    return;
+  }
+  if (e.key === 'Escape') {
+    closeContextMenu();
+    closeModal();
+    if (tempWire) cancelWire();
+    else clearSelection();
+    return;
+  }
+  if (e.key === 'Enter' && tempWire) { finishWire(); return; }
+  if ((e.key === 'Delete' || e.key === 'Backspace') && state.selected) { e.preventDefault(); deleteSelected(); return; }
+  if (e.key === 'v' || e.key === 'V') setMode('select');
+  if (e.key === 'w' || e.key === 'W') setMode('wire');
+  if (e.key === 'h' || e.key === 'H') setMode('pan');
+  if (e.key === 'g' || e.key === 'G') toggleGrid();
+  if (e.key === 's' || e.key === 'S') toggleSnap();
+  if (e.key === 'r' || e.key === 'R') {
+    if (state.selected?.type === 'comp') rotateComponent(state.selected.id);
+  }
+  if (e.key === ' ') { e.preventDefault(); if (!spacePressed) { spacePressed = true; prevModeBeforePan = state.mode; setMode('pan'); } }
+});
+window.addEventListener('keyup', (e) => {
+  if (e.key === ' ' && spacePressed) { spacePressed = false; setMode(prevModeBeforePan || 'select'); }
+});
+
+// ─── Tabs ─────────────────────────────────────────────────────
+function setTab(t, skipIfSame) {
+  const cur = document.querySelector('.panel-tab.active')?.dataset.tab;
+  if (skipIfSame && cur === t) return;
+  document.querySelectorAll('.panel-tab').forEach(b => b.classList.toggle('active', b.dataset.tab === t));
+  document.querySelectorAll('.right-content > section').forEach(s => s.classList.toggle('active', s.id === 'tab-' + t));
+  if (t === 'bom') renderBom();
+}
+
+// ─── BOM ──────────────────────────────────────────────────────
+function renderBom() {
+  const list = document.getElementById('bom-list');
+  // Components by type
+  const compsByType = {};
+  state.components.forEach(c => {
+    if (!compsByType[c.type]) compsByType[c.type] = {};
+    compsByType[c.type][c.name] = (compsByType[c.type][c.name] || 0) + 1;
+  });
+  // Wires by gauge + color
+  const wireGroups = {};
+  let totalLen = 0;
+  state.wires.forEach(w => {
+    const key = `${w.gauge} AWG · ${colorName(w.color)}`;
+    if (!wireGroups[key]) wireGroups[key] = { count: 0, len: 0, color: w.color };
+    wireGroups[key].count++;
+    const l = wirePathLength(w);
+    wireGroups[key].len += l;
+    totalLen += l;
+  });
+
+  let html = '';
+  for (const [type, items] of Object.entries(compsByType)) {
+    html += `<div class="bom-row bom-sub"><span>${type}</span><span></span></div>`;
+    for (const [name, count] of Object.entries(items)) {
+      html += `<div class="bom-row"><span class="bom-name">${escapeHtml(name)}</span><span class="bom-count">×${count}</span></div>`;
+    }
+  }
+  if (Object.keys(wireGroups).length) {
+    html += `<div class="bom-row bom-sub"><span>Wire</span><span></span></div>`;
+    for (const [k, v] of Object.entries(wireGroups)) {
+      html += `<div class="bom-row"><span class="bom-name"><span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:${v.color};vertical-align:middle;margin-right:6px;border:1px solid var(--border);"></span>${k}</span><span class="bom-count">${formatLength(v.len)}</span></div>`;
+    }
+  }
+  if (!html) html = `<div class="prop-empty" style="padding:30px 20px;">No components or wires yet.</div>`;
+  list.innerHTML = html;
+
+  document.getElementById('bom-total-length').textContent = formatLength(totalLen);
+}
+
+function colorName(hex) {
+  const map = { '#e63946':'Red', '#000000':'Black', '#ffffff':'White', '#facc15':'Yellow', '#22c55e':'Green', '#3b82f6':'Blue', '#a855f7':'Purple', '#f97316':'Orange', '#a78bfa':'Violet', '#06b6d4':'Cyan', '#94a3b8':'Gray', '#854d0e':'Brown', '#ec4899':'Pink', '#f43f5e':'Rose', '#10b981':'Emerald', '#ca8a04':'Olive' };
+  return map[hex.toLowerCase()] || hex;
+}
+
+function updateStats() {
+  document.getElementById('status-comps').textContent = state.components.length;
+  document.getElementById('status-wires').textContent = state.wires.length;
+  let totalLen = 0;
+  state.wires.forEach(w => totalLen += wirePathLength(w));
+  document.getElementById('status-length').textContent = formatLength(totalLen);
+
+  const sc = document.getElementById('stat-comps');
+  if (sc) sc.textContent = state.components.length;
+  const sw = document.getElementById('stat-wires');
+  if (sw) sw.textContent = state.wires.length;
+  const sl = document.getElementById('stat-length');
+  if (sl) sl.textContent = formatLength(totalLen);
+  const sa = document.getElementById('stat-avg');
+  if (sa) sa.textContent = state.wires.length ? formatLength(totalLen / state.wires.length) : '— mm';
+}
+
+// ─── Context menu ─────────────────────────────────────────────
+function openContextMenu(x, y, items) {
+  const m = document.getElementById('ctx-menu');
+  m.innerHTML = items.map(it => it.sep
+    ? '<div class="ctx-sep"></div>'
+    : `<div class="ctx-item ${it.danger?'danger':''}" data-action><span>${it.label}</span>${it.shortcut?`<span class="ctx-shortcut">${it.shortcut}</span>`:''}</div>`).join('');
+  // attach handlers in order
+  let i = 0;
+  m.querySelectorAll('.ctx-item').forEach(el => {
+    const it = items.filter(x => !x.sep)[i++];
+    el.addEventListener('click', () => { closeContextMenu(); it.action(); });
+  });
+  m.style.left = x + 'px'; m.style.top = y + 'px';
+  m.classList.add('open');
+}
+function closeContextMenu() { document.getElementById('ctx-menu').classList.remove('open'); }
+window.addEventListener('click', closeContextMenu);
+
+// ─── Save / Load / Export ─────────────────────────────────────
+function openSaveModal() {
+  document.getElementById('save-name').value = state.project.name || 'Untitled';
+  document.getElementById('modal-save').classList.add('open');
+}
+function confirmSave() {
+  const name = document.getElementById('save-name').value.trim();
+  if (!name) return toast('Please enter a project name', 'err');
+  state.project.name = name;
+  document.getElementById('project-name').value = name;
+  const data = serializeProject();
+  data.savedAt = Date.now();
+  localStorage.setItem('svk_harness_' + name, JSON.stringify(data));
+  closeModal();
+  toast('Saved “' + name + '”');
+}
+function openLoadModal() {
+  const list = document.getElementById('saved-list');
+  const items = [];
+  for (let i = 0; i < localStorage.length; i++) {
+    const k = localStorage.key(i);
+    if (k && k.startsWith('svk_harness_')) {
+      try {
+        const v = JSON.parse(localStorage.getItem(k));
+        items.push({ key: k, name: v.project?.name || k.slice(12), savedAt: v.savedAt || 0, count: (v.components?.length||0) + (v.wires?.length||0) });
+      } catch (e) {}
+    }
+  }
+  items.sort((a,b) => b.savedAt - a.savedAt);
+  list.innerHTML = items.length ? items.map(it => `
+    <div class="saved-item" onclick="loadProject('${it.key}')">
+      <div style="flex:1;">
+        <div class="saved-name">${escapeHtml(it.name)}</div>
+        <div class="saved-meta">${it.count} items · ${new Date(it.savedAt).toLocaleString()}</div>
+      </div>
+      <button class="saved-del" onclick="event.stopPropagation();deleteSaved('${it.key}')" title="Delete">×</button>
+    </div>
+  `).join('') : `<div class="prop-empty" style="padding:20px;">No saved projects yet.</div>`;
+  document.getElementById('modal-load').classList.add('open');
+}
+function loadProject(key) {
+  try {
+    const data = JSON.parse(localStorage.getItem(key));
+    deserializeProject(data);
+    closeModal();
+    toast('Loaded “' + (data.project?.name || 'project') + '”');
+  } catch (e) { toast('Failed to load: ' + e.message, 'err'); }
+}
+function deleteSaved(key) {
+  if (!confirm('Delete this saved project?')) return;
+  localStorage.removeItem(key);
+  openLoadModal();
+}
+function serializeProject() {
+  return {
+    project: state.project,
+    components: state.components,
+    wires: state.wires,
+    pan: state.pan,
+    zoom: state.zoom,
+    scale: state.scale,
+    displayUnit: state.displayUnit,
+    gridVisible: state.gridVisible,
+    snap: state.snap,
+    showLengths: state.showLengths,
+  };
+}
+function deserializeProject(data) {
+  state.components = data.components || [];
+  state.wires = data.wires || [];
+  state.pan = data.pan || { x: 0, y: 0 };
+  state.zoom = data.zoom || 1;
+  state.scale = data.scale || 5;
+  state.displayUnit = data.displayUnit || 'mm';
+  state.gridVisible = data.gridVisible !== false;
+  state.snap = data.snap !== false;
+  state.showLengths = data.showLengths !== false;
+  state.project = data.project || { name:'Untitled Harness' };
+  state.selected = null;
+  document.getElementById('project-name').value = state.project.name;
+  document.getElementById('proj-customer').value = state.project.customer || '';
+  document.getElementById('proj-vehicle').value = state.project.vehicle || '';
+  document.getElementById('proj-engine').value = state.project.engine || '';
+  document.getElementById('proj-notes').value = state.project.notes || '';
+  document.getElementById('scale-units').value = state.scale;
+  document.getElementById('display-units').value = state.displayUnit;
+  document.getElementById('toggle-grid').classList.toggle('active', state.gridVisible);
+  document.getElementById('toggle-snap').classList.toggle('active', state.snap);
+  document.getElementById('toggle-lengths').classList.toggle('active', state.showLengths);
+  history = []; historyIdx = -1; snapshot();
+  render(); renderProps(); renderBom();
+}
+function exportJSON() {
+  const data = serializeProject();
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = (state.project.name || 'harness') + '.json';
+  a.click();
+  toast('Exported JSON');
+}
+function importJSON(e) {
+  const file = e.target.files[0]; if (!file) return;
+  const r = new FileReader();
+  r.onload = () => {
+    try {
+      deserializeProject(JSON.parse(r.result));
+      closeModal();
+      toast('Imported project');
+    } catch (err) { toast('Import failed: ' + err.message, 'err'); }
+  };
+  r.readAsText(file);
+}
+function exportPNG() {
+  // Compute bounds in world coords
+  if (state.components.length === 0 && state.wires.length === 0) return toast('Nothing to export', 'err');
+  let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+  state.components.forEach(c => { minX = Math.min(minX, c.x); minY = Math.min(minY, c.y); maxX = Math.max(maxX, c.x + c.w); maxY = Math.max(maxY, c.y + c.h); });
+  state.wires.forEach(w => w.points.forEach(p => { minX = Math.min(minX, p.x); minY = Math.min(minY, p.y); maxX = Math.max(maxX, p.x); maxY = Math.max(maxY, p.y); }));
+  const pad = 40;
+  const w = Math.ceil(maxX - minX + pad*2), h = Math.ceil(maxY - minY + pad*2);
+  // Clone the world group with transform
+  const clone = world.cloneNode(true);
+  // Strip selection states
+  clone.querySelectorAll('.selected').forEach(el => el.classList.remove('selected'));
+  clone.querySelectorAll('.wire-handle').forEach(el => el.remove());
+  const newSvg = document.createElementNS(SVG_NS, 'svg');
+  newSvg.setAttribute('xmlns', SVG_NS);
+  newSvg.setAttribute('width', w);
+  newSvg.setAttribute('height', h);
+  newSvg.setAttribute('viewBox', `${minX-pad} ${minY-pad} ${w} ${h}`);
+  // Background
+  const bg = document.createElementNS(SVG_NS, 'rect');
+  bg.setAttribute('x', minX-pad); bg.setAttribute('y', minY-pad);
+  bg.setAttribute('width', w); bg.setAttribute('height', h);
+  bg.setAttribute('fill', '#0a0a0f');
+  newSvg.appendChild(bg);
+  // Remove the transform on cloned world so it draws at world coords
+  clone.removeAttribute('transform');
+  newSvg.appendChild(clone);
+
+  // Inline styles for export
+  const style = document.createElementNS(SVG_NS, 'style');
+  style.textContent = `
+    .comp-bg { fill:#14141d;stroke:rgba(255,255,255,0.12);stroke-width:1; }
+    .comp-label { fill:#e8e8f0;font:600 11px Inter,sans-serif;text-anchor:middle; }
+    .wire-line { fill:none;stroke-width:2.5; }
+    .wire-label { fill:#e8e8f0;font:600 10px monospace;text-anchor:middle;paint-order:stroke;stroke:#0a0a0f;stroke-width:3; }
+  `;
+  newSvg.appendChild(style);
+
+  const xml = new XMLSerializer().serializeToString(newSvg);
+  const blob = new Blob([xml], { type: 'image/svg+xml;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const img = new Image();
+  img.onload = () => {
+    const canvas = document.createElement('canvas');
+    canvas.width = w * 2; canvas.height = h * 2;
+    const ctx = canvas.getContext('2d');
+    ctx.scale(2,2);
+    ctx.drawImage(img, 0, 0);
+    canvas.toBlob((b) => {
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(b);
+      a.download = (state.project.name || 'harness') + '.png';
+      a.click();
+      URL.revokeObjectURL(url);
+      toast('Exported PNG');
+    }, 'image/png');
+  };
+  img.onerror = () => toast('PNG export failed', 'err');
+  img.src = url;
+}
+function newProject() {
+  if (state.components.length || state.wires.length) {
+    if (!confirm('Start a new project? Unsaved changes will be lost.')) return;
+  }
+  state.components = []; state.wires = []; state.selected = null;
+  state.pan = { x: 0, y: 0 }; state.zoom = 1;
+  state.project = { name: 'Untitled Harness', customer:'', vehicle:'', engine:'', notes:'' };
+  document.getElementById('project-name').value = 'Untitled Harness';
+  ['proj-customer','proj-vehicle','proj-engine','proj-notes'].forEach(id => document.getElementById(id).value = '');
+  history = []; historyIdx = -1; snapshot();
+  render(); renderProps(); renderBom();
+  toast('New project', 'info');
+}
+function closeModal() { document.querySelectorAll('.modal-bg').forEach(m => m.classList.remove('open')); }
+document.querySelectorAll('.modal-bg').forEach(m => m.addEventListener('click', (e) => { if (e.target === m) closeModal(); }));
+
+// ─── Project field binding ────────────────────────────────────
+document.getElementById('project-name').addEventListener('input', (e) => state.project.name = e.target.value);
+['customer','vehicle','engine','notes'].forEach(f => {
+  const el = document.getElementById('proj-' + f);
+  if (el) el.addEventListener('input', (e) => state.project[f] = e.target.value);
+});
+
+// ─── Toast ────────────────────────────────────────────────────
+function toast(msg, kind) {
+  const stack = document.getElementById('toasts');
+  const t = document.createElement('div');
+  t.className = 'toast ' + (kind || '');
+  t.textContent = msg;
+  stack.appendChild(t);
+  setTimeout(() => { t.style.opacity = '0'; t.style.transform = 'translateX(20px)'; setTimeout(() => t.remove(), 250); }, 2200);
+}
+
+// ─── Init ─────────────────────────────────────────────────────
+buildPalette();
+setMode('select');
+snapshot();
+render();
+renderProps();
+renderBom();
+updateStats();
+toast('Welcome to Harness Designer — drag a component from the left to begin', 'info');
+</script>
+</body>
+</html>
