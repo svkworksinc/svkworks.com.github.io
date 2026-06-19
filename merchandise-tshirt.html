@@ -11,11 +11,11 @@
   <meta property="og:title" content="SVK Works T-Shirt — SVK Works Merchandise">
   <meta property="og:description" content="SVK Works T-Shirt — soft cotton-blend tee with a clean SVK Works graphic. $25 + shipping. Available through DMs.">
   <meta property="og:url" content="https://www.svkworks.com/merchandise-tshirt.html">
-  <meta property="og:image" content="https://www.svkworks.com/img/merch/shirt-1.png">
+  <meta property="og:image" content="https://www.svkworks.com/img/merch/shirt-1.jpg">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="SVK Works T-Shirt — SVK Works Merchandise">
   <meta name="twitter:description" content="SVK Works T-Shirt — $25 + shipping. Available to purchase through DMs.">
-  <meta name="twitter:image" content="https://www.svkworks.com/img/merch/shirt-1.png">
+  <meta name="twitter:image" content="https://www.svkworks.com/img/merch/shirt-1.jpg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
@@ -27,7 +27,7 @@
     "@type": "Product",
     "name": "SVK Works T-Shirt",
     "description": "SVK Works branded T-shirt. Soft cotton-blend tee with a clean SVK Works graphic. Available to purchase through DMs on Instagram or Facebook.",
-    "image": ["https://www.svkworks.com/img/merch/shirt-1.png"],
+    "image": ["https://www.svkworks.com/img/merch/shirt-1.jpg"],
     "brand": { "@type": "Brand", "name": "SVK Works" },
     "sku": "SVK-MERCH-TSHIRT",
     "mpn": "SVK-MERCH-TSHIRT",
@@ -78,19 +78,19 @@
           <!-- Image Gallery / Slideshow -->
           <div class="product-gallery">
             <div class="product-gallery-main" id="gallery-main">
-              <img src="img/merch/shirt-1.png" alt="SVK Works T-Shirt front view" id="product-main-image" loading="lazy">
+              <img src="img/merch/shirt-1.jpg" alt="SVK Works T-Shirt front view" id="product-main-image" loading="lazy">
               <button class="gallery-nav gallery-prev" onclick="changeSlide(-1)" aria-label="Previous image">&#10094;</button>
               <button class="gallery-nav gallery-next" onclick="changeSlide(1)" aria-label="Next image">&#10095;</button>
             </div>
             <div class="product-gallery-thumbs" id="gallery-thumbs">
               <div class="product-thumb active" onclick="goToSlide(0)">
-                <img src="img/merch/shirt-1.png" alt="T-shirt view 1" loading="lazy">
+                <img src="img/merch/shirt-1.jpg" alt="T-shirt view 1" loading="lazy">
               </div>
               <div class="product-thumb" onclick="goToSlide(1)">
-                <img src="img/merch/shirt-2.png" alt="T-shirt view 2" loading="lazy">
+                <img src="img/merch/shirt-2.jpg" alt="T-shirt view 2" loading="lazy">
               </div>
               <div class="product-thumb" onclick="goToSlide(2)">
-                <img src="img/merch/shirt-3.png" alt="T-shirt view 3" loading="lazy">
+                <img src="img/merch/shirt-3.jpg" alt="T-shirt view 3" loading="lazy">
               </div>
             </div>
           </div>
@@ -232,7 +232,7 @@
   <script defer src="js/main.js"></script>
   <script>
     let currentSlide = 0;
-    const slides = ['img/merch/shirt-1.png', 'img/merch/shirt-2.png', 'img/merch/shirt-3.png'];
+    const slides = ['img/merch/shirt-1.jpg', 'img/merch/shirt-2.jpg', 'img/merch/shirt-3.jpg'];
 
     function changeSlide(dir) {
       currentSlide = (currentSlide + dir + slides.length) % slides.length;
