@@ -69,6 +69,13 @@ const SVK_HEADER_HTML = `
               <li><a href="/milspec-connector.html">Autosport Upgrade</a></li>
             </ul>
           </li>
+          <li class="nav-item has-dropdown">
+            <a href="/merchandise.html" class="nav-link" aria-haspopup="true">Merchandise</a>
+            <ul class="dropdown">
+              <li><a href="/merchandise-tshirt.html">T-Shirts</a></li>
+              <li><a href="/merchandise.html">View All</a></li>
+            </ul>
+          </li>
           <li class="nav-item"><a href="/builds.html" class="nav-link">Builds</a></li>
           <li class="nav-item"><a href="/blog.html" class="nav-link">Blog</a></li>
           <li class="nav-item"><a href="/resources.html" class="nav-link">Resources</a></li>
