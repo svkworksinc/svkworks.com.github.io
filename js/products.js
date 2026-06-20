@@ -198,9 +198,16 @@ const SVKProducts = {
         <div class="container">
           <div class="product-detail-layout">
             <div class="product-gallery">
-              <div class="product-gallery-main">
+              <div class="product-gallery-main" id="product-gallery-main">
                 <img src="${product.image}" alt="${product.name}" id="product-main-image">
               </div>
+              ${product.images && product.images.length > 1 ? `
+              <div class="product-gallery-thumbs">
+                ${product.images.map((src, i) => `
+                  <div class="product-thumb${i === 0 ? ' active' : ''}" data-src="${src}">
+                    <img src="${src}" alt="${product.name} view ${i + 1}" loading="lazy">
+                  </div>`).join('')}
+              </div>` : ''}
             </div>
             <div class="product-info">
               ${product.badge ? `<span class="badge">${product.badge}</span>` : ''}
@@ -265,5 +272,51 @@ const SVKProducts = {
         SVKCart.addItem(product, 1, selectedOptions);
       });
     }
+
+    // Zoom + pan on main image
+    const galleryMain = document.getElementById('product-gallery-main');
+    const mainImg = document.getElementById('product-main-image');
+    if (galleryMain && mainImg) {
+      galleryMain.addEventListener('click', () => {
+        galleryMain.classList.toggle('zoomed');
+        if (!galleryMain.classList.contains('zoomed')) {
+          mainImg.style.transformOrigin = '50% 50%';
+        }
+      });
+
+      galleryMain.addEventListener('mousemove', (e) => {
+        if (!galleryMain.classList.contains('zoomed')) return;
+        const rect = galleryMain.getBoundingClientRect();
+        const x = ((e.clientX - rect.left) / rect.width) * 100;
+        const y = ((e.clientY - rect.top) / rect.height) * 100;
+        mainImg.style.transformOrigin = `${x}% ${y}%`;
+      });
+
+      galleryMain.addEventListener('mousedown', () => {
+        if (galleryMain.classList.contains('zoomed')) galleryMain.classList.add('grabbing');
+      });
+
+      galleryMain.addEventListener('mouseup', () => galleryMain.classList.remove('grabbing'));
+
+      galleryMain.addEventListener('mouseleave', () => {
+        galleryMain.classList.remove('grabbing');
+        if (galleryMain.classList.contains('zoomed')) {
+          mainImg.style.transformOrigin = '50% 50%';
+        }
+      });
+    }
+
+    // Thumbnail switching
+    container.querySelectorAll('.product-thumb').forEach(thumb => {
+      thumb.addEventListener('click', () => {
+        const src = thumb.dataset.src;
+        if (mainImg) {
+          mainImg.src = src;
+          if (galleryMain) galleryMain.classList.remove('zoomed');
+        }
+        container.querySelectorAll('.product-thumb').forEach(t => t.classList.remove('active'));
+        thumb.classList.add('active');
+      });
+    });
   }
 };
