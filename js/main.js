@@ -18,6 +18,9 @@ const SVKMain = {
 
     // Smooth scroll for anchor links
     this.initSmoothScroll();
+
+    // Gallery zoom+pan on any page with a product gallery
+    this.initProductGallery();
   },
 
   observeAnimations() {
@@ -72,6 +75,55 @@ const SVKMain = {
           e.preventDefault();
           target.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
+      });
+    });
+  },
+
+  initProductGallery() {
+    document.querySelectorAll('.product-gallery-main').forEach(galleryMain => {
+      const img = galleryMain.querySelector('img');
+      if (!img) return;
+
+      // Click to toggle zoom
+      galleryMain.addEventListener('click', () => {
+        galleryMain.classList.toggle('zoomed');
+        if (!galleryMain.classList.contains('zoomed')) {
+          img.style.transformOrigin = '50% 50%';
+        }
+      });
+
+      // Pan by moving the cursor while zoomed
+      galleryMain.addEventListener('mousemove', (e) => {
+        if (!galleryMain.classList.contains('zoomed')) return;
+        const rect = galleryMain.getBoundingClientRect();
+        const x = ((e.clientX - rect.left) / rect.width) * 100;
+        const y = ((e.clientY - rect.top) / rect.height) * 100;
+        img.style.transformOrigin = `${x}% ${y}%`;
+      });
+
+      galleryMain.addEventListener('mousedown', () => {
+        if (galleryMain.classList.contains('zoomed')) galleryMain.classList.add('grabbing');
+      });
+      galleryMain.addEventListener('mouseup', () => galleryMain.classList.remove('grabbing'));
+      galleryMain.addEventListener('mouseleave', () => {
+        galleryMain.classList.remove('grabbing');
+        if (galleryMain.classList.contains('zoomed')) img.style.transformOrigin = '50% 50%';
+      });
+    });
+
+    // Thumbnail switching for static pages
+    document.querySelectorAll('.product-thumb[data-src], .gallery-thumb[data-src]').forEach(thumb => {
+      thumb.addEventListener('click', () => {
+        const galleryMain = thumb.closest('.product-gallery')?.querySelector('.product-gallery-main');
+        const mainImg = galleryMain?.querySelector('img');
+        if (mainImg) {
+          mainImg.src = thumb.dataset.src;
+          galleryMain.classList.remove('zoomed');
+        }
+        thumb.closest('.product-gallery-thumbs, .gallery-thumbs')
+          ?.querySelectorAll('.product-thumb, .gallery-thumb')
+          .forEach(t => t.classList.remove('active'));
+        thumb.classList.add('active');
       });
     });
   },
