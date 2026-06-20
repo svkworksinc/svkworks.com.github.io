@@ -62,11 +62,14 @@
   text-decoration: none;
   display: flex;
   align-items: center;
+  flex-shrink: 0;
 }
 
 .logo-img {
   height: 40px;
   width: auto;
+  flex-shrink: 0;
+  object-fit: contain;
 }
 
 .logo-text {
