@@ -1986,6 +1986,17 @@ main {
   overflow: hidden;
 }
 
+.calc-section-header {
+  padding: var(--space-md) var(--space-md) var(--space-xs);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--magenta);
+  border-top: 1px solid var(--border-color);
+  margin-top: var(--space-xs);
+}
+
 .calc-group {
   display: flex;
   flex-direction: column;
