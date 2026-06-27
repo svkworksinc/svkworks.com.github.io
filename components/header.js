@@ -24,7 +24,7 @@ const SVK_HEADER_HTML = `
     <div class="container">
       <div class="nav-content">
         <a href="/" class="logo" aria-label="SVK Works Home">
-          <img src="/img/svk-logo.png" alt="SVK Works" class="logo-img">
+          <picture><source srcset="/img/svk-logo.webp" type="image/webp"><img src="/img/svk-logo.png" alt="SVK Works" class="logo-img" width="400" height="139" fetchpriority="high"></picture>
         </a>
         <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
           <span class="hamburger"></span>

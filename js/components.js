@@ -42,9 +42,16 @@ const SVKComponents = {
   },
 
   _bootstrapAuth() {
-    // Dynamically load Supabase SDK then auth.js, then update the header
+    // Skip loading the Supabase SDK (~300 KB) when no session exists in storage.
+    // Supabase persists sessions under keys matching "sb-*-auth-token".
+    // Non-logged-in visitors (the vast majority) skip this entirely.
+    const hasSession = Object.keys(localStorage).some(
+      k => k.startsWith('sb-') && k.endsWith('-auth-token')
+    );
+    if (!hasSession) return;
+
     const sdkScript = document.createElement('script');
-    sdkScript.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js';
+    sdkScript.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js';
     sdkScript.onload = () => {
       const authScript = document.createElement('script');
       authScript.src = 'js/auth.js';

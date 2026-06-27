@@ -20,6 +20,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
   <link rel="stylesheet" href="css/style.css">
+  <link rel="preload" as="image" href="img/supraHarness1.jpg">
   <link rel="icon" href="img/svk-icon.png" type="image/png">
   <!-- Breadcrumb Schema -->
   <script type="application/ld+json">
@@ -140,7 +141,7 @@
           <!-- Image Gallery -->
           <div class="product-gallery">
             <div class="product-gallery-main" id="gallery-main">
-              <img src="img/supraHarness1.jpg" alt="SVK Lexus SC300 SC400 Soarer Z30 Plug and Play Engine Wiring Harness" id="product-main-image" loading="lazy">
+              <img src="img/supraHarness1.jpg" alt="SVK Lexus SC300 SC400 Soarer Z30 Plug and Play Engine Wiring Harness" id="product-main-image" fetchpriority="high">
               <button class="gallery-nav gallery-prev" onclick="changeSlide(-1)" aria-label="Previous image">&#10094;</button>
               <button class="gallery-nav gallery-next" onclick="changeSlide(1)" aria-label="Next image">&#10095;</button>
             </div>
