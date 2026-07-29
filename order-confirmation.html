@@ -206,6 +206,7 @@
 
   <script defer src="components/header.js"></script>
   <script defer src="components/footer.js"></script>
+  <script defer src="js/cart.js"></script>
   <script defer src="js/components.js"></script>
   <script defer src="js/search.js"></script>
   <script defer src="js/main.js"></script>
@@ -258,6 +259,9 @@
         document.getElementById('no-order').style.display = 'block';
         return;
       }
+
+      // Clear the cart now that the order is confirmed
+      if (typeof SVKCart !== 'undefined') SVKCart.clearCart();
 
       // Populate invoice
       document.getElementById('order-success').style.display = 'block';

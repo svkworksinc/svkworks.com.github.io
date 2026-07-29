@@ -280,7 +280,7 @@ const SVK_PRODUCTS_DATA = {
       "options": {},
       "inStock": true,
       "featured": true,
-      "page": "connectors.html"
+      "page": "connectors/2jz-vvti-connector.html"
     },
     {
       "id": "mk4-2jz-ac-connector",
@@ -305,7 +305,7 @@ const SVK_PRODUCTS_DATA = {
       "options": {},
       "inStock": true,
       "featured": false,
-      "page": "connectors.html"
+      "page": "connectors/mk4-2jz-ac-connector.html"
     },
     {
       "id": "mk4-2jz-oil-pressure-connector",
@@ -330,7 +330,7 @@ const SVK_PRODUCTS_DATA = {
       "options": {},
       "inStock": true,
       "featured": false,
-      "page": "connectors.html"
+      "page": "connectors/mk4-2jz-oil-pressure-connector.html"
     },
     {
       "id": "mk4-chassis-fusebox-connector-3pin",
@@ -355,7 +355,7 @@ const SVK_PRODUCTS_DATA = {
       "options": {},
       "inStock": true,
       "featured": false,
-      "page": "connectors.html"
+      "page": "connectors/mk4-chassis-fusebox-connector-3pin.html"
     },
     {
       "id": "mk4-chassis-fusebox-connector-8pin",
@@ -380,7 +380,7 @@ const SVK_PRODUCTS_DATA = {
       "options": {},
       "inStock": true,
       "featured": false,
-      "page": "connectors.html"
+      "page": "connectors/mk4-chassis-fusebox-connector-8pin.html"
     },
     {
       "id": "mk4-jza80-chassis-16pin",
@@ -405,7 +405,7 @@ const SVK_PRODUCTS_DATA = {
       "options": {},
       "inStock": true,
       "featured": false,
-      "page": "connectors.html"
+      "page": "connectors/mk4-jza80-chassis-16pin.html"
     },
     {
       "id": "mk4-jza80-chassis-20pin",
@@ -430,7 +430,7 @@ const SVK_PRODUCTS_DATA = {
       "options": {},
       "inStock": true,
       "featured": false,
-      "page": "connectors.html"
+      "page": "connectors/mk4-jza80-chassis-20pin.html"
     },
     {
       "id": "mk4-jza80-chassis-38pin",
@@ -455,7 +455,7 @@ const SVK_PRODUCTS_DATA = {
       "options": {},
       "inStock": true,
       "featured": false,
-      "page": "connectors.html"
+      "page": "connectors/mk4-jza80-chassis-38pin.html"
     },
     {
       "id": "mk4-jza80-chassis-set-16-20-38pin",
@@ -480,7 +480,7 @@ const SVK_PRODUCTS_DATA = {
       "options": {},
       "inStock": true,
       "featured": true,
-      "page": "connectors.html"
+      "page": "connectors/mk4-jza80-chassis-set-16-20-38pin.html"
     },
     {
       "id": "mk4-starter-connector",
@@ -504,7 +504,7 @@ const SVK_PRODUCTS_DATA = {
       "options": {},
       "inStock": true,
       "featured": false,
-      "page": "connectors.html"
+      "page": "connectors/mk4-starter-connector.html"
     },
     {
       "id": "deutsch-dt-connector-kit",
@@ -531,7 +531,7 @@ const SVK_PRODUCTS_DATA = {
       "options": {},
       "inStock": true,
       "featured": true,
-      "page": "connectors.html"
+      "page": "connectors/deutsch-dt-connector-kit.html"
     },
     {
       "id": "milspec-autosport-connector",
@@ -558,7 +558,7 @@ const SVK_PRODUCTS_DATA = {
       "options": {},
       "inStock": true,
       "featured": true,
-      "page": "connectors.html"
+      "page": "connectors/milspec-autosport-connector.html"
     },
     {
       "id": "mk4-supra-cupholder",
