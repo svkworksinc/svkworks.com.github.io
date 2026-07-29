@@ -21,6 +21,7 @@ const PRODUCT_PRICES = {
   'deutsch-dt-connector-kit': 95,
   'milspec-autosport-connector': 350,
   'mk4-supra-cupholder': 45,
+  'svk-tshirt': 25,
 };
 
 // Estimated shipped weight per item, in ounces (box + item). Used only for
@@ -46,6 +47,7 @@ const PRODUCT_WEIGHTS_OZ = {
   'deutsch-dt-connector-kit': 16,
   'milspec-autosport-connector': 16,
   'mk4-supra-cupholder': 12,
+  'svk-tshirt': 8,
 };
 const DEFAULT_ITEM_WEIGHT_OZ = 16;
 const PACKAGING_WEIGHT_OZ = 6; // box/padding buffer added on top of item weight
