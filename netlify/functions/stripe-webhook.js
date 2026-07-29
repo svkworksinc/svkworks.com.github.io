@@ -66,6 +66,7 @@ exports.handler = async (event) => {
 
       console.log('[webhook] Triggering invoice email for:', order.order_number);
       const orderDate = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+      const opts = order.options || {};
       try {
         await sendInvoiceEmail({
           customerName: order.customer_name,
@@ -73,7 +74,12 @@ exports.handler = async (event) => {
           orderNumber: order.order_number,
           orderDate,
           items: order.items || [],
+          subtotal: opts.subtotal,
+          shipping: opts.shipping,
+          shippingLabel: opts.shippingLabel,
+          tax: opts.tax,
           total: order.total_price,
+          shippingAddress: opts.shippingAddress,
           paymentMethod: 'Credit / Debit Card',
         });
       } catch (err) {

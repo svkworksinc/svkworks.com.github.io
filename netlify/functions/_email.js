@@ -4,7 +4,11 @@ const TEST_MODE = process.env.TEST_MODE === 'true';
 
 const PDFDocument = require('pdfkit');
 
-async function generateInvoicePDF({ customerName, customerEmail, orderNumber, orderDate, items, total, paymentMethod }) {
+async function generateInvoicePDF({
+  customerName, customerEmail, orderNumber, orderDate,
+  items, subtotal, shipping, shippingLabel, tax, total,
+  shippingAddress, paymentMethod,
+}) {
   return new Promise((resolve, reject) => {
     const doc = new PDFDocument({ size: 'A4', margin: 50, autoFirstPage: true, bufferPages: true });
     const chunks = [];
@@ -18,6 +22,7 @@ async function generateInvoicePDF({ customerName, customerEmail, orderNumber, or
     const lightGray = '#cccccc';
     const offWhite = '#f5f5f5';
     const pageWidth = 595 - 100; // usable width with 50px margins each side
+    const hasBreakdown = subtotal !== undefined && shipping !== undefined;
 
     // ── Header band ──────────────────────────────────────────────────────────
     doc.rect(0, 0, 595, 72).fill('#0a0a0a');
@@ -35,8 +40,19 @@ async function generateInvoicePDF({ customerName, customerEmail, orderNumber, or
     doc.text('Email:     ' + customerEmail, 50, 162);
     doc.text('Payment:   ' + paymentMethod, 50, 176);
 
+    let metaY = 176;
+    if (shippingAddress) {
+      doc.text('Ship To:   ' + shippingAddress.address, 50, metaY + 14);
+      doc.text('           ' + shippingAddress.city + ', ' + shippingAddress.state + ' ' + shippingAddress.zip, 50, metaY + 28);
+      metaY += 28;
+    }
+    if (shippingLabel) {
+      doc.text('Via:       ' + shippingLabel, 50, metaY + 14);
+      metaY += 14;
+    }
+
     // ── Items table ──────────────────────────────────────────────────────────
-    const tableTop = 204;
+    const tableTop = metaY + 28;
     const col = { item: 50, qty: 360, price: 410, total: 470 };
 
     // Header row
@@ -54,17 +70,42 @@ async function generateInvoicePDF({ customerName, customerEmail, orderNumber, or
       if (i % 2 === 0) doc.rect(50, y - 2, pageWidth, rowH).fill(offWhite);
       doc.fillColor(nearBlack).text(item.name, col.item + 8, y, { width: 295, lineBreak: false });
       doc.text(String(item.quantity), col.qty, y);
-      doc.text('$' + item.price.toLocaleString(), col.price, y);
-      doc.fillColor(magenta).text('$' + item.lineTotal.toLocaleString(), col.total, y);
+      doc.text('$' + (item.price || 0).toFixed(2), col.price, y);
+      doc.fillColor(magenta).text('$' + (item.lineTotal || 0).toFixed(2), col.total, y);
       y += rowH;
     });
 
-    // ── Total ────────────────────────────────────────────────────────────────
+    // ── Totals section ───────────────────────────────────────────────────────
     y += 10;
     doc.moveTo(50, y).lineTo(545, y).strokeColor(lightGray).lineWidth(0.5).stroke();
     y += 14;
-    doc.fillColor(midGray).fontSize(10).font('Helvetica').text('Order Total', col.price - 40, y);
-    doc.fillColor(magenta).fontSize(18).font('Helvetica-Bold').text('$' + total.toLocaleString(), col.total, y - 2);
+
+    const lx = col.price - 40; // 370 — label x
+    const ax = col.total;       // 470 — amount x
+    const aw = 75;              // amount column width to page edge
+
+    if (hasBreakdown) {
+      doc.fillColor(midGray).fontSize(9).font('Helvetica');
+      doc.text('Subtotal', lx, y);
+      doc.text('$' + (subtotal || 0).toFixed(2), ax, y, { width: aw, align: 'right' });
+      y += 15;
+
+      doc.text('Shipping', lx, y);
+      doc.text('$' + (shipping || 0).toFixed(2), ax, y, { width: aw, align: 'right' });
+      y += 15;
+
+      if (tax && tax > 0) {
+        doc.text('Tax (TX 8.25%)', lx, y);
+        doc.text('$' + tax.toFixed(2), ax, y, { width: aw, align: 'right' });
+        y += 15;
+      }
+
+      doc.moveTo(lx, y - 2).lineTo(545, y - 2).strokeColor(lightGray).lineWidth(0.5).stroke();
+      y += 6;
+    }
+
+    doc.fillColor(midGray).fontSize(10).font('Helvetica').text('Order Total', lx, y);
+    doc.fillColor(magenta).fontSize(18).font('Helvetica-Bold').text('$' + (total || 0).toFixed(2), ax, y - 2, { width: aw, align: 'right' });
 
     // ── What's next box ──────────────────────────────────────────────────────
     y += 46;
@@ -89,10 +130,17 @@ async function generateInvoicePDF({ customerName, customerEmail, orderNumber, or
   });
 }
 
-async function sendInvoiceEmail({ customerName, customerEmail, orderNumber, orderDate, items, total, paymentMethod }) {
+async function sendInvoiceEmail({
+  customerName, customerEmail, orderNumber, orderDate,
+  items, subtotal, shipping, shippingLabel, tax, total,
+  shippingAddress, paymentMethod,
+}) {
   if (!process.env.RESEND_API_KEY) {
     throw new Error('RESEND_API_KEY environment variable is not set');
   }
+
+  const fmtMoney = n => (n || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const hasBreakdown = subtotal !== undefined && shipping !== undefined;
 
   const rows = items.map(item => {
     const optStr = Object.entries(item.options || {})
@@ -103,10 +151,41 @@ async function sendInvoiceEmail({ customerName, customerEmail, orderNumber, orde
       <tr>
         <td style="padding:10px 12px;border-bottom:1px solid #2a2a2a;">${item.name}${optStr ? `<br><span style="font-size:12px;color:#888;">${optStr}</span>` : ''}</td>
         <td style="padding:10px 12px;border-bottom:1px solid #2a2a2a;text-align:center;">${item.quantity}</td>
-        <td style="padding:10px 12px;border-bottom:1px solid #2a2a2a;text-align:right;">$${item.price.toLocaleString()}</td>
-        <td style="padding:10px 12px;border-bottom:1px solid #2a2a2a;text-align:right;color:#e91e8c;">$${item.lineTotal.toLocaleString()}</td>
+        <td style="padding:10px 12px;border-bottom:1px solid #2a2a2a;text-align:right;">$${fmtMoney(item.price)}</td>
+        <td style="padding:10px 12px;border-bottom:1px solid #2a2a2a;text-align:right;color:#e91e8c;">$${fmtMoney(item.lineTotal)}</td>
       </tr>`;
   }).join('');
+
+  const shippingAddrHtml = shippingAddress
+    ? `<div>
+        <div style="font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:#555;margin-bottom:4px;">Ship To</div>
+        <div style="font-size:14px;">${shippingAddress.address}<br>${shippingAddress.city}, ${shippingAddress.state} ${shippingAddress.zip}</div>
+      </div>`
+    : '';
+
+  const shippingMethodHtml = shippingLabel
+    ? `<div>
+        <div style="font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:#555;margin-bottom:4px;">Shipping</div>
+        <div style="font-size:14px;">${shippingLabel}</div>
+      </div>`
+    : '';
+
+  const totalsHtml = hasBreakdown
+    ? `<table style="width:100%;border-collapse:collapse;margin-bottom:10px;">
+        <tr>
+          <td style="font-size:13px;color:#888;padding:3px 0;">Subtotal</td>
+          <td style="font-size:13px;text-align:right;padding:3px 0;">$${fmtMoney(subtotal)}</td>
+        </tr>
+        <tr>
+          <td style="font-size:13px;color:#888;padding:3px 0;">${shippingLabel ? `Shipping (${shippingLabel})` : 'Shipping'}</td>
+          <td style="font-size:13px;text-align:right;padding:3px 0;">$${fmtMoney(shipping)}</td>
+        </tr>
+        ${(tax || 0) > 0 ? `<tr>
+          <td style="font-size:13px;color:#888;padding:3px 0;">Tax (TX 8.25%)</td>
+          <td style="font-size:13px;text-align:right;padding:3px 0;">$${fmtMoney(tax)}</td>
+        </tr>` : ''}
+      </table>`
+    : '';
 
   const html = `<!DOCTYPE html>
 <html>
@@ -139,6 +218,8 @@ async function sendInvoiceEmail({ customerName, customerEmail, orderNumber, orde
         <div style="font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:#555;margin-bottom:4px;">Payment</div>
         <div style="font-size:14px;">${paymentMethod}</div>
       </div>
+      ${shippingAddrHtml}
+      ${shippingMethodHtml}
     </div>
 
     <!-- Items Table -->
@@ -154,9 +235,13 @@ async function sendInvoiceEmail({ customerName, customerEmail, orderNumber, orde
       <tbody>${rows}</tbody>
     </table>
 
-    <div style="border-top:1px solid #333;padding-top:16px;text-align:right;margin-bottom:28px;">
-      <span style="font-size:14px;color:#888;margin-right:24px;">Order Total</span>
-      <span style="font-size:22px;font-weight:700;color:#e91e8c;">$${total.toLocaleString()}</span>
+    <!-- Totals breakdown + grand total -->
+    <div style="border-top:1px solid #333;padding-top:16px;margin-bottom:28px;">
+      ${totalsHtml}
+      <div style="display:flex;justify-content:space-between;align-items:center;${hasBreakdown ? 'border-top:1px solid #222;padding-top:12px;' : ''}">
+        <span style="font-size:14px;color:#888;">Order Total</span>
+        <span style="font-size:22px;font-weight:700;color:#e91e8c;">$${fmtMoney(total)}</span>
+      </div>
     </div>
 
     <div style="background:#0a0a0a;border:1px solid #222;border-radius:6px;padding:20px;margin-bottom:28px;">
@@ -184,12 +269,15 @@ async function sendInvoiceEmail({ customerName, customerEmail, orderNumber, orde
   // Generate PDF invoice
   let pdfAttachment;
   try {
-    const pdfBuffer = await generateInvoicePDF({ customerName, customerEmail, orderNumber, orderDate, items, total, paymentMethod });
+    const pdfBuffer = await generateInvoicePDF({
+      customerName, customerEmail, orderNumber, orderDate,
+      items, subtotal, shipping, shippingLabel, tax, total,
+      shippingAddress, paymentMethod,
+    });
     pdfAttachment = { filename: `invoice-${orderNumber}.pdf`, content: pdfBuffer.toString('base64') };
     console.log(`[email] PDF generated for ${orderNumber}, size: ${pdfBuffer.length} bytes`);
   } catch (pdfErr) {
     console.error(`[email] PDF generation failed for ${orderNumber}:`, pdfErr.message);
-    // Send email without PDF rather than failing the whole thing
     pdfAttachment = null;
   }
 

@@ -1,5 +1,5 @@
 const { createClient } = require('@supabase/supabase-js');
-const { validateCart } = require('./_pricing');
+const { validateCart, calculateTotals } = require('./_pricing');
 const { createOrder } = require('./_paypal');
 
 const supabase = createClient(
@@ -13,14 +13,21 @@ exports.handler = async (event) => {
   }
 
   try {
-    const { cartItems, customerName, customerEmail, customerNotes } = JSON.parse(event.body);
+    const { cartItems, customerName, customerEmail, customerNotes, shippingOptionId, shippingAddress } = JSON.parse(event.body);
 
     if (!customerName?.trim() || !customerEmail?.trim()) {
       return { statusCode: 400, body: JSON.stringify({ error: 'Name and email are required.' }) };
     }
+    if (!shippingAddress?.address?.trim() || !shippingAddress?.city?.trim() || !shippingAddress?.state?.trim() || !shippingAddress?.zip?.trim()) {
+      return { statusCode: 400, body: JSON.stringify({ error: 'Complete shipping address is required.' }) };
+    }
+    if (!shippingOptionId) {
+      return { statusCode: 400, body: JSON.stringify({ error: 'Shipping method is required.' }) };
+    }
 
     // Server-side price validation — never trust the client-supplied price
-    const { items, total } = validateCart(cartItems);
+    const { items, subtotal } = validateCart(cartItems);
+    const { shipping, shippingLabel, tax, grandTotal } = calculateTotals(subtotal, shippingOptionId, shippingAddress.state);
 
     // Create order record in Supabase with pending_payment status
     const orderNumber = `SVK-${Date.now().toString(36).toUpperCase()}`;
@@ -28,8 +35,8 @@ exports.handler = async (event) => {
       .from('orders')
       .insert({
         product: items.map(i => i.name).join(', '),
-        options: { items },
-        total_price: total,
+        options: { items, shippingAddress, shippingMethod: shippingOptionId, shippingLabel, subtotal, shipping, tax },
+        total_price: grandTotal,
         notes: customerNotes || '',
         status: 'pending_payment',
         payment_method: 'paypal',
@@ -49,12 +56,12 @@ exports.handler = async (event) => {
     const supabaseOrderId = order.id;
 
     // Create the PayPal order server-side — amount is sourced from our validated DB record, not the client
-    const paypalOrder = await createOrder(total, supabaseOrderId);
+    const paypalOrder = await createOrder(grandTotal, supabaseOrderId);
 
     return {
       statusCode: 200,
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ paypalOrderId: paypalOrder.id, supabaseOrderId, orderNumber, total }),
+      body: JSON.stringify({ paypalOrderId: paypalOrder.id, supabaseOrderId, orderNumber, subtotal, shipping, tax, grandTotal }),
     };
   } catch (err) {
     console.error('create-paypal-order error:', err);

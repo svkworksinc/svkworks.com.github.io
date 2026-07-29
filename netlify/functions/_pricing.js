@@ -23,11 +23,21 @@ const PRODUCT_PRICES = {
   'mk4-supra-cupholder': 45,
 };
 
+const SHIPPING_OPTIONS = {
+  'usps-ground':    { label: 'USPS Ground Advantage', desc: '5–8 business days',  price: 12.95 },
+  'usps-priority':  { label: 'USPS Priority Mail',    desc: '2–3 business days',  price: 19.95 },
+  'ups-ground':     { label: 'UPS Ground',            desc: '3–5 business days',  price: 24.95 },
+  'ups-2day':       { label: 'UPS 2-Day Air',         desc: '2 business days',    price: 65.00 },
+  'ups-overnight':  { label: 'UPS Next Day Air',      desc: '1 business day',     price: 125.00 },
+};
+
+const TX_TAX_RATE = 0.0825; // Texas combined state (6.25%) + typical local (2%) rate
+
 function validateCart(items) {
   if (!Array.isArray(items) || items.length === 0) {
     throw new Error('Cart is empty or invalid.');
   }
-  let total = 0;
+  let subtotal = 0;
   const validated = [];
   for (const item of items) {
     const price = PRODUCT_PRICES[item.id];
@@ -36,10 +46,22 @@ function validateCart(items) {
     }
     const quantity = Math.max(1, Math.floor(Number(item.quantity) || 1));
     const lineTotal = price * quantity;
-    total += lineTotal;
+    subtotal += lineTotal;
     validated.push({ id: item.id, name: item.name, image: item.image, options: item.options || {}, price, quantity, lineTotal });
   }
-  return { items: validated, total };
+  return { items: validated, subtotal };
 }
 
-module.exports = { validateCart, PRODUCT_PRICES };
+// Validates shipping option and calculates shipping cost, applicable tax, and grand total.
+// state should be a 2-letter US state code (e.g. 'TX').
+function calculateTotals(subtotal, shippingOptionId, state) {
+  const option = SHIPPING_OPTIONS[shippingOptionId];
+  if (!option) throw new Error(`Invalid shipping option: ${shippingOptionId}`);
+  const shipping = option.price;
+  const taxBase = subtotal + shipping;
+  const tax = (state === 'TX') ? Math.round(taxBase * TX_TAX_RATE * 100) / 100 : 0;
+  const grandTotal = Math.round((subtotal + shipping + tax) * 100) / 100;
+  return { shipping, shippingLabel: option.label, tax, grandTotal };
+}
+
+module.exports = { validateCart, calculateTotals, SHIPPING_OPTIONS, PRODUCT_PRICES, TX_TAX_RATE };
