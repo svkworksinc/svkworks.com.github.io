@@ -33,6 +33,7 @@ const SVK_FOOTER_HTML = `
           <li><a href="/sc300.html">SC300 / SC400 / Soarer</a></li>
           <li><a href="/connectors.html">Connectors</a></li>
           <li><a href="/merchandise.html">Merchandise</a></li>
+          <li><a href="/used-parts.html">Used Parts</a></li>
           <li><a href="/other-parts.html">Other Parts</a></li>
         </ul>
       </div>

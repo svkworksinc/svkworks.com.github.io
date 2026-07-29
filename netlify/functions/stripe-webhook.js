@@ -1,6 +1,7 @@
 const { createClient } = require('@supabase/supabase-js');
 const Stripe = require('stripe');
 const { sendInvoiceEmail } = require('./_email');
+const { markUsedPartsSold } = require('./_pricing');
 
 const supabase = createClient(
   process.env.SUPABASE_URL,
@@ -66,6 +67,8 @@ exports.handler = async (event) => {
         .from('orders')
         .update({ status: 'pending' })
         .eq('id', supabaseOrderId);
+
+      await markUsedPartsSold(supabase, order.items);
 
       console.log('[webhook] Triggering invoice email for:', order.order_number);
       const orderDate = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });

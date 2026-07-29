@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Used Part — SVK Works</title>
+  <meta name="robots" content="noindex, follow">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="img/svk-icon.png" type="image/png">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+</head>
+<body>
+  <div id="header-placeholder"></div>
+
+  <main id="main-content">
+    <div id="part-loading" class="section" style="text-align:center;">
+      <div class="container">
+        <div class="spinner" style="margin:4rem auto;"></div>
+        <p class="text-secondary">Loading part…</p>
+      </div>
+    </div>
+
+    <div id="part-not-found" style="display:none;">
+      <div class="page-hero">
+        <div class="container">
+          <h1>Part Not Found</h1>
+          <p>This listing may have already sold or been removed. <a href="used-parts.html">Browse available used parts</a>.</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="part-content" style="display:none;">
+      <div class="page-hero">
+        <div class="container">
+          <div class="breadcrumb" role="navigation" aria-label="breadcrumb">
+            <a href="index.html">Home</a><span class="breadcrumb-sep" aria-hidden="true">/</span>
+            <a href="used-parts.html">Used Parts</a><span class="breadcrumb-sep" aria-hidden="true">/</span>
+            <span id="part-breadcrumb-title">—</span>
+          </div>
+        </div>
+      </div>
+
+      <section class="product-detail">
+        <div class="container">
+          <div class="product-detail-layout">
+            <div class="product-gallery">
+              <div class="product-gallery-main" id="gallery-main">
+                <img src="" alt="" id="part-main-image" loading="lazy">
+              </div>
+              <div class="product-gallery-thumbs" id="gallery-thumbs"></div>
+            </div>
+
+            <div class="product-info fade-in-right">
+              <span class="badge" id="part-category-badge" style="display:none;"></span>
+              <h1 id="part-title">—</h1>
+              <div style="margin:var(--space-md) 0;" id="part-condition-badge"></div>
+              <div class="product-price-block">
+                <span class="product-price-current" id="part-price">—</span>
+              </div>
+
+              <p class="product-description" id="part-description"></p>
+
+              <div style="display:flex;gap:var(--space-md);flex-wrap:wrap;margin-top:var(--space-lg);">
+                <button class="btn btn-primary" id="add-to-cart-btn" style="flex:1;min-width:180px;">
+                  Add to Cart
+                </button>
+                <a href="used-parts.html" class="btn btn-secondary" style="flex:1;min-width:180px;">
+                  ← Back to Used Parts
+                </a>
+              </div>
+
+              <p style="font-size:var(--text-xs);color:var(--text-muted);margin-top:var(--space-md);">
+                This is a one-of-a-kind used item — only one is available, and the listing is removed once it sells.
+                Questions about condition or fitment? <a href="contact.html">Contact us</a> before you buy.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <div id="footer-placeholder"></div>
+
+  <script defer src="components/header.js"></script>
+  <script defer src="components/footer.js"></script>
+  <script defer src="js/cart.js?v=4"></script>
+  <script defer src="js/components.js"></script>
+  <script defer src="data/products-data.js"></script>
+  <script defer src="js/products.js"></script>
+  <script defer src="js/search.js"></script>
+  <script defer src="js/main.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/used-parts.js"></script>
+  <script>
+    let currentPart = null;
+    let currentSlide = 0;
+
+    function showImage(i) {
+      currentSlide = i;
+      const images = currentPart.images && currentPart.images.length ? currentPart.images : ['img/filler.webp'];
+      document.getElementById('part-main-image').src = images[i];
+      document.querySelectorAll('.product-thumb').forEach((t, idx) => t.classList.toggle('active', idx === i));
+    }
+
+    function addToCart() {
+      if (!currentPart || currentPart.status !== 'available') return;
+      if (typeof SVKCart === 'undefined') {
+        alert('Cart is loading, please try again.');
+        return;
+      }
+      SVKCart.addItem(
+        {
+          id: currentPart.id,
+          name: currentPart.title,
+          price: Number(currentPart.price),
+          image: (currentPart.images && currentPart.images[0]) || 'img/filler.webp',
+          unique: true,
+          type: 'used-part',
+        },
+        1,
+        { Condition: svkConditionInfo(currentPart.condition).label }
+      );
+      updateAddToCartButton();
+    }
+
+    function updateAddToCartButton() {
+      const btn = document.getElementById('add-to-cart-btn');
+      const inCart = typeof SVKCart !== 'undefined' && SVKCart.getCart().some(i => i.id === currentPart.id);
+      if (currentPart.status !== 'available') {
+        btn.textContent = 'Sold Out';
+        btn.disabled = true;
+      } else if (inCart) {
+        btn.textContent = 'In Cart — View Cart';
+        btn.onclick = () => { window.location.href = 'cart.html'; };
+      } else {
+        btn.textContent = `Add to Cart — ${svkFormatPartPrice(currentPart.price)}`;
+        btn.disabled = false;
+        btn.onclick = addToCart;
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      SVKAuth.init();
+      await SVKAuth.ready;
+
+      const params = new URLSearchParams(window.location.search);
+      const id = params.get('id');
+      const part = id ? await SVKAuth.getUsedPart(id) : null;
+
+      document.getElementById('part-loading').style.display = 'none';
+
+      if (!part) {
+        document.getElementById('part-not-found').style.display = 'block';
+        return;
+      }
+
+      currentPart = part;
+      document.title = `${part.title} — SVK Works`;
+      document.getElementById('part-content').style.display = 'block';
+      document.getElementById('part-breadcrumb-title').textContent = part.title;
+      document.getElementById('part-title').textContent = part.title;
+      document.getElementById('part-price').textContent = svkFormatPartPrice(part.price);
+      document.getElementById('part-description').textContent = part.description || '';
+      document.getElementById('part-condition-badge').innerHTML = svkConditionBadge(part.condition, 'font-size:13px;padding:5px 12px;');
+
+      if (part.category) {
+        const catEl = document.getElementById('part-category-badge');
+        catEl.textContent = part.category;
+        catEl.style.display = 'inline-block';
+      }
+
+      const images = part.images && part.images.length ? part.images : ['img/filler.webp'];
+      document.getElementById('part-main-image').src = images[0];
+      document.getElementById('part-main-image').alt = part.title;
+      document.getElementById('gallery-thumbs').innerHTML = images.length > 1
+        ? images.map((src, i) => `
+          <div class="product-thumb${i === 0 ? ' active' : ''}" onclick="showImage(${i})">
+            <img src="${src}" alt="${part.title} view ${i + 1}" loading="lazy">
+          </div>`).join('')
+        : '';
+
+      updateAddToCartButton();
+    });
+  </script>
+</body>
+</html>
