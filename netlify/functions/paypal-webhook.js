@@ -110,15 +110,19 @@ exports.handler = async (event) => {
         .eq('id', supabaseOrderId);
 
       const orderDate = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-      sendInvoiceEmail({
-        customerName: order.customer_name,
-        customerEmail: order.customer_email,
-        orderNumber: order.order_number,
-        orderDate,
-        items: order.items || [],
-        total: order.total_price,
-        paymentMethod: 'PayPal',
-      }).catch(err => console.error('Email send failed:', err));
+      try {
+        await sendInvoiceEmail({
+          customerName: order.customer_name,
+          customerEmail: order.customer_email,
+          orderNumber: order.order_number,
+          orderDate,
+          items: order.items || [],
+          total: order.total_price,
+          paymentMethod: 'PayPal',
+        });
+      } catch (err) {
+        console.error('Email send failed:', err.message);
+      }
     }
   }
 

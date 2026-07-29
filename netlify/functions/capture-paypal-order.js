@@ -54,17 +54,21 @@ exports.handler = async (event) => {
       .update({ status: 'paid', payment_id: paypalOrderId })
       .eq('id', supabaseOrderId);
 
-    // Send invoice email (non-blocking — don't fail the response if email fails)
+    // Send invoice email before returning — must be awaited or Netlify kills the in-flight fetch
     const orderDate = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-    sendInvoiceEmail({
-      customerName: order.customer_name,
-      customerEmail: order.customer_email,
-      orderNumber: order.order_number,
-      orderDate,
-      items: order.items || [],
-      total: order.total_price,
-      paymentMethod: 'PayPal',
-    }).catch(err => console.error('Email send failed:', err));
+    try {
+      await sendInvoiceEmail({
+        customerName: order.customer_name,
+        customerEmail: order.customer_email,
+        orderNumber: order.order_number,
+        orderDate,
+        items: order.items || [],
+        total: order.total_price,
+        paymentMethod: 'PayPal',
+      });
+    } catch (err) {
+      console.error('Email send failed:', err.message);
+    }
 
     return {
       statusCode: 200,
