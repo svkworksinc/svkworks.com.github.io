@@ -8,15 +8,14 @@
   <meta name="robots" content="noindex, nofollow">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preconnect" href="https://js.stripe.com">
-  <link rel="preconnect" href="https://api.stripe.com">
-  <link rel="dns-prefetch" href="https://www.paypal.com">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
   <link rel="stylesheet" href="css/style.css">
   <link rel="icon" href="img/svk-icon.png" type="image/png">
-  <!-- Public keys injected by Netlify at deploy time. Secrets never leave Netlify Functions. -->
+  <!-- PayPal Client ID injected at runtime via Netlify environment snippet or inline script -->
   <script>
-    window.PAYPAL_CLIENT_ID       = '__PAYPAL_CLIENT_ID__';
+    // These public keys are safe to expose in frontend HTML.
+    // Secret keys never leave Netlify Functions.
+    window.PAYPAL_CLIENT_ID  = '__PAYPAL_CLIENT_ID__';
     window.STRIPE_PUBLISHABLE_KEY = '__STRIPE_PUBLISHABLE_KEY__';
   </script>
   <style>

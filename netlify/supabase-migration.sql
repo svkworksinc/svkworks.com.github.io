@@ -20,10 +20,7 @@ CREATE POLICY "Allow anon insert" ON orders
   FOR INSERT TO anon
   WITH CHECK (true);
 
--- 4. Index order lookups by payment_id (used in webhook handlers)
-CREATE INDEX IF NOT EXISTS orders_payment_id_idx ON orders (payment_id);
-
--- 5. (Optional) Allow users to read their own orders by customer_email if not logged in.
+-- 4. (Optional) Allow users to read their own orders by customer_email if not logged in.
 --    Skip this if you only want logged-in users to view past orders.
 -- CREATE POLICY "Allow select by email" ON orders
 --   FOR SELECT TO anon
