@@ -126,6 +126,38 @@
     /* Payment section */
     #payment-section { display: none; }
     #paypal-container, #stripe-container { display: none; }
+
+    /* Shipping method options */
+    .ship-option {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-md);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: var(--space-md);
+      margin-bottom: var(--space-sm);
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .ship-option:hover { border-color: var(--magenta); }
+    .ship-option.selected { border-color: var(--magenta); background: rgba(233,30,140,0.05); }
+    .ship-option input[type="radio"] { accent-color: var(--magenta); flex-shrink: 0; width: 16px; height: 16px; }
+    .ship-option-label { flex: 1; display: flex; flex-direction: column; }
+    .ship-option-name { font-size: var(--text-sm); font-weight: var(--weight-medium); }
+    .ship-option-desc { font-size: var(--text-xs); color: var(--text-muted); }
+    .ship-option-price { font-size: var(--text-sm); font-weight: var(--weight-semibold); color: var(--magenta); white-space: nowrap; }
+
+    /* Totals breakdown in sidebar */
+    .checkout-totals-breakdown { margin-top: var(--space-lg); padding-top: var(--space-lg); border-top: 1px solid var(--border-color); }
+    .checkout-totals-breakdown .row { display: flex; justify-content: space-between; font-size: var(--text-sm); color: var(--text-secondary); padding: 4px 0; }
+    .checkout-totals-breakdown .row .amt { color: var(--text-primary); font-weight: var(--weight-medium); }
+
+    .form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md); }
+    .form-row-3 { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: var(--space-md); }
+    @media (max-width: 520px) {
+      .form-row-2, .form-row-3 { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>
@@ -183,6 +215,33 @@
                 <label class="form-label" for="customer-notes">Build Notes <span style="color:var(--text-muted);font-weight:400;">(optional)</span></label>
                 <textarea class="form-textarea" id="customer-notes" rows="3" placeholder="ECU preference, vehicle info, special requirements…"></textarea>
               </div>
+
+              <h2 style="font-size:var(--text-lg);margin:var(--space-2xl) 0 var(--space-lg);">Shipping Address</h2>
+
+              <div class="form-group">
+                <label class="form-label" for="ship-address">Street Address <span style="color:var(--magenta);">*</span></label>
+                <input type="text" class="form-input" id="ship-address" autocomplete="address-line1" placeholder="123 Main St" required>
+              </div>
+              <div class="form-row-3">
+                <div class="form-group">
+                  <label class="form-label" for="ship-city">City <span style="color:var(--magenta);">*</span></label>
+                  <input type="text" class="form-input" id="ship-city" autocomplete="address-level2" placeholder="Austin" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="ship-state">State <span style="color:var(--magenta);">*</span></label>
+                  <select class="form-input" id="ship-state" autocomplete="address-level1" required>
+                    <option value="">Select…</option>
+                    <option>AL</option><option>AK</option><option>AZ</option><option>AR</option><option>CA</option><option>CO</option><option>CT</option><option>DE</option><option>FL</option><option>GA</option><option>HI</option><option>ID</option><option>IL</option><option>IN</option><option>IA</option><option>KS</option><option>KY</option><option>LA</option><option>ME</option><option>MD</option><option>MA</option><option>MI</option><option>MN</option><option>MS</option><option>MO</option><option>MT</option><option>NE</option><option>NV</option><option>NH</option><option>NJ</option><option>NM</option><option>NY</option><option>NC</option><option>ND</option><option>OH</option><option>OK</option><option>OR</option><option>PA</option><option>RI</option><option>SC</option><option>SD</option><option>TN</option><option>TX</option><option>UT</option><option>VT</option><option>VA</option><option>WA</option><option>WV</option><option>WI</option><option>WY</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="ship-zip">ZIP Code <span style="color:var(--magenta);">*</span></label>
+                  <input type="text" class="form-input" id="ship-zip" autocomplete="postal-code" placeholder="78701" inputmode="numeric" required>
+                </div>
+              </div>
+
+              <h2 style="font-size:var(--text-lg);margin:var(--space-2xl) 0 var(--space-lg);">Shipping Method</h2>
+              <div id="shipping-options"></div>
 
               <h2 style="font-size:var(--text-lg);margin:var(--space-2xl) 0 var(--space-lg);">Payment Method</h2>
 
@@ -242,6 +301,11 @@
           <div class="checkout-sidebar">
             <h3>Order Summary</h3>
             <div id="checkout-items"></div>
+            <div class="checkout-totals-breakdown">
+              <div class="row"><span>Subtotal</span><span class="amt" id="sum-subtotal">—</span></div>
+              <div class="row"><span>Shipping</span><span class="amt" id="sum-shipping">Select method</span></div>
+              <div class="row"><span>Tax</span><span class="amt" id="sum-tax">—</span></div>
+            </div>
             <div class="checkout-total-row">
               <span class="checkout-total-label">Total</span>
               <span class="checkout-total-amount" id="checkout-total"></span>

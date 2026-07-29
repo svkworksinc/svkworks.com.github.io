@@ -75,15 +75,10 @@ const SVKCart = {
     if (!countEl) return;
     const count = this.getItemCount();
     countEl.textContent = count;
-    if (count > 0) {
-      countEl.classList.add('visible');
-    } else {
-      countEl.classList.remove('visible');
-    }
+    countEl.classList.toggle('visible', count > 0);
   },
 
   showToast(message) {
-    // Remove existing toast
     const existing = document.querySelector('.toast');
     if (existing) existing.remove();
 
@@ -96,29 +91,24 @@ const SVKCart = {
       <span>${message}</span>
     `;
     document.body.appendChild(toast);
-
-    requestAnimationFrame(() => {
-      toast.classList.add('visible');
-    });
-
+    requestAnimationFrame(() => toast.classList.add('visible'));
     setTimeout(() => {
       toast.classList.remove('visible');
       setTimeout(() => toast.remove(), 300);
     }, 3000);
   },
 
-  formatPrice(cents) {
-    return '$' + (cents).toLocaleString('en-US', { minimumFractionDigits: 0 });
+  formatPrice(amount) {
+    return '$' + amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   },
 
-  // Render the full cart page
+  // ---- Cart page rendering ----
+
   renderCartPage() {
-    const cartContainer = document.getElementById('cart-items');
-    const summaryContainer = document.getElementById('cart-summary-content');
+    const cartBody = document.getElementById('cart-items');
     const emptyState = document.getElementById('cart-empty');
     const cartContent = document.getElementById('cart-content');
-
-    if (!cartContainer) return;
+    if (!cartBody) return;
 
     const cart = this.getCart();
 
@@ -131,82 +121,164 @@ const SVKCart = {
     if (cartContent) cartContent.style.display = 'grid';
     if (emptyState) emptyState.style.display = 'none';
 
-    cartContainer.innerHTML = cart.map(item => {
-      const optionsText = Object.entries(item.options || {}).map(([k, v]) => `${k}: ${v}`).join(' | ');
-      return `
-        <div class="cart-item" data-id="${item.id}" data-options='${JSON.stringify(item.options || {})}'>
-          <div class="cart-item-image">
-            <img src="${item.image}" alt="${item.name}" loading="lazy">
-          </div>
-          <div class="cart-item-details">
-            <h4>${item.name}</h4>
-            ${optionsText ? `<div class="cart-item-variant">${optionsText}</div>` : ''}
-            <div class="cart-item-price">${this.formatPrice(item.price)}</div>
-          </div>
-          <div class="cart-item-actions">
-            <div class="quantity-control">
-              <button class="quantity-btn" data-action="decrease" aria-label="Decrease quantity">&minus;</button>
-              <span class="quantity-value">${item.quantity}</span>
-              <button class="quantity-btn" data-action="increase" aria-label="Increase quantity">+</button>
+    cartBody.innerHTML = cart.map(item => {
+      const opts = Object.entries(item.options || {})
+        .filter(([, v]) => v)
+        .map(([k, v]) => `${k}: ${v}`)
+        .join(' · ');
+      const lineTotal = item.price * item.quantity;
+      return `<tr data-id="${item.id}" data-options='${JSON.stringify(item.options || {})}'>
+        <td class="col-remove">
+          <button class="cart-remove-btn" data-action="remove" aria-label="Remove ${item.name}">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </td>
+        <td class="col-product">
+          <div class="cart-product-cell">
+            <img src="${item.image}" alt="${item.name}" class="cart-product-img" loading="lazy">
+            <div>
+              <div class="cart-product-name">${item.name}</div>
+              ${opts ? `<div class="cart-product-opts">${opts}</div>` : ''}
             </div>
-            <button class="cart-item-remove" data-action="remove">Remove</button>
           </div>
-        </div>
-      `;
+        </td>
+        <td class="col-price">${this.formatPrice(item.price)}</td>
+        <td class="col-qty">
+          <div class="qty-field">
+            <button type="button" data-action="decrease" aria-label="Decrease quantity">−</button>
+            <input type="number" class="qty-input" value="${item.quantity}" min="1" max="99"
+              data-original="${item.quantity}" aria-label="Quantity for ${item.name}">
+            <button type="button" data-action="increase" aria-label="Increase quantity">+</button>
+          </div>
+        </td>
+        <td class="col-total"><span class="cart-line-total">${this.formatPrice(lineTotal)}</span></td>
+      </tr>`;
     }).join('');
 
-    // Update summary
-    const subtotal = this.getTotal();
-    if (summaryContainer) {
-      summaryContainer.innerHTML = `
-        <div class="cart-summary-row">
-          <span class="label">Subtotal</span>
-          <span class="amount">${this.formatPrice(subtotal)}</span>
-        </div>
-        <div class="cart-summary-row">
-          <span class="label">Shipping</span>
-          <span class="amount">Calculated at checkout</span>
-        </div>
-        <div class="cart-summary-row total">
-          <span class="label">Total</span>
-          <span class="amount">${this.formatPrice(subtotal)}</span>
-        </div>
-      `;
-    }
-
-    // Bind cart item events
-    this.bindCartEvents();
+    this._updateSummary();
+    this._bindTableEvents();
+    this._bindActionButtons();
+    this._bindCouponAndTerms();
   },
 
-  bindCartEvents() {
-    document.querySelectorAll('.cart-item').forEach(el => {
-      const id = el.dataset.id;
-      const options = JSON.parse(el.dataset.options || '{}');
+  _updateSummary() {
+    const subtotal = this.getTotal();
+    const subtotalEl = document.getElementById('cart-subtotal');
+    const totalEl = document.getElementById('cart-total');
+    if (subtotalEl) subtotalEl.textContent = this.formatPrice(subtotal);
+    if (totalEl) totalEl.textContent = this.formatPrice(subtotal);
+  },
 
-      el.querySelector('[data-action="increase"]')?.addEventListener('click', () => {
-        const cart = this.getCart();
-        const optKey = JSON.stringify(options);
-        const item = cart.find(i => i.id === id && JSON.stringify(i.options) === optKey);
-        if (item) {
-          this.updateQuantity(id, options, item.quantity + 1);
-          this.renderCartPage();
+  _bindTableEvents() {
+    const updateBtn = document.getElementById('update-cart-btn');
+
+    const checkForChanges = () => {
+      const hasChanges = [...document.querySelectorAll('.qty-input')].some(
+        i => parseInt(i.value) !== parseInt(i.dataset.original)
+      );
+      if (updateBtn) {
+        updateBtn.disabled = !hasChanges;
+        updateBtn.classList.toggle('has-changes', hasChanges);
+      }
+    };
+
+    // Quantity input changed directly
+    document.querySelectorAll('.qty-input').forEach(input => {
+      input.addEventListener('input', checkForChanges);
+    });
+
+    // +/- stepper buttons
+    document.querySelectorAll('.cart-table [data-action="decrease"]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const input = btn.closest('.qty-field').querySelector('.qty-input');
+        if (input && parseInt(input.value) > 1) {
+          input.value = parseInt(input.value) - 1;
+          checkForChanges();
         }
       });
+    });
 
-      el.querySelector('[data-action="decrease"]')?.addEventListener('click', () => {
-        const cart = this.getCart();
-        const optKey = JSON.stringify(options);
-        const item = cart.find(i => i.id === id && JSON.stringify(i.options) === optKey);
-        if (item && item.quantity > 1) {
-          this.updateQuantity(id, options, item.quantity - 1);
-          this.renderCartPage();
+    document.querySelectorAll('.cart-table [data-action="increase"]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const input = btn.closest('.qty-field').querySelector('.qty-input');
+        if (input) {
+          input.value = parseInt(input.value) + 1;
+          checkForChanges();
         }
       });
+    });
 
-      el.querySelector('[data-action="remove"]')?.addEventListener('click', () => {
+    // Remove buttons
+    document.querySelectorAll('[data-action="remove"]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const row = btn.closest('tr');
+        const id = row.dataset.id;
+        const options = JSON.parse(row.dataset.options || '{}');
         this.removeItem(id, options);
         this.renderCartPage();
       });
     });
-  }
+  },
+
+  _bindActionButtons() {
+    const updateBtn = document.getElementById('update-cart-btn');
+    if (updateBtn) {
+      updateBtn.addEventListener('click', () => {
+        document.querySelectorAll('#cart-items tr').forEach(row => {
+          const input = row.querySelector('.qty-input');
+          if (!input) return;
+          const id = row.dataset.id;
+          const options = JSON.parse(row.dataset.options || '{}');
+          const newQty = Math.max(1, parseInt(input.value) || 1);
+          this.updateQuantity(id, options, newQty);
+        });
+        this.renderCartPage();
+        this.showToast('Cart updated');
+      });
+    }
+
+    const clearBtn = document.getElementById('clear-cart-btn');
+    if (clearBtn) {
+      clearBtn.addEventListener('click', () => {
+        if (!confirm('Remove all items from your cart?')) return;
+        this.clearCart();
+        this.renderCartPage();
+      });
+    }
+  },
+
+  _bindCouponAndTerms() {
+    // Coupon apply
+    const applyBtn = document.getElementById('apply-coupon-btn');
+    const couponMsg = document.getElementById('coupon-msg');
+    if (applyBtn) {
+      applyBtn.addEventListener('click', () => {
+        const code = (document.getElementById('coupon-input')?.value || '').trim();
+        if (!couponMsg) return;
+        if (!code) {
+          couponMsg.style.display = 'block';
+          couponMsg.style.color = '#f87171';
+          couponMsg.textContent = 'Please enter a coupon code.';
+          return;
+        }
+        couponMsg.style.display = 'block';
+        couponMsg.style.color = '#34d399';
+        couponMsg.textContent = `Coupon "${code}" will be applied at checkout.`;
+      });
+    }
+
+    // Terms checkbox → unlock checkout button
+    const termsCheck = document.getElementById('terms-check');
+    const checkoutBtn = document.getElementById('checkout-btn');
+    if (termsCheck && checkoutBtn) {
+      termsCheck.addEventListener('change', () => {
+        checkoutBtn.classList.toggle('locked', !termsCheck.checked);
+      });
+    }
+  },
+
+  // Legacy alias kept for compatibility
+  bindCartEvents() {
+    this._bindTableEvents();
+  },
 };
