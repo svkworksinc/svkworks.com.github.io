@@ -106,7 +106,7 @@ async function sendInvoiceEmail({ customerName, customerEmail, orderNumber, orde
   });
   if (!res.ok) {
     const err = await res.text();
-    console.error('Resend error:', err);
+    throw new Error(`Resend error: ${err}`);
   }
 }
 
