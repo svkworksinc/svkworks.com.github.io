@@ -50,7 +50,7 @@ exports.handler = async (event) => {
 
     if (dbError) {
       console.error('Supabase insert error:', dbError);
-      return { statusCode: 500, body: JSON.stringify({ error: 'Failed to create order record.' }) };
+      return { statusCode: 500, body: JSON.stringify({ error: `Failed to create order record: ${dbError.message}` }) };
     }
 
     const supabaseOrderId = order.id;
