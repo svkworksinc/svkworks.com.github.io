@@ -26,6 +26,11 @@ CREATE POLICY "Allow anon insert" ON orders
 --   FOR SELECT TO anon
 --   USING (customer_email = current_setting('request.jwt.claims', true)::json->>'email');
 
+-- 5. total_price must hold cents (shipping + tax produce decimal totals like 62.73).
+--    If this column was originally created as INTEGER, this converts it to NUMERIC(10,2).
+--    Safe to re-run — a no-op if it's already numeric.
+ALTER TABLE orders ALTER COLUMN total_price TYPE NUMERIC(10,2) USING total_price::NUMERIC(10,2);
+
 -- ============================================================
 -- Required Netlify environment variables (set in Netlify UI)
 -- ============================================================

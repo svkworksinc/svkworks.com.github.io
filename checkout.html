@@ -209,6 +209,37 @@
     @media (max-width: 520px) {
       .form-row-2, .form-row-3 { grid-template-columns: 1fr; }
     }
+
+    /* Progress stepper */
+    .checkout-stepper { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+    .checkout-stepper .step { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text-muted); }
+    .checkout-stepper .step-num {
+      width: 22px; height: 22px; border-radius: 50%;
+      background: var(--bg-secondary); border: 1px solid var(--border-color);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 700; color: var(--text-muted);
+      transition: background 0.15s, border-color 0.15s, color 0.15s;
+    }
+    .checkout-stepper .step-label { transition: color 0.15s; }
+    .checkout-stepper .step.active .step-num { background: var(--magenta); border-color: var(--magenta); color: #fff; }
+    .checkout-stepper .step.active .step-label { color: var(--text-primary); font-weight: 600; }
+    .checkout-stepper .step.done .step-num { background: rgba(233,30,140,0.15); border-color: var(--magenta); color: var(--magenta); }
+    .checkout-stepper .step.done .step-label { color: var(--text-secondary); }
+    .checkout-stepper .step-line { flex: 0 0 32px; height: 1px; background: var(--border-color); }
+
+    /* Inline field validation */
+    .field-error { display: block; font-size: 11px; color: #f87171; margin-top: 4px; min-height: 0; }
+    .form-input.field-invalid, select.form-input.field-invalid { border-color: #f87171; }
+
+    /* Card brand trust icons */
+    .card-brand-icons { display: flex; gap: 3px; justify-content: center; margin-top: 4px; }
+    .card-brand-icon {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 28px; height: 16px; border-radius: 3px;
+      font-size: 6.5px; font-weight: 700; letter-spacing: 0.02em; color: #fff;
+    }
+
+    #checkout-coupon-msg { font-size: 11px; margin: 4px 0 0; display: none; }
   </style>
 </head>
 <body class="checkout-compact">
@@ -247,6 +278,17 @@
 
           <!-- Left: Form + Payment -->
           <div>
+            <!-- Progress stepper -->
+            <div class="checkout-stepper" id="checkout-stepper">
+              <div class="step active" data-step="details">
+                <span class="step-num">1</span><span class="step-label">Details</span>
+              </div>
+              <div class="step-line"></div>
+              <div class="step" data-step="payment">
+                <span class="step-num">2</span><span class="step-label">Payment</span>
+              </div>
+            </div>
+
             <!-- Customer info form -->
             <div id="customer-form-section">
               <div class="checkout-section-title" style="margin-top:0;padding-top:0;border-top:none;">Contact</div>
@@ -256,10 +298,12 @@
               <div class="form-group">
                 <label class="form-label" for="customer-name">Full Name <span style="color:var(--magenta);">*</span></label>
                 <input type="text" class="form-input" id="customer-name" autocomplete="name" placeholder="John Smith" required>
+                <span class="field-error" id="err-customer-name"></span>
               </div>
               <div class="form-group">
                 <label class="form-label" for="customer-email">Email Address <span style="color:var(--magenta);">*</span></label>
                 <input type="email" class="form-input" id="customer-email" autocomplete="email" placeholder="you@example.com" required>
+                <span class="field-error" id="err-customer-email"></span>
                 <span class="form-hint">Invoice and build updates sent here</span>
               </div>
               <div class="form-group">
@@ -272,11 +316,13 @@
               <div class="form-group">
                 <label class="form-label" for="ship-address">Street Address <span style="color:var(--magenta);">*</span></label>
                 <input type="text" class="form-input" id="ship-address" autocomplete="address-line1" placeholder="123 Main St" required>
+                <span class="field-error" id="err-ship-address"></span>
               </div>
               <div class="form-row-3">
                 <div class="form-group">
                   <label class="form-label" for="ship-city">City <span style="color:var(--magenta);">*</span></label>
                   <input type="text" class="form-input" id="ship-city" autocomplete="address-level2" placeholder="Austin" required>
+                  <span class="field-error" id="err-ship-city"></span>
                 </div>
                 <div class="form-group">
                   <label class="form-label" for="ship-state">State <span style="color:var(--magenta);">*</span></label>
@@ -284,10 +330,12 @@
                     <option value="">Select…</option>
                     <option>AL</option><option>AK</option><option>AZ</option><option>AR</option><option>CA</option><option>CO</option><option>CT</option><option>DE</option><option>FL</option><option>GA</option><option>HI</option><option>ID</option><option>IL</option><option>IN</option><option>IA</option><option>KS</option><option>KY</option><option>LA</option><option>ME</option><option>MD</option><option>MA</option><option>MI</option><option>MN</option><option>MS</option><option>MO</option><option>MT</option><option>NE</option><option>NV</option><option>NH</option><option>NJ</option><option>NM</option><option>NY</option><option>NC</option><option>ND</option><option>OH</option><option>OK</option><option>OR</option><option>PA</option><option>RI</option><option>SC</option><option>SD</option><option>TN</option><option>TX</option><option>UT</option><option>VT</option><option>VA</option><option>WA</option><option>WV</option><option>WI</option><option>WY</option>
                   </select>
+                  <span class="field-error" id="err-ship-state"></span>
                 </div>
                 <div class="form-group">
                   <label class="form-label" for="ship-zip">ZIP Code <span style="color:var(--magenta);">*</span></label>
-                  <input type="text" class="form-input" id="ship-zip" autocomplete="postal-code" placeholder="78701" inputmode="numeric" required>
+                  <input type="text" class="form-input" id="ship-zip" autocomplete="postal-code" placeholder="78701" inputmode="numeric" maxlength="5" pattern="\d{5}" required>
+                  <span class="field-error" id="err-ship-zip"></span>
                 </div>
               </div>
 
@@ -304,6 +352,12 @@
                 <button class="pay-tab" data-tab="card" type="button">
                   <svg width="24" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
                   Credit / Debit Card
+                  <div class="card-brand-icons">
+                    <span class="card-brand-icon" style="background:#1a1f71;">VISA</span>
+                    <span class="card-brand-icon" style="background:#eb001b;">MC</span>
+                    <span class="card-brand-icon" style="background:#2557d6;">AMEX</span>
+                    <span class="card-brand-icon" style="background:#ff6000;">DISC</span>
+                  </div>
                 </button>
               </div>
 
@@ -357,6 +411,7 @@
               <input type="text" class="form-input" id="checkout-coupon-input" placeholder="Discount code" autocomplete="off" style="padding:0.5rem 0.65rem;font-size:12.5px;">
               <button class="btn btn-secondary btn-sm" id="checkout-apply-coupon-btn" type="button">Apply</button>
             </div>
+            <div id="checkout-coupon-msg"></div>
 
             <div class="checkout-totals-breakdown">
               <div class="row"><span>Subtotal</span><span class="amt" id="sum-subtotal">—</span></div>
@@ -385,7 +440,7 @@
   <script defer src="js/products.js"></script>
   <script defer src="js/search.js"></script>
   <script defer src="js/main.js"></script>
-  <script defer src="js/checkout.js?v=3"></script>
+  <script defer src="js/checkout.js?v=4"></script>
   <script>
     // Back button in payment section
     document.addEventListener('DOMContentLoaded', () => {
@@ -397,6 +452,10 @@
         document.getElementById('stripe-container').style.display = 'none';
         document.getElementById('paypal-buttons').innerHTML = '';
         document.getElementById('stripe-payment-element').innerHTML = '';
+        if (typeof SVKCheckout !== 'undefined') {
+          SVKCheckout._setStep('details');
+          SVKCheckout._clearStripeResume();
+        }
       });
     });
   </script>
