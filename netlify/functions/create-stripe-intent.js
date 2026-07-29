@@ -1,6 +1,6 @@
 const { createClient } = require('@supabase/supabase-js');
 const Stripe = require('stripe');
-const { validateCart } = require('./_pricing');
+const { validateCart, calculateTotals } = require('./_pricing');
 
 const supabase = createClient(
   process.env.SUPABASE_URL,
@@ -19,14 +19,21 @@ exports.handler = async (event) => {
   }
 
   try {
-    const { cartItems, customerName, customerEmail, customerNotes } = JSON.parse(event.body);
+    const { cartItems, customerName, customerEmail, customerNotes, shippingOptionId, shippingAddress } = JSON.parse(event.body);
 
     if (!customerName?.trim() || !customerEmail?.trim()) {
       return { statusCode: 400, body: JSON.stringify({ error: 'Name and email are required.' }) };
     }
+    if (!shippingAddress?.address?.trim() || !shippingAddress?.city?.trim() || !shippingAddress?.state?.trim() || !shippingAddress?.zip?.trim()) {
+      return { statusCode: 400, body: JSON.stringify({ error: 'Complete shipping address is required.' }) };
+    }
+    if (!shippingOptionId) {
+      return { statusCode: 400, body: JSON.stringify({ error: 'Shipping method is required.' }) };
+    }
 
     // Server-side price validation
-    const { items, total } = validateCart(cartItems);
+    const { items, subtotal } = validateCart(cartItems);
+    const { shipping, shippingLabel, tax, grandTotal } = calculateTotals(subtotal, shippingOptionId, shippingAddress.state);
 
     // Create order record in Supabase
     const orderNumber = `SVK-${Date.now().toString(36).toUpperCase()}`;
@@ -34,8 +41,8 @@ exports.handler = async (event) => {
       .from('orders')
       .insert({
         product: items.map(i => i.name).join(', '),
-        options: { items },
-        total_price: total,
+        options: { items, shippingAddress, shippingMethod: shippingOptionId, shippingLabel, subtotal, shipping, tax },
+        total_price: grandTotal,
         notes: customerNotes || '',
         status: 'pending_payment',
         payment_method: 'stripe',
@@ -54,7 +61,7 @@ exports.handler = async (event) => {
 
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, { apiVersion: '2023-10-16' });
     const intent = await stripe.paymentIntents.create({
-      amount: Math.round(total * 100), // Stripe uses cents
+      amount: Math.round(grandTotal * 100),
       currency: 'usd',
       receipt_email: customerEmail.trim().toLowerCase(),
       description: `SVK Works Order ${orderNumber}`,
@@ -81,7 +88,10 @@ exports.handler = async (event) => {
         clientSecret: intent.client_secret,
         supabaseOrderId: order.id,
         orderNumber,
-        total,
+        subtotal,
+        shipping,
+        tax,
+        grandTotal,
       }),
     };
   } catch (err) {

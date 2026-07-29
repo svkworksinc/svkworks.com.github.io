@@ -202,15 +202,14 @@
 
             <div class="calc-group">
               <label class="calc-label">Injectors</label>
-              <select class="calc-select price-option">
-                <option value="0">Select Injector Type</option>
-                <option value="0" data-img="img/options/injectors/fic.webp">Fuel Injector Clinic (FIC)</option>
-                <option value="0" data-img="img/options/injectors/id.webp">Injector Dynamics ID1000/725/850/1300/EV14 </option>
-                <option value="0" data-img="img/options/injectors/id2000.webp">Injector Dynamics ID2000 </option>
-                <option value="0" data-img="img/options/injectors/stock-2jz.webp">Stock 2JZ</option>
-                <option value="0" data-img="img/options/injectors/ev1.webp">Bosch EV1 Injectors</option>
-                <option value="0" data-img="img/options/injectors/denso.webp">Denso/Power Enterprise Injectors</option>
-                <option value="0">Other (Please Specify in Email)</option>
+              <select class="calc-select price-option" id="opt-injectors">
+                <option value="">Select Injector Type</option>
+                <option value="Fuel Injector Clinic (FIC)" data-img="img/options/injectors/fic.webp">Fuel Injector Clinic (FIC)</option>
+                <option value="Injector Dynamics ID1000/725/850/1300/EV14" data-img="img/options/injectors/id.webp">Injector Dynamics ID1000/725/850/1300/EV14</option>
+                <option value="Injector Dynamics ID2000" data-img="img/options/injectors/id2000.webp">Injector Dynamics ID2000</option>
+                <option value="Bosch EV1" data-img="img/options/injectors/ev1.webp">Bosch EV1 Injectors</option>
+                <option value="Denso / Power Enterprise" data-img="img/options/injectors/denso.webp">Denso / Power Enterprise Injectors</option>
+                <option value="Other">Other (Please Specify in Email)</option>
               </select>
             </div>
             
@@ -281,6 +280,22 @@
             </div>
 
             <div class="calc-group">
+              <label class="calc-label">Relay Box</label>
+              <select class="calc-select" id="opt-relaybox">
+                <option value="No">No</option>
+                <option value="Yes (+$120)" data-img="img/options/misc/relay-kit.webp">Yes (+$120)</option>
+              </select>
+            </div>
+
+            <div class="calc-group">
+              <label class="calc-label">Fan Relay</label>
+              <select class="calc-select" id="opt-fanrelay">
+                <option value="No">No</option>
+                <option value="Yes (+$45)">Yes (+$45)</option>
+              </select>
+            </div>
+
+            <div class="calc-group">
               <label class="calc-label">Air Fuel Metering</label>
               <select class="calc-select" id="opt-afm">
                 <option value="OEM 5-pin 2JZ VVT-i MAF Sensor">OEM 5-pin 2JZ VVT-i MAF Sensor</option>
@@ -334,7 +349,18 @@
           <div class="calculator-summary">
             <div class="calc-contact-card">
               <h3>Submit Your Build Request</h3>
-              <p class="text-secondary" style="font-size:var(--text-sm);margin-bottom:var(--space-lg);">Fill in your details and we'll send you a custom quote.</p>
+              <p class="text-secondary" style="font-size:var(--text-sm);margin-bottom:var(--space-md);">Fill in your details and we'll send you a custom quote.</p>
+
+              <div style="background:linear-gradient(135deg,rgba(233,30,140,0.08),rgba(233,30,140,0.04));border:1px solid rgba(233,30,140,0.25);border-radius:var(--radius-md);padding:var(--space-md);margin-bottom:var(--space-md);text-align:center;">
+                <div style="font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px;">Estimated Build Price</div>
+                <div id="calc-total" style="font-size:30px;font-weight:700;color:var(--magenta);letter-spacing:0.01em;">$1,200</div>
+                <div style="font-size:11px;color:var(--text-muted);margin-top:4px;">Updates as you select options · final price confirmed at quote</div>
+              </div>
+
+              <div style="background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:var(--radius-md);padding:var(--space-md);margin-bottom:var(--space-lg);text-align:center;">
+                <div style="font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:4px;">Quote Reference</div>
+                <div id="quote-number" style="font-size:18px;font-weight:700;color:var(--magenta);letter-spacing:0.05em;font-family:monospace;">—</div>
+              </div>
 
               <div class="form-group">
                 <label class="form-label" for="customer-name">Your Name *</label>
@@ -375,6 +401,23 @@
   <script defer src="js/main.js"></script>
   <script defer src="js/calc-option-images.js"></script>
   <script>
+    const quoteNumber = 'SVK-Q-' + Math.random().toString(36).toUpperCase().slice(2, 10);
+    document.getElementById('quote-number').textContent = quoteNumber;
+
+    const BASE_PRICE = 1200;
+    function calculateTotal() {
+      let total = BASE_PRICE;
+      document.querySelectorAll('.calc-select').forEach(sel => {
+        const text = sel.options[sel.selectedIndex]?.text || '';
+        const m = text.match(/\+\$(\d+)/);
+        if (m) total += parseInt(m[1]);
+      });
+      const el = document.getElementById('calc-total');
+      if (el) el.textContent = '$' + total.toLocaleString();
+    }
+    document.querySelectorAll('.calc-select').forEach(sel => sel.addEventListener('change', calculateTotal));
+    calculateTotal();
+
     async function emailOrder() {
       const name = document.getElementById('customer-name').value || 'Not provided';
       const email = document.getElementById('customer-email').value;
@@ -391,15 +434,18 @@
         ['ECU / Standalone', 'opt-ecu'],
         ['Transmission', 'opt-trans'],
         ['Wire Type', 'opt-wire'],
+        ['Injectors', 'opt-injectors'],
         ['Throttle Type', 'opt-throttle'],
         ['Coil Type', 'opt-coils'],
         ['Wideband O2', 'opt-wideband'],
         ['A/C Retention', 'opt-ac'],
         ['VTEC / VTC Solenoid', 'opt-vtec'],
         ['Launch Control / Clutch Switch', 'opt-launch'],
+        ['Boost Solenoid', 'opt-boost'],
+        ['Relay Box', 'opt-relaybox'],
+        ['Fan Relay', 'opt-fanrelay'],
         ['Sensors', 'opt-sensors'],
         ['Air Fuel Metering', 'opt-afm'],
-        ['Boost Solenoid', 'opt-boost'],
         ['Milspec Connector', 'opt-milspec'],
         ['Raychem DR-25 Wiring', 'opt-raychem'],
         ['Tefzel Wiring', 'opt-tefzel'],
@@ -419,7 +465,7 @@
           await SVKAuth.saveOrder({
             product: 'K20/K24 Universal Harness',
             options: optionsData,
-            totalPrice: 0,
+            totalPrice: parseInt((document.getElementById('calc-total')?.textContent || '0').replace(/[$,]/g, '')) || 0,
             notes,
           });
         }
@@ -427,6 +473,9 @@
 
       let body = 'SVK K20/K24 Universal Harness Build Request\n';
       body += '==============================================\n\n';
+      body += 'Quote Reference: ' + quoteNumber + '\n';
+      body += 'Base Price: $1,200\n';
+      body += 'Estimated Build Price: ' + (document.getElementById('calc-total')?.textContent || 'N/A') + '\n\n';
       body += 'Selected Options:\n';
       Object.entries(optionsData).forEach(([k, v]) => { body += '  - ' + k + ': ' + v + '\n'; });
       body += '\nCustomer Details:\n';
@@ -434,7 +483,7 @@
       body += '  Email: ' + email + '\n';
       body += '  Notes: ' + notes + '\n';
 
-      const subject = 'SVK K20/K24 Universal Harness Build Request - ' + name;
+      const subject = '[' + quoteNumber + '] SVK K20/K24 Universal Harness Build Request — ' + name;
       window.location.href = 'mailto:info@svkworks.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
     }
 
