@@ -33,9 +33,12 @@ exports.handler = async (event) => {
     return { statusCode: 400, body: `Webhook Error: ${err.message}` };
   }
 
+  console.log('[webhook] Event received:', stripeEvent.type);
+
   if (stripeEvent.type === 'payment_intent.succeeded') {
     const intent = stripeEvent.data.object;
     const supabaseOrderId = intent.metadata?.supabaseOrderId;
+    console.log('[webhook] payment_intent.succeeded — supabaseOrderId:', supabaseOrderId || 'MISSING');
 
     if (!supabaseOrderId) {
       console.error('No supabaseOrderId in payment intent metadata');
@@ -49,9 +52,11 @@ exports.handler = async (event) => {
       .single();
 
     if (error || !order) {
-      console.error('Order not found for payment intent:', intent.id);
+      console.error('Order not found for payment intent:', intent.id, error?.message);
       return { statusCode: 200, body: 'OK' };
     }
+
+    console.log('[webhook] Order found:', order.order_number, '— status:', order.status);
 
     if (order.status !== 'paid') {
       await supabase
@@ -59,6 +64,7 @@ exports.handler = async (event) => {
         .update({ status: 'paid' })
         .eq('id', supabaseOrderId);
 
+      console.log('[webhook] Triggering invoice email for:', order.order_number);
       const orderDate = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
       sendInvoiceEmail({
         customerName: order.customer_name,
@@ -69,6 +75,8 @@ exports.handler = async (event) => {
         total: order.total_price,
         paymentMethod: 'Credit / Debit Card',
       }).catch(err => console.error('Email send failed:', err));
+    } else {
+      console.log('[webhook] Order already paid — skipping email');
     }
   }
 
