@@ -291,13 +291,11 @@
     function addToCart() {
       const color = document.querySelector('.option-btn[data-option="color"].active')?.dataset.value || 'Matte Black';
       if (typeof SVKCart !== 'undefined') {
-        SVKCart.add({
-          id: 'mk4-supra-cupholder',
-          name: 'MK4 Supra 3D Printed Cupholder',
-          price: 45,
-          image: 'img/supraCupHolder.jpg',
-          options: { Color: color }
-        });
+        SVKCart.addItem(
+          { id: 'mk4-supra-cupholder', name: 'MK4 Supra 3D Printed Cupholder', price: 45, image: 'img/supraCupHolder.jpg' },
+          1,
+          { Color: color }
+        );
       } else {
         alert('Cart is loading, please try again.');
       }
