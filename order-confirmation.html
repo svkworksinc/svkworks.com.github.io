@@ -287,6 +287,8 @@
 
       // Clear the cart now that the order is confirmed
       if (typeof SVKCart !== 'undefined') SVKCart.clearCart();
+      sessionStorage.removeItem('svk_checkout_draft');
+      sessionStorage.removeItem('svk_checkout_stripe_resume');
 
       // Populate invoice
       document.getElementById('order-success').style.display = 'block';
