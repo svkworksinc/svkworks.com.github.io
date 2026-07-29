@@ -1,5 +1,11 @@
+const { createClient } = require('@supabase/supabase-js');
 const { validateCart, totalWeightOz, PARCEL_DIMENSIONS_IN, SHIPPING_OPTIONS } = require('./_pricing');
 const { getRatesForAddress } = require('./_shippo');
+
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_ROLE_KEY
+);
 
 function flatRateFallback() {
   return Object.entries(SHIPPING_OPTIONS).map(([id, opt]) => ({
@@ -22,7 +28,7 @@ exports.handler = async (event) => {
       return { statusCode: 400, body: JSON.stringify({ error: 'A complete shipping address (street, city, state, 5-digit ZIP) is required.' }) };
     }
 
-    const { items } = validateCart(cartItems);
+    const { items } = await validateCart(cartItems, supabase);
     const weightOz = totalWeightOz(items);
 
     let rates;

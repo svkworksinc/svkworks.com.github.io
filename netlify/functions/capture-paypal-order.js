@@ -1,6 +1,7 @@
 const { createClient } = require('@supabase/supabase-js');
 const { captureOrder } = require('./_paypal');
 const { sendInvoiceEmail } = require('./_email');
+const { markUsedPartsSold } = require('./_pricing');
 
 const supabase = createClient(
   process.env.SUPABASE_URL,
@@ -57,6 +58,8 @@ exports.handler = async (event) => {
       .from('orders')
       .update({ status: 'pending', payment_id: paypalOrderId })
       .eq('id', supabaseOrderId);
+
+    await markUsedPartsSold(supabase, order.items);
 
     // Send invoice email before returning — must be awaited or Netlify kills the in-flight fetch
     const orderDate = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });

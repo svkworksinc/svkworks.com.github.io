@@ -24,6 +24,12 @@ const SVKCart = {
     const existing = cart.find(item => item.id === product.id && JSON.stringify(item.options) === optKey);
 
     if (existing) {
+      // Unique items (e.g. one-off used parts) can never have more than one
+      // in the cart — there's only ever one of them to sell.
+      if (existing.unique) {
+        this.showToast(`Only one ${product.name} is available — it's already in your cart`);
+        return;
+      }
       existing.quantity += quantity;
     } else {
       cart.push({
@@ -31,8 +37,10 @@ const SVKCart = {
         name: product.name,
         price: product.price,
         image: product.image,
-        quantity: quantity,
-        options: options
+        quantity: product.unique ? 1 : quantity,
+        options: options,
+        unique: !!product.unique,
+        type: product.type || 'product',
       });
     }
 
@@ -102,7 +110,8 @@ const SVKCart = {
     return '$' + amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   },
 
-  _productUrl(id) {
+  _productUrl(id, type) {
+    if (type === 'used-part') return 'used-part.html?id=' + encodeURIComponent(id);
     if (typeof SVK_PRODUCTS_DATA !== 'undefined') {
       const product = SVK_PRODUCTS_DATA.products.find(p => p.id === id);
       if (product) return product.page || ('product.html?id=' + product.id);
@@ -135,7 +144,15 @@ const SVKCart = {
         .map(([k, v]) => `${k}: ${v}`)
         .join(' · ');
       const lineTotal = item.price * item.quantity;
-      const url = this._productUrl(item.id);
+      const url = this._productUrl(item.id, item.type);
+      const qtyCell = item.unique
+        ? `<span style="font-size:var(--text-sm);color:var(--text-muted);">1 <span style="font-size:11px;">(one of a kind)</span></span>`
+        : `<div class="qty-field">
+            <button type="button" data-action="decrease" aria-label="Decrease quantity">−</button>
+            <input type="number" class="qty-input" value="${item.quantity}" min="1" max="99"
+              data-original="${item.quantity}" aria-label="Quantity for ${item.name}">
+            <button type="button" data-action="increase" aria-label="Increase quantity">+</button>
+          </div>`;
       return `<tr data-id="${item.id}" data-options='${JSON.stringify(item.options || {})}'>
         <td class="col-remove">
           <button class="cart-remove-btn" data-action="remove" aria-label="Remove ${item.name}">
@@ -152,14 +169,7 @@ const SVKCart = {
           </a>
         </td>
         <td class="col-price">${this.formatPrice(item.price)}</td>
-        <td class="col-qty">
-          <div class="qty-field">
-            <button type="button" data-action="decrease" aria-label="Decrease quantity">−</button>
-            <input type="number" class="qty-input" value="${item.quantity}" min="1" max="99"
-              data-original="${item.quantity}" aria-label="Quantity for ${item.name}">
-            <button type="button" data-action="increase" aria-label="Increase quantity">+</button>
-          </div>
-        </td>
+        <td class="col-qty">${qtyCell}</td>
         <td class="col-total"><span class="cart-line-total">${this.formatPrice(lineTotal)}</span></td>
       </tr>`;
     }).join('');

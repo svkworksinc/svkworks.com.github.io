@@ -65,32 +65,86 @@ const SHIPPING_OPTIONS = {
 
 const TX_TAX_RATE = 0.0825; // Texas combined state (6.25%) + typical local (2%) rate
 
-function validateCart(items) {
+// validateCart looks products up in two places:
+//   1. PRODUCT_PRICES — the static catalog (harnesses, connectors, merch)
+//   2. the `used_parts` Supabase table — one-off used parts listed by the admin
+// A supabase client is required to validate carts that might contain used parts;
+// omit it only for callers that never touch used-parts ids.
+async function validateCart(items, supabase) {
   if (!Array.isArray(items) || items.length === 0) {
     throw new Error('Cart is empty or invalid.');
   }
+
+  const unknownIds = [...new Set(items.filter(i => PRODUCT_PRICES[i.id] === undefined).map(i => i.id))];
+  let usedPartsById = {};
+  if (unknownIds.length) {
+    if (!supabase) {
+      throw new Error(`Unknown product: ${unknownIds[0]}`);
+    }
+    const { data, error } = await supabase
+      .from('used_parts')
+      .select('id, title, price, weight_oz, status')
+      .in('id', unknownIds);
+    if (error) throw new Error(`Failed to look up used parts: ${error.message}`);
+    usedPartsById = Object.fromEntries((data || []).map(p => [p.id, p]));
+  }
+
   let subtotal = 0;
   const validated = [];
   for (const item of items) {
-    const price = PRODUCT_PRICES[item.id];
-    if (price === undefined) {
+    const staticPrice = PRODUCT_PRICES[item.id];
+    const usedPart = staticPrice === undefined ? usedPartsById[item.id] : null;
+
+    if (staticPrice === undefined && !usedPart) {
       throw new Error(`Unknown product: ${item.id}`);
     }
-    const quantity = Math.max(1, Math.floor(Number(item.quantity) || 1));
+    if (usedPart && usedPart.status !== 'available') {
+      throw new Error(`"${usedPart.title}" just sold and is no longer available.`);
+    }
+
+    const price = usedPart ? Number(usedPart.price) : staticPrice;
+    // Used parts are one-off — never more than one of the same listing.
+    const quantity = usedPart ? 1 : Math.max(1, Math.floor(Number(item.quantity) || 1));
+    if (usedPart && Number(item.quantity) > 1) {
+      throw new Error(`Only one of "${usedPart.title}" is available.`);
+    }
+    const weightOz = usedPart ? (usedPart.weight_oz || DEFAULT_ITEM_WEIGHT_OZ) : (PRODUCT_WEIGHTS_OZ[item.id] ?? DEFAULT_ITEM_WEIGHT_OZ);
     const lineTotal = price * quantity;
     subtotal += lineTotal;
-    validated.push({ id: item.id, name: item.name, image: item.image, options: item.options || {}, price, quantity, lineTotal });
+    validated.push({
+      id: item.id,
+      name: item.name,
+      image: item.image,
+      options: item.options || {},
+      price,
+      quantity,
+      lineTotal,
+      weightOz,
+      isUsedPart: !!usedPart,
+    });
   }
   return { items: validated, subtotal };
 }
 
 // Total estimated parcel weight for a validated cart, in ounces.
 function totalWeightOz(items) {
-  const itemsWeight = items.reduce((sum, item) => {
-    const unitWeight = PRODUCT_WEIGHTS_OZ[item.id] ?? DEFAULT_ITEM_WEIGHT_OZ;
-    return sum + unitWeight * item.quantity;
-  }, 0);
+  const itemsWeight = items.reduce((sum, item) => sum + (item.weightOz ?? DEFAULT_ITEM_WEIGHT_OZ) * item.quantity, 0);
   return itemsWeight + PACKAGING_WEIGHT_OZ;
+}
+
+// Marks any used parts in a paid order as sold, so they drop off the public
+// listing (RLS only shows status='available' to non-admins). Best-effort —
+// logs but doesn't throw, since this runs after payment already succeeded
+// and shouldn't block the confirmation flow.
+async function markUsedPartsSold(supabase, items) {
+  const ids = (items || []).filter(i => i.isUsedPart).map(i => i.id);
+  if (!ids.length) return;
+  const { error } = await supabase
+    .from('used_parts')
+    .update({ status: 'sold', sold_at: new Date().toISOString() })
+    .in('id', ids);
+  if (error) console.error('[markUsedPartsSold] Failed to mark sold:', ids, error.message);
+  else console.log('[markUsedPartsSold] Marked sold:', ids.join(', '));
 }
 
 // Resolves a shipping selection to an authoritative price + label.
@@ -137,6 +191,7 @@ module.exports = {
   resolveShipping,
   calculateTotals,
   totalWeightOz,
+  markUsedPartsSold,
   SHIPPING_OPTIONS,
   PRODUCT_PRICES,
   PARCEL_DIMENSIONS_IN,
