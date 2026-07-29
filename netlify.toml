@@ -1,5 +1,10 @@
 [build]
   publish = "."
+  command = "npm install"
+
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "zisi"
 
 # Asset optimization - minify CSS, JS, HTML and compress images
 [build.processing]
