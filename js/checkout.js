@@ -33,6 +33,7 @@ const SVKCheckout = {
     this._bindTabs();
     this._bindShippingOptions();
     this._bindStateChange();
+    this._bindCoupon();
     this._bindContinueBtn();
     this._prefillAuth();
     this._updateTotals();
@@ -49,7 +50,10 @@ const SVKCheckout = {
     el.innerHTML = this.cart.map(item => {
       const opts = Object.entries(item.options || {}).filter(([, v]) => v).map(([k, v]) => `${k}: ${v}`).join(' · ');
       return `<div class="checkout-item">
-        <img src="${item.image}" alt="${item.name}" class="checkout-item-img" loading="lazy">
+        <div class="checkout-item-img-wrap">
+          <img src="${item.image}" alt="${item.name}" class="checkout-item-img" loading="lazy">
+          <span class="checkout-item-qty">${item.quantity}</span>
+        </div>
         <div class="checkout-item-info">
           <div class="checkout-item-name">${item.name}</div>
           ${opts ? `<div class="checkout-item-opts">${opts}</div>` : ''}
@@ -90,6 +94,14 @@ const SVKCheckout = {
 
   _bindStateChange() {
     document.getElementById('ship-state')?.addEventListener('change', () => this._updateTotals());
+  },
+
+  _bindCoupon() {
+    document.getElementById('checkout-apply-coupon-btn')?.addEventListener('click', () => {
+      const code = (document.getElementById('checkout-coupon-input')?.value || '').trim();
+      if (!code) return;
+      alert(`Coupon "${code}" noted — discount codes will be applied by our team when your quote is confirmed.`);
+    });
   },
 
   _getShippingOption() {
