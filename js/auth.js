@@ -193,6 +193,10 @@ const SVKAuth = {
     const { data: orders } = await this.client
       .from('orders')
       .select('*')
+      // Exclude checkout orders still awaiting payment (abandoned/incomplete carts) —
+      // only orders that are actually placed (paid, or quote requests with no payment
+      // step) belong in the fulfillment queue.
+      .neq('status', 'pending_payment')
       .order('submitted_at', { ascending: false });
     if (!orders?.length) return [];
     // Fetch profiles in parallel to get customer info

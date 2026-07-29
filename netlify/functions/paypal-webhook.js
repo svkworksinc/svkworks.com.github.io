@@ -103,13 +103,23 @@ exports.handler = async (event) => {
       return { statusCode: 200, body: 'OK' };
     }
 
-    if (order.status !== 'paid') {
+    console.log('[paypal-webhook] Order found:', order.order_number, '— status:', order.status);
+
+    // This is a redundant safety-net path — capture-paypal-order.js normally marks the
+    // order paid synchronously during checkout. Only act if it's still pre-payment, so a
+    // late-arriving webhook event can't re-send the invoice email or clobber a status the
+    // admin has already moved forward (in_progress/shipped/etc).
+    if (order.status === 'pending_payment') {
+      // 'pending' matches the admin panel's fulfillment vocabulary (pending -> in_progress
+      // -> shipped -> complete), same as capture-paypal-order.js / stripe-webhook.js.
       await supabase
         .from('orders')
-        .update({ status: 'paid', payment_id: captureId || order.payment_id })
+        .update({ status: 'pending', payment_id: captureId || order.payment_id })
         .eq('id', supabaseOrderId);
 
+      console.log('[paypal-webhook] Triggering invoice email for:', order.order_number);
       const orderDate = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+      const opts = order.options || {};
       try {
         await sendInvoiceEmail({
           customerName: order.customer_name,
@@ -117,12 +127,19 @@ exports.handler = async (event) => {
           orderNumber: order.order_number,
           orderDate,
           items: order.items || [],
+          subtotal: opts.subtotal,
+          shipping: opts.shipping,
+          shippingLabel: opts.shippingLabel,
+          tax: opts.tax,
           total: order.total_price,
+          shippingAddress: opts.shippingAddress,
           paymentMethod: 'PayPal',
         });
       } catch (err) {
         console.error('Email send failed:', err.message);
       }
+    } else {
+      console.log('[paypal-webhook] Order already processed (status:', order.status + ') — skipping email');
     }
   }
 
