@@ -58,10 +58,13 @@ exports.handler = async (event) => {
 
     console.log('[webhook] Order found:', order.order_number, '— status:', order.status);
 
-    if (order.status !== 'paid') {
+    // 'pending' matches the admin panel's fulfillment vocabulary (pending -> in_progress ->
+    // shipped -> complete), so a paid order shows up correctly under the "Pending" filter
+    // instead of getting stuck on an unrecognized 'paid' status.
+    if (order.status === 'pending_payment') {
       await supabase
         .from('orders')
-        .update({ status: 'paid' })
+        .update({ status: 'pending' })
         .eq('id', supabaseOrderId);
 
       console.log('[webhook] Triggering invoice email for:', order.order_number);
@@ -86,7 +89,7 @@ exports.handler = async (event) => {
         console.error('Email send failed:', err.message);
       }
     } else {
-      console.log('[webhook] Order already paid — skipping email');
+      console.log('[webhook] Order already processed (status:', order.status + ') — skipping email');
     }
   }
 

@@ -50,10 +50,12 @@ exports.handler = async (event) => {
       return { statusCode: 422, body: JSON.stringify({ error: 'Captured amount does not match order total.' }) };
     }
 
-    // Mark order as paid
+    // Mark order paid — 'pending' matches the admin panel's fulfillment vocabulary
+    // (pending -> in_progress -> shipped -> complete) so it shows up correctly under
+    // the "Pending" filter instead of an unrecognized 'paid' status.
     await supabase
       .from('orders')
-      .update({ status: 'paid', payment_id: paypalOrderId })
+      .update({ status: 'pending', payment_id: paypalOrderId })
       .eq('id', supabaseOrderId);
 
     // Send invoice email before returning — must be awaited or Netlify kills the in-flight fetch
