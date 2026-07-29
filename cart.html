@@ -22,7 +22,6 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
   <link rel="stylesheet" href="css/style.css">
   <link rel="icon" href="img/svk-icon.png" type="image/png">
-  <!-- Breadcrumb Schema -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -33,6 +32,193 @@
     ]
   }
   </script>
+  <style>
+    /* ---- Cart table ---- */
+    .cart-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .cart-table th {
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      font-weight: var(--weight-semibold);
+      padding: var(--space-sm) var(--space-md);
+      border-bottom: 2px solid var(--border-color);
+      text-align: left;
+      white-space: nowrap;
+    }
+    .cart-table td {
+      padding: var(--space-md);
+      border-bottom: 1px solid var(--border-color);
+      vertical-align: middle;
+    }
+    .cart-table tbody tr:last-child td { border-bottom: none; }
+    .cart-table th.col-price,
+    .cart-table th.col-qty,
+    .cart-table th.col-total,
+    .cart-table td.col-price,
+    .cart-table td.col-qty,
+    .cart-table td.col-total { text-align: center; }
+    .cart-table th.col-total,
+    .cart-table td.col-total { text-align: right; padding-right: 0; }
+    .col-remove { width: 36px; padding-right: 0 !important; }
+    .col-price  { width: 90px; }
+    .col-qty    { width: 130px; }
+    .col-total  { width: 90px; }
+
+    .cart-remove-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--text-muted);
+      padding: 4px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: color 0.15s, background 0.15s;
+    }
+    .cart-remove-btn:hover { color: #f87171; background: rgba(248,113,113,0.12); }
+
+    .cart-product-cell { display: flex; align-items: center; gap: var(--space-md); }
+    .cart-product-img {
+      width: 68px;
+      height: 68px;
+      object-fit: cover;
+      border-radius: var(--radius-sm);
+      background: var(--bg-secondary);
+      flex-shrink: 0;
+    }
+    .cart-product-name { font-weight: var(--weight-medium); font-size: var(--text-sm); margin-bottom: 3px; }
+    .cart-product-opts { font-size: var(--text-xs); color: var(--text-muted); line-height: 1.5; }
+
+    /* Quantity stepper */
+    .qty-field {
+      display: inline-flex;
+      align-items: center;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+    }
+    .qty-field button {
+      background: var(--bg-secondary);
+      border: none;
+      cursor: pointer;
+      width: 32px;
+      height: 36px;
+      font-size: 18px;
+      line-height: 1;
+      color: var(--text-secondary);
+      transition: background 0.12s;
+      flex-shrink: 0;
+    }
+    .qty-field button:hover { background: var(--border-color); color: var(--text-primary); }
+    .qty-field input[type="number"] {
+      width: 46px;
+      height: 36px;
+      border: none;
+      text-align: center;
+      background: var(--bg-card);
+      color: var(--text-primary);
+      font-size: var(--text-sm);
+      font-family: inherit;
+      -moz-appearance: textfield;
+    }
+    .qty-field input[type="number"]::-webkit-inner-spin-button,
+    .qty-field input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; }
+    .qty-field input[type="number"]:focus { outline: none; }
+
+    .cart-line-total { font-weight: var(--weight-semibold); color: var(--magenta); }
+
+    /* Actions bar */
+    .cart-actions-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: var(--space-lg) 0 0;
+      gap: var(--space-md);
+      flex-wrap: wrap;
+    }
+    .cart-actions-left { display: flex; gap: var(--space-sm); flex-wrap: wrap; }
+
+    /* Update cart button highlight */
+    #update-cart-btn.has-changes {
+      border-color: var(--magenta);
+      color: var(--magenta);
+    }
+
+    /* ---- Summary card ---- */
+    .cart-summary-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: var(--space-xl);
+      position: sticky;
+      top: calc(var(--header-height, 64px) + var(--space-xl));
+    }
+    .cart-summary-card h3 {
+      font-size: var(--text-sm);
+      font-weight: var(--weight-semibold);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      margin: 0 0 var(--space-lg);
+    }
+    .summary-line {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: var(--space-sm) 0;
+      border-bottom: 1px solid var(--border-color);
+      font-size: var(--text-sm);
+    }
+    .summary-line:last-of-type { border-bottom: none; }
+    .summary-line .s-label { color: var(--text-secondary); }
+    .summary-line .s-amount { font-weight: var(--weight-semibold); }
+    .summary-line.total-line { padding-top: var(--space-md); margin-top: var(--space-xs); border-top: 2px solid var(--border-color); border-bottom: none; }
+    .summary-line.total-line .s-label { font-size: var(--text-base); font-weight: var(--weight-bold); color: var(--text-primary); }
+    .summary-line.total-line .s-amount { font-size: var(--text-lg); font-weight: var(--weight-bold); color: var(--magenta); }
+
+    .coupon-section { margin-top: var(--space-xl); padding-top: var(--space-xl); border-top: 1px solid var(--border-color); }
+    .coupon-section .coupon-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      font-weight: var(--weight-semibold);
+      margin-bottom: var(--space-sm);
+    }
+    .coupon-row { display: flex; gap: var(--space-sm); }
+    .coupon-row input { flex: 1; min-width: 0; }
+    #coupon-msg { font-size: var(--text-xs); margin-top: var(--space-sm); }
+
+    .terms-section { margin-top: var(--space-xl); padding-top: var(--space-xl); border-top: 1px solid var(--border-color); }
+    .terms-check-row { display: flex; align-items: flex-start; gap: 10px; }
+    .terms-check-row input[type="checkbox"] { accent-color: var(--magenta); margin-top: 2px; flex-shrink: 0; width: 16px; height: 16px; cursor: pointer; }
+    .terms-check-row label { font-size: var(--text-sm); color: var(--text-secondary); line-height: 1.5; cursor: pointer; }
+    .terms-check-row a { color: var(--magenta); text-decoration: underline; }
+
+    #checkout-btn { transition: opacity 0.2s; }
+    #checkout-btn.locked { opacity: 0.45; pointer-events: none; }
+
+    /* ---- Page layout ---- */
+    .cart-page-layout {
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: var(--space-2xl);
+      align-items: start;
+    }
+    @media (max-width: 960px) {
+      .cart-page-layout { grid-template-columns: 1fr; }
+      .cart-summary-card { position: static; }
+    }
+    @media (max-width: 600px) {
+      .cart-table .col-price { display: none; }
+      .cart-product-img { width: 52px; height: 52px; }
+    }
+  </style>
 </head>
 <body>
   <div id="header-placeholder"></div>
@@ -50,6 +236,7 @@
 
     <section class="cart-page">
       <div class="container">
+
         <!-- Empty state -->
         <div id="cart-empty" class="empty-state" style="display:none;">
           <div class="empty-state-icon">
@@ -61,16 +248,73 @@
         </div>
 
         <!-- Cart content -->
-        <div id="cart-content" class="cart-layout" style="display:none;">
+        <div id="cart-content" class="cart-page-layout" style="display:none;">
+
+          <!-- Left: Cart Table -->
           <div>
-            <div class="cart-items" id="cart-items"></div>
+            <div style="overflow-x:auto;">
+              <table class="cart-table">
+                <thead>
+                  <tr>
+                    <th class="col-remove"></th>
+                    <th class="col-product">Product</th>
+                    <th class="col-price">Price</th>
+                    <th class="col-qty">Quantity</th>
+                    <th class="col-total">Total</th>
+                  </tr>
+                </thead>
+                <tbody id="cart-items"></tbody>
+              </table>
+            </div>
+
+            <div class="cart-actions-bar">
+              <div class="cart-actions-left">
+                <button class="btn btn-secondary btn-sm" id="clear-cart-btn">Clear Shopping Cart</button>
+                <button class="btn btn-ghost btn-sm" id="update-cart-btn" disabled>Update Cart</button>
+              </div>
+              <a href="harnesses.html" class="btn btn-ghost btn-sm">← Continue Shopping</a>
+            </div>
           </div>
-          <div class="cart-summary">
-            <h3>Order Summary</h3>
-            <div id="cart-summary-content"></div>
-            <a href="checkout.html" class="btn btn-primary btn-lg" id="checkout-btn" style="display:block;text-align:center;">Proceed to Checkout</a>
-            <p class="cart-note">Secure checkout via PayPal or credit card. Lead time 5–7 weeks from confirmed payment.</p>
+
+          <!-- Right: Summary -->
+          <div class="cart-summary-card">
+            <h3>Cart Totals</h3>
+
+            <div class="summary-line">
+              <span class="s-label">Subtotal</span>
+              <span class="s-amount" id="cart-subtotal">—</span>
+            </div>
+            <div class="summary-line">
+              <span class="s-label">Shipping</span>
+              <span class="s-amount" style="font-style:italic;color:var(--text-muted);font-size:var(--text-xs);font-weight:400;">Shipping &amp; taxes calculated at checkout</span>
+            </div>
+            <div class="summary-line total-line">
+              <span class="s-label">Total</span>
+              <span class="s-amount" id="cart-total">—</span>
+            </div>
+
+            <!-- Coupon code -->
+            <div class="coupon-section">
+              <div class="coupon-label">Coupon Code</div>
+              <div class="coupon-row">
+                <input type="text" class="form-input" id="coupon-input" placeholder="Enter coupon code" autocomplete="off">
+                <button class="btn btn-secondary" id="apply-coupon-btn" style="white-space:nowrap;">Apply</button>
+              </div>
+              <div id="coupon-msg" style="display:none;"></div>
+            </div>
+
+            <!-- Terms -->
+            <div class="terms-section">
+              <div class="terms-check-row">
+                <input type="checkbox" id="terms-check">
+                <label for="terms-check">I have read and agree to the website <a href="terms.html">terms and conditions</a></label>
+              </div>
+            </div>
+
+            <a href="checkout.html" class="btn btn-primary btn-lg locked" id="checkout-btn" style="display:block;text-align:center;margin-top:var(--space-lg);">Proceed to Checkout</a>
+            <p style="font-size:var(--text-xs);color:var(--text-muted);margin-top:var(--space-md);text-align:center;line-height:1.6;">Secure checkout via PayPal or credit card.<br>Lead time 5–7 weeks from confirmed payment.</p>
           </div>
+
         </div>
 
       </div>

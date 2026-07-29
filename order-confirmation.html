@@ -161,6 +161,14 @@
                   <label>Payment</label>
                   <div class="value" id="inv-payment">—</div>
                 </div>
+                <div class="invoice-meta-item" id="inv-ship-to-wrap" style="display:none;">
+                  <label>Ship To</label>
+                  <div class="value" id="inv-ship-to">—</div>
+                </div>
+                <div class="invoice-meta-item" id="inv-ship-method-wrap" style="display:none;">
+                  <label>Via</label>
+                  <div class="value" id="inv-ship-method">—</div>
+                </div>
               </div>
 
               <div class="invoice-items">
@@ -175,6 +183,18 @@
                   </thead>
                   <tbody id="inv-items-tbody"></tbody>
                 </table>
+              </div>
+
+              <div id="inv-breakdown" style="display:none;padding:0 var(--space-2xl) var(--space-lg);border-top:1px solid var(--border-color);">
+                <div style="display:flex;justify-content:space-between;font-size:var(--text-sm);color:var(--text-secondary);padding:8px 0 0;">
+                  <span>Subtotal</span><span id="inv-subtotal">—</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;font-size:var(--text-sm);color:var(--text-secondary);padding:4px 0;">
+                  <span>Shipping</span><span id="inv-shipping-amt">—</span>
+                </div>
+                <div id="inv-tax-row" style="display:none;justify-content:space-between;font-size:var(--text-sm);color:var(--text-secondary);padding:4px 0;">
+                  <span>Tax</span><span id="inv-tax-amt">—</span>
+                </div>
               </div>
 
               <div class="invoice-total">
@@ -235,7 +255,12 @@
               orderNumber: p.orderNumber,
               orderDate: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
               items: p.items || [],
+              subtotal: p.subtotal,
+              shipping: p.shipping,
+              shippingLabel: p.shippingLabel,
+              tax: p.tax,
               total: p.total,
+              shippingAddress: p.shippingAddress,
               customerName: p.customerName,
               customerEmail: p.customerEmail,
               paymentMethod: p.paymentMethod || 'Credit / Debit Card',
@@ -271,6 +296,28 @@
       document.getElementById('inv-email').textContent = order.customerEmail || '';
       document.getElementById('inv-payment').textContent = order.paymentMethod || '—';
       document.getElementById('inv-total').textContent = '$' + (order.total || 0).toLocaleString();
+
+      const fmtMoney = n => '$' + (n || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+      if (order.shippingAddress && (order.shippingAddress.address || order.shippingAddress.city)) {
+        const a = order.shippingAddress;
+        document.getElementById('inv-ship-to-wrap').style.display = 'block';
+        document.getElementById('inv-ship-to').textContent = [a.address, `${a.city}, ${a.state} ${a.zip}`].filter(Boolean).join(', ');
+      }
+      if (order.shippingLabel) {
+        document.getElementById('inv-ship-method-wrap').style.display = 'block';
+        document.getElementById('inv-ship-method').textContent = order.shippingLabel;
+      }
+
+      if (order.subtotal !== undefined && order.shipping !== undefined) {
+        document.getElementById('inv-breakdown').style.display = 'block';
+        document.getElementById('inv-subtotal').textContent = fmtMoney(order.subtotal);
+        document.getElementById('inv-shipping-amt').textContent = fmtMoney(order.shipping);
+        if (order.tax) {
+          document.getElementById('inv-tax-row').style.display = 'flex';
+          document.getElementById('inv-tax-amt').textContent = fmtMoney(order.tax);
+        }
+      }
 
       const tbody = document.getElementById('inv-items-tbody');
       const items = order.items || [];
