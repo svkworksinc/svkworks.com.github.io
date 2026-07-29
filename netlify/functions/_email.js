@@ -3,6 +3,10 @@
 const TEST_MODE = process.env.TEST_MODE === 'true';
 
 async function sendInvoiceEmail({ customerName, customerEmail, orderNumber, orderDate, items, total, paymentMethod }) {
+  if (!process.env.RESEND_API_KEY) {
+    throw new Error('RESEND_API_KEY environment variable is not set');
+  }
+
   const rows = items.map(item => {
     const optStr = Object.entries(item.options || {})
       .filter(([, v]) => v && v !== 'No')
@@ -92,9 +96,8 @@ async function sendInvoiceEmail({ customerName, customerEmail, orderNumber, orde
     ? { from: 'SVK Works <orders@svkworks.com>', to: 'info@svkworks.com', subject: `[TEST] Order Confirmed — ${orderNumber} | SVK Works`, html }
     : { from: 'SVK Works <orders@svkworks.com>', to: customerEmail, bcc: 'info@svkworks.com', subject: `Order Confirmed — ${orderNumber} | SVK Works`, html };
 
-  if (TEST_MODE) {
-    console.log(`TEST MODE: invoice email suppressed for ${customerEmail}, sent internally only.`);
-  }
+  const recipient = TEST_MODE ? 'info@svkworks.com' : customerEmail;
+  console.log(`[email] Sending invoice for ${orderNumber} to ${recipient}${TEST_MODE ? ' [TEST MODE — customer email suppressed]' : ''}`);
 
   const res = await fetch('https://api.resend.com/emails', {
     method: 'POST',
@@ -108,6 +111,8 @@ async function sendInvoiceEmail({ customerName, customerEmail, orderNumber, orde
     const err = await res.text();
     throw new Error(`Resend error: ${err}`);
   }
+  const data = await res.json();
+  console.log(`[email] Invoice sent for ${orderNumber}, Resend ID: ${data.id}`);
 }
 
 module.exports = { sendInvoiceEmail };
