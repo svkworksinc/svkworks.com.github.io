@@ -1,5 +1,6 @@
 const { createClient } = require('@supabase/supabase-js');
 const { sendInvoiceEmail } = require('./_email');
+const { markUsedPartsSold } = require('./_pricing');
 
 const supabase = createClient(
   process.env.SUPABASE_URL,
@@ -116,6 +117,8 @@ exports.handler = async (event) => {
         .from('orders')
         .update({ status: 'pending', payment_id: captureId || order.payment_id })
         .eq('id', supabaseOrderId);
+
+      await markUsedPartsSold(supabase, order.items);
 
       console.log('[paypal-webhook] Triggering invoice email for:', order.order_number);
       const orderDate = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });

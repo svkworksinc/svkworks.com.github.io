@@ -33,7 +33,7 @@ exports.handler = async (event) => {
 
     // Server-side price validation — shipping is independently resolved/verified,
     // never trusted from the client (see resolveShipping in _pricing.js)
-    const { items, subtotal } = validateCart(cartItems);
+    const { items, subtotal } = await validateCart(cartItems, supabase);
     const { shipping, shippingLabel } = await resolveShipping(shippingOptionId);
     const { tax, grandTotal } = calculateTotals(subtotal, shipping, shippingAddress.state);
 

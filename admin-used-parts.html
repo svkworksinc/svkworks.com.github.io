@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin — Used Parts — SVK Works</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="img/svk-icon.png" type="image/png">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/used-parts.js"></script>
+  <style>
+    .form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md); }
+    @media (max-width: 600px) { .form-row-2 { grid-template-columns: 1fr; } }
+    .form-hint { display: block; font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+
+    .pf-thumb { position: relative; width: 84px; height: 84px; border-radius: var(--radius-sm); overflow: hidden; border: 1px solid var(--border-color); flex-shrink: 0; }
+    .pf-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .pf-thumb-remove {
+      position: absolute; top: 3px; right: 3px; width: 20px; height: 20px; border-radius: 50%;
+      background: rgba(0,0,0,0.7); color: #fff; border: none; cursor: pointer; font-size: 13px; line-height: 1;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .pf-thumb-remove:hover { background: #ef4444; }
+    .pf-add-photos-btn {
+      width: 84px; height: 84px; border-radius: var(--radius-sm); border: 1px dashed var(--border-color);
+      background: var(--bg-secondary); color: var(--text-muted); cursor: pointer;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; font-size: 11px;
+      flex-shrink: 0;
+    }
+    .pf-add-photos-btn:hover { border-color: var(--magenta); color: var(--magenta); }
+  </style>
+</head>
+<body>
+  <main id="main-content">
+
+    <div id="admin-loading" class="section" style="text-align:center;">
+      <div class="container">
+        <div class="spinner" style="margin:4rem auto;"></div>
+        <p class="text-secondary">Loading admin panel…</p>
+      </div>
+    </div>
+
+    <div id="admin-denied" style="display:none;text-align:center;padding:var(--space-4xl) var(--space-xl);">
+      <div style="width:72px;height:72px;border-radius:50%;background:rgba(239,68,68,0.1);border:2px solid rgba(239,68,68,0.3);display:flex;align-items:center;justify-content:center;margin:0 auto var(--space-xl);">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#fca5a5" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      </div>
+      <h2>Access Denied</h2>
+      <p style="color:var(--text-secondary);margin:var(--space-md) 0 var(--space-2xl);">This page is restricted to SVK Works administrators.<br>Sign in with an admin account to continue.</p>
+      <div style="display:flex;gap:var(--space-md);justify-content:center;">
+        <a href="login.html" class="btn btn-primary">Sign In</a>
+        <a href="index.html" class="btn btn-ghost">Go Home</a>
+      </div>
+    </div>
+
+    <div id="admin-content" style="display:none;">
+      <div style="background:var(--bg-secondary);border-bottom:1px solid var(--border-color);padding:var(--space-md) 0;position:sticky;top:0;z-index:100;">
+        <div class="container" style="display:flex;align-items:center;justify-content:space-between;gap:var(--space-md);flex-wrap:wrap;">
+          <div style="display:flex;align-items:center;gap:var(--space-md);">
+            <a href="index.html" style="color:var(--magenta);font-weight:var(--weight-bold);text-decoration:none;font-size:var(--text-lg);">SVK Works</a>
+            <span style="color:var(--border-color);">|</span>
+            <span style="font-size:var(--text-sm);color:var(--text-muted);font-weight:var(--weight-medium);">Used Parts Management</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:var(--space-md);">
+            <a href="admin.html" class="btn btn-ghost" style="font-size:var(--text-sm);">Order Management</a>
+            <span class="badge" id="admin-user-badge"></span>
+            <button class="btn btn-ghost" style="font-size:var(--text-sm);" onclick="handleAdminSignOut()">Sign Out</button>
+          </div>
+        </div>
+      </div>
+
+      <section class="section">
+        <div class="container">
+
+          <!-- Add / Edit form -->
+          <div class="order-card" style="margin-bottom:var(--space-2xl);">
+            <h2 id="form-heading" style="font-size:var(--text-lg);margin-bottom:var(--space-lg);">List a New Part</h2>
+
+            <div id="form-error" class="checkout-error-box" style="background:rgba(231,76,60,0.08);border:1px solid rgba(231,76,60,0.3);border-radius:var(--radius-md);padding:10px var(--space-md);font-size:13px;color:#f87171;margin-bottom:var(--space-md);display:none;"></div>
+
+            <div class="form-row-2">
+              <div class="form-group">
+                <label class="form-label" for="pf-title">Title <span style="color:var(--magenta);">*</span></label>
+                <input type="text" class="form-input" id="pf-title" placeholder="e.g. Haltech Elite 2500 ECU">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="pf-price">Price ($) <span style="color:var(--magenta);">*</span></label>
+                <input type="number" class="form-input" id="pf-price" min="0" step="0.01" placeholder="150.00">
+              </div>
+            </div>
+
+            <div class="form-row-2">
+              <div class="form-group">
+                <label class="form-label" for="pf-condition">Condition <span style="color:var(--magenta);">*</span></label>
+                <select class="form-input" id="pf-condition">
+                  <option value="open_box_new">Open Box — New</option>
+                  <option value="good" selected>Good</option>
+                  <option value="fair">Fair</option>
+                  <option value="untested">Untested</option>
+                  <option value="junk">Junk / For Parts</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="pf-category">Category <span style="color:var(--text-muted);font-weight:400;">(optional)</span></label>
+                <input type="text" class="form-input" id="pf-category" placeholder="e.g. ECU, Turbo, Injectors">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="pf-weight">Weight for Shipping (oz)</label>
+              <input type="number" class="form-input" id="pf-weight" min="1" value="16">
+              <span class="form-hint">Used to calculate accurate shipping cost at checkout. Default is 16oz (1 lb) — adjust if it's much heavier or lighter.</span>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="pf-description">Description</label>
+              <textarea class="form-textarea" id="pf-description" rows="4" placeholder="What it is, why you're selling it, any flaws or missing pieces…"></textarea>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Photos <span style="color:var(--magenta);">*</span></label>
+              <div id="pf-image-previews" style="display:flex;flex-wrap:wrap;gap:10px;"></div>
+              <input type="file" id="pf-images" accept="image/*" multiple style="display:none;">
+              <span class="form-hint">First photo is used as the main listing image.</span>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="pf-admin-notes">Private Notes <span style="color:var(--text-muted);font-weight:400;">(only visible to you)</span></label>
+              <textarea class="form-textarea" id="pf-admin-notes" rows="2" placeholder="e.g. pulled from the shop MK4, where it's stored…"></textarea>
+            </div>
+
+            <div style="display:flex;gap:var(--space-md);margin-top:var(--space-md);">
+              <button class="btn btn-primary" id="pf-submit-btn">List This Part</button>
+              <button class="btn btn-ghost" id="pf-cancel-btn" style="display:none;">Cancel Edit</button>
+            </div>
+          </div>
+
+          <!-- Listings -->
+          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:var(--space-md);margin-bottom:var(--space-lg);">
+            <h2 style="font-size:var(--text-lg);">Your Listings</h2>
+            <div class="filter-tabs" id="parts-status-filter">
+              <button class="filter-tab active" data-status="all">All</button>
+              <button class="filter-tab" data-status="available">Available</button>
+              <button class="filter-tab" data-status="sold">Sold</button>
+            </div>
+          </div>
+
+          <div id="admin-parts-loading" class="account-empty">
+            <div class="account-empty-icon">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            </div>
+            <p>Loading your listings…</p>
+          </div>
+          <div id="admin-parts-empty" class="account-empty" style="display:none;">
+            <div class="account-empty-icon">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            </div>
+            <p>No listings yet — use the form above to list your first part.</p>
+          </div>
+          <div id="admin-parts-list" style="display:none;flex-direction:column;gap:var(--space-md);"></div>
+
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    SVKAuth.init();
+
+    let editingId = null;
+    let keptImages = [];
+    let stagedFiles = [];
+    let allParts = [];
+    let listFilter = 'all';
+
+    function renderImagePreviews() {
+      const wrap = document.getElementById('pf-image-previews');
+      const keptHtml = keptImages.map((url, i) => `
+        <div class="pf-thumb">
+          <img src="${url}">
+          <button type="button" class="pf-thumb-remove" data-kind="kept" data-idx="${i}" aria-label="Remove photo">×</button>
+        </div>`).join('');
+      const stagedHtml = stagedFiles.map((file, i) => `
+        <div class="pf-thumb">
+          <img src="${URL.createObjectURL(file)}">
+          <button type="button" class="pf-thumb-remove" data-kind="staged" data-idx="${i}" aria-label="Remove photo">×</button>
+        </div>`).join('');
+      wrap.innerHTML = keptHtml + stagedHtml + `<button type="button" class="pf-add-photos-btn" id="pf-add-photos-btn">+<br>Add Photos</button>`;
+
+      document.getElementById('pf-add-photos-btn').addEventListener('click', () => document.getElementById('pf-images').click());
+      wrap.querySelectorAll('.pf-thumb-remove').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const idx = parseInt(btn.dataset.idx, 10);
+          if (btn.dataset.kind === 'kept') keptImages.splice(idx, 1);
+          else stagedFiles.splice(idx, 1);
+          renderImagePreviews();
+        });
+      });
+    }
+
+    document.getElementById('pf-images').addEventListener('change', (e) => {
+      stagedFiles.push(...Array.from(e.target.files));
+      e.target.value = '';
+      renderImagePreviews();
+    });
+
+    function showFormError(msg) {
+      const el = document.getElementById('form-error');
+      el.textContent = msg;
+      el.style.display = 'block';
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    function resetForm() {
+      editingId = null;
+      keptImages = [];
+      stagedFiles = [];
+      document.getElementById('pf-title').value = '';
+      document.getElementById('pf-price').value = '';
+      document.getElementById('pf-condition').value = 'good';
+      document.getElementById('pf-category').value = '';
+      document.getElementById('pf-weight').value = 16;
+      document.getElementById('pf-description').value = '';
+      document.getElementById('pf-admin-notes').value = '';
+      document.getElementById('form-heading').textContent = 'List a New Part';
+      document.getElementById('pf-submit-btn').textContent = 'List This Part';
+      document.getElementById('pf-cancel-btn').style.display = 'none';
+      document.getElementById('form-error').style.display = 'none';
+      renderImagePreviews();
+    }
+
+    function startEdit(part) {
+      editingId = part.id;
+      keptImages = [...(part.images || [])];
+      stagedFiles = [];
+      document.getElementById('pf-title').value = part.title;
+      document.getElementById('pf-price').value = part.price;
+      document.getElementById('pf-condition').value = part.condition;
+      document.getElementById('pf-category').value = part.category || '';
+      document.getElementById('pf-weight').value = part.weight_oz || 16;
+      document.getElementById('pf-description').value = part.description || '';
+      document.getElementById('pf-admin-notes').value = part.admin_notes || '';
+      document.getElementById('form-heading').textContent = 'Edit Part';
+      document.getElementById('pf-submit-btn').textContent = 'Save Changes';
+      document.getElementById('pf-cancel-btn').style.display = 'inline-block';
+      document.getElementById('form-error').style.display = 'none';
+      renderImagePreviews();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    document.getElementById('pf-cancel-btn').addEventListener('click', resetForm);
+
+    document.getElementById('pf-submit-btn').addEventListener('click', async () => {
+      const title = document.getElementById('pf-title').value.trim();
+      const price = parseFloat(document.getElementById('pf-price').value);
+      const condition = document.getElementById('pf-condition').value;
+      const category = document.getElementById('pf-category').value.trim();
+      const weightOz = parseInt(document.getElementById('pf-weight').value, 10) || 16;
+      const description = document.getElementById('pf-description').value.trim();
+      const adminNotes = document.getElementById('pf-admin-notes').value.trim();
+      document.getElementById('form-error').style.display = 'none';
+
+      if (!title) return showFormError('Enter a title.');
+      if (!price || price <= 0) return showFormError('Enter a valid price.');
+      if (!condition) return showFormError('Select a condition.');
+      if (!keptImages.length && !stagedFiles.length) return showFormError('Add at least one photo.');
+
+      const submitBtn = document.getElementById('pf-submit-btn');
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Saving…';
+
+      try {
+        const uploadedUrls = [];
+        for (const file of stagedFiles) {
+          const { url, error } = await SVKAuth.uploadUsedPartImage(file);
+          if (error) throw new Error('Photo upload failed: ' + error.message);
+          uploadedUrls.push(url);
+        }
+        const images = [...keptImages, ...uploadedUrls];
+
+        let result;
+        if (editingId) {
+          result = await SVKAuth.updateUsedPart(editingId, {
+            title, price, condition, category: category || null,
+            weight_oz: weightOz, description, admin_notes: adminNotes || null, images,
+          });
+        } else {
+          result = await SVKAuth.saveUsedPart({ title, price, condition, category, weightOz, description, adminNotes, images });
+        }
+        if (result.error) throw new Error(result.error.message);
+
+        const wasEditing = !!editingId;
+        resetForm();
+        await loadParts();
+        if (typeof SVKCart !== 'undefined') SVKCart.showToast(wasEditing ? 'Part updated' : 'Part listed');
+      } catch (err) {
+        showFormError(err.message);
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = editingId ? 'Save Changes' : 'List This Part';
+      }
+    });
+
+    async function loadParts() {
+      allParts = await SVKAuth.getAllUsedPartsAdmin();
+      document.getElementById('admin-parts-loading').style.display = 'none';
+      renderPartsList();
+    }
+
+    function renderPartsList() {
+      const listEl = document.getElementById('admin-parts-list');
+      const emptyEl = document.getElementById('admin-parts-empty');
+      const filtered = listFilter === 'all' ? allParts : allParts.filter(p => p.status === listFilter);
+
+      if (!filtered.length) {
+        listEl.style.display = 'none';
+        emptyEl.style.display = 'flex';
+        return;
+      }
+      emptyEl.style.display = 'none';
+      listEl.style.display = 'flex';
+
+      listEl.innerHTML = filtered.map(part => {
+        const img = (part.images && part.images[0]) || 'img/filler.webp';
+        const statusBadge = part.status === 'sold'
+          ? `<span class="badge" style="background:rgba(239,68,68,0.1);color:#ef4444;border-color:rgba(239,68,68,0.3);">Sold</span>`
+          : `<span class="badge badge-success">Available</span>`;
+        return `
+        <div class="order-card" data-id="${part.id}">
+          <div class="order-card-header">
+            <div style="display:flex;gap:var(--space-md);min-width:0;">
+              <img src="${img}" alt="${part.title}" style="width:64px;height:64px;object-fit:cover;border-radius:var(--radius-sm);flex-shrink:0;">
+              <div style="min-width:0;">
+                <div class="order-product">${part.title}</div>
+                <div style="font-size:var(--text-xs);color:var(--text-muted);margin-top:2px;">
+                  ${svkFormatPartPrice(part.price)} · ${svkConditionInfo(part.condition).label}${part.category ? ' · ' + part.category : ''}
+                </div>
+              </div>
+            </div>
+            <div class="order-card-right">${statusBadge}</div>
+          </div>
+          <div style="display:flex;gap:8px;margin-top:var(--space-md);flex-wrap:wrap;">
+            <button class="btn btn-outline btn-sm" data-action="edit">Edit</button>
+            <button class="btn btn-outline btn-sm" data-action="toggle-status">${part.status === 'sold' ? 'Mark Available' : 'Mark Sold'}</button>
+            <button class="btn btn-outline btn-sm" data-action="delete" style="color:#ef4444;border-color:rgba(239,68,68,0.3);">Delete</button>
+          </div>
+        </div>`;
+      }).join('');
+
+      listEl.querySelectorAll('[data-action="edit"]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const part = allParts.find(p => p.id === btn.closest('.order-card').dataset.id);
+          if (part) startEdit(part);
+        });
+      });
+
+      listEl.querySelectorAll('[data-action="toggle-status"]').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const id = btn.closest('.order-card').dataset.id;
+          const part = allParts.find(p => p.id === id);
+          if (!part) return;
+          const newStatus = part.status === 'sold' ? 'available' : 'sold';
+          btn.disabled = true;
+          const { error } = await SVKAuth.updateUsedPart(id, {
+            status: newStatus,
+            sold_at: newStatus === 'sold' ? new Date().toISOString() : null,
+          });
+          if (error) { alert('Failed: ' + error.message); btn.disabled = false; return; }
+          await loadParts();
+        });
+      });
+
+      listEl.querySelectorAll('[data-action="delete"]').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const id = btn.closest('.order-card').dataset.id;
+          const part = allParts.find(p => p.id === id);
+          if (!part) return;
+          if (!confirm(`Delete "${part.title}"? This cannot be undone.`)) return;
+          btn.disabled = true;
+          for (const url of (part.images || [])) {
+            await SVKAuth.deleteUsedPartImage(url);
+          }
+          const { error } = await SVKAuth.deleteUsedPart(id);
+          if (error) { alert('Failed: ' + error.message); btn.disabled = false; return; }
+          await loadParts();
+        });
+      });
+    }
+
+    document.querySelectorAll('#parts-status-filter .filter-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('#parts-status-filter .filter-tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        listFilter = tab.dataset.status;
+        renderPartsList();
+      });
+    });
+
+    async function handleAdminSignOut() {
+      await SVKAuth.signOut();
+      window.location.href = 'login.html';
+    }
+
+    async function initAdmin() {
+      await SVKAuth.ready;
+      const session = await SVKAuth.getSession();
+      if (!session) {
+        document.getElementById('admin-loading').style.display = 'none';
+        document.getElementById('admin-denied').style.display = 'block';
+        return;
+      }
+      const admin = await SVKAuth.isAdmin();
+      if (!admin) {
+        document.getElementById('admin-loading').style.display = 'none';
+        document.getElementById('admin-denied').style.display = 'block';
+        return;
+      }
+
+      document.getElementById('admin-loading').style.display = 'none';
+      document.getElementById('admin-content').style.display = 'block';
+
+      const profile = await SVKAuth.getProfile();
+      document.getElementById('admin-user-badge').textContent = (profile?.full_name || session.user.email) + ' (admin)';
+
+      resetForm();
+      await loadParts();
+    }
+
+    initAdmin();
+  </script>
+
+  <!-- cart.js loaded only for its shared showToast() helper -->
+  <script defer src="js/cart.js?v=4"></script>
+</body>
+</html>

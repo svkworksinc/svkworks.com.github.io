@@ -217,4 +217,84 @@ const SVKAuth = {
       .eq('id', orderId)
       .select();
   },
+
+  // ---- Used Parts ----
+  // Public reads rely on RLS: anon/logged-out visitors only ever see
+  // status='available' rows; admins (via auth_is_admin()) see everything.
+  // See netlify/supabase-used-parts-migration.sql.
+
+  async getUsedParts() {
+    if (!this.client) return [];
+    const { data } = await this.client
+      .from('used_parts')
+      .select('*')
+      .eq('status', 'available')
+      .order('created_at', { ascending: false });
+    return data || [];
+  },
+
+  async getUsedPart(id) {
+    if (!this.client) return null;
+    const { data } = await this.client
+      .from('used_parts')
+      .select('*')
+      .eq('id', id)
+      .single();
+    return data || null;
+  },
+
+  async getAllUsedPartsAdmin() {
+    if (!this.client) return [];
+    const { data } = await this.client
+      .from('used_parts')
+      .select('*')
+      .order('created_at', { ascending: false });
+    return data || [];
+  },
+
+  async saveUsedPart(part) {
+    if (!this.client) return { error: { message: 'Not configured.' } };
+    return await this.client.from('used_parts').insert({
+      title: part.title,
+      description: part.description || '',
+      price: part.price,
+      condition: part.condition,
+      category: part.category || null,
+      weight_oz: part.weightOz || 16,
+      images: part.images || [],
+      admin_notes: part.adminNotes || null,
+    }).select().single();
+  },
+
+  async updateUsedPart(id, updates) {
+    if (!this.client) return { error: { message: 'Not configured.' } };
+    return await this.client.from('used_parts').update(updates).eq('id', id).select().single();
+  },
+
+  async deleteUsedPart(id) {
+    if (!this.client) return { error: { message: 'Not configured.' } };
+    return await this.client.from('used_parts').delete().eq('id', id);
+  },
+
+  async uploadUsedPartImage(file) {
+    if (!this.client) return { error: { message: 'Not configured.' } };
+    const ext = (file.name.split('.').pop() || 'jpg').toLowerCase().replace(/[^a-z0-9]/g, '') || 'jpg';
+    const path = `${crypto.randomUUID()}.${ext}`;
+    const { error } = await this.client.storage.from('used-parts').upload(path, file, {
+      cacheControl: '3600',
+      upsert: false,
+    });
+    if (error) return { error };
+    const { data } = this.client.storage.from('used-parts').getPublicUrl(path);
+    return { url: data.publicUrl, path };
+  },
+
+  async deleteUsedPartImage(url) {
+    if (!this.client) return;
+    const marker = '/used-parts/';
+    const idx = url.indexOf(marker);
+    if (idx === -1) return;
+    const path = url.slice(idx + marker.length);
+    await this.client.storage.from('used-parts').remove([path]);
+  },
 };
