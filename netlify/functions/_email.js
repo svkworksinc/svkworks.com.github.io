@@ -119,21 +119,12 @@ async function generateInvoicePDF({
     }
 
     doc.fillColor(midGray).fontSize(10).font('Helvetica').text('Order Total', lx, y);
-    doc.fillColor(magenta).fontSize(18).font('Helvetica-Bold').text('$' + (total || 0).toFixed(2), ax, y - 2, { width: aw, align: 'right' });
-
-    // ── What's next box ──────────────────────────────────────────────────────
-    y += 46;
-    doc.rect(50, y, pageWidth, 52).fill('#f9f9f9').stroke('#e0e0e0');
-    doc.fillColor(midGray).fontSize(8).font('Helvetica-Bold').text("WHAT'S NEXT", 62, y + 10);
-    doc.fillColor('#555555').fontSize(9).font('Helvetica')
-      .text(
-        'Your build is now in queue. Lead time is typically 5–7 weeks from order. ' +
-        'We\'ll reach out at ' + customerEmail + ' with updates and tracking once shipped.',
-        62, y + 22, { width: pageWidth - 24, lineBreak: true }
-      );
+    const totalStr = '$' + (total || 0).toFixed(2);
+    doc.fillColor(magenta).fontSize(18).font('Helvetica-Bold');
+    doc.text(totalStr, 545 - doc.widthOfString(totalStr), y - 2, { lineBreak: false });
 
     // ── Footer ────────────────────────────────────────────────────────────────
-    y += 82;
+    y += 46;
     doc.moveTo(50, y).lineTo(545, y).strokeColor(lightGray).lineWidth(0.5).stroke();
     y += 10;
     doc.fillColor(midGray).fontSize(8).font('Helvetica')
@@ -263,13 +254,6 @@ async function sendInvoiceEmail({
           <td style="padding-top:${hasBreakdown ? '12px' : '0'};text-align:right;font-size:22px;font-weight:700;color:#e91e8c;">$${fmtMoney(total)}</td>
         </tr>
       </table>
-    </div>
-
-    <div style="background:#0a0a0a;border:1px solid #222;border-radius:6px;padding:20px;margin-bottom:28px;">
-      <div style="font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:#555;margin-bottom:8px;">What's Next</div>
-      <p style="margin:0;font-size:14px;color:#aaa;line-height:1.6;">
-        Your harness build is now in our queue. Lead time is typically <strong style="color:#e5e5e5;">5–7 weeks</strong> from order. We'll reach out at <strong style="color:#e5e5e5;">${customerEmail}</strong> with updates on your build and tracking once shipped.
-      </p>
     </div>
 
     <p style="margin:0 0 8px;font-size:13px;color:#666;">
