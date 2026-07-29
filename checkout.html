@@ -119,6 +119,10 @@
     .pay-tabs { display: flex; gap: 8px; margin-bottom: var(--space-md); }
     .pay-tab {
       flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
       padding: 8px var(--space-sm);
       border: 1px solid var(--border-color);
       background: var(--bg-card);
@@ -136,6 +140,7 @@
       background: rgba(233,30,140,0.05);
     }
     .pay-tab svg { display: block; margin: 0 auto 3px; }
+    .pay-tab-paypal svg { margin: 4px auto; }
 
     /* Stripe elements container */
     #stripe-payment-element { margin-bottom: var(--space-md); }
@@ -194,6 +199,19 @@
     .ship-option-name { font-size: 13px; font-weight: var(--weight-medium); }
     .ship-option-desc { font-size: 11px; color: var(--text-muted); }
     .ship-option-price { font-size: 13px; font-weight: var(--weight-semibold); color: var(--magenta); white-space: nowrap; }
+    .ship-option.ship-option-intl { border-style: dashed; }
+    .ship-option-price-note { font-size: 11.5px; font-weight: var(--weight-medium); color: var(--text-muted); white-space: nowrap; }
+
+    .intl-shipping-notice {
+      background: var(--bg-secondary);
+      border: 1px dashed var(--border-color);
+      border-radius: var(--radius-sm);
+      padding: 12px;
+      margin-top: 8px;
+      font-size: 12.5px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
 
     /* Totals breakdown in sidebar */
     .checkout-totals-breakdown { margin-top: var(--space-sm); padding-top: var(--space-sm); border-top: 1px solid var(--border-color); }
@@ -307,7 +325,7 @@
                 <span class="form-hint">Invoice and build updates sent here</span>
               </div>
               <div class="form-group">
-                <label class="form-label" for="customer-notes">Build Notes <span style="color:var(--text-muted);font-weight:400;">(optional)</span></label>
+                <label class="form-label" for="customer-notes">Notes <span style="color:var(--text-muted);font-weight:400;">(optional)</span></label>
                 <textarea class="form-textarea" id="customer-notes" rows="2" placeholder="ECU preference, vehicle info, special requirements…"></textarea>
               </div>
 
@@ -341,13 +359,19 @@
 
               <div class="checkout-section-title">Shipping Method</div>
               <div id="shipping-options"></div>
+              <div id="intl-shipping-notice" class="intl-shipping-notice" style="display:none;">
+                <p style="margin:0 0 8px;">International shipping is quoted manually based on destination and package weight. Email us your address and cart contents — we'll follow up with a shipping quote and a separate invoice.</p>
+                <a class="btn btn-secondary btn-sm" id="intl-email-btn" href="mailto:info@svkworks.com" target="_blank" rel="noopener">Email Us for a Quote</a>
+              </div>
 
               <div class="checkout-section-title">Payment</div>
 
               <div class="pay-tabs">
-                <button class="pay-tab active" data-tab="paypal" type="button">
-                  <svg width="24" height="16" viewBox="0 0 124 33" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><text y="24" font-size="24" fill="currentColor" font-family="Arial, sans-serif" font-weight="700">PayPal</text></svg>
-                  PayPal
+                <button class="pay-tab pay-tab-paypal active" data-tab="paypal" type="button">
+                  <svg width="88" height="24" viewBox="0 0 260 70" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <text x="0" y="52" font-size="56" font-family="Arial, sans-serif" font-weight="700" font-style="italic" fill="#003087">Pay</text>
+                    <text x="76" y="52" font-size="56" font-family="Arial, sans-serif" font-weight="700" font-style="italic" fill="#009cde">Pal</text>
+                  </svg>
                 </button>
                 <button class="pay-tab" data-tab="card" type="button">
                   <svg width="24" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
@@ -355,8 +379,6 @@
                   <div class="card-brand-icons">
                     <span class="card-brand-icon" style="background:#1a1f71;">VISA</span>
                     <span class="card-brand-icon" style="background:#eb001b;">MC</span>
-                    <span class="card-brand-icon" style="background:#2557d6;">AMEX</span>
-                    <span class="card-brand-icon" style="background:#ff6000;">DISC</span>
                   </div>
                 </button>
               </div>
@@ -422,7 +444,6 @@
               <span class="checkout-total-label">Total</span>
               <span class="checkout-total-amount" id="checkout-total"></span>
             </div>
-            <p style="font-size:11px;color:var(--text-muted);margin-top:8px;">Lead time: 5–7 weeks from confirmed payment.</p>
           </div>
 
         </div>
@@ -434,13 +455,13 @@
 
   <script defer src="components/header.js"></script>
   <script defer src="components/footer.js"></script>
-  <script defer src="js/cart.js?v=2"></script>
+  <script defer src="js/cart.js?v=3"></script>
   <script defer src="js/components.js"></script>
   <script defer src="data/products-data.js"></script>
   <script defer src="js/products.js"></script>
   <script defer src="js/search.js"></script>
   <script defer src="js/main.js"></script>
-  <script defer src="js/checkout.js?v=4"></script>
+  <script defer src="js/checkout.js?v=5"></script>
   <script>
     // Back button in payment section
     document.addEventListener('DOMContentLoaded', () => {
