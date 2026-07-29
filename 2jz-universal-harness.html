@@ -326,6 +326,22 @@
             </div>
 
             <div class="calc-group">
+              <label class="calc-label">Relay Box</label>
+              <select class="calc-select" id="opt-relaybox">
+                <option value="No">No</option>
+                <option value="Yes (+$120)" data-img="img/options/misc/relay-kit.webp">Yes (+$120)</option>
+              </select>
+            </div>
+
+            <div class="calc-group">
+              <label class="calc-label">Fan Relay</label>
+              <select class="calc-select" id="opt-fanrelay">
+                <option value="No">No</option>
+                <option value="Yes (+$45)">Yes (+$45)</option>
+              </select>
+            </div>
+
+            <div class="calc-group">
               <label class="calc-label">Knock Sensors</label>
               <select class="calc-select" id="opt-knock">
                 <option value="OEM Knock Sensor">OEM Knock Sensor</option>
@@ -384,7 +400,12 @@
           <div class="calculator-summary">
             <div class="calc-contact-card">
               <h3>Submit Your Build Request</h3>
-              <p class="text-secondary" style="font-size:var(--text-sm);margin-bottom:var(--space-lg);">Fill in your details and we'll send you a custom quote.</p>
+              <p class="text-secondary" style="font-size:var(--text-sm);margin-bottom:var(--space-md);">Fill in your details and we'll send you a custom quote.</p>
+
+              <div style="background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:var(--radius-md);padding:var(--space-md);margin-bottom:var(--space-lg);text-align:center;">
+                <div style="font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:4px;">Quote Reference</div>
+                <div id="quote-number" style="font-size:18px;font-weight:700;color:var(--magenta);letter-spacing:0.05em;font-family:monospace;">—</div>
+              </div>
 
               <div class="form-group">
                 <label class="form-label" for="customer-name">Your Name *</label>
@@ -492,6 +513,9 @@
   <script defer src="js/main.js"></script>
   <script defer src="js/calc-option-images.js"></script>
   <script>
+    const quoteNumber = 'SVK-Q-' + Math.random().toString(36).toUpperCase().slice(2, 10);
+    document.getElementById('quote-number').textContent = quoteNumber;
+
     async function emailOrder() {
       const name = document.getElementById('customer-name').value || 'Not provided';
       const email = document.getElementById('customer-email').value;
@@ -514,6 +538,8 @@
         ['IACV / TPS / DBW',       'opt-throttle'],
         ['Air Fuel Metering',      'opt-afm'],
         ['Boost Solenoid',         'opt-boost'],
+        ['Relay Box',              'opt-relaybox'],
+        ['Fan Relay',              'opt-fanrelay'],
         ['Flex Fuel Sensor',       'opt-flex'],
         ['Fuel Pump Setup',        'opt-fuelpump'],
         ['Knock Sensors',          'opt-knock'],
@@ -544,6 +570,7 @@
 
       let body = 'SVK 2JZ-GTE / 2JZ-GE Universal Harness Build Request\n';
       body += '=============================================\n\n';
+      body += 'Quote Reference: ' + quoteNumber + '\n\n';
       body += 'Selected Options:\n';
       Object.entries(optionsData).forEach(([k, v]) => { body += '  - ' + k + ': ' + v + '\n'; });
       body += '\nCustomer Details:\n';
@@ -551,7 +578,7 @@
       body += '  Email: ' + email + '\n';
       body += '  Notes: ' + notes + '\n';
 
-      const subject = 'SVK 2JZ Universal Harness Build Request - ' + name;
+      const subject = '[' + quoteNumber + '] SVK 2JZ Universal Harness Build Request — ' + name;
       window.location.href = 'mailto:info@svkworks.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
     }
 
