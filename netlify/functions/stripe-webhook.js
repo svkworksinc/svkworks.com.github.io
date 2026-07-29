@@ -12,13 +12,22 @@ exports.handler = async (event) => {
     return { statusCode: 405, body: 'Method Not Allowed' };
   }
 
+  // TESTING MODE — reject any non-test Stripe key
+  if (!process.env.STRIPE_SECRET_KEY?.startsWith('sk_test_')) {
+    console.error('SAFETY BLOCK: Stripe key is not a test key. Webhook rejected.');
+    return { statusCode: 503, body: 'Test mode only.' };
+  }
+
   const sig = event.headers['stripe-signature'];
-  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, { apiVersion: '2023-10-16' });
   let stripeEvent;
 
   try {
-    // event.body is the raw string Netlify passes — required for signature verification
-    stripeEvent = stripe.webhooks.constructEvent(event.body, sig, process.env.STRIPE_WEBHOOK_SECRET);
+    // Netlify may base64-encode the body; decode before signature verification
+    const rawBody = event.isBase64Encoded
+      ? Buffer.from(event.body, 'base64').toString('utf8')
+      : event.body;
+    stripeEvent = stripe.webhooks.constructEvent(rawBody, sig, process.env.STRIPE_WEBHOOK_SECRET);
   } catch (err) {
     console.error('Stripe webhook signature verification failed:', err.message);
     return { statusCode: 400, body: `Webhook Error: ${err.message}` };

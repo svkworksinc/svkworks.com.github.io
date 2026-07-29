@@ -25,3 +25,23 @@ CREATE POLICY "Allow anon insert" ON orders
 -- CREATE POLICY "Allow select by email" ON orders
 --   FOR SELECT TO anon
 --   USING (customer_email = current_setting('request.jwt.claims', true)::json->>'email');
+
+-- ============================================================
+-- Required Netlify environment variables (set in Netlify UI)
+-- ============================================================
+-- SUPABASE_URL                — from Supabase project settings
+-- SUPABASE_SERVICE_ROLE_KEY   — from Supabase project settings (service role)
+-- STRIPE_SECRET_KEY           — from Stripe Dashboard → API keys (sk_live_...)
+-- STRIPE_PUBLISHABLE_KEY      — from Stripe Dashboard → API keys (pk_live_...) — used in checkout.html
+-- STRIPE_WEBHOOK_SECRET       — from Stripe Dashboard → Webhooks → Signing secret (whsec_...)
+--                               Endpoint URL: https://www.svkworks.com/.netlify/functions/stripe-webhook
+--                               Event to listen for: payment_intent.succeeded
+-- PAYPAL_CLIENT_ID            — from PayPal Developer Dashboard (used in checkout.html + _paypal.js)
+-- PAYPAL_CLIENT_SECRET        — from PayPal Developer Dashboard (server-side only)
+-- PAYPAL_MODE                 — "live" for production, "sandbox" for testing
+-- PAYPAL_WEBHOOK_ID           — from PayPal Developer Dashboard → Webhooks (optional but recommended)
+--                               Endpoint URL: https://www.svkworks.com/.netlify/functions/paypal-webhook
+--                               Event to listen for: PAYMENT.CAPTURE.COMPLETED
+-- RESEND_API_KEY              — from Resend dashboard (for invoice emails)
+-- TEST_MODE                   — set to "true" during testing to suppress customer-facing emails
+--                               (invoices route to info@svkworks.com only; remove or set "false" for production)

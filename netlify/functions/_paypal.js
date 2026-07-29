@@ -1,6 +1,9 @@
-const BASE_URL = process.env.PAYPAL_MODE === 'live'
-  ? 'https://api-m.paypal.com'
-  : 'https://api-m.sandbox.paypal.com';
+// TESTING MODE — hardcoded to PayPal sandbox.
+// To enable live payments, remove this constant and uncomment the two lines below.
+const BASE_URL = 'https://api-m.sandbox.paypal.com';
+// const BASE_URL = process.env.PAYPAL_MODE === 'live'
+//   ? 'https://api-m.paypal.com'
+//   : 'https://api-m.sandbox.paypal.com';
 
 async function getAccessToken() {
   const creds = Buffer.from(
@@ -26,14 +29,23 @@ async function createOrder(total, supabaseOrderId) {
     headers: {
       Authorization: `Bearer ${token}`,
       'Content-Type': 'application/json',
+      'PayPal-Request-Id': `svk-${supabaseOrderId}`,
     },
     body: JSON.stringify({
       intent: 'CAPTURE',
       purchase_units: [{
         custom_id: supabaseOrderId,
+        reference_id: supabaseOrderId,
         description: 'SVK Works Harness Order',
         amount: { currency_code: 'USD', value: total.toFixed(2) },
       }],
+      application_context: {
+        brand_name: 'SVK Works',
+        shipping_preference: 'NO_SHIPPING',
+        user_action: 'PAY_NOW',
+        return_url: 'https://www.svkworks.com/order-confirmation.html',
+        cancel_url: 'https://www.svkworks.com/checkout.html',
+      },
     }),
   });
   if (!res.ok) {
