@@ -201,6 +201,14 @@
     .ship-option-price { font-size: 13px; font-weight: var(--weight-semibold); color: var(--magenta); white-space: nowrap; }
     .ship-option.ship-option-intl { border-style: dashed; }
     .ship-option-price-note { font-size: 11.5px; font-weight: var(--weight-medium); color: var(--text-muted); white-space: nowrap; }
+    .ship-placeholder {
+      padding: 14px;
+      border: 1px dashed var(--border-color);
+      border-radius: var(--radius-sm);
+      font-size: 12.5px;
+      color: var(--text-muted);
+      text-align: center;
+    }
 
     .intl-shipping-notice {
       background: var(--bg-secondary);
@@ -461,7 +469,7 @@
   <script defer src="js/products.js"></script>
   <script defer src="js/search.js"></script>
   <script defer src="js/main.js"></script>
-  <script defer src="js/checkout.js?v=5"></script>
+  <script defer src="js/checkout.js?v=6"></script>
   <script>
     // Back button in payment section
     document.addEventListener('DOMContentLoaded', () => {

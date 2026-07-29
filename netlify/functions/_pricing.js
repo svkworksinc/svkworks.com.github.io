@@ -23,6 +23,36 @@ const PRODUCT_PRICES = {
   'mk4-supra-cupholder': 45,
 };
 
+// Estimated shipped weight per item, in ounces (box + item). Used only for
+// live carrier rate lookups (Shippo) — adjust these as real package weights
+// become known. Unlisted product ids fall back to DEFAULT_ITEM_WEIGHT_OZ.
+const PRODUCT_WEIGHTS_OZ = {
+  'mk4-2jzgte-standalone': 48,
+  'mk4-2jzge-standalone': 48,
+  'mk4-1jzgte-standalone': 48,
+  'mk3-2jzgte-standalone': 48,
+  'mk3-1jzgte-standalone': 48,
+  'mk3-7mgte-standalone': 48,
+  '2jz-vvti-connector': 8,
+  'mk4-2jz-ac-connector': 8,
+  'mk4-2jz-oil-pressure-connector': 6,
+  'mk4-chassis-fusebox-connector-3pin': 6,
+  'mk4-chassis-fusebox-connector-8pin': 8,
+  'mk4-jza80-chassis-16pin': 10,
+  'mk4-jza80-chassis-20pin': 10,
+  'mk4-jza80-chassis-38pin': 12,
+  'mk4-jza80-chassis-set-16-20-38pin': 24,
+  'mk4-starter-connector': 6,
+  'deutsch-dt-connector-kit': 16,
+  'milspec-autosport-connector': 16,
+  'mk4-supra-cupholder': 12,
+};
+const DEFAULT_ITEM_WEIGHT_OZ = 16;
+const PACKAGING_WEIGHT_OZ = 6; // box/padding buffer added on top of item weight
+const PARCEL_DIMENSIONS_IN = { length: 14, width: 10, height: 5 }; // reasonable default box
+
+// Flat-rate shipping — used as a fallback when Shippo isn't configured or
+// its API call fails, so checkout never breaks entirely.
 const SHIPPING_OPTIONS = {
   'usps-ground':    { label: 'USPS Ground Advantage', desc: '5–8 business days',  price: 12.95 },
   'usps-priority':  { label: 'USPS Priority Mail',    desc: '2–3 business days',  price: 19.95 },
@@ -52,19 +82,61 @@ function validateCart(items) {
   return { items: validated, subtotal };
 }
 
-// Validates shipping option and calculates shipping cost, applicable tax, and grand total.
-// state should be a 2-letter US state code (e.g. 'TX').
-function calculateTotals(subtotal, shippingOptionId, state) {
+// Total estimated parcel weight for a validated cart, in ounces.
+function totalWeightOz(items) {
+  const itemsWeight = items.reduce((sum, item) => {
+    const unitWeight = PRODUCT_WEIGHTS_OZ[item.id] ?? DEFAULT_ITEM_WEIGHT_OZ;
+    return sum + unitWeight * item.quantity;
+  }, 0);
+  return itemsWeight + PACKAGING_WEIGHT_OZ;
+}
+
+// Resolves a shipping selection to an authoritative price + label.
+// shippingOptionId is either:
+//   - a flat-rate key from SHIPPING_OPTIONS (fallback path), or
+//   - a Shippo rate object_id (live rate path) — re-verified against Shippo,
+//     never trusting a client-supplied dollar amount.
+async function resolveShipping(shippingOptionId) {
   if (shippingOptionId === 'international') {
     throw new Error('International orders require a manual shipping quote — please email info@svkworks.com before checking out.');
   }
-  const option = SHIPPING_OPTIONS[shippingOptionId];
-  if (!option) throw new Error(`Invalid shipping option: ${shippingOptionId}`);
-  const shipping = option.price;
+
+  const flatOption = SHIPPING_OPTIONS[shippingOptionId];
+  if (flatOption) {
+    return { shipping: flatOption.price, shippingLabel: flatOption.label };
+  }
+
+  // Not a flat-rate key — treat it as a live Shippo rate id and verify it server-side.
+  const { verifyRate } = require('./_shippo');
+  let rate;
+  try {
+    rate = await verifyRate(shippingOptionId);
+  } catch (err) {
+    throw new Error(`Could not verify shipping rate: ${err.message}`);
+  }
+  if (!rate || rate.amount === undefined) {
+    throw new Error('Invalid or expired shipping rate — please recalculate shipping and try again.');
+  }
+  const shipping = Math.round(parseFloat(rate.amount) * 100) / 100;
+  const shippingLabel = [rate.provider, rate.servicelevel?.name].filter(Boolean).join(' ');
+  return { shipping, shippingLabel };
+}
+
+// Calculates tax and grand total for an already-resolved shipping cost.
+function calculateTotals(subtotal, shipping, state) {
   const taxBase = subtotal + shipping;
   const tax = (state === 'TX') ? Math.round(taxBase * TX_TAX_RATE * 100) / 100 : 0;
   const grandTotal = Math.round((subtotal + shipping + tax) * 100) / 100;
-  return { shipping, shippingLabel: option.label, tax, grandTotal };
+  return { tax, grandTotal };
 }
 
-module.exports = { validateCart, calculateTotals, SHIPPING_OPTIONS, PRODUCT_PRICES, TX_TAX_RATE };
+module.exports = {
+  validateCart,
+  resolveShipping,
+  calculateTotals,
+  totalWeightOz,
+  SHIPPING_OPTIONS,
+  PRODUCT_PRICES,
+  PARCEL_DIMENSIONS_IN,
+  TX_TAX_RATE,
+};

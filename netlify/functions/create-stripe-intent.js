@@ -1,6 +1,6 @@
 const { createClient } = require('@supabase/supabase-js');
 const Stripe = require('stripe');
-const { validateCart, calculateTotals } = require('./_pricing');
+const { validateCart, resolveShipping, calculateTotals } = require('./_pricing');
 
 const supabase = createClient(
   process.env.SUPABASE_URL,
@@ -31,9 +31,11 @@ exports.handler = async (event) => {
       return { statusCode: 400, body: JSON.stringify({ error: 'Shipping method is required.' }) };
     }
 
-    // Server-side price validation
+    // Server-side price validation — shipping is independently resolved/verified,
+    // never trusted from the client (see resolveShipping in _pricing.js)
     const { items, subtotal } = validateCart(cartItems);
-    const { shipping, shippingLabel, tax, grandTotal } = calculateTotals(subtotal, shippingOptionId, shippingAddress.state);
+    const { shipping, shippingLabel } = await resolveShipping(shippingOptionId);
+    const { tax, grandTotal } = calculateTotals(subtotal, shipping, shippingAddress.state);
 
     // Create order record in Supabase
     const orderNumber = `SVK-${Date.now().toString(36).toUpperCase()}`;
