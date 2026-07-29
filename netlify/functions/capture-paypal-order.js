@@ -27,8 +27,10 @@ exports.handler = async (event) => {
       .single();
 
     if (fetchError || !order) {
+      console.error(`[capture-paypal-order] Order not found: id=${supabaseOrderId} supabase_project=${process.env.SUPABASE_URL} error=${fetchError?.message}`);
       return { statusCode: 404, body: JSON.stringify({ error: 'Order not found.' }) };
     }
+    console.log(`[capture-paypal-order] Order found: id=${order.id} order_number=${order.order_number} status=${order.status}`);
     if (order.status !== 'pending_payment') {
       return { statusCode: 409, body: JSON.stringify({ error: 'Order already processed.' }) };
     }
@@ -48,10 +50,12 @@ exports.handler = async (event) => {
       return { statusCode: 422, body: JSON.stringify({ error: 'Captured amount does not match order total.' }) };
     }
 
-    // Mark order as paid
+    // Mark order paid — 'pending' matches the admin panel's fulfillment vocabulary
+    // (pending -> in_progress -> shipped -> complete) so it shows up correctly under
+    // the "Pending" filter instead of an unrecognized 'paid' status.
     await supabase
       .from('orders')
-      .update({ status: 'paid', payment_id: paypalOrderId })
+      .update({ status: 'pending', payment_id: paypalOrderId })
       .eq('id', supabaseOrderId);
 
     // Send invoice email before returning — must be awaited or Netlify kills the in-flight fetch
