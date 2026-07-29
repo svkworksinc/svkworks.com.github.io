@@ -6,9 +6,11 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
-const BASE_URL = process.env.PAYPAL_MODE === 'live'
-  ? 'https://api-m.paypal.com'
-  : 'https://api-m.sandbox.paypal.com';
+// TESTING MODE — hardcoded to PayPal sandbox (mirrors _paypal.js)
+const BASE_URL = 'https://api-m.sandbox.paypal.com';
+// const BASE_URL = process.env.PAYPAL_MODE === 'live'
+//   ? 'https://api-m.paypal.com'
+//   : 'https://api-m.sandbox.paypal.com';
 
 async function getAccessToken() {
   const creds = Buffer.from(

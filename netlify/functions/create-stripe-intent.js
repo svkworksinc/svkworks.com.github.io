@@ -12,6 +12,12 @@ exports.handler = async (event) => {
     return { statusCode: 405, body: 'Method Not Allowed' };
   }
 
+  // TESTING MODE — reject any non-test Stripe key to prevent live charges
+  if (!process.env.STRIPE_SECRET_KEY?.startsWith('sk_test_')) {
+    console.error('SAFETY BLOCK: Stripe key is not a test key. Live payments are disabled during testing.');
+    return { statusCode: 503, body: JSON.stringify({ error: 'Payment processing is in test mode only. Live keys are not permitted.' }) };
+  }
+
   try {
     const { cartItems, customerName, customerEmail, customerNotes } = JSON.parse(event.body);
 

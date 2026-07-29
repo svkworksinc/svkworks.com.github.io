@@ -1,3 +1,7 @@
+// TESTING MODE — set TEST_MODE=true in Netlify env vars to suppress customer emails.
+// Test orders send only to the internal BCC address so real inboxes aren't spammed.
+const TEST_MODE = process.env.TEST_MODE === 'true';
+
 async function sendInvoiceEmail({ customerName, customerEmail, orderNumber, orderDate, items, total, paymentMethod }) {
   const rows = items.map(item => {
     const optStr = Object.entries(item.options || {})
@@ -83,19 +87,22 @@ async function sendInvoiceEmail({ customerName, customerEmail, orderNumber, orde
 </body>
 </html>`;
 
+  const emailPayload = TEST_MODE
+    // In test mode: send only to the internal address; never email the test customer
+    ? { from: 'SVK Works <orders@svkworks.com>', to: 'info@svkworks.com', subject: `[TEST] Order Confirmed — ${orderNumber} | SVK Works`, html }
+    : { from: 'SVK Works <orders@svkworks.com>', to: customerEmail, bcc: 'info@svkworks.com', subject: `Order Confirmed — ${orderNumber} | SVK Works`, html };
+
+  if (TEST_MODE) {
+    console.log(`TEST MODE: invoice email suppressed for ${customerEmail}, sent internally only.`);
+  }
+
   const res = await fetch('https://api.resend.com/emails', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
     },
-    body: JSON.stringify({
-      from: 'SVK Works <orders@svkworks.com>',
-      to: customerEmail,
-      bcc: 'info@svkworks.com',
-      subject: `Order Confirmed — ${orderNumber} | SVK Works`,
-      html,
-    }),
+    body: JSON.stringify(emailPayload),
   });
   if (!res.ok) {
     const err = await res.text();

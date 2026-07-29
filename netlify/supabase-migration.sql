@@ -46,3 +46,5 @@ CREATE INDEX IF NOT EXISTS orders_payment_id_idx ON orders (payment_id);
 --                               Endpoint URL: https://www.svkworks.com/.netlify/functions/paypal-webhook
 --                               Event to listen for: PAYMENT.CAPTURE.COMPLETED
 -- RESEND_API_KEY              — from Resend dashboard (for invoice emails)
+-- TEST_MODE                   — set to "true" during testing to suppress customer-facing emails
+--                               (invoices route to info@svkworks.com only; remove or set "false" for production)
