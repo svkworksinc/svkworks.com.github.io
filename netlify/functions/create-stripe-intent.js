@@ -60,6 +60,7 @@ exports.handler = async (event) => {
       console.error('Supabase insert error:', dbError);
       return { statusCode: 500, body: JSON.stringify({ error: `Failed to create order record: ${dbError.message}` }) };
     }
+    console.log(`[create-stripe-intent] Order inserted: id=${order.id} order_number=${orderNumber} supabase_project=${process.env.SUPABASE_URL}`);
 
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, { apiVersion: '2023-10-16' });
     const intent = await stripe.paymentIntents.create({
