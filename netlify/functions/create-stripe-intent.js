@@ -46,17 +46,20 @@ exports.handler = async (event) => {
       return { statusCode: 500, body: JSON.stringify({ error: 'Failed to create order record.' }) };
     }
 
-    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, { apiVersion: '2023-10-16' });
     const intent = await stripe.paymentIntents.create({
       amount: Math.round(total * 100), // Stripe uses cents
       currency: 'usd',
       receipt_email: customerEmail.trim().toLowerCase(),
       description: `SVK Works Order ${orderNumber}`,
+      automatic_payment_methods: { enabled: true },
       metadata: {
         supabaseOrderId: order.id,
         orderNumber,
         customerName: customerName.trim(),
       },
+    }, {
+      idempotencyKey: `pi-${order.id}`,
     });
 
     // Store the Stripe intent ID so the webhook can find this order

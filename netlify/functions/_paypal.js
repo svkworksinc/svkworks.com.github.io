@@ -26,14 +26,23 @@ async function createOrder(total, supabaseOrderId) {
     headers: {
       Authorization: `Bearer ${token}`,
       'Content-Type': 'application/json',
+      'PayPal-Request-Id': `svk-${supabaseOrderId}`,
     },
     body: JSON.stringify({
       intent: 'CAPTURE',
       purchase_units: [{
         custom_id: supabaseOrderId,
+        reference_id: supabaseOrderId,
         description: 'SVK Works Harness Order',
         amount: { currency_code: 'USD', value: total.toFixed(2) },
       }],
+      application_context: {
+        brand_name: 'SVK Works',
+        shipping_preference: 'NO_SHIPPING',
+        user_action: 'PAY_NOW',
+        return_url: 'https://www.svkworks.com/order-confirmation.html',
+        cancel_url: 'https://www.svkworks.com/checkout.html',
+      },
     }),
   });
   if (!res.ok) {

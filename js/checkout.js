@@ -198,7 +198,8 @@ const SVKCheckout = {
       const paymentElement = elements.create('payment');
       paymentElement.mount('#stripe-payment-element');
 
-      document.getElementById('stripe-submit-btn').addEventListener('click', async () => {
+      // Use .onclick so re-initializing Stripe (back → retry) replaces the old handler
+      document.getElementById('stripe-submit-btn').onclick = async () => {
         this._setPaymentLoading(true, 'Processing payment…');
         const { error } = await this.stripeInstance.confirmPayment({
           elements,
@@ -210,7 +211,7 @@ const SVKCheckout = {
         // If we get here, confirmPayment threw an error (success triggers the redirect)
         this._setPaymentLoading(false);
         if (error) this._setPaymentError(error.message);
-      });
+      };
     } catch (err) {
       this._setError(err.message);
     }
