@@ -11,19 +11,27 @@ const SVKCheckout = {
   stripeClientSecret: null,
   stripeInstance: null,
   shippingOptionId: null,
+  shippingOptions: [],       // live rates (or flat-rate fallback) + the international option
+  shippingRateSource: null,  // 'shippo' | 'flat'
+  _shippingDebounceTimer: null,
+  _shippingFetchToken: 0,
+  _pendingShippingLabel: null,
 
   DRAFT_KEY: 'svk_checkout_draft',
   STRIPE_RESUME_KEY: 'svk_checkout_stripe_resume',
   FIELD_IDS: ['customer-name', 'customer-email', 'ship-address', 'ship-city', 'ship-state', 'ship-zip'],
 
-  SHIPPING_OPTIONS: [
+  // Used only if the get-shipping-rates call itself fails (network/function down) —
+  // mirrors the server-side flat-rate fallback in netlify/functions/_pricing.js.
+  FLAT_RATE_FALLBACK: [
     { id: 'usps-ground',   label: 'USPS Ground Advantage', desc: '5–8 business days', price: 12.95 },
     { id: 'usps-priority', label: 'USPS Priority Mail',     desc: '2–3 business days', price: 19.95 },
     { id: 'ups-ground',    label: 'UPS Ground',             desc: '3–5 business days', price: 24.95 },
     { id: 'ups-2day',      label: 'UPS 2-Day Air',          desc: '2 business days',   price: 65.00 },
     { id: 'ups-overnight', label: 'UPS Next Day Air',       desc: '1 business day',    price: 125.00 },
-    { id: 'international', label: 'International Shipping', desc: 'Outside the US — quoted by email', price: null, international: true },
   ],
+  INTERNATIONAL_OPTION: { id: 'international', label: 'International Shipping', desc: 'Outside the US — quoted by email', price: null, international: true },
+
   TX_TAX_RATE: 0.0825,
 
   async init() {
@@ -34,16 +42,15 @@ const SVKCheckout = {
     }
     this.subtotal = this.cart.reduce((s, i) => s + i.price * i.quantity, 0);
     this._renderSummary();
-    this._renderShippingOptions();
+    this._renderShippingPlaceholder('Enter your shipping address above to see shipping options.');
+    this._bindAddressFieldsForShipping();
     this._bindTabs();
-    this._bindShippingOptions();
-    this._bindStateChange();
     this._bindCoupon();
     this._bindContinueBtn();
     this._bindFieldErrorClearing();
     this._bindDraftPersistence();
     await this._prefillAuth();
-    this._restoreDraft();
+    this._restoreDraft(); // may kick off an immediate shipping rate fetch
     this._updateTotals();
     this._setStep('details');
 
@@ -90,12 +97,99 @@ const SVKCheckout = {
     }).join('');
   },
 
-  _renderShippingOptions() {
+  // ---- Live shipping rates ----
+
+  _addressComplete() {
+    const a = this._getShippingAddress();
+    return !!(a.address && a.city && a.state && /^\d{5}$/.test(a.zip));
+  },
+
+  _bindAddressFieldsForShipping() {
+    ['ship-address', 'ship-city', 'ship-zip'].forEach(id => {
+      document.getElementById(id)?.addEventListener('input', () => this._scheduleShippingFetch());
+    });
+    document.getElementById('ship-state')?.addEventListener('change', () => {
+      this._updateTotals(); // tax depends on state — reflect instantly, rates refresh below
+      this._scheduleShippingFetch();
+    });
+  },
+
+  _scheduleShippingFetch() {
+    clearTimeout(this._shippingDebounceTimer);
+    if (!this._addressComplete()) {
+      this._renderShippingPlaceholder('Enter your shipping address above to see shipping options.');
+      return;
+    }
+    this._shippingDebounceTimer = setTimeout(() => this._fetchShippingRates(), 500);
+  },
+
+  async _fetchShippingRates() {
+    if (!this._addressComplete()) return;
+    const address = this._getShippingAddress();
+    const previousId = this.shippingOptionId;
+    const previousLabel = this._getShippingOption()?.label || this._pendingShippingLabel;
+    const token = ++this._shippingFetchToken;
+
+    this._renderShippingPlaceholder('Calculating shipping options…');
+
+    let rates = null;
+    try {
+      const res = await fetch('/.netlify/functions/get-shipping-rates', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ cartItems: this.cart, shippingAddress: address }),
+      });
+      const data = await res.json();
+      if (res.ok && Array.isArray(data.rates) && data.rates.length) {
+        rates = data.rates;
+        this.shippingRateSource = data.source;
+      }
+    } catch (err) {
+      console.error('Shipping rate fetch failed:', err);
+    }
+
+    if (token !== this._shippingFetchToken) return; // a newer request already superseded this one
+
+    if (!rates || !rates.length) {
+      rates = this.FLAT_RATE_FALLBACK;
+      this.shippingRateSource = 'flat';
+    }
+
+    this.shippingOptions = [...rates, this.INTERNATIONAL_OPTION];
+    this._pendingShippingLabel = null;
+
+    // Keep the user's previous selection across a re-fetch (draft restore, or
+    // editing the address after already picking a method) when possible.
+    let reselectId = null;
+    if (previousId && this.shippingOptions.some(o => o.id === previousId)) {
+      reselectId = previousId;
+    } else if (previousLabel) {
+      const match = this.shippingOptions.find(o => o.label === previousLabel);
+      if (match) reselectId = match.id;
+    }
+    this._renderShippingOptions(reselectId);
+  },
+
+  _renderShippingPlaceholder(text) {
     const el = document.getElementById('shipping-options');
-    if (!el) return;
-    el.innerHTML = this.SHIPPING_OPTIONS.map((opt, i) => `
+    if (el) el.innerHTML = `<div class="ship-placeholder">${text}</div>`;
+    this.shippingOptionId = null;
+    const notice = document.getElementById('intl-shipping-notice');
+    if (notice) notice.style.display = 'none';
+    this._updateTotals();
+  },
+
+  _renderShippingOptions(preselectId) {
+    const el = document.getElementById('shipping-options');
+    if (!el || !this.shippingOptions.length) return;
+
+    const selected = preselectId && this.shippingOptions.some(o => o.id === preselectId)
+      ? preselectId
+      : this.shippingOptions[0].id;
+
+    el.innerHTML = this.shippingOptions.map(opt => `
       <label class="ship-option${opt.international ? ' ship-option-intl' : ''}" data-ship-id="${opt.id}">
-        <input type="radio" name="shipping-method" value="${opt.id}" ${i === 0 ? 'checked' : ''}>
+        <input type="radio" name="shipping-method" value="${opt.id}" ${opt.id === selected ? 'checked' : ''}>
         <span class="ship-option-label">
           <span class="ship-option-name">${opt.label}</span>
           <span class="ship-option-desc">${opt.desc}</span>
@@ -105,15 +199,13 @@ const SVKCheckout = {
           : `<span class="ship-option-price">$${opt.price.toFixed(2)}</span>`}
       </label>
     `).join('');
-    this.shippingOptionId = this.SHIPPING_OPTIONS[0].id;
-    el.querySelector('.ship-option')?.classList.add('selected');
-    this._updateIntlEmailLink();
-  },
 
-  _bindShippingOptions() {
-    document.querySelectorAll('#shipping-options .ship-option').forEach(label => {
+    this.shippingOptionId = selected;
+    el.querySelector(`.ship-option[data-ship-id="${CSS.escape(selected)}"]`)?.classList.add('selected');
+
+    el.querySelectorAll('.ship-option').forEach(label => {
       label.addEventListener('click', () => {
-        document.querySelectorAll('#shipping-options .ship-option').forEach(l => l.classList.remove('selected'));
+        el.querySelectorAll('.ship-option').forEach(l => l.classList.remove('selected'));
         label.classList.add('selected');
         label.querySelector('input[type="radio"]').checked = true;
         this.shippingOptionId = label.dataset.shipId;
@@ -122,6 +214,11 @@ const SVKCheckout = {
         this._saveDraft();
       });
     });
+
+    this._applyShippingSelectionUI();
+    this._updateTotals();
+    this._updateIntlEmailLink();
+    this._saveDraft();
   },
 
   // Toggles the "email us for a quote" notice and locks out payment while
@@ -148,10 +245,6 @@ const SVKCheckout = {
     btn.href = `mailto:info@svkworks.com?subject=${subject}&body=${body}`;
   },
 
-  _bindStateChange() {
-    document.getElementById('ship-state')?.addEventListener('change', () => this._updateTotals());
-  },
-
   _bindCoupon() {
     document.getElementById('checkout-apply-coupon-btn')?.addEventListener('click', () => {
       const code = (document.getElementById('checkout-coupon-input')?.value || '').trim();
@@ -170,7 +263,7 @@ const SVKCheckout = {
   },
 
   _getShippingOption() {
-    return this.SHIPPING_OPTIONS.find(o => o.id === this.shippingOptionId) || this.SHIPPING_OPTIONS[0];
+    return (this.shippingOptions || []).find(o => o.id === this.shippingOptionId);
   },
 
   _updateTotals() {
@@ -293,6 +386,7 @@ const SVKCheckout = {
         state: document.getElementById('ship-state')?.value || '',
         zip: document.getElementById('ship-zip')?.value || '',
         shippingOptionId: this.shippingOptionId,
+        shippingLabel: this._getShippingOption()?.label || null,
         paymentMethod: this.paymentMethod,
       }));
     } catch { /* sessionStorage unavailable — draft persistence is a nice-to-have, not required */ }
@@ -312,19 +406,14 @@ const SVKCheckout = {
     set('ship-state', draft.state);
     set('ship-zip', draft.zip);
 
-    if (draft.shippingOptionId) {
-      this.shippingOptionId = draft.shippingOptionId;
-      document.querySelectorAll('#shipping-options .ship-option').forEach(l => {
-        const match = l.dataset.shipId === draft.shippingOptionId;
-        l.classList.toggle('selected', match);
-        const radio = l.querySelector('input[type="radio"]');
-        if (radio) radio.checked = match;
-      });
-      this._applyShippingSelectionUI();
-    }
+    if (draft.shippingOptionId) this.shippingOptionId = draft.shippingOptionId;
+    this._pendingShippingLabel = draft.shippingLabel || null;
+
     if (draft.paymentMethod && draft.paymentMethod !== this.paymentMethod) {
       document.querySelector(`[data-tab="${draft.paymentMethod}"]`)?.click();
     }
+
+    if (this._addressComplete()) this._fetchShippingRates();
   },
 
   // ---- Stripe payment resume (survives a refresh mid-payment) ----
@@ -375,7 +464,8 @@ const SVKCheckout = {
         return;
       }
       if (!this.shippingOptionId) {
-        this._setError('Please select a shipping method.');
+        this._setError('Still calculating shipping options — please wait a moment and click Continue again.');
+        this._fetchShippingRates();
         return;
       }
       const shipOpt = this._getShippingOption();
