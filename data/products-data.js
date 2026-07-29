@@ -587,6 +587,32 @@ const SVK_PRODUCTS_DATA = {
       "inStock": true,
       "featured": true,
       "page": "mk4-supra-cupholder.html"
+    },
+    {
+      "id": "svk-tshirt",
+      "name": "SVK Works T-Shirt",
+      "slug": "svk-tshirt",
+      "category": "merchandise",
+      "engine": "",
+      "tags": ["merch", "apparel", "shirt", "tshirt"],
+      "price": 25,
+      "image": "img/merch/shirt-1.jpg",
+      "images": ["img/merch/shirt-1.jpg", "img/merch/shirt-2.jpg", "img/merch/shirt-3.jpg"],
+      "badge": "Available Now",
+      "shortDesc": "Soft cotton-blend tee with a clean SVK Works graphic. Repping the shop since day one.",
+      "description": "Rep the shop in the SVK Works T-shirt. Made on a soft, durable cotton blend with a clean SVK Works graphic that holds up wash after wash. Built for the garage, the meet, and everywhere in between.",
+      "specs": {
+        "Material": "Cotton blend",
+        "Fit": "Unisex",
+        "Sizes": "S – 3XL",
+        "Print": "SVK Works graphic"
+      },
+      "options": {
+        "Size": ["S", "M", "L", "XL", "2XL", "3XL"]
+      },
+      "inStock": true,
+      "featured": false,
+      "page": "merchandise-tshirt.html"
     }
   ],
   "categories": [

@@ -4,17 +4,17 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SVK Works T-Shirt — Merchandise | SVK Works</title>
-  <meta name="description" content="SVK Works T-Shirt — soft cotton-blend tee with a clean SVK Works graphic. $25 + shipping. Available to purchase through DMs on Instagram or Facebook.">
+  <meta name="description" content="SVK Works T-Shirt — soft cotton-blend tee with a clean SVK Works graphic. $25 + shipping. Order securely online, sizes S–3XL.">
   <link rel="canonical" href="https://www.svkworks.com/merchandise-tshirt.html">
   <meta property="og:site_name" content="SVK Works">
   <meta property="og:type" content="product">
   <meta property="og:title" content="SVK Works T-Shirt — SVK Works Merchandise">
-  <meta property="og:description" content="SVK Works T-Shirt — soft cotton-blend tee with a clean SVK Works graphic. $25 + shipping. Available through DMs.">
+  <meta property="og:description" content="SVK Works T-Shirt — soft cotton-blend tee with a clean SVK Works graphic. $25 + shipping. Order securely online.">
   <meta property="og:url" content="https://www.svkworks.com/merchandise-tshirt.html">
   <meta property="og:image" content="https://www.svkworks.com/img/merch/shirt-1.jpg">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="SVK Works T-Shirt — SVK Works Merchandise">
-  <meta name="twitter:description" content="SVK Works T-Shirt — $25 + shipping. Available to purchase through DMs.">
+  <meta name="twitter:description" content="SVK Works T-Shirt — $25 + shipping. Order securely online, sizes S–3XL.">
   <meta name="twitter:image" content="https://www.svkworks.com/img/merch/shirt-1.jpg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -26,7 +26,7 @@
     "@context": "https://schema.org/",
     "@type": "Product",
     "name": "SVK Works T-Shirt",
-    "description": "SVK Works branded T-shirt. Soft cotton-blend tee with a clean SVK Works graphic. Available to purchase through DMs on Instagram or Facebook.",
+    "description": "SVK Works branded T-shirt. Soft cotton-blend tee with a clean SVK Works graphic. Available in sizes S through 3XL, order securely online.",
     "image": ["https://www.svkworks.com/img/merch/shirt-1.jpg"],
     "brand": { "@type": "Brand", "name": "SVK Works" },
     "sku": "SVK-MERCH-TSHIRT",
@@ -125,30 +125,48 @@
               </li>
               <li>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--magenta)" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-                $25 + shipping — DM to purchase
+                $25 + shipping — order securely online
               </li>
             </ul>
+
+            <!-- Size Option -->
+            <div class="product-options" style="margin-bottom:var(--space-lg);">
+              <div class="option-group">
+                <label class="option-label">Size</label>
+                <div class="option-buttons" id="size-options">
+                  <button class="option-btn" data-option="size" data-value="S">S</button>
+                  <button class="option-btn selected" data-option="size" data-value="M">M</button>
+                  <button class="option-btn" data-option="size" data-value="L">L</button>
+                  <button class="option-btn" data-option="size" data-value="XL">XL</button>
+                  <button class="option-btn" data-option="size" data-value="2XL">2XL</button>
+                  <button class="option-btn" data-option="size" data-value="3XL">3XL</button>
+                </div>
+              </div>
+            </div>
 
             <div class="product-specs">
               <h3>How to Order</h3>
               <p style="color:var(--text-secondary);line-height:var(--leading-normal);margin-bottom:var(--space-md);">
-                We're still building out automated checkout for merchandise. For now, all merch is
-                <strong>available to purchase through DMs only</strong>. Reach out on Instagram or Facebook
-                with your size, color preference, and shipping address and we'll get you taken care of.
+                Pick your size and add it to your cart — checkout is secure and handled right here on the site,
+                same as our harnesses. Prefer to order a custom color or bulk quantity? DM us on Instagram or
+                Facebook and we'll sort it out directly.
               </p>
               <p style="color:var(--text-secondary);line-height:var(--leading-normal);margin-bottom:var(--space-lg);">
-                We ship domestic and international. Shipping cost will be quoted based on your location once
-                you message us.
+                We ship domestic and international — international orders are quoted by email during checkout.
               </p>
             </div>
 
-            <div style="display:flex;gap:var(--space-md);flex-wrap:wrap;align-items:center;">
-              <a href="https://www.instagram.com/svk_works/" target="_blank" rel="noopener" class="btn btn-primary">DM on Instagram</a>
-              <a href="https://www.facebook.com/profile.php?id=61580949891529" target="_blank" rel="noopener" class="btn btn-ghost">DM on Facebook</a>
+            <!-- Add to Cart -->
+            <div style="display:flex;gap:var(--space-md);flex-wrap:wrap;">
+              <button class="btn btn-primary" onclick="addToCart()" style="flex:1;min-width:180px;">
+                Add to Cart — $25
+              </button>
+              <a href="https://www.instagram.com/svk_works/" target="_blank" rel="noopener" class="btn btn-secondary" style="flex:1;min-width:180px;">
+                DM for Custom Orders
+              </a>
             </div>
             <div style="display:flex;gap:var(--space-md);flex-wrap:wrap;margin-top:var(--space-md);">
               <span class="badge badge-success">Available Now</span>
-              <span class="badge">Automated Checkout Coming Soon</span>
             </div>
           </div>
 
@@ -171,7 +189,7 @@
               <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
             </button>
             <div class="accordion-body">
-              <div class="accordion-content">Filler answer — sizes S through 3XL available. DM us if you have a specific size question and we'll confirm availability before you order.</div>
+              <div class="accordion-content">Sizes S through 3XL are available — pick yours from the size selector above before adding to cart.</div>
             </div>
           </div>
           <div class="accordion-item">
@@ -180,7 +198,7 @@
               <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
             </button>
             <div class="accordion-body">
-              <div class="accordion-content">Yes — we ship domestic and international. Shipping will be calculated based on your location. Message us with your address for a shipping quote.</div>
+              <div class="accordion-content">Yes — we ship domestic and international. Domestic shipping is calculated automatically at checkout based on your address. International orders are quoted by email — select "International Shipping" at checkout and we'll follow up with a rate.</div>
             </div>
           </div>
           <div class="accordion-item">
@@ -189,16 +207,16 @@
               <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
             </button>
             <div class="accordion-body">
-              <div class="accordion-content">Since we're handling orders through DMs for now, we'll sort out payment details once you reach out. Automated checkout with card payment is being worked on and will be available soon.</div>
+              <div class="accordion-content">Add it to your cart and check out securely with PayPal or a credit/debit card, right here on the site — same checkout used for our harnesses.</div>
             </div>
           </div>
           <div class="accordion-item">
             <button class="accordion-header">
-              When will online checkout be available?
+              Can I order a custom color or bulk quantity?
               <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
             </button>
             <div class="accordion-body">
-              <div class="accordion-content">We're working on it. In the meantime, DMs are the fastest way to get your order in. We'll update this page once the automated store is live.</div>
+              <div class="accordion-content">The standard tee can be ordered directly through the cart. For a custom color, print, or bulk/team order, DM us on Instagram or Facebook and we'll work out the details directly.</div>
             </div>
           </div>
         </div>
@@ -209,10 +227,10 @@
       <div class="container">
         <div class="cta-box fade-in">
           <span class="section-label">Get One</span>
-          <h2>Ready to Order? DM Us</h2>
-          <p>Drop your size and shipping location in a DM on Instagram or Facebook and we'll get your shirt out to you.</p>
+          <h2>Ready to Order?</h2>
+          <p>Pick your size above and add it to your cart — checkout is quick and secure.</p>
           <div style="display:flex;gap:var(--space-md);justify-content:center;flex-wrap:wrap;">
-            <a href="https://www.instagram.com/svk_works/" target="_blank" rel="noopener" class="btn btn-primary">DM on Instagram</a>
+            <a href="cart.html" class="btn btn-primary">View Cart</a>
             <a href="merchandise.html" class="btn btn-ghost">Back to Merchandise</a>
           </div>
         </div>
@@ -248,6 +266,29 @@
       document.querySelectorAll('.product-thumb').forEach((t, idx) => {
         t.classList.toggle('active', idx === currentSlide);
       });
+    }
+
+    // === Option Buttons ===
+    document.querySelectorAll('.option-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const group = btn.dataset.option;
+        document.querySelectorAll(`.option-btn[data-option="${group}"]`).forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+      });
+    });
+
+    // === Add to Cart ===
+    function addToCart() {
+      const size = document.querySelector('.option-btn[data-option="size"].selected')?.dataset.value || 'M';
+      if (typeof SVKCart !== 'undefined') {
+        SVKCart.addItem(
+          { id: 'svk-tshirt', name: 'SVK Works T-Shirt', price: 25, image: 'img/merch/shirt-1.jpg' },
+          1,
+          { Size: size }
+        );
+      } else {
+        alert('Cart is loading, please try again.');
+      }
     }
   </script>
 </body>
