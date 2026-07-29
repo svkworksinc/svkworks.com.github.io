@@ -17,7 +17,10 @@ async function getAccessToken() {
     },
     body: 'grant_type=client_credentials',
   });
-  if (!res.ok) throw new Error(`PayPal auth failed: ${res.status}`);
+  if (!res.ok) {
+    const body = await res.text().catch(() => '');
+    throw new Error(`PayPal auth failed: ${res.status} ${body}`);
+  }
   const data = await res.json();
   return data.access_token;
 }
