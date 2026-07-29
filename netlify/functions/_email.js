@@ -4,6 +4,13 @@ const TEST_MODE = process.env.TEST_MODE === 'true';
 
 const PDFDocument = require('pdfkit');
 
+function itemOptionsText(item) {
+  return Object.entries(item.options || {})
+    .filter(([, v]) => v && v !== 'No')
+    .map(([k, v]) => `${k}: ${v}`)
+    .join(', ');
+}
+
 async function generateInvoicePDF({
   customerName, customerEmail, orderNumber, orderDate,
   items, subtotal, shipping, shippingLabel, tax, total,
@@ -54,6 +61,7 @@ async function generateInvoicePDF({
     // ── Items table ──────────────────────────────────────────────────────────
     const tableTop = metaY + 28;
     const col = { item: 50, qty: 360, price: 410, total: 470 };
+    const optsWidth = col.qty - col.item - 16;
 
     // Header row
     doc.rect(50, tableTop, pageWidth, 20).fill('#0a0a0a');
@@ -64,12 +72,18 @@ async function generateInvoicePDF({
     doc.text('TOTAL', col.total, tableTop + 6);
 
     let y = tableTop + 22;
-    doc.font('Helvetica').fontSize(9);
     items.forEach((item, i) => {
-      const rowH = 22;
+      const optStr = itemOptionsText(item);
+      const rowH = optStr ? 34 : 22;
       if (i % 2 === 0) doc.rect(50, y - 2, pageWidth, rowH).fill(offWhite);
-      doc.fillColor(nearBlack).text(item.name, col.item + 8, y, { width: 295, lineBreak: false });
-      doc.text(String(item.quantity), col.qty, y);
+
+      doc.font('Helvetica').fontSize(9).fillColor(nearBlack)
+        .text(item.name, col.item + 8, y, { width: 295, lineBreak: false });
+      if (optStr) {
+        doc.font('Helvetica').fontSize(7.5).fillColor(midGray)
+          .text(optStr, col.item + 8, y + 12, { width: optsWidth, lineBreak: false });
+      }
+      doc.font('Helvetica').fontSize(9).fillColor(nearBlack).text(String(item.quantity), col.qty, y);
       doc.text('$' + (item.price || 0).toFixed(2), col.price, y);
       doc.fillColor(magenta).text('$' + (item.lineTotal || 0).toFixed(2), col.total, y);
       y += rowH;
@@ -143,87 +157,92 @@ async function sendInvoiceEmail({
   const hasBreakdown = subtotal !== undefined && shipping !== undefined;
 
   const rows = items.map(item => {
-    const optStr = Object.entries(item.options || {})
-      .filter(([, v]) => v && v !== 'No')
-      .map(([k, v]) => `${k}: ${v}`)
-      .join(', ');
+    const optStr = itemOptionsText(item);
     return `
       <tr>
-        <td style="padding:10px 12px;border-bottom:1px solid #2a2a2a;">${item.name}${optStr ? `<br><span style="font-size:12px;color:#888;">${optStr}</span>` : ''}</td>
-        <td style="padding:10px 12px;border-bottom:1px solid #2a2a2a;text-align:center;">${item.quantity}</td>
-        <td style="padding:10px 12px;border-bottom:1px solid #2a2a2a;text-align:right;">$${fmtMoney(item.price)}</td>
-        <td style="padding:10px 12px;border-bottom:1px solid #2a2a2a;text-align:right;color:#e91e8c;">$${fmtMoney(item.lineTotal)}</td>
+        <td style="padding:12px;border-bottom:1px solid #2a2a2a;">${item.name}${optStr ? `<br><span style="font-size:12px;color:#888;">${optStr}</span>` : ''}</td>
+        <td style="padding:12px;border-bottom:1px solid #2a2a2a;text-align:center;">${item.quantity}</td>
+        <td style="padding:12px;border-bottom:1px solid #2a2a2a;text-align:right;">$${fmtMoney(item.price)}</td>
+        <td style="padding:12px;border-bottom:1px solid #2a2a2a;text-align:right;color:#e91e8c;font-weight:600;">$${fmtMoney(item.lineTotal)}</td>
       </tr>`;
   }).join('');
 
-  const shippingAddrHtml = shippingAddress
-    ? `<div>
-        <div style="font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:#555;margin-bottom:4px;">Ship To</div>
-        <div style="font-size:14px;">${shippingAddress.address}<br>${shippingAddress.city}, ${shippingAddress.state} ${shippingAddress.zip}</div>
-      </div>`
-    : '';
+  // Meta info grid — table-based (not flex) so it renders consistently in Outlook/older webmail clients.
+  const metaCells = [
+    { label: 'Order Number', value: orderNumber, accent: true },
+    { label: 'Date', value: orderDate },
+    { label: 'Payment', value: paymentMethod },
+  ];
+  if (shippingLabel) metaCells.push({ label: 'Shipping', value: shippingLabel });
 
-  const shippingMethodHtml = shippingLabel
-    ? `<div>
-        <div style="font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:#555;margin-bottom:4px;">Shipping</div>
-        <div style="font-size:14px;">${shippingLabel}</div>
-      </div>`
+  const metaCellsHtml = metaCells.map(c => `
+    <td style="padding:0 24px 16px 0;vertical-align:top;">
+      <div style="font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:#555;margin-bottom:4px;">${c.label}</div>
+      <div style="font-size:14px;font-weight:${c.accent ? 700 : 400};color:${c.accent ? '#e91e8c' : '#e5e5e5'};">${c.value}</div>
+    </td>`).join('');
+
+  const shipToRow = shippingAddress
+    ? `<tr><td style="padding:0 0 16px 0;" colspan="4">
+        <div style="font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:#555;margin-bottom:4px;">Ship To</div>
+        <div style="font-size:14px;color:#e5e5e5;">${shippingAddress.address}, ${shippingAddress.city}, ${shippingAddress.state} ${shippingAddress.zip}</div>
+      </td></tr>`
     : '';
 
   const totalsHtml = hasBreakdown
     ? `<table style="width:100%;border-collapse:collapse;margin-bottom:10px;">
         <tr>
           <td style="font-size:13px;color:#888;padding:3px 0;">Subtotal</td>
-          <td style="font-size:13px;text-align:right;padding:3px 0;">$${fmtMoney(subtotal)}</td>
+          <td style="font-size:13px;text-align:right;padding:3px 0;color:#e5e5e5;">$${fmtMoney(subtotal)}</td>
         </tr>
         <tr>
           <td style="font-size:13px;color:#888;padding:3px 0;">${shippingLabel ? `Shipping (${shippingLabel})` : 'Shipping'}</td>
-          <td style="font-size:13px;text-align:right;padding:3px 0;">$${fmtMoney(shipping)}</td>
+          <td style="font-size:13px;text-align:right;padding:3px 0;color:#e5e5e5;">$${fmtMoney(shipping)}</td>
         </tr>
         ${(tax || 0) > 0 ? `<tr>
           <td style="font-size:13px;color:#888;padding:3px 0;">Tax (TX 8.25%)</td>
-          <td style="font-size:13px;text-align:right;padding:3px 0;">$${fmtMoney(tax)}</td>
+          <td style="font-size:13px;text-align:right;padding:3px 0;color:#e5e5e5;">$${fmtMoney(tax)}</td>
         </tr>` : ''}
       </table>`
     : '';
 
   const html = `<!DOCTYPE html>
 <html>
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+  @media (max-width: 600px) {
+    .svk-meta-table, .svk-meta-table tbody, .svk-meta-table tr, .svk-meta-table td { display: block !important; width: 100% !important; padding-right: 0 !important; }
+    .svk-meta-table td { padding-bottom: 14px !important; }
+    .svk-items-table th:nth-child(3), .svk-items-table td:nth-child(3) { display: none !important; }
+  }
+</style>
+</head>
 <body style="margin:0;padding:0;background:#0a0a0a;font-family:-apple-system,BlinkMacSystemFont,'Inter',sans-serif;color:#e5e5e5;">
 <div style="max-width:600px;margin:32px auto;background:#111;border:1px solid #222;border-radius:8px;overflow:hidden;">
   <!-- Header -->
-  <div style="background:#0a0a0a;padding:28px 32px;border-bottom:1px solid #222;display:flex;align-items:center;gap:16px;">
-    <img src="https://www.svkworks.com/img/svk-logo.png" alt="SVK Works" style="height:36px;width:auto;" />
-    <div>
-      <div style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#888;">Order Confirmation</div>
-      <div style="font-size:18px;font-weight:700;color:#fff;">SVK Works</div>
-    </div>
-  </div>
+  <table style="width:100%;border-collapse:collapse;background:#0a0a0a;border-bottom:1px solid #222;">
+    <tr>
+      <td style="padding:28px 32px;">
+        <img src="https://www.svkworks.com/img/svk-logo.png" alt="SVK Works" style="height:36px;width:auto;vertical-align:middle;margin-right:16px;" />
+        <span style="display:inline-block;vertical-align:middle;">
+          <span style="display:block;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#888;">Order Confirmation</span>
+          <span style="display:block;font-size:18px;font-weight:700;color:#fff;">SVK Works</span>
+        </span>
+      </td>
+    </tr>
+  </table>
   <!-- Body -->
   <div style="padding:32px;">
     <p style="margin:0 0 8px;font-size:22px;font-weight:700;color:#fff;">Thanks, ${customerName}!</p>
     <p style="margin:0 0 28px;color:#888;font-size:14px;">Your payment has been received and your build is now in queue.</p>
 
-    <div style="display:flex;gap:24px;margin-bottom:28px;flex-wrap:wrap;">
-      <div>
-        <div style="font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:#555;margin-bottom:4px;">Order Number</div>
-        <div style="font-size:14px;font-weight:600;color:#e91e8c;">${orderNumber}</div>
-      </div>
-      <div>
-        <div style="font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:#555;margin-bottom:4px;">Date</div>
-        <div style="font-size:14px;">${orderDate}</div>
-      </div>
-      <div>
-        <div style="font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:#555;margin-bottom:4px;">Payment</div>
-        <div style="font-size:14px;">${paymentMethod}</div>
-      </div>
-      ${shippingAddrHtml}
-      ${shippingMethodHtml}
-    </div>
+    <table class="svk-meta-table" style="width:100%;border-collapse:collapse;margin-bottom:8px;">
+      <tr>${metaCellsHtml}</tr>
+      ${shipToRow}
+    </table>
 
     <!-- Items Table -->
-    <table style="width:100%;border-collapse:collapse;margin-bottom:24px;">
+    <table class="svk-items-table" style="width:100%;border-collapse:collapse;margin-bottom:24px;margin-top:16px;">
       <thead>
         <tr style="background:#0a0a0a;">
           <th style="padding:10px 12px;text-align:left;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:#555;">Item</th>
@@ -238,10 +257,12 @@ async function sendInvoiceEmail({
     <!-- Totals breakdown + grand total -->
     <div style="border-top:1px solid #333;padding-top:16px;margin-bottom:28px;">
       ${totalsHtml}
-      <div style="display:flex;justify-content:space-between;align-items:center;${hasBreakdown ? 'border-top:1px solid #222;padding-top:12px;' : ''}">
-        <span style="font-size:14px;color:#888;">Order Total</span>
-        <span style="font-size:22px;font-weight:700;color:#e91e8c;">$${fmtMoney(total)}</span>
-      </div>
+      <table style="width:100%;border-collapse:collapse;${hasBreakdown ? 'border-top:1px solid #222;' : ''}">
+        <tr>
+          <td style="padding-top:${hasBreakdown ? '12px' : '0'};font-size:14px;color:#888;">Order Total</td>
+          <td style="padding-top:${hasBreakdown ? '12px' : '0'};text-align:right;font-size:22px;font-weight:700;color:#e91e8c;">$${fmtMoney(total)}</td>
+        </tr>
+      </table>
     </div>
 
     <div style="background:#0a0a0a;border:1px solid #222;border-radius:6px;padding:20px;margin-bottom:28px;">

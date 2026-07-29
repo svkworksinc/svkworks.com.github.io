@@ -12,6 +12,10 @@ const SVKCheckout = {
   stripeInstance: null,
   shippingOptionId: null,
 
+  DRAFT_KEY: 'svk_checkout_draft',
+  STRIPE_RESUME_KEY: 'svk_checkout_stripe_resume',
+  FIELD_IDS: ['customer-name', 'customer-email', 'ship-address', 'ship-city', 'ship-state', 'ship-zip'],
+
   SHIPPING_OPTIONS: [
     { id: 'usps-ground',   label: 'USPS Ground Advantage', desc: '5–8 business days', price: 12.95 },
     { id: 'usps-priority', label: 'USPS Priority Mail',     desc: '2–3 business days', price: 19.95 },
@@ -21,7 +25,7 @@ const SVKCheckout = {
   ],
   TX_TAX_RATE: 0.0825,
 
-  init() {
+  async init() {
     this.cart = (typeof SVKCart !== 'undefined') ? SVKCart.getCart() : this._readCart();
     if (!this.cart.length) {
       window.location.href = 'cart.html';
@@ -35,13 +39,35 @@ const SVKCheckout = {
     this._bindStateChange();
     this._bindCoupon();
     this._bindContinueBtn();
-    this._prefillAuth();
+    this._bindFieldErrorClearing();
+    this._bindDraftPersistence();
+    await this._prefillAuth();
+    this._restoreDraft();
     this._updateTotals();
+    this._setStep('details');
+
+    // Resume an interrupted Stripe payment (e.g. the browser was refreshed mid-checkout)
+    // instead of creating a duplicate pending order.
+    const resume = this._getStripeResume();
+    if (resume && resume.stripeClientSecret) {
+      this.supabaseOrderId = resume.supabaseOrderId;
+      this.orderNumber = resume.orderNumber;
+      this.stripeClientSecret = resume.stripeClientSecret;
+      document.querySelector('[data-tab="card"]')?.click();
+      await this._mountStripeElements(resume.stripeClientSecret, resume.customerName, resume.customerEmail);
+      return;
+    }
+
+    this._autofocusFirstField();
   },
 
   _readCart() {
     try { return JSON.parse(localStorage.getItem('svk_cart')) || []; }
     catch { return []; }
+  },
+
+  _cartSignature() {
+    return this.cart.map(i => `${i.id}:${i.quantity}`).sort().join('|');
   },
 
   _renderSummary() {
@@ -88,6 +114,7 @@ const SVKCheckout = {
         label.querySelector('input[type="radio"]').checked = true;
         this.shippingOptionId = label.dataset.shipId;
         this._updateTotals();
+        this._saveDraft();
       });
     });
   },
@@ -99,8 +126,17 @@ const SVKCheckout = {
   _bindCoupon() {
     document.getElementById('checkout-apply-coupon-btn')?.addEventListener('click', () => {
       const code = (document.getElementById('checkout-coupon-input')?.value || '').trim();
-      if (!code) return;
-      alert(`Coupon "${code}" noted — discount codes will be applied by our team when your quote is confirmed.`);
+      const msg = document.getElementById('checkout-coupon-msg');
+      if (!msg) return;
+      if (!code) {
+        msg.style.display = 'block';
+        msg.style.color = '#f87171';
+        msg.textContent = 'Please enter a coupon code.';
+        return;
+      }
+      msg.style.display = 'block';
+      msg.style.color = '#34d399';
+      msg.textContent = `Coupon "${code}" noted — discount codes are applied by our team when your quote is confirmed.`;
     });
   },
 
@@ -149,8 +185,126 @@ const SVKCheckout = {
         document.querySelectorAll('[data-tab-panel]').forEach(p => {
           p.style.display = p.dataset.tabPanel === method ? 'block' : 'none';
         });
+        this._saveDraft();
       });
     });
+  },
+
+  // ---- Progress stepper ----
+
+  _setStep(step) {
+    document.querySelectorAll('.checkout-stepper .step').forEach(el => {
+      const s = el.dataset.step;
+      el.classList.toggle('active', s === step);
+      el.classList.toggle('done', step === 'payment' && s === 'details');
+    });
+  },
+
+  // ---- Inline field validation ----
+
+  _setFieldError(id, msg) {
+    const input = document.getElementById(id);
+    const err = document.getElementById('err-' + id);
+    if (input) input.classList.add('field-invalid');
+    if (err) err.textContent = msg;
+  },
+
+  _clearFieldError(id) {
+    const input = document.getElementById(id);
+    const err = document.getElementById('err-' + id);
+    if (input) input.classList.remove('field-invalid');
+    if (err) err.textContent = '';
+  },
+
+  _clearAllFieldErrors() {
+    this.FIELD_IDS.forEach(id => this._clearFieldError(id));
+  },
+
+  _bindFieldErrorClearing() {
+    this.FIELD_IDS.forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const evt = el.tagName === 'SELECT' ? 'change' : 'input';
+      el.addEventListener(evt, () => this._clearFieldError(id));
+    });
+  },
+
+  _autofocusFirstField() {
+    const nameEl = document.getElementById('customer-name');
+    if (nameEl && !nameEl.value) nameEl.focus();
+  },
+
+  // ---- Form draft persistence (survives an accidental refresh) ----
+
+  _bindDraftPersistence() {
+    ['customer-name', 'customer-email', 'customer-notes', 'ship-address', 'ship-city', 'ship-zip'].forEach(id => {
+      document.getElementById(id)?.addEventListener('input', () => this._saveDraft());
+    });
+    document.getElementById('ship-state')?.addEventListener('change', () => this._saveDraft());
+  },
+
+  _saveDraft() {
+    try {
+      sessionStorage.setItem(this.DRAFT_KEY, JSON.stringify({
+        cartSig: this._cartSignature(),
+        name: document.getElementById('customer-name')?.value || '',
+        email: document.getElementById('customer-email')?.value || '',
+        notes: document.getElementById('customer-notes')?.value || '',
+        address: document.getElementById('ship-address')?.value || '',
+        city: document.getElementById('ship-city')?.value || '',
+        state: document.getElementById('ship-state')?.value || '',
+        zip: document.getElementById('ship-zip')?.value || '',
+        shippingOptionId: this.shippingOptionId,
+        paymentMethod: this.paymentMethod,
+      }));
+    } catch { /* sessionStorage unavailable — draft persistence is a nice-to-have, not required */ }
+  },
+
+  _restoreDraft() {
+    let draft;
+    try { draft = JSON.parse(sessionStorage.getItem(this.DRAFT_KEY) || 'null'); } catch { draft = null; }
+    if (!draft || draft.cartSig !== this._cartSignature()) return;
+
+    const set = (id, val) => { const el = document.getElementById(id); if (el && val) el.value = val; };
+    set('customer-name', draft.name);
+    set('customer-email', draft.email);
+    set('customer-notes', draft.notes);
+    set('ship-address', draft.address);
+    set('ship-city', draft.city);
+    set('ship-state', draft.state);
+    set('ship-zip', draft.zip);
+
+    if (draft.shippingOptionId) {
+      this.shippingOptionId = draft.shippingOptionId;
+      document.querySelectorAll('#shipping-options .ship-option').forEach(l => {
+        const match = l.dataset.shipId === draft.shippingOptionId;
+        l.classList.toggle('selected', match);
+        const radio = l.querySelector('input[type="radio"]');
+        if (radio) radio.checked = match;
+      });
+    }
+    if (draft.paymentMethod && draft.paymentMethod !== this.paymentMethod) {
+      document.querySelector(`[data-tab="${draft.paymentMethod}"]`)?.click();
+    }
+  },
+
+  // ---- Stripe payment resume (survives a refresh mid-payment) ----
+
+  _saveStripeResume(data) {
+    try {
+      sessionStorage.setItem(this.STRIPE_RESUME_KEY, JSON.stringify({ cartSig: this._cartSignature(), ...data }));
+    } catch { /* non-critical */ }
+  },
+
+  _clearStripeResume() {
+    sessionStorage.removeItem(this.STRIPE_RESUME_KEY);
+  },
+
+  _getStripeResume() {
+    let resume;
+    try { resume = JSON.parse(sessionStorage.getItem(this.STRIPE_RESUME_KEY) || 'null'); } catch { resume = null; }
+    if (!resume || resume.cartSig !== this._cartSignature()) return null;
+    return resume;
   },
 
   _bindContinueBtn() {
@@ -160,17 +314,25 @@ const SVKCheckout = {
       const notes = document.getElementById('customer-notes').value.trim();
       const shippingAddress = this._getShippingAddress();
 
-      if (!name || !email) {
-        this._setError('Please enter your name and email address.');
-        return;
-      }
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        this._setError('Please enter a valid email address.');
-        return;
-      }
-      if (!shippingAddress.address || !shippingAddress.city || !shippingAddress.state || !shippingAddress.zip) {
-        this._setError('Please complete your shipping address.');
-        document.getElementById('ship-address')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      this._clearAllFieldErrors();
+      let firstInvalidId = null;
+      const invalidate = (id, msg) => {
+        this._setFieldError(id, msg);
+        if (!firstInvalidId) firstInvalidId = id;
+      };
+
+      if (!name) invalidate('customer-name', 'Enter your full name.');
+      if (!email) invalidate('customer-email', 'Enter your email address.');
+      else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) invalidate('customer-email', 'Enter a valid email address.');
+      if (!shippingAddress.address) invalidate('ship-address', 'Enter your street address.');
+      if (!shippingAddress.city) invalidate('ship-city', 'Enter your city.');
+      if (!shippingAddress.state) invalidate('ship-state', 'Select a state.');
+      if (!/^\d{5}$/.test(shippingAddress.zip)) invalidate('ship-zip', 'Enter a 5-digit ZIP code.');
+
+      if (firstInvalidId) {
+        const el = document.getElementById(firstInvalidId);
+        el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        el?.focus();
         return;
       }
       if (!this.shippingOptionId) {
@@ -228,6 +390,7 @@ const SVKCheckout = {
       document.getElementById('payment-section').style.display = 'block';
       document.getElementById('payment-heading').textContent = 'Pay with PayPal';
       document.getElementById('paypal-container').style.display = 'block';
+      this._setStep('payment');
 
       await this._loadScript(
         `https://www.paypal.com/sdk/js?client-id=${window.PAYPAL_CLIENT_ID}&currency=USD&intent=capture`,
@@ -248,6 +411,8 @@ const SVKCheckout = {
             if (!capRes.ok) throw new Error(capData.error || 'Payment capture failed.');
 
             sessionStorage.setItem('svk_order_confirmation', JSON.stringify(capData.order));
+            sessionStorage.removeItem(this.DRAFT_KEY);
+            this._clearStripeResume();
             if (typeof SVKCart !== 'undefined') SVKCart.clearCart();
             window.location.href = 'order-confirmation.html';
           } catch (err) {
@@ -301,36 +466,51 @@ const SVKCheckout = {
         paymentMethod: 'Credit / Debit Card',
       }));
 
-      document.getElementById('customer-form-section').style.display = 'none';
-      document.getElementById('payment-section').style.display = 'block';
-      document.getElementById('payment-heading').textContent = 'Enter Card Details';
-      document.getElementById('stripe-container').style.display = 'block';
-
-      await this._loadScript('https://js.stripe.com/v3/', 'stripe-sdk');
-
-      this.stripeInstance = window.Stripe(window.STRIPE_PUBLISHABLE_KEY);
-      const elements = this.stripeInstance.elements({ clientSecret: this.stripeClientSecret, appearance: {
-        theme: 'night',
-        variables: { colorPrimary: '#e91e8c', fontFamily: 'Inter, sans-serif', borderRadius: '6px' },
-      }});
-      const paymentElement = elements.create('payment');
-      paymentElement.mount('#stripe-payment-element');
-
-      document.getElementById('stripe-submit-btn').addEventListener('click', async () => {
-        this._setPaymentLoading(true, 'Processing payment…');
-        const { error } = await this.stripeInstance.confirmPayment({
-          elements,
-          confirmParams: {
-            return_url: `${window.location.origin}/order-confirmation.html`,
-            payment_method_data: { billing_details: { name, email } },
-          },
-        });
-        this._setPaymentLoading(false);
-        if (error) this._setPaymentError(error.message);
+      this._saveStripeResume({
+        supabaseOrderId: data.supabaseOrderId,
+        orderNumber: data.orderNumber,
+        stripeClientSecret: data.clientSecret,
+        customerName: name,
+        customerEmail: email,
       });
+
+      await this._mountStripeElements(data.clientSecret, name, email);
     } catch (err) {
       this._setError(err.message);
     }
+  },
+
+  async _mountStripeElements(clientSecret, name, email) {
+    document.getElementById('customer-form-section').style.display = 'none';
+    document.getElementById('payment-section').style.display = 'block';
+    document.getElementById('payment-heading').textContent = 'Enter Card Details';
+    document.getElementById('stripe-container').style.display = 'block';
+    this._setStep('payment');
+
+    await this._loadScript('https://js.stripe.com/v3/', 'stripe-sdk');
+
+    this.stripeInstance = window.Stripe(window.STRIPE_PUBLISHABLE_KEY);
+    const elements = this.stripeInstance.elements({ clientSecret, appearance: {
+      theme: 'night',
+      variables: { colorPrimary: '#e91e8c', fontFamily: 'Inter, sans-serif', borderRadius: '6px' },
+    }});
+    const paymentElement = elements.create('payment');
+    paymentElement.mount('#stripe-payment-element');
+
+    document.getElementById('stripe-submit-btn').addEventListener('click', async () => {
+      this._setPaymentLoading(true, 'Processing payment…');
+      const { error } = await this.stripeInstance.confirmPayment({
+        elements,
+        confirmParams: {
+          return_url: `${window.location.origin}/order-confirmation.html`,
+          payment_method_data: { billing_details: { name, email } },
+        },
+      });
+      // If we get here, confirmPayment threw an error (success triggers the redirect,
+      // which is also where the draft/resume sessionStorage keys get cleared).
+      this._setPaymentLoading(false);
+      if (error) this._setPaymentError(error.message);
+    });
   },
 
   _loadScript(src, id) {
