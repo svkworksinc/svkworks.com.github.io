@@ -102,6 +102,14 @@ const SVKCart = {
     return '$' + amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   },
 
+  _productUrl(id) {
+    if (typeof SVK_PRODUCTS_DATA !== 'undefined') {
+      const product = SVK_PRODUCTS_DATA.products.find(p => p.id === id);
+      if (product) return product.page || ('product.html?id=' + product.id);
+    }
+    return 'product.html?id=' + encodeURIComponent(id);
+  },
+
   // ---- Cart page rendering ----
 
   renderCartPage() {
@@ -127,6 +135,7 @@ const SVKCart = {
         .map(([k, v]) => `${k}: ${v}`)
         .join(' · ');
       const lineTotal = item.price * item.quantity;
+      const url = this._productUrl(item.id);
       return `<tr data-id="${item.id}" data-options='${JSON.stringify(item.options || {})}'>
         <td class="col-remove">
           <button class="cart-remove-btn" data-action="remove" aria-label="Remove ${item.name}">
@@ -134,13 +143,13 @@ const SVKCart = {
           </button>
         </td>
         <td class="col-product">
-          <div class="cart-product-cell">
+          <a class="cart-product-cell" href="${url}" style="text-decoration:none;color:inherit;">
             <img src="${item.image}" alt="${item.name}" class="cart-product-img" loading="lazy">
             <div>
               <div class="cart-product-name">${item.name}</div>
               ${opts ? `<div class="cart-product-opts">${opts}</div>` : ''}
             </div>
-          </div>
+          </a>
         </td>
         <td class="col-price">${this.formatPrice(item.price)}</td>
         <td class="col-qty">

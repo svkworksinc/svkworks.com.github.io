@@ -22,6 +22,7 @@ const SVKCheckout = {
     { id: 'ups-ground',    label: 'UPS Ground',             desc: '3–5 business days', price: 24.95 },
     { id: 'ups-2day',      label: 'UPS 2-Day Air',          desc: '2 business days',   price: 65.00 },
     { id: 'ups-overnight', label: 'UPS Next Day Air',       desc: '1 business day',    price: 125.00 },
+    { id: 'international', label: 'International Shipping', desc: 'Outside the US — quoted by email', price: null, international: true },
   ],
   TX_TAX_RATE: 0.0825,
 
@@ -93,17 +94,20 @@ const SVKCheckout = {
     const el = document.getElementById('shipping-options');
     if (!el) return;
     el.innerHTML = this.SHIPPING_OPTIONS.map((opt, i) => `
-      <label class="ship-option" data-ship-id="${opt.id}">
+      <label class="ship-option${opt.international ? ' ship-option-intl' : ''}" data-ship-id="${opt.id}">
         <input type="radio" name="shipping-method" value="${opt.id}" ${i === 0 ? 'checked' : ''}>
         <span class="ship-option-label">
           <span class="ship-option-name">${opt.label}</span>
           <span class="ship-option-desc">${opt.desc}</span>
         </span>
-        <span class="ship-option-price">$${opt.price.toFixed(2)}</span>
+        ${opt.price === null
+          ? '<span class="ship-option-price-note">Contact for Quote</span>'
+          : `<span class="ship-option-price">$${opt.price.toFixed(2)}</span>`}
       </label>
     `).join('');
     this.shippingOptionId = this.SHIPPING_OPTIONS[0].id;
     el.querySelector('.ship-option')?.classList.add('selected');
+    this._updateIntlEmailLink();
   },
 
   _bindShippingOptions() {
@@ -113,10 +117,35 @@ const SVKCheckout = {
         label.classList.add('selected');
         label.querySelector('input[type="radio"]').checked = true;
         this.shippingOptionId = label.dataset.shipId;
+        this._applyShippingSelectionUI();
         this._updateTotals();
         this._saveDraft();
       });
     });
+  },
+
+  // Toggles the "email us for a quote" notice and locks out payment while
+  // International Shipping is selected — there's no real total to charge yet.
+  _applyShippingSelectionUI() {
+    const shipOpt = this._getShippingOption();
+    const isIntl = !!(shipOpt && shipOpt.international);
+    const notice = document.getElementById('intl-shipping-notice');
+    const continueBtn = document.getElementById('continue-btn');
+    if (notice) notice.style.display = isIntl ? 'block' : 'none';
+    if (continueBtn) continueBtn.disabled = isIntl;
+    if (isIntl) this._updateIntlEmailLink();
+  },
+
+  _updateIntlEmailLink() {
+    const btn = document.getElementById('intl-email-btn');
+    if (!btn) return;
+    const itemLines = this.cart.map(i => `- ${i.name} x${i.quantity}`).join('\n');
+    const subject = encodeURIComponent('International Shipping Quote Request');
+    const body = encodeURIComponent(
+      `Hi SVK Works,\n\nI'd like a shipping quote for international delivery.\n\nMy cart:\n${itemLines}\n\n` +
+      `My shipping address:\n[Please fill in your full international address here]\n\nThanks!`
+    );
+    btn.href = `mailto:info@svkworks.com?subject=${subject}&body=${body}`;
   },
 
   _bindStateChange() {
@@ -145,21 +174,30 @@ const SVKCheckout = {
   },
 
   _updateTotals() {
+    const fmt = n => '$' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const subEl = document.getElementById('sum-subtotal');
+    const shipEl = document.getElementById('sum-shipping');
+    const taxEl = document.getElementById('sum-tax');
+    const totalEl = document.getElementById('checkout-total');
+    if (subEl) subEl.textContent = fmt(this.subtotal);
+
     const shipOpt = this._getShippingOption();
+
+    // International shipping has no known cost until we quote it by email —
+    // don't compute a fake total.
+    if (shipOpt && shipOpt.international) {
+      if (shipEl) shipEl.textContent = 'Contact for quote';
+      if (taxEl) taxEl.textContent = '—';
+      if (totalEl) totalEl.textContent = '—';
+      return { shipping: null, tax: null, grandTotal: null };
+    }
+
     const shipping = shipOpt ? shipOpt.price : 0;
     const state = (document.getElementById('ship-state')?.value || '').trim().toUpperCase();
     const taxBase = this.subtotal + shipping;
     const tax = state === 'TX' ? Math.round(taxBase * this.TX_TAX_RATE * 100) / 100 : 0;
     const grandTotal = Math.round((this.subtotal + shipping + tax) * 100) / 100;
 
-    const fmt = n => '$' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-
-    const subEl = document.getElementById('sum-subtotal');
-    const shipEl = document.getElementById('sum-shipping');
-    const taxEl = document.getElementById('sum-tax');
-    const totalEl = document.getElementById('checkout-total');
-
-    if (subEl) subEl.textContent = fmt(this.subtotal);
     if (shipEl) shipEl.textContent = shipOpt ? fmt(shipping) : 'Select method';
     if (taxEl) taxEl.textContent = fmt(tax);
     if (totalEl) totalEl.textContent = fmt(grandTotal);
@@ -282,6 +320,7 @@ const SVKCheckout = {
         const radio = l.querySelector('input[type="radio"]');
         if (radio) radio.checked = match;
       });
+      this._applyShippingSelectionUI();
     }
     if (draft.paymentMethod && draft.paymentMethod !== this.paymentMethod) {
       document.querySelector(`[data-tab="${draft.paymentMethod}"]`)?.click();
@@ -337,6 +376,11 @@ const SVKCheckout = {
       }
       if (!this.shippingOptionId) {
         this._setError('Please select a shipping method.');
+        return;
+      }
+      const shipOpt = this._getShippingOption();
+      if (shipOpt && shipOpt.international) {
+        this._setError('International orders are quoted by email — please use the "Email Us for a Quote" button above before checking out.');
         return;
       }
 

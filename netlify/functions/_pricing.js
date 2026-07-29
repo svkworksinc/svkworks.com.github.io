@@ -55,6 +55,9 @@ function validateCart(items) {
 // Validates shipping option and calculates shipping cost, applicable tax, and grand total.
 // state should be a 2-letter US state code (e.g. 'TX').
 function calculateTotals(subtotal, shippingOptionId, state) {
+  if (shippingOptionId === 'international') {
+    throw new Error('International orders require a manual shipping quote — please email info@svkworks.com before checking out.');
+  }
   const option = SHIPPING_OPTIONS[shippingOptionId];
   if (!option) throw new Error(`Invalid shipping option: ${shippingOptionId}`);
   const shipping = option.price;
