@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order Confirmed — SVK Works</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="img/svk-icon.png" type="image/png">
+  <style>
+    .confirm-page { max-width: 740px; margin: 0 auto; padding: var(--space-2xl) var(--space-xl); }
+    .confirm-header { text-align: center; margin-bottom: var(--space-3xl); }
+    .confirm-check {
+      width: 68px; height: 68px;
+      border-radius: 50%;
+      background: rgba(34,197,94,0.1);
+      border: 2px solid rgba(34,197,94,0.3);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto var(--space-lg);
+    }
+    .invoice-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      margin-bottom: var(--space-xl);
+    }
+    .invoice-brand {
+      display: flex; align-items: center; gap: var(--space-md);
+      padding: var(--space-xl) var(--space-2xl);
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border-color);
+    }
+    .invoice-brand img { height: 32px; width: auto; }
+    .invoice-brand-info { font-size: var(--text-xs); color: var(--text-muted); }
+    .invoice-meta {
+      display: flex; flex-wrap: wrap; gap: var(--space-xl);
+      padding: var(--space-xl) var(--space-2xl);
+      border-bottom: 1px solid var(--border-color);
+    }
+    .invoice-meta-item label {
+      display: block; font-size: var(--text-xs); text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 4px;
+    }
+    .invoice-meta-item .value { font-size: var(--text-sm); font-weight: var(--weight-medium); }
+    .invoice-meta-item .value.accent { color: var(--magenta); }
+    .invoice-items { padding: var(--space-xl) var(--space-2xl); }
+    .invoice-items table { width: 100%; border-collapse: collapse; }
+    .invoice-items th {
+      padding: 8px 12px; text-align: left; font-size: var(--text-xs);
+      text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted);
+      border-bottom: 1px solid var(--border-color);
+    }
+    .invoice-items th:nth-child(2), .invoice-items td:nth-child(2) { text-align: center; }
+    .invoice-items th:nth-child(3), .invoice-items td:nth-child(3),
+    .invoice-items th:nth-child(4), .invoice-items td:nth-child(4) { text-align: right; }
+    .invoice-items td {
+      padding: 12px 12px; font-size: var(--text-sm);
+      border-bottom: 1px solid var(--border-color);
+    }
+    .invoice-items tr:last-child td { border-bottom: none; }
+    .item-opts { font-size: var(--text-xs); color: var(--text-muted); margin-top: 2px; }
+    .invoice-total {
+      display: flex; justify-content: flex-end; align-items: baseline; gap: var(--space-xl);
+      padding: var(--space-lg) var(--space-2xl);
+      border-top: 1px solid var(--border-color);
+      background: var(--bg-secondary);
+    }
+    .invoice-total-label { font-size: var(--text-sm); color: var(--text-secondary); }
+    .invoice-total-amount { font-size: var(--text-2xl); font-weight: var(--weight-bold); color: var(--magenta); }
+    .invoice-footer {
+      padding: var(--space-lg) var(--space-2xl);
+      border-top: 1px solid var(--border-color);
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+      text-align: center;
+    }
+    .confirm-actions { display: flex; gap: var(--space-md); justify-content: center; flex-wrap: wrap; margin-top: var(--space-2xl); }
+
+    @media print {
+      #header-placeholder, #footer-placeholder, .confirm-header p, .confirm-actions, .btn { display: none !important; }
+      body { background: #fff !important; color: #111 !important; }
+      .invoice-card { border: 1px solid #ddd !important; background: #fff !important; }
+      .invoice-brand { background: #f5f5f5 !important; }
+      .invoice-total { background: #f5f5f5 !important; }
+      .invoice-items th, .invoice-meta-item label, .invoice-brand-info { color: #666 !important; }
+      .invoice-total-amount, .invoice-meta-item .value.accent { color: #c0186c !important; }
+    }
+    @media (max-width: 600px) {
+      .invoice-brand, .invoice-meta, .invoice-items, .invoice-total, .invoice-footer {
+        padding-left: var(--space-lg); padding-right: var(--space-lg);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="header-placeholder"></div>
+
+  <main id="main-content">
+    <section class="section">
+      <div class="container">
+        <div class="confirm-page">
+
+          <!-- Error state: shown if no order data found -->
+          <div id="no-order" style="display:none;text-align:center;padding:var(--space-4xl) 0;">
+            <h2>No order found</h2>
+            <p style="color:var(--text-secondary);margin-bottom:var(--space-xl);">This page requires a completed checkout. If you just paid, check your email for your invoice.</p>
+            <a href="harnesses.html" class="btn btn-primary">Browse Harnesses</a>
+          </div>
+
+          <!-- Stripe pending: payment still being confirmed -->
+          <div id="stripe-pending" style="display:none;text-align:center;padding:var(--space-4xl) 0;">
+            <div class="confirm-check" style="border-color:rgba(250,204,21,0.4);background:rgba(250,204,21,0.06);">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l2 2"/></svg>
+            </div>
+            <h2>Payment Processing</h2>
+            <p style="color:var(--text-secondary);">Your payment is being processed. You'll receive a confirmation email once complete.</p>
+          </div>
+
+          <!-- Success state -->
+          <div id="order-success" style="display:none;">
+            <div class="confirm-header">
+              <div class="confirm-check">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#86efac" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+              <h1 style="font-size:var(--text-2xl);margin-bottom:var(--space-sm);">Order Confirmed</h1>
+              <p style="color:var(--text-secondary);">A copy of this invoice has been sent to your email address.</p>
+            </div>
+
+            <!-- Invoice Card -->
+            <div class="invoice-card">
+              <div class="invoice-brand">
+                <picture>
+                  <source srcset="img/svk-logo.webp" type="image/webp">
+                  <img src="img/svk-logo.png" alt="SVK Works" width="120" height="42">
+                </picture>
+                <div class="invoice-brand-info">
+                  <div>svkworks.com</div>
+                  <div>info@svkworks.com</div>
+                </div>
+              </div>
+
+              <div class="invoice-meta">
+                <div class="invoice-meta-item">
+                  <label>Order Number</label>
+                  <div class="value accent" id="inv-order-number">—</div>
+                </div>
+                <div class="invoice-meta-item">
+                  <label>Date</label>
+                  <div class="value" id="inv-date">—</div>
+                </div>
+                <div class="invoice-meta-item">
+                  <label>Billed To</label>
+                  <div class="value" id="inv-name">—</div>
+                  <div style="font-size:var(--text-xs);color:var(--text-muted);" id="inv-email">—</div>
+                </div>
+                <div class="invoice-meta-item">
+                  <label>Payment</label>
+                  <div class="value" id="inv-payment">—</div>
+                </div>
+              </div>
+
+              <div class="invoice-items">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Item</th>
+                      <th>Qty</th>
+                      <th>Unit Price</th>
+                      <th>Total</th>
+                    </tr>
+                  </thead>
+                  <tbody id="inv-items-tbody"></tbody>
+                </table>
+              </div>
+
+              <div class="invoice-total">
+                <span class="invoice-total-label">Order Total</span>
+                <span class="invoice-total-amount" id="inv-total">—</span>
+              </div>
+
+              <div class="invoice-footer">
+                Lead time is typically 5–7 weeks from payment. We'll contact you with shipping updates. Thank you for your order.
+              </div>
+            </div>
+
+            <div class="confirm-actions">
+              <button class="btn btn-primary" onclick="window.print()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:6px;vertical-align:-2px;"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+                Print / Save PDF
+              </button>
+              <a href="harnesses.html" class="btn btn-outline">Continue Browsing</a>
+              <a href="account.html" class="btn btn-ghost">View My Orders</a>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="footer-placeholder"></div>
+
+  <script defer src="components/header.js"></script>
+  <script defer src="components/footer.js"></script>
+  <script defer src="js/components.js"></script>
+  <script defer src="js/search.js"></script>
+  <script defer src="js/main.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const params = new URLSearchParams(window.location.search);
+      const redirectStatus = params.get('redirect_status');
+      const paymentIntent   = params.get('payment_intent');
+
+      let order = null;
+
+      // PayPal flow: order data in sessionStorage
+      const stored = sessionStorage.getItem('svk_order_confirmation');
+      if (stored) {
+        try { order = JSON.parse(stored); } catch {}
+        sessionStorage.removeItem('svk_order_confirmation');
+      }
+
+      // Stripe redirect flow: use preview data from sessionStorage
+      if (!order && redirectStatus === 'succeeded') {
+        const preview = sessionStorage.getItem('svk_order_preview');
+        if (preview) {
+          try {
+            const p = JSON.parse(preview);
+            order = {
+              orderNumber: p.orderNumber,
+              orderDate: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
+              items: p.items || [],
+              total: p.total,
+              customerName: p.customerName,
+              customerEmail: p.customerEmail,
+              paymentMethod: p.paymentMethod || 'Credit / Debit Card',
+            };
+          } catch {}
+          sessionStorage.removeItem('svk_order_preview');
+        } else {
+          // Stripe succeeded but no preview data — show a generic success
+          document.getElementById('stripe-pending').style.display = 'block';
+          return;
+        }
+      }
+
+      // Stripe redirect but payment not yet succeeded
+      if (!order && redirectStatus && redirectStatus !== 'succeeded') {
+        document.getElementById('stripe-pending').style.display = 'block';
+        return;
+      }
+
+      if (!order) {
+        document.getElementById('no-order').style.display = 'block';
+        return;
+      }
+
+      // Populate invoice
+      document.getElementById('order-success').style.display = 'block';
+      document.getElementById('inv-order-number').textContent = order.orderNumber || '—';
+      document.getElementById('inv-date').textContent = order.orderDate || new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+      document.getElementById('inv-name').textContent = order.customerName || '—';
+      document.getElementById('inv-email').textContent = order.customerEmail || '';
+      document.getElementById('inv-payment').textContent = order.paymentMethod || '—';
+      document.getElementById('inv-total').textContent = '$' + (order.total || 0).toLocaleString();
+
+      const tbody = document.getElementById('inv-items-tbody');
+      const items = order.items || [];
+      if (items.length) {
+        tbody.innerHTML = items.map(item => {
+          const opts = Object.entries(item.options || {}).filter(([,v]) => v && v !== 'No').map(([k,v]) => `${k}: ${v}`).join(' · ');
+          const qty = item.quantity || 1;
+          const price = item.price || 0;
+          return `<tr>
+            <td>
+              <div>${item.name}</div>
+              ${opts ? `<div class="item-opts">${opts}</div>` : ''}
+            </td>
+            <td>${qty}</td>
+            <td>$${price.toLocaleString()}</td>
+            <td style="color:var(--magenta);font-weight:600;">$${(price * qty).toLocaleString()}</td>
+          </tr>`;
+        }).join('');
+      } else {
+        tbody.innerHTML = `<tr><td colspan="4" style="color:var(--text-muted);">See email for full order details.</td></tr>`;
+      }
+    });
+  </script>
+</body>
+</html>

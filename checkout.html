@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout — SVK Works</title>
+  <meta name="description" content="Complete your SVK Works order securely with PayPal or credit card.">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="img/svk-icon.png" type="image/png">
+  <!-- PayPal Client ID injected at runtime via Netlify environment snippet or inline script -->
+  <script>
+    // These public keys are safe to expose in frontend HTML.
+    // Secret keys never leave Netlify Functions.
+    window.PAYPAL_CLIENT_ID  = '__PAYPAL_CLIENT_ID__';
+    window.STRIPE_PUBLISHABLE_KEY = '__STRIPE_PUBLISHABLE_KEY__';
+  </script>
+  <style>
+    .checkout-layout {
+      display: grid;
+      grid-template-columns: 1fr 420px;
+      gap: var(--space-2xl);
+      align-items: start;
+    }
+    @media (max-width: 900px) {
+      .checkout-layout { grid-template-columns: 1fr; }
+    }
+    .checkout-sidebar {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: var(--space-xl);
+      position: sticky;
+      top: calc(var(--header-height, 64px) + var(--space-xl));
+    }
+    .checkout-sidebar h3 {
+      font-size: var(--text-sm);
+      font-weight: var(--weight-semibold);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      margin: 0 0 var(--space-lg);
+    }
+    .checkout-item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+      padding: var(--space-sm) 0;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .checkout-item:last-child { border-bottom: none; }
+    .checkout-item-img {
+      width: 52px;
+      height: 52px;
+      object-fit: cover;
+      border-radius: var(--radius-sm);
+      background: var(--bg-secondary);
+      flex-shrink: 0;
+    }
+    .checkout-item-info { flex: 1; min-width: 0; }
+    .checkout-item-name { font-size: var(--text-sm); font-weight: var(--weight-medium); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .checkout-item-opts { font-size: var(--text-xs); color: var(--text-muted); margin-top: 2px; }
+    .checkout-item-price { font-size: var(--text-sm); font-weight: var(--weight-semibold); color: var(--magenta); flex-shrink: 0; }
+    .checkout-total-row { display: flex; justify-content: space-between; align-items: baseline; margin-top: var(--space-lg); padding-top: var(--space-lg); border-top: 1px solid var(--border-color); }
+    .checkout-total-label { font-size: var(--text-sm); color: var(--text-secondary); }
+    .checkout-total-amount { font-size: var(--text-xl); font-weight: var(--weight-bold); color: var(--magenta); }
+
+    /* Payment method tabs */
+    .pay-tabs { display: flex; gap: var(--space-sm); margin-bottom: var(--space-xl); }
+    .pay-tab {
+      flex: 1;
+      padding: var(--space-sm) var(--space-md);
+      border: 1px solid var(--border-color);
+      background: var(--bg-card);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      font-size: var(--text-sm);
+      font-weight: var(--weight-medium);
+      color: var(--text-secondary);
+      text-align: center;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .pay-tab.active {
+      border-color: var(--magenta);
+      color: var(--text-primary);
+      background: rgba(233,30,140,0.05);
+    }
+    .pay-tab svg { display: block; margin: 0 auto var(--space-xs); }
+
+    /* Stripe elements container */
+    #stripe-payment-element { margin-bottom: var(--space-lg); }
+    #stripe-submit-btn { width: 100%; }
+
+    /* PayPal container */
+    #paypal-buttons { min-height: 48px; }
+
+    /* Security badge */
+    .security-note {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+      margin-top: var(--space-lg);
+    }
+    .security-note svg { flex-shrink: 0; }
+
+    /* Error */
+    .checkout-error-box {
+      background: rgba(231,76,60,0.08);
+      border: 1px solid rgba(231,76,60,0.3);
+      border-radius: var(--radius-md);
+      padding: var(--space-md) var(--space-lg);
+      font-size: var(--text-sm);
+      color: #f87171;
+      margin-bottom: var(--space-lg);
+      display: none;
+    }
+
+    /* Payment loading */
+    #payment-loading { display:none; text-align:center; padding: var(--space-lg) 0; color: var(--text-muted); font-size: var(--text-sm); }
+
+    /* Payment section */
+    #payment-section { display: none; }
+    #paypal-container, #stripe-container { display: none; }
+  </style>
+</head>
+<body>
+  <div id="header-placeholder"></div>
+
+  <main id="main-content">
+    <div class="page-hero">
+      <div class="container">
+        <div class="breadcrumb" role="navigation" aria-label="breadcrumb">
+          <a href="index.html">Home</a><span class="breadcrumb-sep" aria-hidden="true">/</span>
+          <a href="cart.html">Cart</a><span class="breadcrumb-sep" aria-hidden="true">/</span>
+          <span>Checkout</span>
+        </div>
+        <h1>Checkout</h1>
+      </div>
+    </div>
+
+    <section class="section">
+      <div class="container">
+        <div class="checkout-layout">
+
+          <!-- Left: Form + Payment -->
+          <div>
+            <!-- Customer info form -->
+            <div id="customer-form-section">
+              <h2 style="font-size:var(--text-lg);margin-bottom:var(--space-xl);">Your Details</h2>
+
+              <div id="checkout-error" class="checkout-error-box"></div>
+
+              <div class="form-group">
+                <label class="form-label" for="customer-name">Full Name <span style="color:var(--magenta);">*</span></label>
+                <input type="text" class="form-input" id="customer-name" autocomplete="name" placeholder="John Smith" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="customer-email">Email Address <span style="color:var(--magenta);">*</span></label>
+                <input type="email" class="form-input" id="customer-email" autocomplete="email" placeholder="you@example.com" required>
+                <span class="form-hint">Invoice and build updates sent here</span>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="customer-notes">Build Notes <span style="color:var(--text-muted);font-weight:400;">(optional)</span></label>
+                <textarea class="form-textarea" id="customer-notes" rows="3" placeholder="ECU preference, vehicle info, special requirements…"></textarea>
+              </div>
+
+              <h2 style="font-size:var(--text-lg);margin:var(--space-2xl) 0 var(--space-lg);">Payment Method</h2>
+
+              <div class="pay-tabs">
+                <button class="pay-tab active" data-tab="paypal" type="button">
+                  <svg width="24" height="16" viewBox="0 0 124 33" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><text y="24" font-size="24" fill="currentColor" font-family="Arial, sans-serif" font-weight="700">PayPal</text></svg>
+                  PayPal
+                </button>
+                <button class="pay-tab" data-tab="card" type="button">
+                  <svg width="24" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                  Credit / Debit Card
+                </button>
+              </div>
+
+              <div data-tab-panel="paypal">
+                <p style="font-size:var(--text-sm);color:var(--text-secondary);margin-bottom:var(--space-lg);">You'll be directed to PayPal to complete your payment securely. PayPal also supports debit and guest card payments.</p>
+              </div>
+              <div data-tab-panel="card" style="display:none;">
+                <p style="font-size:var(--text-sm);color:var(--text-secondary);margin-bottom:var(--space-lg);">Pay with any major credit or debit card. Your card details are handled directly by Stripe — we never see or store your card number.</p>
+              </div>
+
+              <button class="btn btn-primary btn-lg" id="continue-btn" style="width:100%;margin-top:var(--space-md);">Continue to Payment</button>
+
+              <div class="security-note">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                Payments are encrypted and processed securely. SVK Works never stores card details.
+              </div>
+            </div>
+
+            <!-- Payment UI (shown after "Continue to Payment") -->
+            <div id="payment-section">
+              <button type="button" id="back-to-form-btn" class="btn btn-ghost btn-sm" style="margin-bottom:var(--space-xl);">
+                ← Back
+              </button>
+              <h2 id="payment-heading" style="font-size:var(--text-lg);margin-bottom:var(--space-xl);"></h2>
+
+              <div id="payment-error" class="checkout-error-box"></div>
+              <div id="payment-loading">Setting up payment…</div>
+
+              <div id="paypal-container">
+                <div id="paypal-buttons"></div>
+              </div>
+
+              <div id="stripe-container">
+                <div id="stripe-payment-element"></div>
+                <button class="btn btn-primary btn-lg" id="stripe-submit-btn" style="width:100%;">Pay Now</button>
+              </div>
+
+              <div class="security-note" style="margin-top:var(--space-xl);">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                Payments processed via PayPal and Stripe — industry-leading payment security.
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: Order summary sidebar -->
+          <div class="checkout-sidebar">
+            <h3>Order Summary</h3>
+            <div id="checkout-items"></div>
+            <div class="checkout-total-row">
+              <span class="checkout-total-label">Total</span>
+              <span class="checkout-total-amount" id="checkout-total"></span>
+            </div>
+            <p style="font-size:var(--text-xs);color:var(--text-muted);margin-top:var(--space-md);">Lead time: 5–7 weeks from confirmed payment.</p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="footer-placeholder"></div>
+
+  <script defer src="components/header.js"></script>
+  <script defer src="components/footer.js"></script>
+  <script defer src="js/cart.js"></script>
+  <script defer src="js/components.js"></script>
+  <script defer src="data/products-data.js"></script>
+  <script defer src="js/products.js"></script>
+  <script defer src="js/search.js"></script>
+  <script defer src="js/main.js"></script>
+  <script defer src="js/checkout.js"></script>
+  <script>
+    // Back button in payment section
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('back-to-form-btn')?.addEventListener('click', () => {
+        document.getElementById('payment-section').style.display = 'none';
+        document.getElementById('customer-form-section').style.display = 'block';
+        // Reset payment containers
+        document.getElementById('paypal-container').style.display = 'none';
+        document.getElementById('stripe-container').style.display = 'none';
+        document.getElementById('paypal-buttons').innerHTML = '';
+        document.getElementById('stripe-payment-element').innerHTML = '';
+      });
+    });
+  </script>
+</body>
+</html>
