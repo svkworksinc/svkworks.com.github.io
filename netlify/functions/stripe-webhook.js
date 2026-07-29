@@ -66,15 +66,19 @@ exports.handler = async (event) => {
 
       console.log('[webhook] Triggering invoice email for:', order.order_number);
       const orderDate = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-      sendInvoiceEmail({
-        customerName: order.customer_name,
-        customerEmail: order.customer_email,
-        orderNumber: order.order_number,
-        orderDate,
-        items: order.items || [],
-        total: order.total_price,
-        paymentMethod: 'Credit / Debit Card',
-      }).catch(err => console.error('Email send failed:', err));
+      try {
+        await sendInvoiceEmail({
+          customerName: order.customer_name,
+          customerEmail: order.customer_email,
+          orderNumber: order.order_number,
+          orderDate,
+          items: order.items || [],
+          total: order.total_price,
+          paymentMethod: 'Credit / Debit Card',
+        });
+      } catch (err) {
+        console.error('Email send failed:', err.message);
+      }
     } else {
       console.log('[webhook] Order already paid — skipping email');
     }
