@@ -19,10 +19,40 @@
     window.STRIPE_PUBLISHABLE_KEY = '__STRIPE_PUBLISHABLE_KEY__';
   </script>
   <style>
+    /* ---- Compact page chrome ---- */
+    body.checkout-compact .page-hero { padding: 18px 0 14px; }
+    body.checkout-compact .page-hero h1 { font-size: 20px; margin-bottom: 0; }
+    body.checkout-compact .page-hero .breadcrumb { margin-bottom: 6px; font-size: 12px; }
+    body.checkout-compact .section { padding: 22px 0 40px; }
+
+    /* ---- Compact form controls (scoped to this page only) ---- */
+    body.checkout-compact .form-group { margin-bottom: 10px; }
+    body.checkout-compact .form-label { font-size: 12px; margin-bottom: 4px; }
+    body.checkout-compact .form-input,
+    body.checkout-compact .form-select,
+    body.checkout-compact .form-textarea {
+      padding: 0.55rem 0.75rem;
+      font-size: 13.5px;
+    }
+    body.checkout-compact .form-textarea { min-height: 64px; }
+    body.checkout-compact .form-hint { font-size: 11px; }
+
+    .checkout-section-title {
+      font-size: 13px;
+      font-weight: var(--weight-semibold);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-secondary);
+      margin: 20px 0 10px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border-color);
+    }
+    .checkout-section-title:first-child { margin-top: 0; padding-top: 0; border-top: none; }
+
     .checkout-layout {
       display: grid;
-      grid-template-columns: 1fr 420px;
-      gap: var(--space-2xl);
+      grid-template-columns: 1fr 360px;
+      gap: var(--space-xl);
       align-items: start;
     }
     @media (max-width: 900px) {
@@ -31,53 +61,70 @@
     .checkout-sidebar {
       background: var(--bg-card);
       border: 1px solid var(--border-color);
-      border-radius: var(--radius-lg);
-      padding: var(--space-xl);
+      border-radius: var(--radius-md);
+      padding: var(--space-lg);
       position: sticky;
-      top: calc(var(--header-height, 64px) + var(--space-xl));
+      top: calc(var(--header-height, 64px) + var(--space-lg));
     }
     .checkout-sidebar h3 {
-      font-size: var(--text-sm);
+      font-size: 12px;
       font-weight: var(--weight-semibold);
       text-transform: uppercase;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.06em;
       color: var(--text-muted);
-      margin: 0 0 var(--space-lg);
+      margin: 0 0 var(--space-md);
     }
     .checkout-item {
       display: flex;
       align-items: center;
-      gap: var(--space-md);
-      padding: var(--space-sm) 0;
+      gap: var(--space-sm);
+      padding: 8px 0;
       border-bottom: 1px solid var(--border-color);
     }
     .checkout-item:last-child { border-bottom: none; }
+    .checkout-item-img-wrap { position: relative; flex-shrink: 0; }
     .checkout-item-img {
-      width: 52px;
-      height: 52px;
+      width: 44px;
+      height: 44px;
       object-fit: cover;
       border-radius: var(--radius-sm);
       background: var(--bg-secondary);
-      flex-shrink: 0;
+      display: block;
+    }
+    .checkout-item-qty {
+      position: absolute;
+      top: -6px;
+      right: -6px;
+      background: var(--text-muted);
+      color: var(--bg-primary);
+      font-size: 10px;
+      font-weight: var(--weight-bold);
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
     }
     .checkout-item-info { flex: 1; min-width: 0; }
-    .checkout-item-name { font-size: var(--text-sm); font-weight: var(--weight-medium); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .checkout-item-opts { font-size: var(--text-xs); color: var(--text-muted); margin-top: 2px; }
-    .checkout-item-price { font-size: var(--text-sm); font-weight: var(--weight-semibold); color: var(--magenta); flex-shrink: 0; }
-    .checkout-total-row { display: flex; justify-content: space-between; align-items: baseline; margin-top: var(--space-lg); padding-top: var(--space-lg); border-top: 1px solid var(--border-color); }
-    .checkout-total-label { font-size: var(--text-sm); color: var(--text-secondary); }
-    .checkout-total-amount { font-size: var(--text-xl); font-weight: var(--weight-bold); color: var(--magenta); }
+    .checkout-item-name { font-size: 13px; font-weight: var(--weight-medium); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .checkout-item-opts { font-size: 11px; color: var(--text-muted); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .checkout-item-price { font-size: 13px; font-weight: var(--weight-semibold); color: var(--magenta); flex-shrink: 0; }
+    .checkout-total-row { display: flex; justify-content: space-between; align-items: baseline; margin-top: var(--space-sm); padding-top: var(--space-sm); border-top: 1px solid var(--border-color); }
+    .checkout-total-label { font-size: 14px; font-weight: var(--weight-semibold); }
+    .checkout-total-amount { font-size: var(--text-lg); font-weight: var(--weight-bold); color: var(--magenta); }
 
     /* Payment method tabs */
-    .pay-tabs { display: flex; gap: var(--space-sm); margin-bottom: var(--space-xl); }
+    .pay-tabs { display: flex; gap: 8px; margin-bottom: var(--space-md); }
     .pay-tab {
       flex: 1;
-      padding: var(--space-sm) var(--space-md);
+      padding: 8px var(--space-sm);
       border: 1px solid var(--border-color);
       background: var(--bg-card);
-      border-radius: var(--radius-md);
+      border-radius: var(--radius-sm);
       cursor: pointer;
-      font-size: var(--text-sm);
+      font-size: 12.5px;
       font-weight: var(--weight-medium);
       color: var(--text-secondary);
       text-align: center;
@@ -88,10 +135,10 @@
       color: var(--text-primary);
       background: rgba(233,30,140,0.05);
     }
-    .pay-tab svg { display: block; margin: 0 auto var(--space-xs); }
+    .pay-tab svg { display: block; margin: 0 auto 3px; }
 
     /* Stripe elements container */
-    #stripe-payment-element { margin-bottom: var(--space-lg); }
+    #stripe-payment-element { margin-bottom: var(--space-md); }
     #stripe-submit-btn { width: 100%; }
 
     /* PayPal container */
@@ -101,10 +148,10 @@
     .security-note {
       display: flex;
       align-items: center;
-      gap: var(--space-sm);
-      font-size: var(--text-xs);
+      gap: 6px;
+      font-size: 11px;
       color: var(--text-muted);
-      margin-top: var(--space-lg);
+      margin-top: var(--space-md);
     }
     .security-note svg { flex-shrink: 0; }
 
@@ -113,15 +160,15 @@
       background: rgba(231,76,60,0.08);
       border: 1px solid rgba(231,76,60,0.3);
       border-radius: var(--radius-md);
-      padding: var(--space-md) var(--space-lg);
-      font-size: var(--text-sm);
+      padding: 10px var(--space-md);
+      font-size: 13px;
       color: #f87171;
-      margin-bottom: var(--space-lg);
+      margin-bottom: var(--space-md);
       display: none;
     }
 
     /* Payment loading */
-    #payment-loading { display:none; text-align:center; padding: var(--space-lg) 0; color: var(--text-muted); font-size: var(--text-sm); }
+    #payment-loading { display:none; text-align:center; padding: var(--space-md) 0; color: var(--text-muted); font-size: 13px; }
 
     /* Payment section */
     #payment-section { display: none; }
@@ -132,35 +179,39 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: var(--space-md);
+      gap: var(--space-sm);
       border: 1px solid var(--border-color);
-      border-radius: var(--radius-md);
-      padding: var(--space-md);
-      margin-bottom: var(--space-sm);
+      border-radius: var(--radius-sm);
+      padding: 9px 12px;
+      margin-bottom: 6px;
       cursor: pointer;
       transition: border-color 0.15s, background 0.15s;
     }
     .ship-option:hover { border-color: var(--magenta); }
     .ship-option.selected { border-color: var(--magenta); background: rgba(233,30,140,0.05); }
-    .ship-option input[type="radio"] { accent-color: var(--magenta); flex-shrink: 0; width: 16px; height: 16px; }
+    .ship-option input[type="radio"] { accent-color: var(--magenta); flex-shrink: 0; width: 15px; height: 15px; }
     .ship-option-label { flex: 1; display: flex; flex-direction: column; }
-    .ship-option-name { font-size: var(--text-sm); font-weight: var(--weight-medium); }
-    .ship-option-desc { font-size: var(--text-xs); color: var(--text-muted); }
-    .ship-option-price { font-size: var(--text-sm); font-weight: var(--weight-semibold); color: var(--magenta); white-space: nowrap; }
+    .ship-option-name { font-size: 13px; font-weight: var(--weight-medium); }
+    .ship-option-desc { font-size: 11px; color: var(--text-muted); }
+    .ship-option-price { font-size: 13px; font-weight: var(--weight-semibold); color: var(--magenta); white-space: nowrap; }
 
     /* Totals breakdown in sidebar */
-    .checkout-totals-breakdown { margin-top: var(--space-lg); padding-top: var(--space-lg); border-top: 1px solid var(--border-color); }
-    .checkout-totals-breakdown .row { display: flex; justify-content: space-between; font-size: var(--text-sm); color: var(--text-secondary); padding: 4px 0; }
+    .checkout-totals-breakdown { margin-top: var(--space-sm); padding-top: var(--space-sm); border-top: 1px solid var(--border-color); }
+    .checkout-totals-breakdown .row { display: flex; justify-content: space-between; font-size: 13px; color: var(--text-secondary); padding: 3px 0; }
     .checkout-totals-breakdown .row .amt { color: var(--text-primary); font-weight: var(--weight-medium); }
 
-    .form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md); }
-    .form-row-3 { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: var(--space-md); }
+    /* Coupon row in sidebar */
+    .checkout-coupon-row { display: flex; gap: 6px; margin: var(--space-sm) 0; }
+    .checkout-coupon-row input { flex: 1; min-width: 0; }
+
+    .form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-sm); }
+    .form-row-3 { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: var(--space-sm); }
     @media (max-width: 520px) {
       .form-row-2, .form-row-3 { grid-template-columns: 1fr; }
     }
   </style>
 </head>
-<body>
+<body class="checkout-compact">
   <div id="header-placeholder"></div>
 
   <main id="main-content">
@@ -198,7 +249,7 @@
           <div>
             <!-- Customer info form -->
             <div id="customer-form-section">
-              <h2 style="font-size:var(--text-lg);margin-bottom:var(--space-xl);">Your Details</h2>
+              <div class="checkout-section-title" style="margin-top:0;padding-top:0;border-top:none;">Contact</div>
 
               <div id="checkout-error" class="checkout-error-box"></div>
 
@@ -213,10 +264,10 @@
               </div>
               <div class="form-group">
                 <label class="form-label" for="customer-notes">Build Notes <span style="color:var(--text-muted);font-weight:400;">(optional)</span></label>
-                <textarea class="form-textarea" id="customer-notes" rows="3" placeholder="ECU preference, vehicle info, special requirements…"></textarea>
+                <textarea class="form-textarea" id="customer-notes" rows="2" placeholder="ECU preference, vehicle info, special requirements…"></textarea>
               </div>
 
-              <h2 style="font-size:var(--text-lg);margin:var(--space-2xl) 0 var(--space-lg);">Shipping Address</h2>
+              <div class="checkout-section-title">Delivery</div>
 
               <div class="form-group">
                 <label class="form-label" for="ship-address">Street Address <span style="color:var(--magenta);">*</span></label>
@@ -240,10 +291,10 @@
                 </div>
               </div>
 
-              <h2 style="font-size:var(--text-lg);margin:var(--space-2xl) 0 var(--space-lg);">Shipping Method</h2>
+              <div class="checkout-section-title">Shipping Method</div>
               <div id="shipping-options"></div>
 
-              <h2 style="font-size:var(--text-lg);margin:var(--space-2xl) 0 var(--space-lg);">Payment Method</h2>
+              <div class="checkout-section-title">Payment</div>
 
               <div class="pay-tabs">
                 <button class="pay-tab active" data-tab="paypal" type="button">
@@ -257,13 +308,13 @@
               </div>
 
               <div data-tab-panel="paypal">
-                <p style="font-size:var(--text-sm);color:var(--text-secondary);margin-bottom:var(--space-lg);">You'll be directed to PayPal to complete your payment securely. PayPal also supports debit and guest card payments.</p>
+                <p style="font-size:12.5px;color:var(--text-secondary);margin-bottom:var(--space-sm);">You'll be directed to PayPal to complete your payment securely. PayPal also supports debit and guest card payments.</p>
               </div>
               <div data-tab-panel="card" style="display:none;">
-                <p style="font-size:var(--text-sm);color:var(--text-secondary);margin-bottom:var(--space-lg);">Pay with any major credit or debit card. Your card details are handled directly by Stripe — we never see or store your card number.</p>
+                <p style="font-size:12.5px;color:var(--text-secondary);margin-bottom:var(--space-sm);">Pay with any major credit or debit card. Your card details are handled directly by Stripe — we never see or store your card number.</p>
               </div>
 
-              <button class="btn btn-primary btn-lg" id="continue-btn" style="width:100%;margin-top:var(--space-md);">Continue to Payment</button>
+              <button class="btn btn-primary btn-lg" id="continue-btn" style="width:100%;margin-top:6px;">Continue to Payment</button>
 
               <div class="security-note">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
@@ -273,10 +324,10 @@
 
             <!-- Payment UI (shown after "Continue to Payment") -->
             <div id="payment-section">
-              <button type="button" id="back-to-form-btn" class="btn btn-ghost btn-sm" style="margin-bottom:var(--space-xl);">
+              <button type="button" id="back-to-form-btn" class="btn btn-ghost btn-sm" style="margin-bottom:var(--space-md);">
                 ← Back
               </button>
-              <h2 id="payment-heading" style="font-size:var(--text-lg);margin-bottom:var(--space-xl);"></h2>
+              <h2 id="payment-heading" style="font-size:16px;margin-bottom:var(--space-md);"></h2>
 
               <div id="payment-error" class="checkout-error-box"></div>
               <div id="payment-loading">Setting up payment…</div>
@@ -290,7 +341,7 @@
                 <button class="btn btn-primary btn-lg" id="stripe-submit-btn" style="width:100%;">Pay Now</button>
               </div>
 
-              <div class="security-note" style="margin-top:var(--space-xl);">
+              <div class="security-note" style="margin-top:var(--space-md);">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
                 Payments processed via PayPal and Stripe — industry-leading payment security.
               </div>
@@ -301,6 +352,12 @@
           <div class="checkout-sidebar">
             <h3>Order Summary</h3>
             <div id="checkout-items"></div>
+
+            <div class="checkout-coupon-row">
+              <input type="text" class="form-input" id="checkout-coupon-input" placeholder="Discount code" autocomplete="off" style="padding:0.5rem 0.65rem;font-size:12.5px;">
+              <button class="btn btn-secondary btn-sm" id="checkout-apply-coupon-btn" type="button">Apply</button>
+            </div>
+
             <div class="checkout-totals-breakdown">
               <div class="row"><span>Subtotal</span><span class="amt" id="sum-subtotal">—</span></div>
               <div class="row"><span>Shipping</span><span class="amt" id="sum-shipping">Select method</span></div>
@@ -310,7 +367,7 @@
               <span class="checkout-total-label">Total</span>
               <span class="checkout-total-amount" id="checkout-total"></span>
             </div>
-            <p style="font-size:var(--text-xs);color:var(--text-muted);margin-top:var(--space-md);">Lead time: 5–7 weeks from confirmed payment.</p>
+            <p style="font-size:11px;color:var(--text-muted);margin-top:8px;">Lead time: 5–7 weeks from confirmed payment.</p>
           </div>
 
         </div>
@@ -328,7 +385,7 @@
   <script defer src="js/products.js"></script>
   <script defer src="js/search.js"></script>
   <script defer src="js/main.js"></script>
-  <script defer src="js/checkout.js?v=2"></script>
+  <script defer src="js/checkout.js?v=3"></script>
   <script>
     // Back button in payment section
     document.addEventListener('DOMContentLoaded', () => {
