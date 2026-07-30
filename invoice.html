@@ -94,6 +94,8 @@
     .btn:active { transform: scale(0.97); }
     .btn:hover  { opacity: 0.82; }
     .btn-ghost  { background: var(--bg-elevated); color: var(--text-2); border: 1px solid var(--border); }
+    .btn-primary { background: var(--magenta); color: #fff; border: 1px solid var(--magenta); }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
     /* ─── Page ───────────────────────────────────────────── */
     .page {
@@ -441,9 +443,28 @@
       .col-desc { display: none; }
     }
   </style>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="js/auth.js"></script>
 </head>
 <body>
 
+<!-- Loading -->
+<div id="invoice-loading" style="text-align:center;padding:4rem 1rem;">
+  <div class="spinner" style="width:24px;height:24px;border:2px solid var(--border);border-top-color:var(--magenta);border-radius:50%;animation:spin 0.6s linear infinite;margin:0 auto 1rem;"></div>
+  <p style="color:var(--text-2);">Loading…</p>
+</div>
+
+<!-- Not authorized -->
+<div id="invoice-denied" style="display:none;text-align:center;padding:4rem 1.5rem;">
+  <h2 style="margin-bottom:0.75rem;">Access Denied</h2>
+  <p style="color:var(--text-2);margin-bottom:1.5rem;">This page is restricted to SVK Works administrators.<br>Sign in with an admin account to continue.</p>
+  <div style="display:flex;gap:0.75rem;justify-content:center;">
+    <a href="login.html" class="btn btn-primary">Sign In</a>
+    <a href="admin.html" class="btn btn-ghost">Admin Panel</a>
+  </div>
+</div>
+
+<div id="invoice-app" style="display:none;">
 <!-- ─── Toolbar ─────────────────────────────────────────── -->
 <div class="toolbar no-print">
   <span class="toolbar-brand">SVK Works — Invoice Tool</span>
@@ -656,8 +677,24 @@ ECU</div>
 
 </div>
 </div>
+</div><!-- /#invoice-app -->
 
 <script>
+  SVKAuth.init();
+
+  async function initInvoiceAuth() {
+    await SVKAuth.ready;
+    const session = SVKAuth.configured ? await SVKAuth.getSession() : null;
+    const isAdmin = session ? await SVKAuth.isAdmin() : false;
+    document.getElementById('invoice-loading').style.display = 'none';
+    if (!session || !isAdmin) {
+      document.getElementById('invoice-denied').style.display = 'block';
+      return;
+    }
+    document.getElementById('invoice-app').style.display = 'block';
+  }
+  document.addEventListener('DOMContentLoaded', initInvoiceAuth);
+
   const DEFAULT_ROWS = [
     { item: 'MK4 Supra Engine Harness', desc: 'Custom plug-and-play standalone harness — 2JZ-GTE', qty: 1, rate: 1450 },
     { item: 'ECU Option',               desc: 'Haltech Elite 2500 wiring integration',              qty: 1, rate: 150  },
