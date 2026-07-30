@@ -76,3 +76,15 @@
   for = "/order-confirmation*"
   [headers.values]
     frame-ancestors = "'none'"
+
+# Clean URLs for the dynamically-generated feeds (Google Merchant Center /
+# Google Shopping product feed, and the products sitemap)
+[[redirects]]
+  from = "/product-feed.xml"
+  to = "/.netlify/functions/product-feed"
+  status = 200
+
+[[redirects]]
+  from = "/sitemap-products.xml"
+  to = "/.netlify/functions/sitemap-products"
+  status = 200
