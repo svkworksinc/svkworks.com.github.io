@@ -65,11 +65,13 @@ const SHIPPING_OPTIONS = {
 
 const TX_TAX_RATE = 0.0825; // Texas combined state (6.25%) + typical local (2%) rate
 
-// validateCart looks products up in two places:
+// validateCart looks products up in three places:
 //   1. PRODUCT_PRICES — the static catalog (harnesses, connectors, merch)
 //   2. the `used_parts` Supabase table — one-off used parts listed by the admin
-// A supabase client is required to validate carts that might contain used parts;
-// omit it only for callers that never touch used-parts ids.
+//   3. the `parts_catalog` Supabase table — 3D Parts / Other Parts / Relay &
+//      Power Kits items added through the admin panel
+// A supabase client is required to validate carts that might contain used
+// parts or catalog parts; omit it only for callers that never touch either.
 async function validateCart(items, supabase) {
   if (!Array.isArray(items) || items.length === 0) {
     throw new Error('Cart is empty or invalid.');
@@ -77,16 +79,27 @@ async function validateCart(items, supabase) {
 
   const unknownIds = [...new Set(items.filter(i => PRODUCT_PRICES[i.id] === undefined).map(i => i.id))];
   let usedPartsById = {};
+  let catalogPartsById = {};
   if (unknownIds.length) {
     if (!supabase) {
       throw new Error(`Unknown product: ${unknownIds[0]}`);
     }
-    const { data, error } = await supabase
+    const { data: usedParts, error: usedErr } = await supabase
       .from('used_parts')
       .select('id, title, price, weight_oz, status')
       .in('id', unknownIds);
-    if (error) throw new Error(`Failed to look up used parts: ${error.message}`);
-    usedPartsById = Object.fromEntries((data || []).map(p => [p.id, p]));
+    if (usedErr) throw new Error(`Failed to look up used parts: ${usedErr.message}`);
+    usedPartsById = Object.fromEntries((usedParts || []).map(p => [p.id, p]));
+
+    const stillUnknown = unknownIds.filter(id => !usedPartsById[id]);
+    if (stillUnknown.length) {
+      const { data: catalogParts, error: catalogErr } = await supabase
+        .from('parts_catalog')
+        .select('id, title, price, weight_oz, status')
+        .in('id', stillUnknown);
+      if (catalogErr) throw new Error(`Failed to look up parts catalog: ${catalogErr.message}`);
+      catalogPartsById = Object.fromEntries((catalogParts || []).map(p => [p.id, p]));
+    }
   }
 
   let subtotal = 0;
@@ -94,21 +107,29 @@ async function validateCart(items, supabase) {
   for (const item of items) {
     const staticPrice = PRODUCT_PRICES[item.id];
     const usedPart = staticPrice === undefined ? usedPartsById[item.id] : null;
+    const catalogPart = staticPrice === undefined && !usedPart ? catalogPartsById[item.id] : null;
 
-    if (staticPrice === undefined && !usedPart) {
+    if (staticPrice === undefined && !usedPart && !catalogPart) {
       throw new Error(`Unknown product: ${item.id}`);
     }
     if (usedPart && usedPart.status !== 'available') {
       throw new Error(`"${usedPart.title}" just sold and is no longer available.`);
     }
+    if (catalogPart && catalogPart.status !== 'available') {
+      throw new Error(`"${catalogPart.title}" isn't available for purchase yet.`);
+    }
 
-    const price = usedPart ? Number(usedPart.price) : staticPrice;
+    const price = usedPart ? Number(usedPart.price) : catalogPart ? Number(catalogPart.price) : staticPrice;
     // Used parts are one-off — never more than one of the same listing.
     const quantity = usedPart ? 1 : Math.max(1, Math.floor(Number(item.quantity) || 1));
     if (usedPart && Number(item.quantity) > 1) {
       throw new Error(`Only one of "${usedPart.title}" is available.`);
     }
-    const weightOz = usedPart ? (usedPart.weight_oz || DEFAULT_ITEM_WEIGHT_OZ) : (PRODUCT_WEIGHTS_OZ[item.id] ?? DEFAULT_ITEM_WEIGHT_OZ);
+    const weightOz = usedPart
+      ? (usedPart.weight_oz || DEFAULT_ITEM_WEIGHT_OZ)
+      : catalogPart
+        ? (catalogPart.weight_oz || DEFAULT_ITEM_WEIGHT_OZ)
+        : (PRODUCT_WEIGHTS_OZ[item.id] ?? DEFAULT_ITEM_WEIGHT_OZ);
     const lineTotal = price * quantity;
     subtotal += lineTotal;
     validated.push({

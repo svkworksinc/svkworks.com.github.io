@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Relay &amp; Power Kits — SVK Works</title>
+  <meta name="description" content="Plug-and-play relay and power delivery kits for fuel pumps, cooling fans, and more — by SVK Works.">
+  <link rel="canonical" href="https://www.svkworks.com/relay-power-kits.html">
+  <meta property="og:site_name" content="SVK Works">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Relay &amp; Power Kits — SVK Works">
+  <meta property="og:description" content="Plug-and-play relay and power delivery kits for fuel pumps, cooling fans, and more.">
+  <meta property="og:url" content="https://www.svkworks.com/relay-power-kits.html">
+  <meta property="og:image" content="https://www.svkworks.com/img/svk-logo.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Relay &amp; Power Kits — SVK Works">
+  <meta name="twitter:description" content="Plug-and-play relay and power delivery kits for fuel pumps, cooling fans, and more.">
+  <meta name="twitter:image" content="https://www.svkworks.com/img/svk-logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="img/svk-icon.png" type="image/png">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.svkworks.com/" },
+      { "@type": "ListItem", "position": 2, "name": "Relay & Power Kits", "item": "https://www.svkworks.com/relay-power-kits.html" }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <div id="header-placeholder"></div>
+
+  <main id="main-content">
+    <div class="page-hero">
+      <div class="container">
+        <div class="breadcrumb" role="navigation" aria-label="breadcrumb">
+          <a href="index.html">Home</a><span class="breadcrumb-sep" aria-hidden="true">/</span>
+          <a href="other-parts.html">Parts</a><span class="breadcrumb-sep" aria-hidden="true">/</span>
+          <span>Relay &amp; Power Kits</span>
+        </div>
+        <h1>Relay &amp; Power Kits</h1>
+        <p>Plug-and-play relay and power delivery kits — clean, reliable upgrades for fuel pumps, cooling fans, and more.</p>
+      </div>
+    </div>
+
+    <section class="section">
+      <div class="container">
+        <div id="parts-loading" class="account-empty">
+          <div class="account-empty-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+          <p>Loading kits…</p>
+        </div>
+
+        <div id="parts-empty" class="empty-state" style="display:none;">
+          <div class="empty-state-icon">
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+          </div>
+          <h3>Nothing listed yet</h3>
+          <p>Check back soon — relay and power kits are on the way.</p>
+        </div>
+
+        <div class="product-grid" id="parts-grid" style="display:none;"></div>
+      </div>
+    </section>
+  </main>
+
+  <div id="footer-placeholder"></div>
+
+  <script defer src="components/header.js"></script>
+  <script defer src="components/footer.js"></script>
+  <script defer src="js/cart.js?v=4"></script>
+  <script defer src="js/components.js"></script>
+  <script defer src="data/products-data.js"></script>
+  <script defer src="js/products.js"></script>
+  <script defer src="js/search.js"></script>
+  <script defer src="js/main.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/parts-catalog.js"></script>
+  <script>
+    function renderGrid(parts) {
+      const grid = document.getElementById('parts-grid');
+      grid.innerHTML = parts.map(part => {
+        const img = (part.images && part.images[0]) || 'img/filler.webp';
+        const url = svkCatalogPartUrl(part);
+        const priceOrBadge = part.status === 'available'
+          ? `<span class="product-card-price">${svkFormatCatalogPrice(part.price)}</span>`
+          : `<span class="product-card-price" style="color:var(--text-muted);">Coming Soon</span>`;
+        return `
+        <div class="product-card fade-in">
+          <div class="product-card-image">
+            <img src="${img}" alt="${part.title}" loading="lazy">
+            ${part.status !== 'available' ? '<span class="product-card-badge badge">Coming Soon</span>' : ''}
+          </div>
+          <div class="product-card-body">
+            <h3 class="product-card-title">
+              <a href="${url}">${part.title}</a>
+            </h3>
+            <p class="product-card-desc">${(part.description || '').slice(0, 110)}${(part.description || '').length > 110 ? '…' : ''}</p>
+            <div class="product-card-footer">
+              ${priceOrBadge}
+              <a href="${url}" class="btn btn-primary btn-sm">View</a>
+            </div>
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      SVKAuth.init();
+      await SVKAuth.ready;
+
+      const parts = await SVKAuth.getPartsCatalog('relay-power-kits');
+      document.getElementById('parts-loading').style.display = 'none';
+
+      if (!parts.length) {
+        document.getElementById('parts-empty').style.display = 'block';
+        return;
+      }
+
+      document.getElementById('parts-grid').style.display = 'grid';
+      renderGrid(parts);
+      if (typeof SVKMain !== 'undefined') SVKMain.observeAnimations();
+    });
+  </script>
+</body>
+</html>
