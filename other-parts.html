@@ -21,6 +21,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
   <link rel="stylesheet" href="css/style.css">
   <link rel="icon" href="img/svk-icon.png" type="image/png">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <!-- Breadcrumb Schema -->
   <script type="application/ld+json">
   {
@@ -67,6 +68,13 @@
             </select>
           </div>
         </div>
+        <div id="parts-empty" class="empty-state" style="display:none;">
+          <div class="empty-state-icon">
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M20.5 7.3L12 3 3.5 7.3M20.5 7.3L12 11.7M20.5 7.3v9.4L12 21m0-9.3L3.5 7.3M12 11.7v9.3m0-9.3L3.5 16.7m0-9.4v9.4L12 21"/></svg>
+          </div>
+          <h3>Nothing listed yet</h3>
+          <p>Check back soon — we're always adding more parts and accessories.</p>
+        </div>
         <div class="product-grid" id="product-grid"></div>
       </div>
     </section>
@@ -82,33 +90,72 @@
   <script defer src="js/products.js"></script>
   <script defer src="js/search.js"></script>
   <script defer src="js/main.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/parts-catalog.js"></script>
   <script>
-    document.addEventListener('DOMContentLoaded', async () => {
-      await SVKProducts.load();
-      let engineFilter = 'all';
-      let currentSort = 'default';
+    let allOtherParts = [];
+    let engineFilter = 'all';
+    let currentSort = 'default';
 
-      function render() {
-        const filter = { category: 'other' };
-        if (engineFilter !== 'all') filter.engine = engineFilter;
-        if (currentSort !== 'default') filter.sort = currentSort;
-        SVKProducts.renderProductGrid(SVKProducts.getProducts(filter), 'product-grid');
+    function render() {
+      let parts = allOtherParts;
+      if (engineFilter !== 'all') parts = parts.filter(p => p.engine === engineFilter);
+      if (currentSort === 'price-asc') parts = [...parts].sort((a, b) => a.price - b.price);
+      else if (currentSort === 'price-desc') parts = [...parts].sort((a, b) => b.price - a.price);
+      else if (currentSort === 'name') parts = [...parts].sort((a, b) => a.title.localeCompare(b.title));
+
+      const grid = document.getElementById('product-grid');
+      const emptyEl = document.getElementById('parts-empty');
+      if (!parts.length) {
+        grid.style.display = 'none';
+        emptyEl.style.display = 'block';
+        return;
       }
+      emptyEl.style.display = 'none';
+      grid.style.display = 'grid';
+      grid.innerHTML = parts.map(part => {
+        const img = (part.images && part.images[0]) || 'img/filler.webp';
+        const url = svkCatalogPartUrl(part);
+        const priceOrBadge = part.status === 'available'
+          ? `<span class="product-card-price">${svkFormatCatalogPrice(part.price)}</span>`
+          : `<span class="product-card-price" style="color:var(--text-muted);">Coming Soon</span>`;
+        return `
+        <div class="product-card fade-in">
+          <div class="product-card-image">
+            <img src="${img}" alt="${part.title}" loading="lazy">
+            ${part.status !== 'available' ? '<span class="product-card-badge badge">Coming Soon</span>' : ''}
+          </div>
+          <div class="product-card-body">
+            <h3 class="product-card-title"><a href="${url}">${part.title}</a></h3>
+            <p class="product-card-desc">${(part.description || '').slice(0, 110)}${(part.description || '').length > 110 ? '…' : ''}</p>
+            <div class="product-card-footer">
+              ${priceOrBadge}
+              <a href="${url}" class="btn btn-primary btn-sm">View</a>
+            </div>
+          </div>
+        </div>`;
+      }).join('');
+      if (typeof SVKMain !== 'undefined') SVKMain.observeAnimations();
+    }
 
-      document.querySelectorAll('#engine-filter .filter-tab').forEach(tab => {
-        tab.addEventListener('click', () => {
-          document.querySelectorAll('#engine-filter .filter-tab').forEach(t => t.classList.remove('active'));
-          tab.classList.add('active');
-          engineFilter = tab.dataset.engine;
-          render();
-        });
-      });
-
-      document.getElementById('sort-select').addEventListener('change', (e) => {
-        currentSort = e.target.value;
+    document.querySelectorAll('#engine-filter .filter-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('#engine-filter .filter-tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        engineFilter = tab.dataset.engine;
         render();
       });
+    });
 
+    document.getElementById('sort-select').addEventListener('change', (e) => {
+      currentSort = e.target.value;
+      render();
+    });
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      SVKAuth.init();
+      await SVKAuth.ready;
+      allOtherParts = await SVKAuth.getPartsCatalog('other-parts');
       render();
     });
   </script>

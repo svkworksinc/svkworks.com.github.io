@@ -60,6 +60,7 @@ const SVK_HEADER_HTML = `
             <ul class="dropdown">
               <li><a href="/3d-parts.html">3D Parts</a></li>
               <li><a href="/other-parts.html">Other Parts</a></li>
+              <li><a href="/relay-power-kits.html">Relay &amp; Power Kits</a></li>
             </ul>
           </li>
           <li class="nav-item has-dropdown">

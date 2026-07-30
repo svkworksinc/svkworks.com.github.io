@@ -21,6 +21,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
   <link rel="stylesheet" href="css/style.css">
   <link rel="icon" href="img/svk-icon.png" type="image/png">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <!-- Breadcrumb Schema -->
   <script type="application/ld+json">
   {
@@ -68,6 +69,14 @@
         <div class="product-grid" id="product-grid"></div>
       </div>
     </section>
+
+    <!-- Admin-added 3D Parts (Supabase-managed) — hidden entirely if empty -->
+    <section class="section" id="more-parts-section" style="display:none;padding-top:0;">
+      <div class="container">
+        <h2 style="font-size:var(--text-2xl);margin-bottom:var(--space-lg);">More 3D Parts</h2>
+        <div class="product-grid" id="more-parts-grid"></div>
+      </div>
+    </section>
   </main>
 
   <div id="footer-placeholder"></div>
@@ -80,6 +89,8 @@
   <script defer src="js/products.js"></script>
   <script defer src="js/search.js"></script>
   <script defer src="js/main.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/parts-catalog.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', async () => {
       await SVKProducts.load();
@@ -108,6 +119,37 @@
       });
 
       render();
+
+      // Admin-added items (Supabase) — shown below the curated grid above.
+      SVKAuth.init();
+      await SVKAuth.ready;
+      const moreParts = await SVKAuth.getPartsCatalog('3d-parts');
+      if (moreParts.length) {
+        document.getElementById('more-parts-section').style.display = 'block';
+        document.getElementById('more-parts-grid').innerHTML = moreParts.map(part => {
+          const img = (part.images && part.images[0]) || 'img/filler.webp';
+          const url = svkCatalogPartUrl(part);
+          const priceOrBadge = part.status === 'available'
+            ? `<span class="product-card-price">${svkFormatCatalogPrice(part.price)}</span>`
+            : `<span class="product-card-price" style="color:var(--text-muted);">Coming Soon</span>`;
+          return `
+          <div class="product-card fade-in">
+            <div class="product-card-image">
+              <img src="${img}" alt="${part.title}" loading="lazy">
+              ${part.status !== 'available' ? '<span class="product-card-badge badge">Coming Soon</span>' : ''}
+            </div>
+            <div class="product-card-body">
+              <h3 class="product-card-title"><a href="${url}">${part.title}</a></h3>
+              <p class="product-card-desc">${(part.description || '').slice(0, 110)}${(part.description || '').length > 110 ? '…' : ''}</p>
+              <div class="product-card-footer">
+                ${priceOrBadge}
+                <a href="${url}" class="btn btn-primary btn-sm">View</a>
+              </div>
+            </div>
+          </div>`;
+        }).join('');
+        if (typeof SVKMain !== 'undefined') SVKMain.observeAnimations();
+      }
     });
   </script>
 </body>
