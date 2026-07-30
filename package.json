@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "engines": { "node": ">=18" },
+  "scripts": {
+    "cachebust": "node scripts/cachebust.js"
+  },
   "dependencies": {
     "@supabase/supabase-js": "^2.45.0",
     "pdfkit": "^0.15.0",
