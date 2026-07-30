@@ -7,6 +7,7 @@ const SVKCheckout = {
   subtotal: 0,
   supabaseOrderId: null,
   orderNumber: null,
+  userAccessToken: null, // set in _prefillAuth() when the shopper is signed in — lets checkout link the order to their account
   paymentMethod: 'paypal', // 'paypal' | 'card'
   stripeClientSecret: null,
   stripeInstance: null,
@@ -41,6 +42,15 @@ const SVKCheckout = {
       return;
     }
     this.subtotal = this.cart.reduce((s, i) => s + i.price * i.quantity, 0);
+
+    if (typeof gtag === 'function') {
+      gtag('event', 'begin_checkout', {
+        currency: 'USD',
+        value: this.subtotal,
+        items: this.cart.map(i => ({ item_id: i.id, item_name: i.name, price: i.price, quantity: i.quantity })),
+      });
+    }
+
     this._renderSummary();
     this._renderShippingPlaceholder('Enter your shipping address above to see shipping options.');
     this._bindAddressFieldsForShipping();
@@ -493,6 +503,7 @@ const SVKCheckout = {
     if (!SVKAuth.configured) return;
     const session = await SVKAuth.getSession();
     if (!session) return;
+    this.userAccessToken = session.access_token;
     const emailEl = document.getElementById('customer-email');
     if (emailEl && !emailEl.value) emailEl.value = session.user.email;
     const profile = await SVKAuth.getProfile().catch(() => null);
@@ -512,6 +523,7 @@ const SVKCheckout = {
           customerNotes: notes,
           shippingOptionId: this.shippingOptionId,
           shippingAddress,
+          accessToken: this.userAccessToken,
         }),
       });
       const data = await res.json();
@@ -576,6 +588,7 @@ const SVKCheckout = {
           customerNotes: notes,
           shippingOptionId: this.shippingOptionId,
           shippingAddress,
+          accessToken: this.userAccessToken,
         }),
       });
       const data = await res.json();

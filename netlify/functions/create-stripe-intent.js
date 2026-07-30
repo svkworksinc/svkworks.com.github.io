@@ -1,6 +1,7 @@
 const { createClient } = require('@supabase/supabase-js');
 const Stripe = require('stripe');
 const { validateCart, resolveShipping, calculateTotals } = require('./_pricing');
+const { resolveUserId } = require('./_auth');
 
 const supabase = createClient(
   process.env.SUPABASE_URL,
@@ -19,7 +20,7 @@ exports.handler = async (event) => {
   }
 
   try {
-    const { cartItems, customerName, customerEmail, customerNotes, shippingOptionId, shippingAddress } = JSON.parse(event.body);
+    const { cartItems, customerName, customerEmail, customerNotes, shippingOptionId, shippingAddress, accessToken } = JSON.parse(event.body);
 
     if (!customerName?.trim() || !customerEmail?.trim()) {
       return { statusCode: 400, body: JSON.stringify({ error: 'Name and email are required.' }) };
@@ -36,12 +37,14 @@ exports.handler = async (event) => {
     const { items, subtotal } = await validateCart(cartItems, supabase);
     const { shipping, shippingLabel } = await resolveShipping(shippingOptionId);
     const { tax, grandTotal } = calculateTotals(subtotal, shipping, shippingAddress.state);
+    const userId = await resolveUserId(supabase, accessToken);
 
     // Create order record in Supabase
     const orderNumber = `SVK-${Date.now().toString(36).toUpperCase()}`;
     const { data: order, error: dbError } = await supabase
       .from('orders')
       .insert({
+        user_id: userId,
         product: items.map(i => i.name).join(', '),
         options: { items, shippingAddress, shippingMethod: shippingOptionId, shippingLabel, subtotal, shipping, tax },
         total_price: grandTotal,

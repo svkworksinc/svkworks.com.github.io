@@ -46,6 +46,14 @@ const SVKCart = {
 
     this.saveCart(cart);
     this.showToast(`${product.name} added to cart`);
+
+    if (typeof gtag === 'function') {
+      gtag('event', 'add_to_cart', {
+        currency: 'USD',
+        value: product.price * quantity,
+        items: [{ item_id: product.id, item_name: product.name, price: product.price, quantity }],
+      });
+    }
   },
 
   removeItem(id, options = {}) {

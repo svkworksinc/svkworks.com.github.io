@@ -224,12 +224,12 @@
 
   <div id="footer-placeholder"></div>
 
-  <script defer src="components/header.js?v=1"></script>
-  <script defer src="components/footer.js?v=1"></script>
-  <script defer src="js/cart.js?v=5"></script>
-  <script defer src="js/components.js?v=1"></script>
-  <script defer src="js/search.js?v=1"></script>
-  <script defer src="js/main.js?v=1"></script>
+  <script defer src="components/header.js?v=d4535b34"></script>
+  <script defer src="components/footer.js?v=c7479f8d"></script>
+  <script defer src="js/cart.js?v=8cff9968"></script>
+  <script defer src="js/components.js?v=95134280"></script>
+  <script defer src="js/search.js?v=adfac764"></script>
+  <script defer src="js/main.js?v=999bf9e4"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const params = new URLSearchParams(window.location.search);
@@ -289,6 +289,20 @@
       if (typeof SVKCart !== 'undefined') SVKCart.clearCart();
       sessionStorage.removeItem('svk_checkout_draft');
       sessionStorage.removeItem('svk_checkout_stripe_resume');
+
+      // GA4 purchase event — fires exactly once, since the sessionStorage
+      // order data this reads is removed above and a refresh shows the
+      // "no order found" state instead of re-reading it.
+      if (typeof gtag === 'function') {
+        gtag('event', 'purchase', {
+          transaction_id: order.orderNumber || '',
+          currency: 'USD',
+          value: order.total || 0,
+          tax: order.tax || 0,
+          shipping: order.shipping || 0,
+          items: (order.items || []).map(i => ({ item_id: i.id, item_name: i.name, price: i.price, quantity: i.quantity || 1 })),
+        });
+      }
 
       // Populate invoice
       document.getElementById('order-success').style.display = 'block';
