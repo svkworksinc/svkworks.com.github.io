@@ -1,7 +1,16 @@
 -- SVK Works — "Used Parts" feature migration
 -- Run this in the Supabase SQL Editor (Dashboard → SQL Editor → New query)
--- Requires the base schema + admin setup from js/auth.js (profiles.is_admin, auth_is_admin())
--- to already exist — see the comment block at the top of js/auth.js if not.
+-- Requires the base schema from js/auth.js (profiles + orders tables) to already
+-- exist. auth_is_admin() is created below if it isn't already there, so this
+-- file is safe to run standalone even if the original "ADMIN SETUP" block in
+-- js/auth.js's header comment was never run.
+
+-- 0. Admin-check helper (idempotent — safe to re-run even if this already exists)
+-- Security-definer function avoids RLS policy recursion when checking is_admin.
+create or replace function auth_is_admin()
+returns boolean language sql security definer as $$
+  select coalesce((select is_admin from profiles where id = auth.uid()), false)
+$$;
 
 -- 1. Table
 create table if not exists used_parts (
