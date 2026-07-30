@@ -13,6 +13,7 @@ const SVK_HEADER_HTML = `
         || For Questions and Concerns please email at info@svkworks.com or contact us through Instagram / Facebook
 </span>
         <div class="header-top-links">
+          <a href="/admin.html" id="admin-top-link" style="display:none;color:var(--magenta);">Admin Panel</a>
           <a href="/support.html">Support</a>
           <a href="/resources.html">Resources</a>
           <a href="/terms.html">Terms &amp; Conditions</a>
