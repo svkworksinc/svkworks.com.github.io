@@ -112,6 +112,10 @@ const SVKCart = {
 
   _productUrl(id, type) {
     if (type === 'used-part') return 'used-part.html?id=' + encodeURIComponent(id);
+    // Catalog-part cart items only carry an id, not their slug, so they always
+    // route through the generic lookup-by-id page — it renders identically to
+    // a dedicated page, just at a less pretty URL.
+    if (type === 'catalog-part') return 'part.html?id=' + encodeURIComponent(id);
     if (typeof SVK_PRODUCTS_DATA !== 'undefined') {
       const product = SVK_PRODUCTS_DATA.products.find(p => p.id === id);
       if (product) return product.page || ('product.html?id=' + product.id);

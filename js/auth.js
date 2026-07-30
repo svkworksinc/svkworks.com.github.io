@@ -298,4 +298,98 @@ const SVKAuth = {
     const path = url.slice(idx + marker.length);
     await this.client.storage.from('used-parts').remove([path]);
   },
+
+  // ---- Parts Catalog (3D Parts / Other Parts / Relay & Power Kits) ----
+  // Public reads rely on RLS: every row is visible to everyone, including
+  // "coming soon" listings — they're meant to be seen, just not purchasable
+  // (enforced server-side in netlify/functions/_pricing.js).
+  // See netlify/supabase-parts-catalog-migration.sql.
+
+  async getPartsCatalog(subcategory) {
+    if (!this.client) return [];
+    const { data } = await this.client
+      .from('parts_catalog')
+      .select('*')
+      .eq('subcategory', subcategory)
+      .order('sort_order', { ascending: true })
+      .order('created_at', { ascending: false });
+    return data || [];
+  },
+
+  async getPartCatalogItem(id) {
+    if (!this.client || !id) return null;
+    const { data } = await this.client
+      .from('parts_catalog')
+      .select('*')
+      .eq('id', id)
+      .single();
+    return data || null;
+  },
+
+  async getPartCatalogBySlug(slug) {
+    if (!this.client || !slug) return null;
+    const { data } = await this.client
+      .from('parts_catalog')
+      .select('*')
+      .eq('slug', slug)
+      .single();
+    return data || null;
+  },
+
+  async getAllPartsCatalogAdmin() {
+    if (!this.client) return [];
+    const { data } = await this.client
+      .from('parts_catalog')
+      .select('*')
+      .order('subcategory', { ascending: true })
+      .order('created_at', { ascending: false });
+    return data || [];
+  },
+
+  async savePartCatalogItem(part) {
+    if (!this.client) return { error: { message: 'Not configured.' } };
+    return await this.client.from('parts_catalog').insert({
+      subcategory: part.subcategory,
+      title: part.title,
+      slug: part.slug || null,
+      description: part.description || '',
+      price: part.price || 0,
+      engine: part.engine || null,
+      weight_oz: part.weightOz || 16,
+      images: part.images || [],
+      status: part.status || 'coming_soon',
+    }).select().single();
+  },
+
+  async updatePartCatalogItem(id, updates) {
+    if (!this.client) return { error: { message: 'Not configured.' } };
+    return await this.client.from('parts_catalog').update(updates).eq('id', id).select().single();
+  },
+
+  async deletePartCatalogItem(id) {
+    if (!this.client) return { error: { message: 'Not configured.' } };
+    return await this.client.from('parts_catalog').delete().eq('id', id);
+  },
+
+  async uploadPartCatalogImage(file) {
+    if (!this.client) return { error: { message: 'Not configured.' } };
+    const ext = (file.name.split('.').pop() || 'jpg').toLowerCase().replace(/[^a-z0-9]/g, '') || 'jpg';
+    const path = `${crypto.randomUUID()}.${ext}`;
+    const { error } = await this.client.storage.from('parts-catalog').upload(path, file, {
+      cacheControl: '3600',
+      upsert: false,
+    });
+    if (error) return { error };
+    const { data } = this.client.storage.from('parts-catalog').getPublicUrl(path);
+    return { url: data.publicUrl, path };
+  },
+
+  async deletePartCatalogImage(url) {
+    if (!this.client) return;
+    const marker = '/parts-catalog/';
+    const idx = url.indexOf(marker);
+    if (idx === -1) return;
+    const path = url.slice(idx + marker.length);
+    await this.client.storage.from('parts-catalog').remove([path]);
+  },
 };
