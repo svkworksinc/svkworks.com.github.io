@@ -130,7 +130,15 @@
     function setLoading(btnId, loading, label) {
       const btn = document.getElementById(btnId);
       btn.disabled = loading;
-      btn.textContent = loading ? 'Please wait…' : label;
+      btn.innerHTML = loading
+        ? '<span class="btn-spinner" aria-hidden="true"></span>Please wait…'
+        : label;
+    }
+
+    function showSuccessState(btnId, label) {
+      const btn = document.getElementById(btnId);
+      btn.disabled = true;
+      btn.innerHTML = '<span class="btn-check" aria-hidden="true">✓</span>' + label;
     }
 
     function showError(id, msg) {
@@ -167,7 +175,8 @@
         showError('signin-error', error.message);
         setLoading('signin-btn', false, 'Sign In');
       } else {
-        window.location.href = returnTo;
+        showSuccessState('signin-btn', 'Signed in!');
+        setTimeout(() => { window.location.href = returnTo; }, 500);
       }
     }
 
@@ -195,7 +204,8 @@
         setLoading('signup-btn', false, 'Create Account');
       } else if (data?.session) {
         // Auto-confirmed (email confirmation disabled)
-        window.location.href = returnTo;
+        showSuccessState('signup-btn', 'Account created!');
+        setTimeout(() => { window.location.href = returnTo; }, 800);
       } else {
         // Email confirmation required
         const el = document.getElementById('signup-success');

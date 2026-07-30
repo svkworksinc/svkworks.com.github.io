@@ -126,14 +126,15 @@ const SVKAuth = {
 
   async signUp(email, password, fullName) {
     if (!this.client) return { error: { message: 'Auth not configured.' } };
-    const { data, error } = await this.client.auth.signUp({ email, password });
-    if (data?.user && !error) {
-      await this.client.from('profiles').upsert({
-        id: data.user.id,
-        full_name: fullName,
-        email: email,
-      });
-    }
+    // Profile row is created server-side by the on_auth_user_created trigger
+    // (see netlify/supabase-auth-trigger-migration.sql) — it reads full_name
+    // back out of this metadata. Writing it from the browser instead used to
+    // fail silently pre-email-confirmation, since RLS requires a session.
+    const { data, error } = await this.client.auth.signUp({
+      email,
+      password,
+      options: { data: { full_name: fullName } },
+    });
     return { data, error };
   },
 
