@@ -104,4 +104,122 @@ async function initPartDetail(lookup) {
         <img src="${src}" alt="${part.title} view ${i + 1}" loading="lazy">
       </div>`).join('')
     : '';
+
+  svkSyncProductSeo({
+    title: part.title,
+    description: part.description,
+    image: images[0],
+    price: part.status === 'available' ? part.price : null,
+    availability: part.status === 'available' ? 'in_stock' : 'coming_soon',
+  });
+  svkBindShareButton('share-link-btn');
+}
+
+// ---- SEO / sharing helpers ----
+// These keep <title>, meta description, canonical, Open Graph / Twitter tags,
+// the robots directive, and Product JSON-LD in sync with a live catalog or
+// used-part record, so admin-entered content stays accurate for search and
+// social shares without any code changes.
+
+function svkSetMeta(attr, key, content) {
+  if (!content) return;
+  let el = document.querySelector(`meta[${attr}="${key}"]`);
+  if (!el) {
+    el = document.createElement('meta');
+    el.setAttribute(attr, key);
+    document.head.appendChild(el);
+  }
+  el.setAttribute('content', content);
+}
+
+function svkSetCanonical(url) {
+  let el = document.querySelector('link[rel="canonical"]');
+  if (!el) {
+    el = document.createElement('link');
+    el.setAttribute('rel', 'canonical');
+    document.head.appendChild(el);
+  }
+  el.setAttribute('href', url);
+}
+
+function svkSetJsonLd(data) {
+  let el = document.getElementById('product-jsonld');
+  if (!el) {
+    el = document.createElement('script');
+    el.type = 'application/ld+json';
+    el.id = 'product-jsonld';
+    document.head.appendChild(el);
+  }
+  el.textContent = JSON.stringify(data);
+}
+
+// availability: 'in_stock' | 'coming_soon' | 'sold_out'
+function svkSyncProductSeo({ title, description, image, price, availability, condition = 'new' }) {
+  const url = window.location.origin + window.location.pathname + window.location.search;
+  const desc = (description && description.trim()) || `${title} — available from SVK Works.`;
+  const truncDesc = desc.length > 300 ? desc.slice(0, 297) + '…' : desc;
+  const absImage = image ? new URL(image, window.location.origin).href : (window.location.origin + '/img/svk-logo.png');
+
+  document.title = `${title} — SVK Works`;
+  svkSetMeta('name', 'description', truncDesc);
+  svkSetCanonical(url);
+
+  svkSetMeta('property', 'og:type', 'product');
+  svkSetMeta('property', 'og:title', title);
+  svkSetMeta('property', 'og:description', truncDesc);
+  svkSetMeta('property', 'og:image', absImage);
+  svkSetMeta('property', 'og:url', url);
+  svkSetMeta('property', 'og:site_name', 'SVK Works');
+
+  svkSetMeta('name', 'twitter:card', 'summary_large_image');
+  svkSetMeta('name', 'twitter:title', title);
+  svkSetMeta('name', 'twitter:description', truncDesc);
+  svkSetMeta('name', 'twitter:image', absImage);
+
+  // Only let real, purchasable listings into search results — a sold-out or
+  // not-yet-launched item indexed forever just confuses shoppers.
+  svkSetMeta('name', 'robots', availability === 'in_stock' ? 'index, follow' : 'noindex, follow');
+
+  const schemaAvailability = {
+    in_stock: 'https://schema.org/InStock',
+    coming_soon: 'https://schema.org/PreOrder',
+    sold_out: 'https://schema.org/OutOfStock',
+  }[availability] || 'https://schema.org/OutOfStock';
+
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: title,
+    description: truncDesc,
+    image: absImage,
+    url,
+    brand: { '@type': 'Brand', name: 'SVK Works' },
+    itemCondition: condition === 'used' ? 'https://schema.org/UsedCondition' : 'https://schema.org/NewCondition',
+  };
+  if (price !== undefined && price !== null) {
+    jsonLd.offers = {
+      '@type': 'Offer',
+      priceCurrency: 'USD',
+      price: Number(price).toFixed(2),
+      availability: schemaAvailability,
+      url,
+    };
+  }
+  svkSetJsonLd(jsonLd);
+}
+
+// Wires a "Copy Link" button to copy the current page URL, confirmed via
+// SVKCart's shared toast helper when available.
+function svkBindShareButton(btnId) {
+  const btn = document.getElementById(btnId);
+  if (!btn) return;
+  btn.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      if (typeof SVKCart !== 'undefined' && SVKCart.showToast) SVKCart.showToast('Link copied!');
+      else alert('Link copied: ' + window.location.href);
+    } catch {
+      alert(window.location.href);
+    }
+  });
 }
