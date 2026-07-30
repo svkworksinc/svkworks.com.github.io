@@ -6,7 +6,7 @@
 const SVKSearch = {
   async performSearch(query) {
     const data = await SVKProducts.load();
-    if (!query || query.trim().length === 0) return { products: [], blogs: [], resources: [], builds: [] };
+    if (!query || query.trim().length === 0) return { products: [], blogs: [], resources: [], builds: [], parts: [] };
 
     const q = query.toLowerCase().trim();
 
@@ -17,6 +17,8 @@ const SVKSearch = {
       p.engine.toLowerCase().includes(q) ||
       p.tags.some(t => t.includes(q))
     );
+
+    const parts = await this._searchParts(q);
 
     const blogs = data.blogs.filter(b =>
       b.title.toLowerCase().includes(q) ||
@@ -37,14 +39,54 @@ const SVKSearch = {
       (b.tags        || []).some(t => t.toLowerCase().includes(q))
     );
 
-    return { products, blogs, resources, builds };
+    return { products, blogs, resources, builds, parts };
+  },
+
+  // Used Parts + Parts Catalog live in Supabase, not the static products-data
+  // file, so they're searched separately and merged in as their own section.
+  async _searchParts(q) {
+    if (typeof SVKAuth === 'undefined' || !SVKAuth.configured) return [];
+    const matches = (title, desc) => (title || '').toLowerCase().includes(q) || (desc || '').toLowerCase().includes(q);
+
+    const [usedParts, catalogParts] = await Promise.all([
+      SVKAuth.getUsedParts(),
+      Promise.all(['3d-parts', 'other-parts', 'relay-power-kits'].map(c => SVKAuth.getPartsCatalog(c))).then(lists => lists.flat()),
+    ]);
+
+    const usedMatches = usedParts
+      .filter(p => matches(p.title, p.description))
+      .map(p => ({
+        kind: 'used-part',
+        id: p.id,
+        title: p.title,
+        description: p.description,
+        image: (p.images && p.images[0]) || 'img/filler.webp',
+        price: p.price,
+        url: `used-part.html?id=${p.id}`,
+        badge: typeof svkConditionBadge === 'function' ? svkConditionBadge(p.condition) : '',
+      }));
+
+    const catalogMatches = catalogParts
+      .filter(p => p.status === 'available' && matches(p.title, p.description))
+      .map(p => ({
+        kind: 'catalog-part',
+        id: p.id,
+        title: p.title,
+        description: p.description,
+        image: (p.images && p.images[0]) || 'img/filler.webp',
+        price: p.price,
+        url: typeof svkCatalogPartUrl === 'function' ? svkCatalogPartUrl(p) : `part.html?id=${p.id}`,
+        badge: '',
+      }));
+
+    return [...usedMatches, ...catalogMatches];
   },
 
   renderSearchResults(results, query) {
     const container = document.getElementById('search-results');
     if (!container) return;
 
-    const totalResults = results.products.length + results.blogs.length + results.resources.length + (results.builds || []).length;
+    const totalResults = results.products.length + results.blogs.length + results.resources.length + (results.builds || []).length + (results.parts || []).length;
 
     let html = `<p class="text-secondary" style="margin-bottom:var(--space-xl);">Found <strong>${totalResults}</strong> results for "<strong>${this.escapeHtml(query)}</strong>"</p>`;
 
@@ -67,6 +109,28 @@ const SVKSearch = {
       html += `<h2 style="margin-bottom:var(--space-lg);">Products (${results.products.length})</h2>`;
       html += '<div class="product-grid" style="margin-bottom:var(--space-3xl);">';
       html += results.products.map(p => SVKProducts.renderProductCard(p)).join('');
+      html += '</div>';
+    }
+
+    // Used Parts + Parts Catalog
+    if ((results.parts || []).length > 0) {
+      html += `<h2 style="margin-bottom:var(--space-lg);">Parts (${results.parts.length})</h2>`;
+      html += '<div class="product-grid" style="margin-bottom:var(--space-3xl);">';
+      html += results.parts.map(p => `
+        <div class="product-card fade-in">
+          <div class="product-card-image">
+            <img src="${p.image}" alt="${p.title}" loading="lazy">
+          </div>
+          <div class="product-card-body">
+            <h3 class="product-card-title"><a href="${p.url}">${p.title}</a></h3>
+            <p class="product-card-desc">${(p.description || '').slice(0, 110)}${(p.description || '').length > 110 ? '…' : ''}</p>
+            ${p.badge ? `<div style="margin-bottom:8px;">${p.badge}</div>` : ''}
+            <div class="product-card-footer">
+              <span class="product-card-price">${this.escapeHtml(String(Number(p.price || 0).toLocaleString('en-US', { style: 'currency', currency: 'USD' })))}</span>
+              <a href="${p.url}" class="btn btn-primary btn-sm">View</a>
+            </div>
+          </div>
+        </div>`).join('');
       html += '</div>';
     }
 
