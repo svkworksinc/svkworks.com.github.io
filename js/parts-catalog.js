@@ -106,6 +106,7 @@ async function initPartDetail(lookup) {
     : '';
 
   svkSyncProductSeo({
+    id: part.id,
     title: part.title,
     description: part.description,
     image: images[0],
@@ -154,11 +155,19 @@ function svkSetJsonLd(data) {
 }
 
 // availability: 'in_stock' | 'coming_soon' | 'sold_out'
-function svkSyncProductSeo({ title, description, image, price, availability, condition = 'new' }) {
+function svkSyncProductSeo({ id, title, description, image, price, availability, condition = 'new' }) {
   const url = window.location.origin + window.location.pathname + window.location.search;
   const desc = (description && description.trim()) || `${title} — available from SVK Works.`;
   const truncDesc = desc.length > 300 ? desc.slice(0, 297) + '…' : desc;
   const absImage = image ? new URL(image, window.location.origin).href : (window.location.origin + '/img/svk-logo.png');
+
+  if (id && typeof gtag === 'function') {
+    gtag('event', 'view_item', {
+      currency: 'USD',
+      value: price || 0,
+      items: [{ item_id: id, item_name: title, price: price || 0 }],
+    });
+  }
 
   document.title = `${title} — SVK Works`;
   svkSetMeta('name', 'description', truncDesc);
