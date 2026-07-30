@@ -5,7 +5,10 @@
 -- file is safe to run standalone even if the original "ADMIN SETUP" block in
 -- js/auth.js's header comment was never run.
 
--- 0. Admin-check helper (idempotent — safe to re-run even if this already exists)
+-- 0. Admin-check helper (idempotent — safe to re-run even if any of this already exists)
+-- Ensure profiles.is_admin exists before the function below reads it.
+alter table profiles add column if not exists is_admin boolean not null default false;
+
 -- Security-definer function avoids RLS policy recursion when checking is_admin.
 create or replace function auth_is_admin()
 returns boolean language sql security definer as $$
@@ -70,3 +73,13 @@ create policy "Admins upload used-parts images"
 create policy "Admins delete used-parts images"
   on storage.objects for delete
   using (bucket_id = 'used-parts' and auth_is_admin());
+
+-- ============================================================
+-- 4. Grant yourself admin access (required — is_admin defaults to false)
+-- ============================================================
+-- Find your user id: Dashboard → Authentication → Users (copy the UUID next
+-- to your email), or run:
+--   select id, email from auth.users;
+--
+-- Then run (replace the UUID with your own):
+--   update profiles set is_admin = true where id = 'your-uuid-here';
