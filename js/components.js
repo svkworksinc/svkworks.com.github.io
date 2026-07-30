@@ -75,12 +75,19 @@ const SVKComponents = {
   async _updateAccountBtn() {
     if (!SVKAuth.configured) return;
     const session = await SVKAuth.getSession();
+    if (!session) return;
+
     const btn = document.getElementById('account-btn');
-    if (!btn) return;
-    if (session) {
+    if (btn) {
       btn.href = 'account.html';
       btn.setAttribute('aria-label', 'My Account');
       btn.classList.add('logged-in');
+    }
+
+    const isAdmin = await SVKAuth.isAdmin();
+    if (isAdmin) {
+      const adminLink = document.getElementById('admin-top-link');
+      if (adminLink) adminLink.style.display = '';
     }
   },
 

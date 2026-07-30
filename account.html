@@ -14,6 +14,43 @@
   <link rel="icon" href="img/svk-icon.png" type="image/png">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script src="js/auth.js"></script>
+  <style>
+    .order-card { cursor: pointer; transition: border-color 0.15s; }
+    .order-card:hover { border-color: var(--magenta); }
+    .order-modal-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+      display: flex; align-items: flex-start; justify-content: center;
+      z-index: 1000; padding: var(--space-2xl) var(--space-lg); overflow-y: auto;
+    }
+    .order-modal {
+      background: var(--bg-card); border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg); max-width: 640px; width: 100%;
+      position: relative; padding: var(--space-2xl);
+    }
+    .order-modal-close {
+      position: absolute; top: var(--space-md); right: var(--space-md);
+      background: none; border: none; color: var(--text-muted);
+      font-size: 1.75rem; line-height: 1; cursor: pointer; padding: 0;
+    }
+    .order-modal-close:hover { color: var(--text-primary); }
+    .om-meta-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: var(--space-lg); margin: var(--space-lg) 0 var(--space-xl);
+      padding-bottom: var(--space-xl); border-bottom: 1px solid var(--border-color);
+    }
+    .om-meta-label { font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); margin-bottom: 4px; }
+    .om-meta-value { font-size: var(--text-sm); font-weight: var(--weight-medium); }
+    .om-items table { width: 100%; border-collapse: collapse; margin-bottom: var(--space-lg); }
+    .om-items th { text-align: left; font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); padding: 6px 8px; border-bottom: 1px solid var(--border-color); }
+    .om-items td { padding: 10px 8px; font-size: var(--text-sm); border-bottom: 1px solid var(--border-color); vertical-align: top; }
+    .om-items th:nth-child(2), .om-items td:nth-child(2),
+    .om-items th:nth-child(3), .om-items td:nth-child(3),
+    .om-items th:nth-child(4), .om-items td:nth-child(4) { text-align: right; }
+    .om-item-opts { font-size: var(--text-xs); color: var(--text-muted); margin-top: 2px; }
+    .om-totals { display: flex; flex-direction: column; gap: 4px; align-items: flex-end; margin-bottom: var(--space-lg); }
+    .om-totals-row { display: flex; justify-content: space-between; gap: var(--space-xl); font-size: var(--text-sm); color: var(--text-secondary); width: 220px; max-width: 100%; }
+    .om-totals-row.total { font-size: var(--text-lg); font-weight: var(--weight-bold); color: var(--text-primary); border-top: 1px solid var(--border-color); padding-top: 6px; margin-top: 4px; }
+  </style>
 </head>
 <body>
   <div id="header-placeholder"></div>
@@ -197,6 +234,14 @@
         </div>
       </div>
     </section>
+
+    <!-- Order detail modal -->
+    <div id="order-modal-overlay" class="order-modal-overlay" style="display:none;" onclick="if(event.target===this) closeOrderModal()">
+      <div class="order-modal">
+        <button class="order-modal-close" onclick="closeOrderModal()" aria-label="Close">&times;</button>
+        <div id="order-modal-body"></div>
+      </div>
+    </div>
   </main>
 
   <div id="footer-placeholder"></div>
@@ -266,10 +311,14 @@
 
     function renderOrder(order) {
       const s = STATUS_LABELS[order.status] || STATUS_LABELS.pending;
-      const optLines = renderOptions(order.options);
+      const isCheckoutOrder = Array.isArray(order.items) && order.items.length > 0;
+      // Checkout orders' "options" is a nested object (items/shippingAddress/etc) meant
+      // for the detail modal, not this flat key:value renderer — only show it here for
+      // legacy build-request orders where options really is a flat spec map.
+      const optLines = isCheckoutOrder ? '' : renderOptions(order.options);
       const shortId = order.id ? order.id.slice(0, 8).toUpperCase() : '';
       return `
-        <div class="order-card">
+        <div class="order-card" onclick="openOrderModal('${order.id}')">
           <div class="order-card-header">
             <div>
               <div class="order-product">${order.product}</div>
@@ -284,10 +333,114 @@
             </div>
           </div>
           ${renderPipeline(order.status)}
-          ${optLines ? `<details class="order-options-details"><summary>View Options</summary><ul class="order-options-list">${optLines}</ul></details>` : ''}
+          ${optLines ? `<details class="order-options-details" onclick="event.stopPropagation()"><summary>View Options</summary><ul class="order-options-list">${optLines}</ul></details>` : ''}
           ${order.notes ? `<p class="order-notes"><strong>Notes:</strong> ${order.notes}</p>` : ''}
+          <p style="margin:var(--space-sm) 0 0;font-size:var(--text-xs);color:var(--text-muted);">Click for full order details →</p>
         </div>`;
     }
+
+    function fmtMoney(n) {
+      return '$' + Number(n || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function formatPaymentMethod(order) {
+      if (order.payment_method === 'stripe') return 'Credit / Debit Card (Stripe)';
+      if (order.payment_method === 'paypal') return 'PayPal';
+      if (order.payment_method) return order.payment_method;
+      return 'Quote request — no payment yet';
+    }
+
+    function renderOrderItemsTable(items) {
+      const rows = items.map(item => {
+        const opts = Object.entries(item.options || {})
+          .filter(([, v]) => v && v !== 'No' && !String(v).startsWith('Select'))
+          .map(([k, v]) => `${k}: ${v}`).join(' · ');
+        const qty = item.quantity || 1;
+        const price = item.price || 0;
+        return `<tr>
+          <td><div>${item.name}</div>${opts ? `<div class="om-item-opts">${opts}</div>` : ''}</td>
+          <td>${qty}</td>
+          <td>${fmtMoney(price)}</td>
+          <td>${fmtMoney(price * qty)}</td>
+        </tr>`;
+      }).join('');
+      return `<div class="om-items"><table><thead><tr><th>Item</th><th>Qty</th><th>Unit Price</th><th>Total</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+    }
+
+    function renderOrderTotals(order) {
+      const o = order.options || {};
+      if (o.subtotal === undefined) {
+        return `<div class="om-totals"><div class="om-totals-row total"><span>Total</span><span>${formatPrice(order.total_price)}</span></div></div>`;
+      }
+      let rows = `
+        <div class="om-totals-row"><span>Subtotal</span><span>${fmtMoney(o.subtotal)}</span></div>
+        <div class="om-totals-row"><span>Shipping</span><span>${fmtMoney(o.shipping)}</span></div>`;
+      if (o.tax) rows += `<div class="om-totals-row"><span>Tax</span><span>${fmtMoney(o.tax)}</span></div>`;
+      rows += `<div class="om-totals-row total"><span>Total</span><span>${fmtMoney(order.total_price)}</span></div>`;
+      return `<div class="om-totals">${rows}</div>`;
+    }
+
+    function renderShippingInfo(order) {
+      const o = order.options || {};
+      const addr = o.shippingAddress;
+      if (!addr || !(addr.address || addr.city)) return '';
+      const line = [addr.address, [addr.city, addr.state, addr.zip].filter(Boolean).join(', ')].filter(Boolean).join(', ');
+      return `
+        <div class="om-meta-grid">
+          <div><div class="om-meta-label">Ship To</div><div class="om-meta-value">${line}</div></div>
+          ${o.shippingLabel ? `<div><div class="om-meta-label">Shipping Method</div><div class="om-meta-value">${o.shippingLabel}</div></div>` : ''}
+        </div>`;
+    }
+
+    function renderOrderDetail(order) {
+      const s = STATUS_LABELS[order.status] || STATUS_LABELS.pending;
+      const isCheckoutOrder = Array.isArray(order.items) && order.items.length > 0;
+      const idLabel = order.order_number || (order.id ? '#' + order.id.slice(0, 8).toUpperCase() : '');
+      const legacyOptLines = isCheckoutOrder ? '' : renderOptions(order.options);
+
+      return `
+        <h2 style="margin:0 0 6px;padding-right:var(--space-2xl);">${order.product}</h2>
+        <div style="display:flex;align-items:center;gap:var(--space-sm);flex-wrap:wrap;">
+          <span class="order-status ${s.cls}">${s.label}</span>
+          ${idLabel ? `<span class="order-id">${idLabel}</span>` : ''}
+        </div>
+
+        <div class="om-meta-grid">
+          <div><div class="om-meta-label">Date</div><div class="om-meta-value">${formatDate(order.submitted_at)}</div></div>
+          <div><div class="om-meta-label">Payment Method</div><div class="om-meta-value">${formatPaymentMethod(order)}</div></div>
+          <div><div class="om-meta-label">Total Paid</div><div class="om-meta-value">${formatPrice(order.total_price)}</div></div>
+        </div>
+
+        ${renderShippingInfo(order)}
+
+        ${isCheckoutOrder ? renderOrderItemsTable(order.items) : (legacyOptLines ? `<ul class="order-options-list" style="margin-bottom:var(--space-lg);">${legacyOptLines}</ul>` : '')}
+
+        ${isCheckoutOrder ? renderOrderTotals(order) : ''}
+
+        ${renderPipeline(order.status)}
+
+        ${order.notes ? `<p class="order-notes" style="margin-top:var(--space-lg);"><strong>Notes:</strong> ${order.notes}</p>` : ''}
+      `;
+    }
+
+    let currentOrders = [];
+
+    function openOrderModal(id) {
+      const order = currentOrders.find(o => o.id === id);
+      if (!order) return;
+      document.getElementById('order-modal-body').innerHTML = renderOrderDetail(order);
+      document.getElementById('order-modal-overlay').style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeOrderModal() {
+      document.getElementById('order-modal-overlay').style.display = 'none';
+      document.body.style.overflow = '';
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeOrderModal();
+    });
 
     async function handleSignOut() {
       await SVKAuth.ready;
@@ -364,6 +517,7 @@
 
       // Orders
       const orders = await SVKAuth.getOrders();
+      currentOrders = orders;
       document.getElementById('orders-loading').style.display = 'none';
 
       // Stats
