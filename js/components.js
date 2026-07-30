@@ -42,6 +42,14 @@ const SVKComponents = {
   },
 
   _bootstrapAuth() {
+    // Pages that require auth up front (login.html, account.html, admin pages)
+    // load the SDK + auth.js themselves and call SVKAuth.init() explicitly —
+    // don't load it a second time (redeclaring SVKAuth would throw).
+    if (typeof SVKAuth !== 'undefined') {
+      SVKAuth.ready.then(() => this._updateAccountBtn());
+      return;
+    }
+
     // Skip loading the Supabase SDK (~300 KB) when no session exists in storage.
     // Supabase persists sessions under keys matching "sb-*-auth-token".
     // Non-logged-in visitors (the vast majority) skip this entirely.
