@@ -151,6 +151,19 @@
       document.getElementById(id).style.display = 'none';
     }
 
+    // Supabase doesn't always return a clean, human-readable message (e.g. a
+    // failed database trigger can come back as a bare "{}"). Fall back to a
+    // generic message rather than showing that raw text, and log the real
+    // error to the console so it can be diagnosed from there.
+    function friendlyError(context, error) {
+      console.error(context, error);
+      const msg = error && typeof error.message === 'string' ? error.message.trim() : '';
+      if (!msg || msg === '{}' || msg.toLowerCase() === 'null' || msg.toLowerCase() === 'undefined') {
+        return 'Something went wrong. Please try again — if it keeps happening, contact us.';
+      }
+      return msg;
+    }
+
     // Redirect destination — go back to wherever they came from
     const returnTo = new URLSearchParams(window.location.search).get('return') || 'account.html';
 
@@ -172,7 +185,7 @@
       const { error } = await SVKAuth.signIn(email, password);
 
       if (error) {
-        showError('signin-error', error.message);
+        showError('signin-error', friendlyError('Sign-in error:', error));
         setLoading('signin-btn', false, 'Sign In');
       } else {
         showSuccessState('signin-btn', 'Signed in!');
@@ -200,12 +213,18 @@
       const { data, error } = await SVKAuth.signUp(email, password, name);
 
       if (error) {
-        showError('signup-error', error.message);
+        showError('signup-error', friendlyError('Sign-up error:', error));
         setLoading('signup-btn', false, 'Create Account');
       } else if (data?.session) {
         // Auto-confirmed (email confirmation disabled)
         showSuccessState('signup-btn', 'Account created!');
         setTimeout(() => { window.location.href = returnTo; }, 800);
+      } else if (data?.user && Array.isArray(data.user.identities) && data.user.identities.length === 0) {
+        // Supabase doesn't error here on purpose (prevents attackers from using
+        // signup to discover which emails are registered) — it silently
+        // returns a "fake" user for an email that's already taken instead.
+        showError('signup-error', 'An account with that email already exists. Try signing in instead.');
+        setLoading('signup-btn', false, 'Create Account');
       } else {
         // Email confirmation required
         const el = document.getElementById('signup-success');
@@ -227,7 +246,7 @@
       const { error } = await SVKAuth.resetPassword(email);
 
       if (error) {
-        showError('reset-error', error.message);
+        showError('reset-error', friendlyError('Password-reset error:', error));
       } else {
         const el = document.getElementById('reset-success');
         el.textContent = 'Reset link sent — check your email.';
