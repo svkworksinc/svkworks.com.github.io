@@ -56,7 +56,7 @@ exports.handler = async (event) => {
     // the "Pending" filter instead of an unrecognized 'paid' status.
     await supabase
       .from('orders')
-      .update({ status: 'pending', payment_id: paypalOrderId })
+      .update({ status: 'pending', payment_id: paypalOrderId, payment_capture_id: captureUnit.id })
       .eq('id', supabaseOrderId);
 
     await markUsedPartsSold(supabase, order.items);

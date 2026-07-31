@@ -13,7 +13,7 @@
   <link rel="stylesheet" href="css/style.css">
   <link rel="icon" href="img/svk-icon.png" type="image/png">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-  <script src="js/auth.js?v=38e1ddbe"></script>
+  <script src="js/auth.js?v=63c00c7d"></script>
   <style>
     .order-card { cursor: pointer; transition: border-color 0.15s; }
     .order-card:hover { border-color: var(--magenta); }
@@ -250,7 +250,7 @@
   <script defer src="components/footer.js?v=c7479f8d"></script>
   <script defer src="js/cart.js?v=8cff9968"></script>
   <script defer src="js/wishlist.js?v=79245427"></script>
-  <script defer src="js/components.js?v=95134280"></script>
+  <script defer src="js/components.js?v=a6536549"></script>
   <script defer src="data/products-data.js?v=3b913be2"></script>
   <script defer src="js/products.js?v=a112a74f"></script>
   <script defer src="js/search.js?v=adfac764"></script>
@@ -389,6 +389,7 @@
         <div class="om-meta-grid">
           <div><div class="om-meta-label">Ship To</div><div class="om-meta-value">${line}</div></div>
           ${o.shippingLabel ? `<div><div class="om-meta-label">Shipping Method</div><div class="om-meta-value">${o.shippingLabel}</div></div>` : ''}
+          ${order.tracking_number ? `<div><div class="om-meta-label">Tracking</div><div class="om-meta-value">${order.tracking_number}${order.carrier ? ' (' + order.carrier + ')' : ''}</div></div>` : ''}
         </div>`;
     }
 
@@ -418,6 +419,12 @@
         ${isCheckoutOrder ? renderOrderTotals(order) : ''}
 
         ${renderPipeline(order.status)}
+
+        ${order.status === 'cancelled' && order.refunded_amount ? `
+          <div style="background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.3);border-radius:var(--radius-md);padding:var(--space-lg);margin-top:var(--space-lg);">
+            <div style="font-weight:var(--weight-medium);color:#fca5a5;margin-bottom:4px;">Order Cancelled &amp; Refunded</div>
+            <div style="font-size:var(--text-sm);color:var(--text-secondary);">A full refund of ${formatPrice(order.refunded_amount)} was issued to your original payment method. Please allow a few business days for it to appear.</div>
+          </div>` : ''}
 
         ${order.notes ? `<p class="order-notes" style="margin-top:var(--space-lg);"><strong>Notes:</strong> ${order.notes}</p>` : ''}
       `;

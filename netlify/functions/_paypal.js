@@ -74,4 +74,23 @@ async function captureOrder(paypalOrderId) {
   return res.json();
 }
 
-module.exports = { createOrder, captureOrder };
+async function refundCapture(captureId) {
+  const token = await getAccessToken();
+  // No `amount` in the body = full refund of the original capture.
+  const res = await fetch(`${BASE_URL}/v2/payments/captures/${captureId}/refund`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+      'PayPal-Request-Id': `svk-refund-${captureId}`,
+    },
+    body: JSON.stringify({}),
+  });
+  if (!res.ok) {
+    const err = await res.text();
+    throw new Error(`PayPal refund failed: ${err}`);
+  }
+  return res.json();
+}
+
+module.exports = { createOrder, captureOrder, refundCapture };

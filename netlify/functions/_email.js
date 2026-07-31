@@ -313,4 +313,54 @@ async function sendInvoiceEmail({
   console.log(`[email] Invoice sent for ${orderNumber}, Resend ID: ${data.id}`);
 }
 
-module.exports = { sendInvoiceEmail };
+// Simple, non-invoice status-change notifications — order cancelled/refunded,
+// or shipped with tracking. Same TEST_MODE / Resend setup as sendInvoiceEmail,
+// deliberately without the PDF/line-item machinery since there's nothing to
+// itemize here.
+async function sendOrderStatusEmail({ customerName, customerEmail, orderNumber, heading, message }) {
+  if (!process.env.RESEND_API_KEY) {
+    throw new Error('RESEND_API_KEY environment variable is not set');
+  }
+
+  const html = `<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<body style="margin:0;padding:0;background:#0a0a0a;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
+  <div style="max-width:520px;margin:0 auto;padding:32px 20px;">
+    <div style="text-align:center;margin-bottom:24px;">
+      <span style="font-size:20px;font-weight:800;color:#e91e8c;letter-spacing:-0.02em;">SVK Works</span>
+    </div>
+    <div style="background:#151515;border:1px solid #2a2a2a;border-radius:12px;padding:28px 24px;">
+      <h1 style="font-size:18px;color:#f5f5f5;margin:0 0 12px;">${heading}</h1>
+      <p style="font-size:14px;color:#bbb;margin:0 0 16px;">Hi ${customerName || 'there'},</p>
+      <p style="font-size:14px;color:#ddd;line-height:1.6;margin:0 0 16px;">${message}</p>
+      <div style="font-size:12px;color:#777;border-top:1px solid #2a2a2a;padding-top:14px;margin-top:20px;">
+        Order ${orderNumber}<br>
+        Questions? Reply to this email or contact us at <a href="mailto:info@svkworks.com" style="color:#e91e8c;">info@svkworks.com</a>.
+      </div>
+    </div>
+  </div>
+</body>
+</html>`;
+
+  const payload = TEST_MODE
+    ? { from: 'SVK Works <orders@svkworks.com>', to: 'info@svkworks.com', subject: `[TEST] ${heading} — ${orderNumber} | SVK Works`, html }
+    : { from: 'SVK Works <orders@svkworks.com>', to: customerEmail, bcc: 'info@svkworks.com', subject: `${heading} — ${orderNumber} | SVK Works`, html };
+
+  const recipient = TEST_MODE ? 'info@svkworks.com' : customerEmail;
+  console.log(`[email] Sending "${heading}" for ${orderNumber} to ${recipient}${TEST_MODE ? ' [TEST MODE]' : ''}`);
+
+  const res = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${process.env.RESEND_API_KEY}` },
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) {
+    const err = await res.text();
+    throw new Error(`Resend error ${res.status}: ${err}`);
+  }
+  const data = await res.json();
+  console.log(`[email] Status email sent for ${orderNumber}, Resend ID: ${data.id}`);
+}
+
+module.exports = { sendInvoiceEmail, sendOrderStatusEmail };
