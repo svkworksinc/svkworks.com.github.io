@@ -517,7 +517,7 @@ Instagram: @svkworks</div>
       <div class="inv-meta-rows">
         <div class="inv-meta-row">
           <span class="inv-meta-label">Invoice #</span>
-          <span class="inv-meta-value"><input class="inv-input" id="inv-number" type="text" value="SVK-001" placeholder="SVK-001"></span>
+          <span class="inv-meta-value"><input class="inv-input" id="inv-number" type="text" value="SVK-XXXXXX" placeholder="SVK-XXXXXX"></span>
         </div>
         <div class="inv-meta-row">
           <span class="inv-meta-label">Invoice Date</span>
@@ -770,10 +770,20 @@ ECU</div>
     document.getElementById('inv-due').value  = f(due);
   }
 
+  // Unambiguous charset (no 0/O/1/I) so serials are easy to read back over phone/email.
+  const SERIAL_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+
+  function randomSerial(len = 6) {
+    const bytes = new Uint8Array(len);
+    crypto.getRandomValues(bytes);
+    return Array.from(bytes, b => SERIAL_CHARS[b % SERIAL_CHARS.length]).join('');
+  }
+
   function nextInvoiceNumber() {
-    const n = parseInt(localStorage.getItem('svk_inv_counter') || '0') + 1;
-    localStorage.setItem('svk_inv_counter', n);
-    return 'SVK-' + String(n).padStart(3, '0');
+    let num;
+    do { num = 'SVK-' + randomSerial(6); }
+    while (localStorage.getItem('svk_invoice_' + num));
+    return num;
   }
 
   function newInvoice() {
@@ -825,7 +835,7 @@ ECU</div>
   }
 
   function loadInvoice() {
-    const key = prompt('Invoice number to load (e.g. SVK-001), blank = last saved:');
+    const key = prompt('Invoice number to load (e.g. SVK-7K4QXM), blank = last saved:');
     const sk  = key ? ('svk_invoice_' + key.trim().toUpperCase()) : localStorage.getItem('svk_last_invoice');
     if (!sk) { showToast('No saved invoice found.', true); return; }
     const raw = localStorage.getItem(sk);
