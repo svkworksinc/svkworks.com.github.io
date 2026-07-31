@@ -49,6 +49,7 @@ const SVK_FOOTER_HTML = `
         <h4>Resources</h4>
         <ul>
           <li><a href="/resources.html">Wiring Diagrams</a></li>
+          <li><a href="/wiring-diagrams.html">Interactive Diagrams</a></li>
           <li><a href="/blog.html">Blog</a></li>
           <li><a href="/builds.html">Builds Gallery</a></li>
           <li><a href="/faq.html">FAQ</a></li>
