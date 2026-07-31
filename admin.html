@@ -11,7 +11,60 @@
   <link rel="stylesheet" href="css/style.css">
   <link rel="icon" href="img/svk-icon.png" type="image/png">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-  <script src="js/auth.js?v=38e1ddbe"></script>
+  <script src="js/auth.js?v=63c00c7d"></script>
+  <style>
+    .order-modal-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+      display: flex; align-items: flex-start; justify-content: center;
+      z-index: 1000; padding: var(--space-2xl) var(--space-lg); overflow-y: auto;
+    }
+    .order-modal {
+      background: var(--bg-card); border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg); max-width: 720px; width: 100%;
+      position: relative; padding: var(--space-2xl);
+    }
+    .order-modal-close {
+      position: absolute; top: var(--space-md); right: var(--space-md);
+      background: none; border: none; color: var(--text-muted);
+      font-size: 1.75rem; line-height: 1; cursor: pointer; padding: 0;
+    }
+    .order-modal-close:hover { color: var(--text-primary); }
+    .om-meta-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: var(--space-lg); margin: var(--space-lg) 0 var(--space-xl);
+      padding-bottom: var(--space-xl); border-bottom: 1px solid var(--border-color);
+    }
+    .om-meta-label { font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); margin-bottom: 4px; }
+    .om-meta-value { font-size: var(--text-sm); font-weight: var(--weight-medium); }
+    .om-items table { width: 100%; border-collapse: collapse; margin-bottom: var(--space-lg); }
+    .om-items th { text-align: left; font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); padding: 6px 8px; border-bottom: 1px solid var(--border-color); }
+    .om-items td { padding: 10px 8px; font-size: var(--text-sm); border-bottom: 1px solid var(--border-color); vertical-align: top; }
+    .om-items th:nth-child(2), .om-items td:nth-child(2),
+    .om-items th:nth-child(3), .om-items td:nth-child(3),
+    .om-items th:nth-child(4), .om-items td:nth-child(4) { text-align: right; }
+    .om-item-opts { font-size: var(--text-xs); color: var(--text-muted); margin-top: 2px; }
+    .om-totals { display: flex; flex-direction: column; gap: 4px; align-items: flex-end; margin-bottom: var(--space-lg); }
+    .om-totals-row { display: flex; justify-content: space-between; gap: var(--space-xl); font-size: var(--text-sm); color: var(--text-secondary); width: 220px; max-width: 100%; }
+    .om-totals-row.total { font-size: var(--text-lg); font-weight: var(--weight-bold); color: var(--text-primary); border-top: 1px solid var(--border-color); padding-top: 6px; margin-top: 4px; }
+
+    .om-section-title { font-size: var(--text-sm); font-weight: var(--weight-bold); text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); margin: var(--space-xl) 0 var(--space-md); }
+    .om-actions { display: flex; gap: var(--space-md); flex-wrap: wrap; margin-top: var(--space-md); }
+    .om-inline-form { background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: var(--space-lg); margin-top: var(--space-md); display: none; }
+    .om-inline-form.visible { display: block; }
+    .om-inline-form .form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md); }
+    @media (max-width: 560px) { .om-inline-form .form-row-2 { grid-template-columns: 1fr; } }
+    .om-error { color: #fca5a5; font-size: var(--text-sm); margin-top: var(--space-sm); display: none; }
+    .om-cancelled-box { background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.3); border-radius: var(--radius-md); padding: var(--space-lg); margin-top: var(--space-md); }
+    .om-timeline { display: flex; flex-direction: column; gap: var(--space-md); }
+    .om-timeline-item { display: flex; gap: var(--space-md); font-size: var(--text-sm); }
+    .om-timeline-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--magenta); margin-top: 6px; flex-shrink: 0; }
+    .om-timeline-body { flex: 1; }
+    .om-timeline-action { font-weight: var(--weight-medium); }
+    .om-timeline-meta { color: var(--text-muted); font-size: var(--text-xs); margin-top: 2px; }
+    .om-timeline-note { color: var(--text-secondary); margin-top: 4px; }
+    details.om-edit summary { cursor: pointer; font-size: var(--text-sm); color: var(--text-muted); }
+    details.om-edit[open] summary { margin-bottom: var(--space-md); }
+  </style>
 </head>
 <body>
   <main id="main-content">
@@ -102,6 +155,14 @@
       </section>
     </div>
 
+    <!-- Order management modal -->
+    <div id="order-modal-overlay" class="order-modal-overlay" style="display:none;" onclick="if(event.target===this) closeOrderModal()">
+      <div class="order-modal">
+        <button class="order-modal-close" onclick="closeOrderModal()" aria-label="Close">&times;</button>
+        <div id="order-modal-body"></div>
+      </div>
+    </div>
+
   </main>
 
   <script>
@@ -115,13 +176,8 @@
       cancelled:   { label: 'Cancelled',        cls: 'status-cancelled'},
     };
 
-    const STATUS_OPTIONS = [
-      { value: 'pending',     label: 'Pending Review' },
-      { value: 'in_progress', label: 'In Progress'    },
-      { value: 'shipped',     label: 'Shipped'        },
-      { value: 'complete',    label: 'Complete'       },
-      { value: 'cancelled',   label: 'Cancelled'      },
-    ];
+    const PIPELINE_STEPS = ['Received', 'Building', 'Shipped', 'Complete'];
+    const PIPELINE_INDEX = { pending: 0, in_progress: 1, shipped: 2, complete: 3 };
 
     let allOrders = [];
     let currentFilter = 'all';
@@ -146,17 +202,13 @@
     function renderAdminOrder(order) {
       const s       = STATUS_LABELS[order.status] || STATUS_LABELS.pending;
       const profile = order._profile || {};
-      const custName  = profile.full_name || '—';
-      const custEmail = profile.email    || order.user_id?.slice(0, 16) + '…' || '—';
-      const shortId   = order.id?.slice(0, 8).toUpperCase() || '';
-      const optHtml   = renderOptions(order.options);
-
-      const statusSelect = STATUS_OPTIONS.map(o =>
-        `<option value="${o.value}" ${order.status === o.value ? 'selected' : ''}>${o.label}</option>`
-      ).join('');
+      const custName  = profile.full_name || order.customer_name || '—';
+      const custEmail = profile.email || order.customer_email || (order.user_id?.slice(0, 16) + '…') || '—';
+      const shortId   = order.order_number || (order.id ? '#' + order.id.slice(0, 8).toUpperCase() : '');
+      const optHtml   = Array.isArray(order.items) && order.items.length ? '' : renderOptions(order.options);
 
       return `
-        <div class="order-card admin-order-card" data-order-id="${order.id}">
+        <div class="order-card admin-order-card" data-order-id="${order.id}" onclick="openOrderModal('${order.id}')" style="cursor:pointer;">
           <div class="admin-order-top">
             <div class="admin-order-customer">
               <div class="admin-customer-avatar">${(custName[0] || '?').toUpperCase()}</div>
@@ -174,22 +226,13 @@
           <div class="admin-order-meta">
             <span class="order-product">${order.product}</span>
             <span class="order-date">${formatDate(order.submitted_at)}</span>
-            ${shortId ? `<span class="order-id">#${shortId}</span>` : ''}
+            ${shortId ? `<span class="order-id">${shortId}</span>` : ''}
           </div>
 
           ${optHtml ? `<div style="margin-top:var(--space-sm);font-size:var(--text-sm);color:var(--text-secondary);">${optHtml}</div>` : ''}
           ${order.notes ? `<p class="order-notes" style="margin-top:var(--space-sm);">${order.notes}</p>` : ''}
 
-          <div class="admin-order-actions">
-            <div style="display:flex;align-items:center;gap:var(--space-sm);flex:1;">
-              <label style="font-size:var(--text-xs);color:var(--text-muted);white-space:nowrap;">Update Status:</label>
-              <select class="form-input admin-status-select" style="padding:0.35rem var(--space-md);font-size:var(--text-sm);">
-                ${statusSelect}
-              </select>
-            </div>
-            <button class="btn btn-outline admin-save-btn" style="font-size:var(--text-sm);padding:0.4rem var(--space-lg);">Save</button>
-            <span class="admin-save-msg" style="display:none;font-size:var(--text-xs);"></span>
-          </div>
+          <p style="margin:var(--space-sm) 0 0;font-size:var(--text-xs);color:var(--text-muted);">Click to manage order →</p>
         </div>
       `;
     }
@@ -229,39 +272,346 @@
       listEl.innerHTML      = orders.map(renderAdminOrder).join('');
       countEl.style.display = 'block';
       countEl.textContent   = `Showing ${orders.length} of ${allOrders.length} orders`;
+    }
 
-      // Bind save buttons
-      listEl.querySelectorAll('.admin-order-card').forEach(card => {
-        const orderId = card.dataset.orderId;
-        const saveBtn = card.querySelector('.admin-save-btn');
-        const select  = card.querySelector('.admin-status-select');
-        const msg     = card.querySelector('.admin-save-msg');
+    // ============================================================
+    // Order management modal
+    // ============================================================
 
-        saveBtn.addEventListener('click', async () => {
-          saveBtn.disabled    = true;
-          saveBtn.textContent = 'Saving…';
-          const { error } = await SVKAuth.updateOrderStatus(orderId, select.value);
-          if (error) {
-            msg.textContent   = 'Error: ' + error.message;
-            msg.style.color   = '#fca5a5';
-          } else {
-            // Update local state
-            const order = allOrders.find(o => o.id === orderId);
-            if (order) order.status = select.value;
-            msg.textContent = 'Saved';
-            msg.style.color = '#86efac';
-            // Update status badge in-place
-            const statusBadge = card.querySelector('.order-status');
-            const s = STATUS_LABELS[select.value] || STATUS_LABELS.pending;
-            statusBadge.className  = `order-status ${s.cls}`;
-            statusBadge.textContent = s.label;
-          }
-          msg.style.display   = 'inline';
-          saveBtn.disabled    = false;
-          saveBtn.textContent = 'Save';
-          setTimeout(() => { msg.style.display = 'none'; }, 3000);
-        });
-      });
+    function fmtMoney(n) {
+      return '$' + Number(n || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function paymentMethodLabel(order) {
+      if (order.payment_method === 'stripe') return 'Credit / Debit Card (Stripe)';
+      if (order.payment_method === 'paypal') return 'PayPal';
+      return order.payment_method || '—';
+    }
+
+    function renderPipeline(status) {
+      if (status === 'cancelled') {
+        return `<div class="order-pipeline-cancelled">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+          Order Cancelled
+        </div>`;
+      }
+      const activeStep = PIPELINE_INDEX[status] ?? 0;
+      const steps = PIPELINE_STEPS.map((label, i) => {
+        const cls = i < activeStep ? 'done' : i === activeStep ? 'active' : '';
+        return `<div class="pipeline-step ${cls}"><div class="pipeline-dot"></div><div class="pipeline-label">${label}</div></div>`;
+      }).join('');
+      return `<div class="order-pipeline">${steps}</div>`;
+    }
+
+    function renderItemsTable(items) {
+      const rows = items.map(item => {
+        const opts = Object.entries(item.options || {})
+          .filter(([, v]) => v && v !== 'No' && !String(v).startsWith('Select'))
+          .map(([k, v]) => `${k}: ${v}`).join(' · ');
+        const qty = item.quantity || 1;
+        const price = item.price || 0;
+        return `<tr>
+          <td><div>${item.name}</div>${opts ? `<div class="om-item-opts">${opts}</div>` : ''}</td>
+          <td>${qty}</td>
+          <td>${fmtMoney(price)}</td>
+          <td>${fmtMoney(price * qty)}</td>
+        </tr>`;
+      }).join('');
+      return `<div class="om-items"><table><thead><tr><th>Item</th><th>Qty</th><th>Unit Price</th><th>Total</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+    }
+
+    function renderTotals(order) {
+      const o = order.options || {};
+      if (o.subtotal === undefined) {
+        return `<div class="om-totals"><div class="om-totals-row total"><span>Total</span><span>${formatPrice(order.total_price)}</span></div></div>`;
+      }
+      let rows = `
+        <div class="om-totals-row"><span>Subtotal</span><span>${fmtMoney(o.subtotal)}</span></div>
+        <div class="om-totals-row"><span>Shipping</span><span>${fmtMoney(o.shipping)}</span></div>`;
+      if (o.tax) rows += `<div class="om-totals-row"><span>Tax</span><span>${fmtMoney(o.tax)}</span></div>`;
+      rows += `<div class="om-totals-row total"><span>Total</span><span>${fmtMoney(order.total_price)}</span></div>`;
+      return `<div class="om-totals">${rows}</div>`;
+    }
+
+    function renderActionArea(order) {
+      const addr = order.options?.shippingAddress || {};
+      switch (order.status) {
+        case 'pending':
+          return `
+            <div class="om-actions">
+              <button class="btn btn-primary btn-sm" onclick="handleAccept('${order.id}')">Accept &amp; Start Building</button>
+              <button class="btn btn-outline btn-sm" style="color:#ef4444;border-color:rgba(239,68,68,0.3);" onclick="showCancelForm('${order.id}')">Cancel &amp; Refund</button>
+            </div>
+            ${cancelFormHtml(order.id)}`;
+        case 'in_progress':
+          return `
+            <div class="om-actions">
+              <button class="btn btn-primary btn-sm" onclick="showShipForm('${order.id}')">Mark as Shipped</button>
+              <button class="btn btn-outline btn-sm" style="color:#ef4444;border-color:rgba(239,68,68,0.3);" onclick="showCancelForm('${order.id}')">Cancel &amp; Refund</button>
+            </div>
+            ${shipFormHtml(order.id, addr)}
+            ${cancelFormHtml(order.id)}`;
+        case 'shipped':
+          return `
+            <div class="om-actions">
+              <button class="btn btn-primary btn-sm" onclick="handleComplete('${order.id}')">Mark as Complete</button>
+              <button class="btn btn-outline btn-sm" style="color:#ef4444;border-color:rgba(239,68,68,0.3);" onclick="showCancelForm('${order.id}')">Cancel &amp; Refund</button>
+            </div>
+            <p style="font-size:var(--text-xs);color:var(--text-muted);margin-top:var(--space-sm);">This order already shipped — cancelling now still issues a full refund.</p>
+            ${cancelFormHtml(order.id)}`;
+        case 'complete':
+          return `<p style="color:#86efac;font-size:var(--text-sm);">✓ Order complete. No further action needed.</p>`;
+        case 'cancelled':
+          return `
+            <div class="om-cancelled-box">
+              <div style="font-weight:var(--weight-medium);color:#fca5a5;margin-bottom:4px;">Cancelled &amp; Refunded</div>
+              <div style="font-size:var(--text-sm);color:var(--text-secondary);">
+                ${order.refunded_amount ? `Refunded ${fmtMoney(order.refunded_amount)}` : ''}
+                ${order.refund_id ? ` · Refund ID: ${order.refund_id}` : ''}
+              </div>
+              ${order.cancel_reason ? `<div style="font-size:var(--text-sm);color:var(--text-secondary);margin-top:4px;">Reason: ${order.cancel_reason}</div>` : ''}
+            </div>`;
+        default:
+          return '';
+      }
+    }
+
+    function shipFormHtml(orderId) {
+      return `
+        <div class="om-inline-form" id="ship-form-${orderId}">
+          <div class="form-row-2">
+            <div class="form-group">
+              <label class="form-label" for="tracking-${orderId}">Tracking Number <span style="color:var(--magenta);">*</span></label>
+              <input type="text" class="form-input" id="tracking-${orderId}" placeholder="1Z999AA10123456784">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="carrier-${orderId}">Carrier <span style="color:var(--text-muted);font-weight:400;">(optional)</span></label>
+              <input type="text" class="form-input" id="carrier-${orderId}" placeholder="UPS, USPS, FedEx…">
+            </div>
+          </div>
+          <div class="om-error" id="ship-error-${orderId}"></div>
+          <div style="display:flex;gap:var(--space-sm);margin-top:var(--space-sm);">
+            <button class="btn btn-primary btn-sm" onclick="handleShip('${orderId}')">Confirm Shipment</button>
+            <button class="btn btn-ghost btn-sm" onclick="hideInlineForms('${orderId}')">Cancel</button>
+          </div>
+        </div>`;
+    }
+
+    function cancelFormHtml(orderId) {
+      return `
+        <div class="om-inline-form" id="cancel-form-${orderId}">
+          <div class="form-group">
+            <label class="form-label" for="cancel-reason-${orderId}">Cancellation Reason <span style="color:var(--magenta);">*</span></label>
+            <textarea class="form-textarea" id="cancel-reason-${orderId}" rows="2" placeholder="e.g. Customer requested cancellation, item out of stock…"></textarea>
+          </div>
+          <p style="font-size:var(--text-xs);color:#fca5a5;margin:0 0 var(--space-sm);">This issues a real, full refund to the customer's original payment method and cannot be undone.</p>
+          <div class="om-error" id="cancel-error-${orderId}"></div>
+          <div style="display:flex;gap:var(--space-sm);">
+            <button class="btn btn-sm" style="background:#ef4444;color:#fff;" onclick="handleCancel('${orderId}')">Confirm Cancellation &amp; Refund</button>
+            <button class="btn btn-ghost btn-sm" onclick="hideInlineForms('${orderId}')">Never Mind</button>
+          </div>
+        </div>`;
+    }
+
+    function renderEditForm(order) {
+      const addr = order.options?.shippingAddress || {};
+      return `
+        <details class="om-edit">
+          <summary>Edit order details</summary>
+          <div class="form-row-2">
+            <div class="form-group">
+              <label class="form-label" for="edit-name-${order.id}">Customer Name</label>
+              <input type="text" class="form-input" id="edit-name-${order.id}" value="${order.customer_name || ''}">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="edit-email-${order.id}">Customer Email</label>
+              <input type="email" class="form-input" id="edit-email-${order.id}" value="${order.customer_email || ''}">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="edit-address-${order.id}">Street Address</label>
+            <input type="text" class="form-input" id="edit-address-${order.id}" value="${addr.address || ''}">
+          </div>
+          <div class="form-row-2">
+            <div class="form-group">
+              <label class="form-label" for="edit-city-${order.id}">City</label>
+              <input type="text" class="form-input" id="edit-city-${order.id}" value="${addr.city || ''}">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="edit-state-${order.id}">State</label>
+              <input type="text" class="form-input" id="edit-state-${order.id}" value="${addr.state || ''}">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="edit-zip-${order.id}">ZIP</label>
+            <input type="text" class="form-input" id="edit-zip-${order.id}" value="${addr.zip || ''}" style="max-width:140px;">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="edit-admin-notes-${order.id}">Internal Admin Notes <span style="color:var(--text-muted);font-weight:400;">(never shown to the customer)</span></label>
+            <textarea class="form-textarea" id="edit-admin-notes-${order.id}" rows="2">${order.admin_notes || ''}</textarea>
+          </div>
+          <div class="om-error" id="edit-error-${order.id}"></div>
+          <button class="btn btn-outline btn-sm" onclick="handleSaveEdit('${order.id}')">Save Changes</button>
+        </details>`;
+    }
+
+    function renderTimeline(events) {
+      if (!events.length) return `<p style="font-size:var(--text-sm);color:var(--text-muted);">No activity recorded yet.</p>`;
+      const ACTION_LABELS = { accept: 'Accepted', ship: 'Marked Shipped', complete: 'Marked Complete', cancel: 'Cancelled & Refunded', edit: 'Edited' };
+      return `<div class="om-timeline">${events.map(e => `
+        <div class="om-timeline-item">
+          <div class="om-timeline-dot"></div>
+          <div class="om-timeline-body">
+            <div class="om-timeline-action">${ACTION_LABELS[e.action] || e.action}</div>
+            <div class="om-timeline-meta">${e.admin_name || 'Admin'} · ${new Date(e.created_at).toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' })}</div>
+            ${e.note ? `<div class="om-timeline-note">${e.note}</div>` : ''}
+          </div>
+        </div>`).join('')}</div>`;
+    }
+
+    function renderOrderDetail(order) {
+      const s = STATUS_LABELS[order.status] || STATUS_LABELS.pending;
+      const isCheckoutOrder = Array.isArray(order.items) && order.items.length > 0;
+      const idLabel = order.order_number || (order.id ? '#' + order.id.slice(0, 8).toUpperCase() : '');
+      const legacyOptLines = isCheckoutOrder ? '' : renderOptions(order.options);
+      const addr = order.options?.shippingAddress;
+
+      return `
+        <h2 style="margin:0 0 6px;padding-right:var(--space-2xl);">${order.product}</h2>
+        <div style="display:flex;align-items:center;gap:var(--space-sm);flex-wrap:wrap;">
+          <span class="order-status ${s.cls}">${s.label}</span>
+          ${idLabel ? `<span class="order-id">${idLabel}</span>` : ''}
+        </div>
+
+        <div class="om-meta-grid">
+          <div><div class="om-meta-label">Customer</div><div class="om-meta-value">${order.customer_name || order._profile?.full_name || '—'}<br><span style="font-weight:400;color:var(--text-muted);">${order.customer_email || order._profile?.email || '—'}</span></div></div>
+          <div><div class="om-meta-label">Date</div><div class="om-meta-value">${formatDate(order.submitted_at)}</div></div>
+          <div><div class="om-meta-label">Payment Method</div><div class="om-meta-value">${paymentMethodLabel(order)}</div></div>
+          <div><div class="om-meta-label">Total Paid</div><div class="om-meta-value">${formatPrice(order.total_price)}</div></div>
+        </div>
+
+        ${addr && (addr.address || addr.city) ? `
+        <div class="om-meta-grid">
+          <div><div class="om-meta-label">Ship To</div><div class="om-meta-value">${[addr.address, [addr.city, addr.state, addr.zip].filter(Boolean).join(', ')].filter(Boolean).join(', ')}</div></div>
+          ${order.options?.shippingLabel ? `<div><div class="om-meta-label">Shipping Method</div><div class="om-meta-value">${order.options.shippingLabel}</div></div>` : ''}
+          ${order.tracking_number ? `<div><div class="om-meta-label">Tracking</div><div class="om-meta-value">${order.tracking_number}${order.carrier ? ' (' + order.carrier + ')' : ''}</div></div>` : ''}
+        </div>` : ''}
+
+        ${isCheckoutOrder ? renderItemsTable(order.items) : (legacyOptLines ? `<ul class="order-options-list" style="margin-bottom:var(--space-lg);">${legacyOptLines}</ul>` : '')}
+        ${isCheckoutOrder ? renderTotals(order) : ''}
+
+        ${renderPipeline(order.status)}
+        ${order.notes ? `<p class="order-notes" style="margin-top:var(--space-lg);"><strong>Customer Notes:</strong> ${order.notes}</p>` : ''}
+
+        <div class="om-section-title">Manage Order</div>
+        ${renderActionArea(order)}
+
+        <div class="om-section-title">Details</div>
+        ${renderEditForm(order)}
+
+        <div class="om-section-title">Activity Log</div>
+        <div id="om-timeline-${order.id}"><p style="font-size:var(--text-sm);color:var(--text-muted);">Loading…</p></div>
+      `;
+    }
+
+    async function openOrderModal(orderId) {
+      const order = allOrders.find(o => o.id === orderId);
+      if (!order) return;
+      document.getElementById('order-modal-body').innerHTML = renderOrderDetail(order);
+      document.getElementById('order-modal-overlay').style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+
+      const events = await SVKAuth.getOrderEvents(orderId);
+      const timelineEl = document.getElementById(`om-timeline-${orderId}`);
+      if (timelineEl) timelineEl.innerHTML = renderTimeline(events);
+    }
+
+    function closeOrderModal() {
+      document.getElementById('order-modal-overlay').style.display = 'none';
+      document.body.style.overflow = '';
+    }
+
+    function hideInlineForms(orderId) {
+      const ship = document.getElementById(`ship-form-${orderId}`);
+      const cancel = document.getElementById(`cancel-form-${orderId}`);
+      if (ship) ship.classList.remove('visible');
+      if (cancel) cancel.classList.remove('visible');
+    }
+
+    function showShipForm(orderId) {
+      document.getElementById(`ship-form-${orderId}`)?.classList.add('visible');
+    }
+
+    function showCancelForm(orderId) {
+      document.getElementById(`cancel-form-${orderId}`)?.classList.add('visible');
+    }
+
+    function showActionError(id, msg) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.textContent = msg;
+      el.style.display = 'block';
+    }
+
+    // After any successful mutation: reload orders from the server (never
+    // trust client-side state for something with real money/refunds behind
+    // it) and re-open the modal on the same order with fresh data.
+    async function refreshAndReopen(orderId) {
+      allOrders = await SVKAuth.getAdminOrders();
+      updateStats(allOrders);
+      renderOrders();
+      if (orderId) await openOrderModal(orderId);
+    }
+
+    async function handleAccept(orderId) {
+      const { error } = await SVKAuth.adminUpdateOrder(orderId, 'accept');
+      if (error) { alert('Failed: ' + error.message); return; }
+      if (typeof SVKCart !== 'undefined') SVKCart.showToast('Order accepted');
+      await refreshAndReopen(orderId);
+    }
+
+    async function handleShip(orderId) {
+      const trackingNumber = document.getElementById(`tracking-${orderId}`).value.trim();
+      const carrier = document.getElementById(`carrier-${orderId}`).value.trim();
+      if (!trackingNumber) return showActionError(`ship-error-${orderId}`, 'Enter a tracking number.');
+      const { error } = await SVKAuth.adminUpdateOrder(orderId, 'ship', { trackingNumber, carrier });
+      if (error) return showActionError(`ship-error-${orderId}`, error.message);
+      if (typeof SVKCart !== 'undefined') SVKCart.showToast('Order marked shipped');
+      await refreshAndReopen(orderId);
+    }
+
+    async function handleComplete(orderId) {
+      const { error } = await SVKAuth.adminUpdateOrder(orderId, 'complete');
+      if (error) { alert('Failed: ' + error.message); return; }
+      if (typeof SVKCart !== 'undefined') SVKCart.showToast('Order marked complete');
+      await refreshAndReopen(orderId);
+    }
+
+    async function handleCancel(orderId) {
+      const reason = document.getElementById(`cancel-reason-${orderId}`).value.trim();
+      if (!reason) return showActionError(`cancel-error-${orderId}`, 'A cancellation reason is required.');
+      const { error } = await SVKAuth.adminUpdateOrder(orderId, 'cancel', { reason });
+      if (error) return showActionError(`cancel-error-${orderId}`, error.message);
+      if (typeof SVKCart !== 'undefined') SVKCart.showToast('Order cancelled and refunded');
+      await refreshAndReopen(orderId);
+    }
+
+    async function handleSaveEdit(orderId) {
+      const payload = {
+        customerName: document.getElementById(`edit-name-${orderId}`).value,
+        customerEmail: document.getElementById(`edit-email-${orderId}`).value,
+        adminNotes: document.getElementById(`edit-admin-notes-${orderId}`).value,
+        shippingAddress: {
+          address: document.getElementById(`edit-address-${orderId}`).value,
+          city: document.getElementById(`edit-city-${orderId}`).value,
+          state: document.getElementById(`edit-state-${orderId}`).value,
+          zip: document.getElementById(`edit-zip-${orderId}`).value,
+        },
+      };
+      const { error } = await SVKAuth.adminUpdateOrder(orderId, 'edit', payload);
+      if (error) return showActionError(`edit-error-${orderId}`, error.message);
+      if (typeof SVKCart !== 'undefined') SVKCart.showToast('Order updated');
+      await refreshAndReopen(orderId);
     }
 
     function updateStats(orders) {
@@ -341,5 +691,8 @@
 
     document.addEventListener('DOMContentLoaded', initAdmin);
   </script>
+
+  <!-- cart.js loaded only for its shared showToast() helper -->
+  <script defer src="js/cart.js?v=8cff9968"></script>
 </body>
 </html>
