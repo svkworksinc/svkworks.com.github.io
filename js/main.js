@@ -4,23 +4,36 @@
 
 const SVKMain = {
   async init() {
-    // Load components (header/footer) — synchronous, uses inline JS templates
-    SVKComponents.load();
+    // Every step below is independent, so none of them may take the others
+    // down. This used to be a straight sequence, and because ~23 pages load
+    // main.js without products.js, `SVKProducts.load()` threw a ReferenceError
+    // on those pages and aborted init() before observeAnimations() ran — which
+    // left every .fade-in element stuck at opacity:0, i.e. permanently
+    // invisible content on the blog posts and FAQ. Each step is isolated so a
+    // single failure degrades one feature instead of blanking the page.
+    const step = (name, fn) => {
+      try {
+        return fn();
+      } catch (err) {
+        console.error(`[SVKMain] ${name} failed:`, err);
+      }
+    };
 
-    // Load product data
-    await SVKProducts.load();
+    step('components', () => SVKComponents.load());
 
-    // Init scroll animations
-    this.observeAnimations();
+    // Product data is optional — only pages that include js/products.js have it.
+    if (typeof SVKProducts !== 'undefined') {
+      try {
+        await SVKProducts.load();
+      } catch (err) {
+        console.error('[SVKMain] product data failed to load:', err);
+      }
+    }
 
-    // Init accordion if present
-    this.initAccordions();
-
-    // Smooth scroll for anchor links
-    this.initSmoothScroll();
-
-    // Gallery zoom+pan on any page with a product gallery
-    this.initProductGallery();
+    step('animations', () => this.observeAnimations());
+    step('accordions', () => this.initAccordions());
+    step('smoothScroll', () => this.initSmoothScroll());
+    step('productGallery', () => this.initProductGallery());
   },
 
   observeAnimations() {
@@ -69,12 +82,34 @@ const SVKMain = {
 
   initSmoothScroll() {
     document.querySelectorAll('a[href^="#"]').forEach(link => {
+      const href = link.getAttribute('href');
+      if (!href || href === '#') return;
+
       link.addEventListener('click', (e) => {
-        const target = document.querySelector(link.getAttribute('href'));
-        if (target) {
-          e.preventDefault();
-          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        let target;
+        try {
+          target = document.querySelector(href);
+        } catch {
+          return; // not a valid selector (e.g. href="#!") — let the browser handle it
         }
+        if (!target) return;
+
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+        // Scrolling alone leaves keyboard focus behind on the link, so the next
+        // Tab continues from the top of the page instead of from the target.
+        // That silently defeats the skip-to-content link and every in-page
+        // jump link. Move focus to the target, making it programmatically
+        // focusable first if it isn't naturally (headings, <main>, <section>).
+        if (!target.hasAttribute('tabindex')) {
+          target.setAttribute('tabindex', '-1');
+        }
+        target.focus({ preventScroll: true });
+
+        // Keep the URL in sync so the jump is shareable and the back button
+        // works, without triggering a second browser-initiated jump.
+        if (history.pushState) history.pushState(null, '', href);
       });
     });
   },

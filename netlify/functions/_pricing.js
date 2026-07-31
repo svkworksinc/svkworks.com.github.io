@@ -214,17 +214,104 @@ async function resolveShipping(shippingOptionId) {
 }
 
 // Calculates tax and grand total for an already-resolved shipping cost.
-function calculateTotals(subtotal, shipping, state) {
-  const taxBase = subtotal + shipping;
+function calculateTotals(subtotal, shipping, state, discount = 0) {
+  // Discount comes off the goods before tax, so the customer isn't taxed on
+  // money they didn't pay. Clamped to the subtotal so a large fixed-amount
+  // code can never make the order negative or discount the shipping.
+  const appliedDiscount = Math.min(Math.max(discount, 0), subtotal);
+  const taxBase = subtotal - appliedDiscount + shipping;
   const tax = (state === 'TX') ? Math.round(taxBase * TX_TAX_RATE * 100) / 100 : 0;
-  const grandTotal = Math.round((subtotal + shipping + tax) * 100) / 100;
-  return { tax, grandTotal };
+  const grandTotal = Math.round((taxBase + tax) * 100) / 100;
+  return { tax, grandTotal, discount: Math.round(appliedDiscount * 100) / 100 };
+}
+
+/**
+ * Resolves a customer-supplied discount code to an authoritative dollar
+ * amount. Never trust a discount computed in the browser — same principle as
+ * resolveShipping() re-verifying the shipping rate server-side.
+ *
+ * Throws a customer-safe Error when the code can't be applied; returns
+ * { discount, discountCode, discountCodeId, label } when it can.
+ */
+async function resolveDiscount(supabase, code, subtotal) {
+  const trimmed = (code || '').trim();
+  if (!trimmed) return { discount: 0, discountCode: null, discountCodeId: null, label: null };
+  if (!supabase) throw new Error('Discount codes are unavailable right now.');
+
+  const { data: row, error } = await supabase
+    .from('discount_codes')
+    .select('id, code, kind, value, min_subtotal, max_uses, times_used, starts_at, expires_at, active')
+    .ilike('code', trimmed)
+    .maybeSingle();
+
+  // Deliberately identical message for "no such code" and "code is disabled",
+  // so the endpoint can't be used to discover which codes exist.
+  if (error || !row || !row.active) {
+    throw new Error('That discount code isn\'t valid.');
+  }
+
+  const now = Date.now();
+  if (row.starts_at && new Date(row.starts_at).getTime() > now) {
+    throw new Error('That discount code isn\'t active yet.');
+  }
+  if (row.expires_at && new Date(row.expires_at).getTime() < now) {
+    throw new Error('That discount code has expired.');
+  }
+  if (row.max_uses !== null && row.times_used >= row.max_uses) {
+    throw new Error('That discount code has reached its usage limit.');
+  }
+  const minSubtotal = Number(row.min_subtotal) || 0;
+  if (subtotal < minSubtotal) {
+    throw new Error(`That code requires a subtotal of at least $${minSubtotal.toFixed(2)}.`);
+  }
+
+  const value = Number(row.value);
+  const raw = row.kind === 'percent' ? (subtotal * value) / 100 : value;
+  const discount = Math.min(Math.round(raw * 100) / 100, subtotal);
+
+  return {
+    discount,
+    discountCode: row.code,
+    discountCodeId: row.id,
+    label: row.kind === 'percent' ? `${value}% off` : `$${value.toFixed(2)} off`,
+  };
+}
+
+/**
+ * Records one redemption. Called only after payment succeeds, so an abandoned
+ * checkout never burns a use. Returns false if the code hit its cap in the
+ * meantime (the order still stands — we don't punish the customer for a race).
+ */
+async function consumeDiscount(supabase, code) {
+  if (!code) return true;
+  const { data: row, error: lookupError } = await supabase
+    .from('discount_codes')
+    .select('id')
+    .ilike('code', code)
+    .maybeSingle();
+  if (lookupError || !row) {
+    console.error('[consumeDiscount] Code not found when recording redemption:', code);
+    return false;
+  }
+  const { data, error } = await supabase.rpc('consume_discount_code', { p_id: row.id });
+  if (error) {
+    console.error('[consumeDiscount] Failed to record redemption:', error.message);
+    return false;
+  }
+  if (data !== true) {
+    // Hit its cap between checkout and payment. The order still stands — the
+    // customer already paid the discounted price and that's not their fault.
+    console.warn(`[consumeDiscount] ${code} was at its usage limit; order honoured anyway.`);
+  }
+  return data === true;
 }
 
 module.exports = {
   validateCart,
   resolveShipping,
   calculateTotals,
+  resolveDiscount,
+  consumeDiscount,
   totalWeightOz,
   markUsedPartsSold,
   releaseUsedParts,

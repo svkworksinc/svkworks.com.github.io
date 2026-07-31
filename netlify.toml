@@ -3,7 +3,10 @@
   # cachebust.js rewrites every shared script/style reference to a content
   # hash of the target file, so a forgotten manual ?v= bump can never again
   # leave a fix invisible to browsers caching /js/* for a year.
-  command = "npm install && node scripts/cachebust.js"
+  # image-dims.js stamps intrinsic width/height onto every static <img> so
+  # the browser can reserve space before the bytes land (Cumulative Layout
+  # Shift is a Core Web Vitals ranking factor).
+  command = "npm install && node scripts/cachebust.js && node scripts/image-dims.js"
 
 [functions]
   directory = "netlify/functions"

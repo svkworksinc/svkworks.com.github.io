@@ -12,6 +12,14 @@ const SVK_FOOTER_HTML = `
           <picture><source srcset="/img/svk-logo.webp" type="image/webp"><img src="/img/svk-logo.png" alt="SVK Works" class="logo-img" width="400" height="139" loading="lazy"></picture>
         </a>
         <p>Custom standalone wiring harnesses built to order. Specializing in JDM platforms — 2JZ, 1JZ, 1UZ and beyond.</p>
+        <form class="footer-subscribe" id="footer-subscribe-form" novalidate>
+          <label class="footer-subscribe-label" for="footer-subscribe-email">Get new drops &amp; build guides</label>
+          <div class="footer-subscribe-row">
+            <input type="email" id="footer-subscribe-email" name="email" placeholder="you@email.com" autocomplete="email" required>
+            <button type="submit" class="btn btn-primary btn-sm" id="footer-subscribe-btn">Sign Up</button>
+          </div>
+          <p class="footer-subscribe-msg" id="footer-subscribe-msg" role="status" aria-live="polite"></p>
+        </form>
         <div class="footer-social">
           <a href="https://www.instagram.com/svk_works/" target="_blank" rel="noopener" aria-label="Instagram" class="social-link social-link--instagram">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>

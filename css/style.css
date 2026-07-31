@@ -1,6 +1,16 @@
 /* ============================================
-   SVK Works — Master Stylesheet (combined)
-   All partials inlined — no @import waterfall.
+   SVK Works — Master Stylesheet
+   ============================================
+
+   THIS FILE IS THE SINGLE SOURCE OF TRUTH FOR ALL SITE STYLING.
+
+   Every page loads only this file. There are deliberately no partials and no
+   @import waterfall — a previous split (base/components/variables/header/
+   footer/cart/animations/responsive.css) was deleted because nothing linked
+   those files, so edits made to them silently did nothing for months.
+
+   Edit here. Don't reintroduce partials without also wiring them into the
+   pages and the cachebust asset list.
    ============================================ */
 /* ============================================
    SVK Works — Design Tokens
@@ -25,7 +35,10 @@
   /* Text */
   --text-primary: #f0f0f5;
   --text-secondary: #a0a0b5;
-  --text-muted: #6b6b80;
+  /* Lightened from #6b6b80, which sat at 3.46:1 on --bg-card — below the 4.5:1
+     WCAG AA floor, and used for the site's smallest text (field labels, meta
+     rows). Same hue and saturation, raised lightness: now 4.53:1 at worst. */
+  --text-muted: #7e7e93;
   --text-inverse: #0a0a0f;
 
   /* Borders */
@@ -439,9 +452,12 @@ main {
   color: var(--text-muted);
 }
 
-/* Skip to main content — accessibility */
+/* Skip to main content — accessibility.
+   position:fixed (not absolute) so it appears at the top of the viewport
+   wherever the reader currently is; absolute anchors it to the top of the
+   document, which yanks the page back to the top when focused mid-scroll. */
 .skip-to-content {
-  position: absolute;
+  position: fixed;
   top: -100%;
   left: var(--space-md);
   padding: var(--space-sm) var(--space-lg);
@@ -864,6 +880,52 @@ main {
 .footer-logo .logo-text {
   font-size: var(--text-xl);
 }
+
+/* Newsletter signup (footer about column) */
+.footer-subscribe {
+  margin-top: var(--space-lg);
+  max-width: 340px;
+}
+.footer-subscribe-label {
+  display: block;
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  margin-bottom: var(--space-sm);
+}
+.footer-subscribe-row {
+  display: flex;
+  gap: var(--space-sm);
+}
+.footer-subscribe-row input {
+  flex: 1;
+  min-width: 0;
+  padding: 0.5rem 0.7rem;
+  font-size: var(--text-sm);
+  font-family: inherit;
+  color: var(--text-primary);
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  transition: border-color var(--transition-base);
+}
+.footer-subscribe-row input::placeholder { color: var(--text-muted); }
+.footer-subscribe-row input:focus {
+  outline: none;
+  border-color: var(--magenta);
+}
+.footer-subscribe-row .btn { flex-shrink: 0; }
+.footer-subscribe-msg {
+  font-size: var(--text-xs);
+  margin: var(--space-sm) 0 0;
+  color: var(--success);
+  /* Reserve nothing until there's something to say, so the layout doesn't
+     shift when a message appears. */
+  display: none;
+}
+.footer-subscribe-msg.is-visible { display: block; }
+.footer-subscribe-msg.is-error { color: #fca5a5; }
 
 .footer-social {
   display: flex;

@@ -4,6 +4,7 @@
 // status. Runs server-side with the service-role client since a guest has
 // no session to satisfy the orders table's RLS policies.
 const { createClient } = require('@supabase/supabase-js');
+const { checkRateLimit, clientKey, tooManyRequests } = require('./_ratelimit');
 
 const supabase = createClient(
   process.env.SUPABASE_URL,
@@ -14,6 +15,16 @@ exports.handler = async (event) => {
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, body: 'Method Not Allowed' };
   }
+
+  // This endpoint takes an order number + email and confirms whether that pair
+  // exists, which is exactly the shape an attacker would iterate over. A tight
+  // budget makes enumeration impractical without inconveniencing a real
+  // customer checking their order.
+  const rl = await checkRateLimit(supabase, clientKey(event), 'track-order', {
+    limit: 10,
+    windowSeconds: 600,
+  });
+  if (!rl.allowed) return tooManyRequests(rl.retryAfter);
 
   try {
     const { orderNumber, email } = JSON.parse(event.body);
