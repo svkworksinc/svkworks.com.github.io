@@ -10,6 +10,7 @@ const { resolveUserId } = require('./_auth');
 const { releaseUsedParts } = require('./_pricing');
 const { refundCapture } = require('./_paypal');
 const { sendOrderStatusEmail } = require('./_email');
+const { captureException } = require('./_sentry');
 
 const supabase = createClient(
   process.env.SUPABASE_URL,
@@ -216,6 +217,7 @@ exports.handler = async (event) => {
     return await handleSimpleTransition(order, action, transition.to, payload, userId, adminName);
   } catch (err) {
     console.error('admin-update-order error:', err);
+    await captureException(err);
     return fail(500, err.message || 'Internal server error.');
   }
 };
