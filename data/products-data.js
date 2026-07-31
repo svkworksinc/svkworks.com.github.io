@@ -996,3 +996,7 @@ const SVK_PRODUCTS_DATA = {
     }
   ]
 };
+
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = SVK_PRODUCTS_DATA;
+}
