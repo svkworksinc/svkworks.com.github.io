@@ -13,6 +13,19 @@ function assertTestToken() {
   return key;
 }
 
+// Tracking is read-only and doesn't move money or create shipments, so — unlike
+// rate quoting above — it's allowed to use a live key once one is configured.
+// Live shipping-rate quotes at checkout stay gated to test tokens via
+// assertTestToken() until that's turned on separately.
+function assertTrackingToken() {
+  const key = process.env.SHIPPO_API_KEY;
+  if (!key) return null; // Shippo not configured — caller falls back to a carrier-site link
+  if (!key.startsWith('shippo_test_') && !key.startsWith('shippo_live_')) {
+    throw new Error('SHIPPO_API_KEY is not a recognized Shippo token (expected shippo_test_ or shippo_live_).');
+  }
+  return key;
+}
+
 function originAddress() {
   return {
     name: process.env.SHIP_FROM_NAME || 'SVK Works',
@@ -95,7 +108,7 @@ async function verifyRate(rateId) {
 // Tracking API) for netlify/functions/carrier-tracking.js. `carrierToken`
 // is Shippo's carrier slug (see _carrier-links.js), not our display label.
 async function trackShipment(carrierToken, trackingNumber) {
-  const key = assertTestToken();
+  const key = assertTrackingToken();
   if (!key) return null; // not configured — caller falls back to a carrier-site link
 
   const res = await fetch(`${BASE_URL}/tracks/${encodeURIComponent(carrierToken)}/${encodeURIComponent(trackingNumber)}`, {
@@ -108,4 +121,4 @@ async function trackShipment(carrierToken, trackingNumber) {
   return res.json();
 }
 
-module.exports = { getRatesForAddress, verifyRate, isOriginConfigured, assertTestToken, trackShipment };
+module.exports = { getRatesForAddress, verifyRate, isOriginConfigured, assertTestToken, assertTrackingToken, trackShipment };
