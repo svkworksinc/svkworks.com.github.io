@@ -9,7 +9,7 @@ const SVK_FOOTER_HTML = `
     <div class="footer-grid">
       <div class="footer-col footer-about">
         <a href="/" class="footer-logo">
-          <picture><source srcset="/img/svk-logo.webp" type="image/webp"><img src="/img/svk-logo.png" alt="SVK Works" class="logo-img" width="400" height="139" loading="lazy"></picture>
+          <picture><source srcset="/img/svk-logo-by-itself-5.webp" type="image/webp"><img src="/img/svk-logo-by-itself-5.png" alt="SVK Works" class="logo-img" width="400" height="162" loading="lazy"></picture>
         </a>
         <p>Custom standalone wiring harnesses built to order. Specializing in JDM platforms — 2JZ, 1JZ, 1UZ and beyond.</p>
         <form class="footer-subscribe" id="footer-subscribe-form" novalidate>
