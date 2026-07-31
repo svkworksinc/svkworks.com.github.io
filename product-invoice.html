@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SVK Works — Harness Invoice Tool</title>
+  <title>SVK Works — Product Invoice Tool</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -23,6 +23,7 @@
       --green: #22c55e;
       --red: #ef4444;
       --blue: #3b82f6;
+      --amber: #eab308;
       --radius: 10px;
       --radius-sm: 6px;
       --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -72,10 +73,13 @@
       text-transform: uppercase;
       letter-spacing: 0.05em;
     }
-    .status-select.draft   { border-color: var(--text-3); color: var(--text-2); }
-    .status-select.sent    { border-color: var(--blue);   color: var(--blue); }
-    .status-select.paid    { border-color: var(--green);  color: var(--green); }
-    .status-select.overdue { border-color: var(--red);    color: var(--red); }
+    .status-select.pending    { border-color: var(--text-3); color: var(--text-2); }
+    .status-select.paid       { border-color: var(--green);  color: var(--green); }
+    .status-select.processing { border-color: var(--amber);  color: var(--amber); }
+    .status-select.shipped    { border-color: var(--blue);   color: var(--blue); }
+    .status-select.delivered  { border-color: var(--green);  color: var(--green); }
+    .status-select.refunded   { border-color: var(--red);    color: var(--red); }
+    .status-select.cancelled  { border-color: var(--red);    color: var(--red); }
 
     .btn {
       display: inline-flex;
@@ -99,7 +103,7 @@
 
     /* ─── Page ───────────────────────────────────────────── */
     .page {
-      max-width: 860px;
+      max-width: 900px;
       margin: 24px auto 60px;
       padding: 0 16px;
     }
@@ -148,7 +152,7 @@
     }
     .inv-meta { text-align: right; }
     .inv-title {
-      font-size: 26px;
+      font-size: 24px;
       font-weight: 800;
       letter-spacing: -0.03em;
       color: var(--magenta);
@@ -163,10 +167,10 @@
       gap: 8px;
       font-size: 11px;
     }
-    .inv-meta-label { color: var(--text-3); font-weight: 500; min-width: 72px; text-align: right; }
-    .inv-meta-value { color: var(--text); font-weight: 600; min-width: 106px; text-align: right; }
+    .inv-meta-label { color: var(--text-3); font-weight: 500; min-width: 82px; text-align: right; }
+    .inv-meta-value { color: var(--text); font-weight: 600; min-width: 118px; text-align: right; }
 
-    input.inv-input {
+    input.inv-input, select.inv-input {
       background: transparent;
       border: none;
       color: var(--text);
@@ -174,16 +178,19 @@
       font-size: 11px;
       font-weight: 600;
       text-align: right;
-      width: 112px;
+      width: 124px;
       padding: 1px 3px;
       margin: -1px -3px;
       border-radius: 3px;
       outline: none;
       transition: background .15s, box-shadow .15s;
+      cursor: pointer;
     }
-    input.inv-input:hover  { background: rgba(255,255,255,0.04); }
-    input.inv-input:focus  { background: rgba(233,30,140,0.07); box-shadow: 0 0 0 1px var(--border-focus); }
-    input[type="date"].inv-input { color-scheme: dark; }
+    input.inv-input:hover, select.inv-input:hover  { background: rgba(255,255,255,0.04); }
+    input.inv-input:focus, select.inv-input:focus  { background: rgba(233,30,140,0.07); box-shadow: 0 0 0 1px var(--border-focus); }
+    input[type="date"].inv-input { color-scheme: dark; cursor: text; }
+    select.inv-input { appearance: none; -webkit-appearance: none; }
+    select.inv-input option { background: var(--bg-elevated); color: var(--text); }
 
     /* ─── Parties ────────────────────────────────────────── */
     .inv-parties {
@@ -200,7 +207,23 @@
       letter-spacing: 0.1em;
       color: var(--magenta);
       margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
     }
+    .party-label .same-as-btn {
+      text-transform: none;
+      letter-spacing: 0;
+      font-weight: 600;
+      color: var(--text-3);
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 9px;
+      font-family: var(--font);
+    }
+    .party-label .same-as-btn:hover { color: var(--magenta); }
     .party-name { font-size: 12px; font-weight: 700; margin-bottom: 2px; }
     .party-details { font-size: 10px; color: var(--text-2); line-height: 1.6; }
 
@@ -245,11 +268,19 @@
 
     /* ─── Line items ─────────────────────────────────────── */
     .inv-items { padding: 0 26px; }
+    .inv-items-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 10px;
+    }
+    .inv-items-toolbar .section-label { margin-bottom: 0; }
+    .items-actions { display: flex; gap: 6px; }
 
     .items-table {
       width: 100%;
       border-collapse: collapse;
-      margin: 10px 0 0;
+      margin: 8px 0 0;
     }
     .items-table th {
       font-size: 9px;
@@ -267,13 +298,32 @@
       border-bottom: 1px solid rgba(255,255,255,0.035);
       vertical-align: top;
     }
-    .col-num    { width: 24px; color: var(--text-3); font-size: 10px; text-align: center; }
-    .col-item   { width: 22%; font-weight: 600; font-size: 11px; }
-    .col-desc   { font-size: 10px; color: var(--text-2); }
+    .col-num    { width: 22px; color: var(--text-3); font-size: 10px; text-align: center; }
+    .col-sku    { width: 92px; font-size: 9px; color: var(--text-3); font-weight: 600; letter-spacing: 0.03em; text-transform: uppercase; }
+    .col-item   { font-weight: 600; font-size: 11px; }
+    .col-item .item-sub { font-weight: 400; color: var(--text-3); font-size: 9px; margin-top: 1px; }
     .col-qty    { width: 46px; text-align: right; }
-    .col-rate   { width: 72px; text-align: right; }
-    .col-amount { width: 72px; text-align: right; font-weight: 600; font-size: 11px; }
+    .col-rate   { width: 76px; text-align: right; }
+    .col-amount { width: 78px; text-align: right; font-weight: 600; font-size: 11px; }
     .col-del    { width: 24px; text-align: center; }
+
+    .sku-input {
+      background: transparent;
+      border: none;
+      color: var(--text-3);
+      font-family: var(--font);
+      font-size: 9px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      width: 100%;
+      padding: 1px 3px;
+      border-radius: 3px;
+      outline: none;
+      transition: background .15s, box-shadow .15s;
+    }
+    .sku-input:hover { background: rgba(255,255,255,0.04); }
+    .sku-input:focus { background: rgba(233,30,140,0.07); box-shadow: 0 0 0 1px var(--border-focus); }
 
     .qty-input, .rate-input {
       background: transparent;
@@ -307,6 +357,7 @@
     .add-row-btn {
       display: flex;
       align-items: center;
+      justify-content: center;
       gap: 5px;
       background: none;
       border: 1px dashed rgba(255,255,255,0.1);
@@ -329,7 +380,7 @@
       justify-content: flex-end;
       padding: 0 26px 10px;
     }
-    .totals-table { width: 240px; border-collapse: collapse; }
+    .totals-table { width: 250px; border-collapse: collapse; }
     .totals-table td { padding: 2px 5px; font-size: 11px; }
     .totals-table .t-label { color: var(--text-2); text-align: right; padding-right: 14px; }
     .totals-table .t-value { text-align: right; font-weight: 500; white-space: nowrap; }
@@ -342,7 +393,7 @@
       font-size: 11px;
       font-weight: 500;
       text-align: right;
-      width: 72px;
+      width: 76px;
       padding: 1px 3px;
       border-radius: 3px;
       outline: none;
@@ -354,6 +405,11 @@
     .totals-total td { font-size: 14px; font-weight: 700; padding-top: 3px; }
     .totals-total .t-label { color: var(--text); }
     .totals-total .t-value { color: var(--magenta); }
+    .totals-balance td { padding-top: 4px; }
+    .totals-balance .t-label { color: var(--text-2); font-weight: 600; }
+    .totals-balance .t-value { font-weight: 700; }
+    .totals-balance .t-value.is-zero { color: var(--green); }
+    .totals-balance .t-value.is-due  { color: var(--amber); }
 
     /* ─── Bottom ─────────────────────────────────────────── */
     .inv-bottom {
@@ -389,6 +445,91 @@
     .inv-footer-note { font-size: 9px; color: var(--text-3); font-style: italic; }
     .inv-footer-brand { font-size: 9px; color: var(--text-3); font-weight: 600; }
 
+    /* ─── Product Picker Modal ───────────────────────────── */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.65);
+      backdrop-filter: blur(3px);
+      z-index: 1000;
+      display: none;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 8vh 16px 16px;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: 0 12px 48px rgba(0,0,0,0.6);
+      width: 100%;
+      max-width: 560px;
+      max-height: 76vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .modal-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px 10px;
+      border-bottom: 1px solid var(--border);
+      gap: 10px;
+    }
+    .modal-head h3 { font-size: 13px; font-weight: 700; }
+    .modal-close {
+      background: none; border: none; color: var(--text-3);
+      font-size: 18px; line-height: 1; cursor: pointer; padding: 2px 6px; border-radius: 4px;
+    }
+    .modal-close:hover { color: var(--text); background: rgba(255,255,255,0.06); }
+    .modal-search {
+      margin: 10px 16px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      font-family: var(--font);
+      font-size: 12px;
+      padding: 8px 10px;
+      outline: none;
+    }
+    .modal-search:focus { border-color: var(--border-focus); }
+    .modal-list { overflow-y: auto; padding: 0 8px 10px; flex: 1; }
+    .modal-empty { text-align: center; color: var(--text-3); font-size: 11px; padding: 24px 12px; }
+    .product-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: background .12s;
+    }
+    .product-row:hover { background: var(--bg-elevated); }
+    .product-thumb {
+      width: 38px; height: 38px; border-radius: 5px; object-fit: cover;
+      background: var(--bg-elevated); border: 1px solid var(--border); flex-shrink: 0;
+    }
+    .product-row-info { flex: 1; min-width: 0; }
+    .product-row-name { font-size: 11px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .product-row-meta { font-size: 9px; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.04em; margin-top: 1px; }
+    .product-row-price { font-size: 11px; font-weight: 700; color: var(--magenta); white-space: nowrap; }
+    .source-tag {
+      display: inline-block;
+      font-size: 8px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 1px 5px;
+      border-radius: 3px;
+      margin-left: 5px;
+      background: rgba(233,30,140,0.1);
+      color: var(--magenta);
+    }
+    .source-tag.used { background: rgba(59,130,246,0.1); color: var(--blue); }
+
     /* ─── Print ──────────────────────────────────────────── */
     @page {
       size: A4;
@@ -409,7 +550,7 @@
         --magenta: #c4176f;
       }
       [contenteditable] { background: none !important; box-shadow: none !important; }
-      input { background: none !important; box-shadow: none !important; color: #111 !important; }
+      input, select { background: none !important; box-shadow: none !important; color: #111 !important; }
       input[type="date"] { color-scheme: light; }
       .inv-bottom      { background: #f9f9f9; }
       .inv-details     { background: #f9f9f9; }
@@ -426,7 +567,7 @@
       .items-table td { padding: 4px 5px; }
       .items-table th { padding: 3px 5px; }
       .totals-table td { padding: 1px 4px; }
-      .inv-title   { font-size: 22px; margin-bottom: 7px; }
+      .inv-title   { font-size: 20px; margin-bottom: 7px; }
       .inv-logo    { height: 34px; }
     }
 
@@ -436,15 +577,16 @@
       .inv-description { padding: 8px 14px; }
       .inv-meta { text-align: left; }
       .inv-meta-row { justify-content: flex-start; }
-      input.inv-input { text-align: left; }
+      input.inv-input, select.inv-input { text-align: left; }
       .inv-items, .inv-totals, .inv-footer { padding-left: 14px; padding-right: 14px; }
       .inv-totals { justify-content: stretch; }
       .totals-table { width: 100%; }
-      .col-desc { display: none; }
+      .col-sku { display: none; }
     }
   </style>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script src="js/auth.js?v=f9a5c12a"></script>
+  <script src="data/products-data.js?v=f9a5c12a"></script>
 </head>
 <body>
 
@@ -467,14 +609,17 @@
 <div id="invoice-app" style="display:none;">
 <!-- ─── Toolbar ─────────────────────────────────────────── -->
 <div class="toolbar no-print">
-  <span class="toolbar-brand">SVK Works — Harness Invoice Tool</span>
-  <a href="product-invoice.html" class="btn btn-ghost" style="text-decoration:none;">Switch to Product Invoice</a>
+  <span class="toolbar-brand">SVK Works — Product Invoice Tool</span>
+  <a href="invoice.html" class="btn btn-ghost" style="text-decoration:none;">Switch to Harness Invoice</a>
 
-  <select class="status-select draft" id="status-select" onchange="updateStatus(this)">
-    <option value="draft">Draft</option>
-    <option value="sent">Sent</option>
+  <select class="status-select pending" id="status-select" onchange="updateStatus(this)">
+    <option value="pending">Pending Payment</option>
     <option value="paid">Paid</option>
-    <option value="overdue">Overdue</option>
+    <option value="processing">Processing</option>
+    <option value="shipped">Shipped</option>
+    <option value="delivered">Delivered</option>
+    <option value="refunded">Refunded</option>
+    <option value="cancelled">Cancelled</option>
   </select>
 
   <button class="btn btn-ghost" onclick="newInvoice()">
@@ -493,7 +638,7 @@
     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
     Print / PDF
   </button>
-  <button class="btn btn-ghost" onclick="copyEmailSummary()">
+  <button class="btn btn-ghost" onclick="copyOrderSummary()">
     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
     Copy Summary
   </button>
@@ -513,75 +658,94 @@ Instagram: @svkworks</div>
     </div>
 
     <div class="inv-meta">
-      <div class="inv-title">HARNESS INVOICE</div>
+      <div class="inv-title">PRODUCT INVOICE</div>
       <div class="inv-meta-rows">
         <div class="inv-meta-row">
-          <span class="inv-meta-label">Invoice #</span>
-          <span class="inv-meta-value"><input class="inv-input" id="inv-number" type="text" value="SVK-001" placeholder="SVK-001"></span>
+          <span class="inv-meta-label">Order #</span>
+          <span class="inv-meta-value"><input class="inv-input" id="inv-number" type="text" value="SVK-ORD-001" placeholder="SVK-ORD-001"></span>
         </div>
         <div class="inv-meta-row">
-          <span class="inv-meta-label">Invoice Date</span>
+          <span class="inv-meta-label">Order Date</span>
           <span class="inv-meta-value"><input class="inv-input" id="inv-date" type="date"></span>
         </div>
         <div class="inv-meta-row">
-          <span class="inv-meta-label">Due Date</span>
-          <span class="inv-meta-value"><input class="inv-input" id="inv-due" type="date"></span>
+          <span class="inv-meta-label">Order Source</span>
+          <span class="inv-meta-value">
+            <select class="inv-input" id="inv-source">
+              <option>Website</option>
+              <option>Etsy</option>
+              <option>eBay</option>
+              <option>Instagram</option>
+              <option>In-Person</option>
+              <option>Other</option>
+            </select>
+          </span>
         </div>
         <div class="inv-meta-row">
-          <span class="inv-meta-label">PO / Ref #</span>
-          <span class="inv-meta-value"><input class="inv-input" id="inv-po" type="text" placeholder="Optional"></span>
+          <span class="inv-meta-label">Payment Ref #</span>
+          <span class="inv-meta-value"><input class="inv-input" id="inv-po" type="text" placeholder="Stripe / PayPal txn ID"></span>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Billed To + Vehicle Info -->
+  <!-- Customer + Shipping Address -->
   <div class="inv-parties">
     <div class="party-block">
-      <div class="party-label">Billed To</div>
+      <div class="party-label"><span>Customer</span></div>
       <div class="party-name" contenteditable="true" data-placeholder="Customer Full Name">Customer Name</div>
-      <div class="party-details" contenteditable="true" data-placeholder="Email&#10;Phone&#10;Address">Email
+      <div class="party-details" contenteditable="true" data-placeholder="Email&#10;Phone">Email
 Phone</div>
     </div>
     <div class="party-block">
-      <div class="party-label">Build / Vehicle Info</div>
-      <div class="party-name" contenteditable="true" data-placeholder="e.g. 1997 MK4 Supra JZA80">Vehicle</div>
-      <div class="party-details" contenteditable="true" data-placeholder="Engine, transmission, ECU...">Engine
-Transmission
-ECU</div>
+      <div class="party-label">
+        <span>Ship To</span>
+        <button class="same-as-btn no-print" onclick="copyCustomerToShipping()" title="Copy customer name into shipping block">Use customer name</button>
+      </div>
+      <div class="party-name" contenteditable="true" data-placeholder="Recipient Name">Recipient Name</div>
+      <div class="party-details" contenteditable="true" data-placeholder="Street Address&#10;City, State ZIP&#10;Country">Street Address
+City, State ZIP
+United States</div>
     </div>
   </div>
 
   <!-- Description -->
   <div class="inv-description">
-    <div class="desc-label">Description</div>
-    <div class="desc-text" contenteditable="true" data-placeholder="Enter a project description, order summary, or any relevant details about this build..."></div>
+    <div class="desc-label">Order Notes</div>
+    <div class="desc-text" contenteditable="true" data-placeholder="Gift message, special instructions, or any relevant order notes..."></div>
   </div>
 
   <!-- Details Strip -->
   <div class="inv-details">
     <div class="detail-block">
-      <div class="detail-label">Lead Time</div>
-      <div class="detail-value" contenteditable="true" data-placeholder="e.g. 5–7 weeks">5–7 weeks from deposit</div>
+      <div class="detail-label">Shipping Method</div>
+      <div class="detail-value" contenteditable="true" data-placeholder="e.g. USPS Priority Mail">USPS Priority Mail</div>
     </div>
     <div class="detail-block">
-      <div class="detail-label">Build Status</div>
-      <div class="detail-value" contenteditable="true" data-placeholder="In Queue / In Progress">In Queue</div>
+      <div class="detail-label">Tracking #</div>
+      <div class="detail-value" contenteditable="true" data-placeholder="Add once shipped">—</div>
     </div>
     <div class="detail-block">
-      <div class="detail-label">Deposit Required</div>
-      <div class="detail-value" id="deposit-display">50% — calculated below</div>
+      <div class="detail-label">Payment Method</div>
+      <div class="detail-value" contenteditable="true" data-placeholder="Card, PayPal, Zelle...">Card</div>
     </div>
   </div>
 
   <!-- Line Items -->
   <div class="inv-items">
+    <div class="inv-items-toolbar">
+      <div class="section-label" style="margin-bottom:0;">Order Items</div>
+      <div class="items-actions no-print">
+        <button class="btn btn-ghost" onclick="openProductPicker()" style="padding:4px 9px;">+ Add Product</button>
+        <button class="btn btn-ghost" onclick="addRow()" style="padding:4px 9px;">+ Custom Line</button>
+      </div>
+    </div>
     <table class="items-table" id="items-table">
       <thead>
         <tr>
           <th class="col-num">#</th>
-          <th class="col-item">Item</th>
-          <th class="col-desc">Description</th>
+          <th class="col-sku">SKU</th>
+          <th class="col-item">Product</th>
           <th class="col-qty right">Qty</th>
           <th class="col-rate right">Rate</th>
           <th class="col-amount right">Amount</th>
@@ -590,10 +754,6 @@ ECU</div>
       </thead>
       <tbody id="line-items"></tbody>
     </table>
-    <button class="add-row-btn no-print" onclick="addRow()">
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-      Add Line Item
-    </button>
   </div>
 
   <!-- Totals -->
@@ -625,12 +785,12 @@ ECU</div>
           <td class="t-value" id="grand-total">$0.00</td>
         </tr>
         <tr>
-          <td class="t-label" style="color:var(--text-3);font-size:11px;">50% Deposit</td>
-          <td class="t-value" id="deposit-amt" style="color:var(--text-2);font-size:11px;">$0.00</td>
+          <td class="t-label" style="color:var(--text-3);font-size:11px;">Amount Paid ($)</td>
+          <td class="t-edit-value"><input type="number" id="amount-paid" value="0" min="0" step="0.01" oninput="recalc()" placeholder="0"></td>
         </tr>
-        <tr>
-          <td class="t-label" style="color:var(--text-3);font-size:11px;">Balance Due</td>
-          <td class="t-value" id="balance-amt" style="color:var(--text-2);font-size:11px;">$0.00</td>
+        <tr class="totals-balance">
+          <td class="t-label">Balance Due</td>
+          <td class="t-value is-zero" id="balance-amt">$0.00</td>
         </tr>
       </tbody>
     </table>
@@ -643,42 +803,54 @@ ECU</div>
       <div class="payment-rows">
         <div class="payment-row">
           <span class="payment-key">Methods</span>
-          <span class="payment-val" contenteditable="true" data-placeholder="Zelle, PayPal, etc.">Zelle, PayPal F&amp;F, Bank Transfer</span>
+          <span class="payment-val" contenteditable="true" data-placeholder="Card, PayPal, Zelle, etc.">Card, PayPal, Zelle</span>
         </div>
         <div class="payment-row">
           <span class="payment-key">Zelle / PayPal</span>
           <span class="payment-val" contenteditable="true" data-placeholder="your@email.com">info@svkworks.com</span>
         </div>
         <div class="payment-row">
-          <span class="payment-key">Bank / Wire</span>
-          <span class="payment-val" contenteditable="true" data-placeholder="Bank details">Contact for wire details</span>
+          <span class="payment-key">Return Window</span>
+          <span class="payment-val" contenteditable="true" data-placeholder="Return policy">30 days, unused &amp; original packaging</span>
         </div>
         <div class="payment-row">
-          <span class="payment-key">Deposit Policy</span>
-          <span class="payment-val" contenteditable="true" data-placeholder="Deposit terms">50% to start, balance before shipping</span>
+          <span class="payment-key">Refund Policy</span>
+          <span class="payment-val" contenteditable="true" data-placeholder="Refund terms">Refunded to original payment method within 5–7 business days</span>
         </div>
         <div class="payment-row">
-          <span class="payment-key">Non-Payment</span>
-          <span class="payment-val" contenteditable="true" data-placeholder="Late payment policy">Build paused if deposit not received</span>
+          <span class="payment-key">Restocking Fee</span>
+          <span class="payment-val" contenteditable="true" data-placeholder="Restocking fee">None, unless item is opened/used</span>
         </div>
       </div>
     </div>
 
     <div>
       <div class="section-label">Notes &amp; Terms</div>
-      <div style="font-size:11px;color:var(--text-2);line-height:1.65;" contenteditable="true" data-placeholder="Notes, warranty, terms...">All harnesses are custom built to order. Lead time begins upon deposit. Tested for continuity before shipment. No returns on custom items. Warranty covers manufacturing defects for 1 year from delivery. SVK Works is not liable for installation errors or vehicle damage from improper installation.</div>
+      <div style="font-size:11px;color:var(--text-2);line-height:1.65;" contenteditable="true" data-placeholder="Notes, warranty, terms...">All items are inspected before shipping. Warranty covers manufacturing defects for 1 year from delivery. Buyer is responsible for correct fitment — please verify compatibility before installing. SVK Works is not liable for damage caused by improper installation. Shipping times are estimates and not guaranteed by the carrier.</div>
     </div>
   </div>
 
   <!-- Footer -->
   <div class="inv-footer">
-    <div class="inv-footer-note" contenteditable="true" data-placeholder="Thank you note...">Thank you for choosing SVK Works — we appreciate your business.</div>
+    <div class="inv-footer-note" contenteditable="true" data-placeholder="Thank you note...">Thank you for shopping with SVK Works — we appreciate your business.</div>
     <div class="inv-footer-brand">svkworks.com</div>
   </div>
 
 </div>
 </div>
 </div><!-- /#invoice-app -->
+
+<!-- ─── Product Picker Modal ────────────────────────────── -->
+<div class="modal-overlay no-print" id="product-modal" onclick="if(event.target===this) closeProductPicker()">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3>Add Product</h3>
+      <button class="modal-close" onclick="closeProductPicker()">×</button>
+    </div>
+    <input class="modal-search" id="product-search" type="text" placeholder="Search products, connectors, harnesses, used parts…" oninput="renderProductList()">
+    <div class="modal-list" id="product-list"></div>
+  </div>
+</div>
 
 <script>
   SVKAuth.init();
@@ -693,13 +865,13 @@ ECU</div>
       return;
     }
     document.getElementById('invoice-app').style.display = 'block';
+    loadProductCatalog();
   }
   document.addEventListener('DOMContentLoaded', initInvoiceAuth);
 
   const DEFAULT_ROWS = [
-    { item: 'MK4 Supra Engine Harness', desc: 'Custom plug-and-play standalone harness — 2JZ-GTE', qty: 1, rate: 1450 },
-    { item: 'ECU Option',               desc: 'Haltech Elite 2500 wiring integration',              qty: 1, rate: 150  },
-    { item: 'Milspec Connector',         desc: 'Autosport connector with firewall plate',            qty: 1, rate: 350  },
+    { sku: '2JZ-VVTI',     item: '2JZ VVT-i Connector',              qty: 1, rate: 22 },
+    { sku: 'MK4-STARTER',  item: 'Supra MK4 Starter Connector',      qty: 1, rate: 20 },
   ];
 
   let rowCount = 0;
@@ -708,15 +880,15 @@ ECU</div>
     return '$' + Number(n).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   }
 
-  function addRow(item = '', desc = '', qty = 1, rate = 0) {
+  function addRow(sku = '', item = '', qty = 1, rate = 0) {
     rowCount++;
     const tbody = document.getElementById('line-items');
     const tr = document.createElement('tr');
     tr.dataset.row = rowCount;
     tr.innerHTML = `
       <td class="col-num">${tbody.rows.length + 1}</td>
-      <td class="col-item"><span contenteditable="true" data-placeholder="Item name" oninput="recalc()">${item}</span></td>
-      <td class="col-desc"><span contenteditable="true" data-placeholder="Description" oninput="recalc()">${desc}</span></td>
+      <td class="col-sku"><input class="sku-input" type="text" value="${sku}" placeholder="SKU" oninput="recalc()"></td>
+      <td class="col-item"><span contenteditable="true" data-placeholder="Product name" oninput="recalc()">${item}</span></td>
       <td class="col-qty"><input class="qty-input" type="number" value="${qty}" min="0" step="1" oninput="recalc()"></td>
       <td class="col-rate"><input class="rate-input" type="number" value="${rate}" min="0" step="0.01" oninput="recalc()"></td>
       <td class="col-amount" id="amt-${rowCount}">$0.00</td>
@@ -745,52 +917,64 @@ ECU</div>
       if (cell) cell.textContent = fmt(amt);
       subtotal += amt;
     });
-    const discount = parseFloat(document.getElementById('discount').value)  || 0;
-    const shipping = parseFloat(document.getElementById('shipping').value)  || 0;
-    const taxRate  = parseFloat(document.getElementById('tax-rate').value)  || 0;
+    const discount = parseFloat(document.getElementById('discount').value)    || 0;
+    const shipping = parseFloat(document.getElementById('shipping').value)    || 0;
+    const taxRate  = parseFloat(document.getElementById('tax-rate').value)    || 0;
+    const paid     = parseFloat(document.getElementById('amount-paid').value) || 0;
     const taxed    = (subtotal - discount) * (taxRate / 100);
     const total    = subtotal - discount + taxed + shipping;
-    const deposit  = total * 0.5;
-    const balance  = total - deposit;
+    const balance  = total - paid;
 
     document.getElementById('subtotal').textContent    = fmt(subtotal);
     document.getElementById('grand-total').textContent = fmt(total);
-    document.getElementById('deposit-amt').textContent = fmt(deposit);
-    document.getElementById('balance-amt').textContent = fmt(balance);
-    document.getElementById('deposit-display').textContent = `50% = ${fmt(deposit)}`;
+
+    const balEl = document.getElementById('balance-amt');
+    balEl.textContent = fmt(balance);
+    balEl.classList.toggle('is-zero', balance <= 0);
+    balEl.classList.toggle('is-due', balance > 0);
   }
 
   function updateStatus(sel) { sel.className = 'status-select ' + sel.value; }
 
   function setDates() {
-    const today = new Date(), due = new Date();
-    due.setDate(today.getDate() + 30);
+    const today = new Date();
     const f = d => d.toISOString().split('T')[0];
     document.getElementById('inv-date').value = f(today);
-    document.getElementById('inv-due').value  = f(due);
   }
 
   function nextInvoiceNumber() {
-    const n = parseInt(localStorage.getItem('svk_inv_counter') || '0') + 1;
-    localStorage.setItem('svk_inv_counter', n);
-    return 'SVK-' + String(n).padStart(3, '0');
+    const n = parseInt(localStorage.getItem('svk_pinv_counter') || '0') + 1;
+    localStorage.setItem('svk_pinv_counter', n);
+    return 'SVK-ORD-' + String(n).padStart(3, '0');
+  }
+
+  function copyCustomerToShipping() {
+    const pb = document.querySelectorAll('.party-block');
+    const customerName = pb[0].querySelector('.party-name').textContent.trim();
+    if (customerName) pb[1].querySelector('.party-name').textContent = customerName;
   }
 
   function newInvoice() {
-    if (!confirm('Start a new invoice? Unsaved changes will be lost.')) return;
+    if (!confirm('Start a new order invoice? Unsaved changes will be lost.')) return;
     document.getElementById('line-items').innerHTML = '';
     rowCount = 0;
-    DEFAULT_ROWS.forEach(r => addRow(r.item, r.desc, r.qty, r.rate));
+    DEFAULT_ROWS.forEach(r => addRow(r.sku, r.item, r.qty, r.rate));
     document.getElementById('inv-number').value = nextInvoiceNumber();
     document.getElementById('inv-po').value      = '';
+    document.getElementById('inv-source').value  = 'Website';
     document.getElementById('discount').value    = 0;
     document.getElementById('shipping').value    = 0;
     document.getElementById('tax-rate').value    = 0;
+    document.getElementById('amount-paid').value = 0;
+    const sel = document.getElementById('status-select');
+    sel.value = 'pending';
+    updateStatus(sel);
     const pb = document.querySelectorAll('.party-block');
     pb[0].querySelector('.party-name').textContent    = 'Customer Name';
     pb[0].querySelector('.party-details').textContent = 'Email\nPhone';
-    pb[1].querySelector('.party-name').textContent    = 'Vehicle';
-    pb[1].querySelector('.party-details').textContent = 'Engine\nTransmission\nECU';
+    pb[1].querySelector('.party-name').textContent    = 'Recipient Name';
+    pb[1].querySelector('.party-details').textContent = 'Street Address\nCity, State ZIP\nUnited States';
+    document.querySelectorAll('.inv-details .detail-value')[1].textContent = '—';
     setDates();
     recalc();
   }
@@ -798,19 +982,20 @@ ECU</div>
   function saveInvoice() {
     const rows = [];
     document.querySelectorAll('#line-items tr').forEach(tr => rows.push({
+      sku:  tr.querySelector('.sku-input')?.value      || '',
       item: tr.querySelector('.col-item span')?.innerText || '',
-      desc: tr.querySelector('.col-desc span')?.innerText || '',
-      qty:  tr.querySelector('.qty-input')?.value  || 1,
-      rate: tr.querySelector('.rate-input')?.value || 0,
+      qty:  tr.querySelector('.qty-input')?.value       || 1,
+      rate: tr.querySelector('.rate-input')?.value      || 0,
     }));
     const data = {
-      number: document.getElementById('inv-number').value,
-      date:   document.getElementById('inv-date').value,
-      due:    document.getElementById('inv-due').value,
-      po:     document.getElementById('inv-po').value,
+      number:   document.getElementById('inv-number').value,
+      date:     document.getElementById('inv-date').value,
+      source:   document.getElementById('inv-source').value,
+      po:       document.getElementById('inv-po').value,
       discount: document.getElementById('discount').value,
       shipping: document.getElementById('shipping').value,
       taxRate:  document.getElementById('tax-rate').value,
+      amountPaid: document.getElementById('amount-paid').value,
       status:   document.getElementById('status-select').value,
       rows,
       editables: [],
@@ -818,45 +1003,47 @@ ECU</div>
     document.querySelectorAll('[contenteditable]').forEach((el, i) => {
       data.editables.push({ i, html: el.innerHTML });
     });
-    const key = 'svk_invoice_' + data.number;
+    const key = 'svk_product_invoice_' + data.number;
     localStorage.setItem(key, JSON.stringify(data));
-    localStorage.setItem('svk_last_invoice', key);
+    localStorage.setItem('svk_last_product_invoice', key);
     showToast('Saved ' + data.number);
   }
 
   function loadInvoice() {
-    const key = prompt('Invoice number to load (e.g. SVK-001), blank = last saved:');
-    const sk  = key ? ('svk_invoice_' + key.trim().toUpperCase()) : localStorage.getItem('svk_last_invoice');
-    if (!sk) { showToast('No saved invoice found.', true); return; }
+    const key = prompt('Order number to load (e.g. SVK-ORD-001), blank = last saved:');
+    const sk  = key ? ('svk_product_invoice_' + key.trim().toUpperCase()) : localStorage.getItem('svk_last_product_invoice');
+    if (!sk) { showToast('No saved order found.', true); return; }
     const raw = localStorage.getItem(sk);
     if (!raw) { showToast('Not found: ' + sk, true); return; }
     const data = JSON.parse(raw);
-    document.getElementById('inv-number').value = data.number  || '';
-    document.getElementById('inv-date').value   = data.date    || '';
-    document.getElementById('inv-due').value    = data.due     || '';
-    document.getElementById('inv-po').value     = data.po      || '';
-    document.getElementById('discount').value   = data.discount || 0;
-    document.getElementById('shipping').value   = data.shipping || 0;
-    document.getElementById('tax-rate').value   = data.taxRate  || 0;
+    document.getElementById('inv-number').value   = data.number  || '';
+    document.getElementById('inv-date').value     = data.date    || '';
+    document.getElementById('inv-source').value   = data.source  || 'Website';
+    document.getElementById('inv-po').value       = data.po      || '';
+    document.getElementById('discount').value     = data.discount || 0;
+    document.getElementById('shipping').value     = data.shipping || 0;
+    document.getElementById('tax-rate').value     = data.taxRate  || 0;
+    document.getElementById('amount-paid').value  = data.amountPaid || 0;
     const sel = document.getElementById('status-select');
-    sel.value = data.status || 'draft';
+    sel.value = data.status || 'pending';
     updateStatus(sel);
     document.getElementById('line-items').innerHTML = '';
     rowCount = 0;
-    (data.rows || []).forEach(r => addRow(r.item, r.desc, r.qty, r.rate));
+    (data.rows || []).forEach(r => addRow(r.sku, r.item, r.qty, r.rate));
     const els = document.querySelectorAll('[contenteditable]');
     (data.editables || []).forEach(({ i, html }) => { if (els[i]) els[i].innerHTML = html; });
     recalc();
     showToast('Loaded ' + data.number);
   }
 
-  function copyEmailSummary() {
-    const num   = document.getElementById('inv-number').value;
-    const date  = document.getElementById('inv-date').value;
-    const due   = document.getElementById('inv-due').value;
-    const total = document.getElementById('grand-total').textContent;
-    const dep   = document.getElementById('deposit-amt').textContent;
-    let lines = [`Invoice ${num} | Date: ${date} | Due: ${due}`, `Total: ${total}  |  Deposit: ${dep}`, '', 'Line Items:'];
+  function copyOrderSummary() {
+    const num    = document.getElementById('inv-number').value;
+    const date   = document.getElementById('inv-date').value;
+    const total  = document.getElementById('grand-total').textContent;
+    const paid   = document.getElementById('amount-paid').value;
+    const bal    = document.getElementById('balance-amt').textContent;
+    const status = document.getElementById('status-select').value;
+    let lines = [`Order ${num} | Date: ${date} | Status: ${status}`, `Total: ${total}  |  Paid: ${fmt(paid)}  |  Balance: ${bal}`, '', 'Items:'];
     document.querySelectorAll('#line-items tr').forEach((tr, i) => {
       lines.push(`  ${i+1}. ${tr.querySelector('.col-item span')?.innerText || ''}  ${tr.querySelector('[id^="amt-"]')?.textContent || ''}`);
     });
@@ -880,10 +1067,119 @@ ECU</div>
     setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 300); }, 2200);
   }
 
+  /* ─── Product Picker: merges static catalog + live Supabase data ─── */
+  let PRODUCT_CATALOG = [];
+  let catalogLoaded = false;
+
+  function slugSku(id) {
+    return String(id || '').replace(/[^a-z0-9]+/gi, '-').toUpperCase().slice(0, 16);
+  }
+
+  async function loadProductCatalog() {
+    const list = [];
+
+    // Static site catalog: harnesses, connectors, merch, etc.
+    if (typeof SVK_PRODUCTS_DATA !== 'undefined' && Array.isArray(SVK_PRODUCTS_DATA.products)) {
+      SVK_PRODUCTS_DATA.products.forEach(p => {
+        if (!p.price) return; // skip non-purchasable entries (builds, etc. don't have price)
+        list.push({
+          sku: slugSku(p.slug || p.id),
+          name: p.name,
+          price: Number(p.price) || 0,
+          image: p.image || (p.images && p.images[0]) || '',
+          source: p.category === 'connectors' ? 'Connector' : 'Catalog',
+        });
+      });
+    }
+
+    // Live Supabase-backed parts catalog (3D Parts / Other Parts / Relay & Power Kits)
+    try {
+      const catalogRows = await SVKAuth.getAllPartsCatalogAdmin();
+      (catalogRows || []).filter(r => r.status === 'available').forEach(r => {
+        list.push({
+          sku: slugSku(r.slug || r.id),
+          name: r.title,
+          price: Number(r.price) || 0,
+          image: (r.images && r.images[0]) || '',
+          source: 'Catalog',
+        });
+      });
+    } catch (e) { /* Supabase not configured — static catalog still works */ }
+
+    // Live Supabase-backed used parts
+    try {
+      const usedRows = await SVKAuth.getAllUsedPartsAdmin();
+      (usedRows || []).filter(r => r.status === 'available').forEach(r => {
+        list.push({
+          sku: 'USED-' + slugSku(r.id).slice(0, 10),
+          name: r.title,
+          price: Number(r.price) || 0,
+          image: (r.images && r.images[0]) || '',
+          source: 'Used',
+        });
+      });
+    } catch (e) { /* ignore */ }
+
+    PRODUCT_CATALOG = list;
+    catalogLoaded = true;
+  }
+
+  function openProductPicker() {
+    document.getElementById('product-modal').classList.add('open');
+    document.getElementById('product-search').value = '';
+    renderProductList();
+    setTimeout(() => document.getElementById('product-search').focus(), 30);
+  }
+
+  function closeProductPicker() {
+    document.getElementById('product-modal').classList.remove('open');
+  }
+
+  function renderProductList() {
+    const q = (document.getElementById('product-search').value || '').trim().toLowerCase();
+    const container = document.getElementById('product-list');
+
+    if (!catalogLoaded) {
+      container.innerHTML = '<div class="modal-empty">Loading catalog…</div>';
+      return;
+    }
+
+    const matches = PRODUCT_CATALOG
+      .filter(p => !q || p.name.toLowerCase().includes(q) || p.sku.toLowerCase().includes(q))
+      .slice(0, 60);
+
+    if (!matches.length) {
+      container.innerHTML = '<div class="modal-empty">No matching products found.</div>';
+      return;
+    }
+
+    container.innerHTML = matches.map((p, i) => `
+      <div class="product-row" onclick="pickProduct(${PRODUCT_CATALOG.indexOf(p)})">
+        ${p.image ? `<img class="product-thumb" src="${p.image}" alt="" loading="lazy" onerror="this.style.visibility='hidden'">` : `<div class="product-thumb"></div>`}
+        <div class="product-row-info">
+          <div class="product-row-name">${p.name}<span class="source-tag${p.source === 'Used' ? ' used' : ''}">${p.source}</span></div>
+          <div class="product-row-meta">${p.sku}</div>
+        </div>
+        <div class="product-row-price">${fmt(p.price)}</div>
+      </div>
+    `).join('');
+  }
+
+  function pickProduct(idx) {
+    const p = PRODUCT_CATALOG[idx];
+    if (!p) return;
+    addRow(p.sku, p.name, 1, p.price);
+    closeProductPicker();
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeProductPicker();
+  });
+
   // Init
   setDates();
   document.getElementById('inv-number').value = nextInvoiceNumber();
-  DEFAULT_ROWS.forEach(r => addRow(r.item, r.desc, r.qty, r.rate));
+  DEFAULT_ROWS.forEach(r => addRow(r.sku, r.item, r.qty, r.rate));
   recalc();
 </script>
 </body>
