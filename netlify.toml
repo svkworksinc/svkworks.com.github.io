@@ -94,3 +94,11 @@
   from = "/sitemap-products.xml"
   to = "/.netlify/functions/sitemap-products"
   status = 200
+
+# Shareable order tracking link (svkworks.com/tracking?t=<token>). Rewritten
+# (not redirected) so the /tracking URL and its ?t= query string stay in the
+# address bar while track-order.html does the actual token lookup.
+[[redirects]]
+  from = "/tracking"
+  to = "/track-order.html"
+  status = 200

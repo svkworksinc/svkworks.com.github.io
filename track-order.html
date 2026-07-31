@@ -49,13 +49,13 @@
           <span>Track Your Order</span>
         </div>
         <h1>Track Your Order</h1>
-        <p>Enter your order number and the email you used at checkout — no account needed.</p>
+        <p id="track-hero-text">Enter your order number and the email you used at checkout — no account needed.</p>
       </div>
     </div>
 
     <section class="section">
       <div class="container" style="max-width:640px;">
-        <div class="auth-card">
+        <div class="auth-card" id="track-form-card">
           <form id="track-form">
             <div class="form-group">
               <label class="form-label" for="order-number">Order Number</label>
@@ -176,6 +176,7 @@
           <div style="display:flex;align-items:center;gap:var(--space-sm);flex-wrap:wrap;">
             <span class="order-status ${s.cls}">${s.label}</span>
             <span class="order-id">${order.order_number}</span>
+            <span style="margin-left:auto;">${svkRenderShareLinkButton(order)}</span>
           </div>
 
           <div class="om-meta-grid">
@@ -237,6 +238,32 @@
         btn.textContent = 'Track Order';
       }
     });
+
+    // Direct shareable link — svkworks.com/tracking?t=<token>. Skips the
+    // manual order#+email form entirely and loads the order straight away.
+    async function trackByToken(token) {
+      document.getElementById('track-hero-text').textContent = 'Here’s the latest status for your order.';
+      document.getElementById('track-form-card').style.display = 'none';
+      const resultEl = document.getElementById('track-result');
+      resultEl.style.display = 'block';
+      resultEl.innerHTML = `<div id="track-result-card" style="text-align:center;color:var(--text-muted);">Loading your order…</div>`;
+
+      try {
+        const res = await fetch('/.netlify/functions/track-order-token?t=' + encodeURIComponent(token));
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Order not found.');
+        resultEl.innerHTML = renderOrderDetail(data.order);
+      } catch (err) {
+        resultEl.innerHTML = `<div id="track-result-card">
+          <h2 style="margin:0 0 8px;">Link Not Found</h2>
+          <p style="color:var(--text-secondary);margin-bottom:var(--space-lg);">${err.message}</p>
+          <a href="/track-order.html" class="btn btn-primary">Look Up Order Manually</a>
+        </div>`;
+      }
+    }
+
+    const shareToken = new URLSearchParams(window.location.search).get('t');
+    if (shareToken) trackByToken(shareToken);
   </script>
 </body>
 </html>
