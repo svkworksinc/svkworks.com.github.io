@@ -36,6 +36,13 @@
     .om-totals-row { display: flex; justify-content: space-between; gap: var(--space-xl); font-size: var(--text-sm); color: var(--text-secondary); width: 220px; max-width: 100%; }
     .om-totals-row.total { font-size: var(--text-lg); font-weight: var(--weight-bold); color: var(--text-primary); border-top: 1px solid var(--border-color); padding-top: 6px; margin-top: 4px; }
     #track-result-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: var(--space-2xl); }
+    .trk-timeline { display: flex; flex-direction: column; gap: var(--space-md); margin: var(--space-lg) 0; }
+    .trk-timeline-item { display: flex; gap: var(--space-md); font-size: var(--text-sm); }
+    .trk-timeline-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--magenta); margin-top: 6px; flex-shrink: 0; }
+    .trk-timeline-item:first-child .trk-timeline-dot { background: var(--magenta); box-shadow: 0 0 0 3px rgba(233,30,140,0.18); }
+    .trk-timeline-body { flex: 1; }
+    .trk-timeline-desc { font-weight: var(--weight-medium); }
+    .trk-timeline-meta { color: var(--text-muted); font-size: var(--text-xs); margin-top: 2px; }
   </style>
 </head>
 <body>
@@ -199,6 +206,56 @@
         </div>`;
     }
 
+    function fmtEventDate(iso) {
+      if (!iso) return '';
+      const d = new Date(iso);
+      if (isNaN(d)) return iso;
+      return d.toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' });
+    }
+
+    function renderCarrierTracking(data) {
+      const carrierLabel = data.carrier || 'Carrier';
+      const badge = data.live
+        ? `<span class="order-status ${data.statusClass}">${data.statusLabel}</span>`
+        : `<span class="order-status status-pending">Not Live-Tracked</span>`;
+
+      const eta = data.live && data.estimatedDelivery
+        ? `<div class="om-meta-grid"><div><div class="om-meta-label">Estimated Delivery</div><div class="om-meta-value">${formatDate(data.estimatedDelivery)}</div></div></div>`
+        : '';
+
+      const timeline = data.live && data.events && data.events.length
+        ? `<div class="trk-timeline">${data.events.map(e => `
+            <div class="trk-timeline-item">
+              <div class="trk-timeline-dot"></div>
+              <div class="trk-timeline-body">
+                <div class="trk-timeline-desc">${e.description || 'Update'}</div>
+                <div class="trk-timeline-meta">${fmtEventDate(e.date)}${e.location ? ' · ' + e.location : ''}</div>
+              </div>
+            </div>`).join('')}</div>`
+        : (data.live ? `<p style="color:var(--text-muted);font-size:var(--text-sm);">No scan events yet — check back soon.</p>` : '');
+
+      const notLiveNote = !data.live
+        ? `<p style="color:var(--text-secondary);font-size:var(--text-sm);margin:var(--space-md) 0;">Live status isn't available for this shipment yet. Track it directly on ${carrierLabel}'s site below.</p>`
+        : '';
+
+      const carrierLink = data.fallbackUrl
+        ? `<a href="${data.fallbackUrl}" target="_blank" rel="noopener" class="btn btn-sm btn-ghost" style="margin-top:var(--space-md);text-decoration:none;">Track on ${carrierLabel}'s site →</a>`
+        : '';
+
+      return `
+        <div id="track-result-card">
+          <h2 style="margin:0 0 6px;">${carrierLabel} Shipment</h2>
+          <div style="display:flex;align-items:center;gap:var(--space-sm);flex-wrap:wrap;">
+            ${badge}
+            <span class="order-id">${data.trackingNumber}</span>
+          </div>
+          ${eta}
+          ${notLiveNote}
+          ${timeline}
+          ${carrierLink}
+        </div>`;
+    }
+
     function showError(id, msg) {
       const el = document.getElementById(id);
       el.textContent = msg;
@@ -262,8 +319,36 @@
       }
     }
 
-    const shareToken = new URLSearchParams(window.location.search).get('t');
+    // Direct carrier tracking link — svkworks.com/tracking?number=<trackingNumber>.
+    // Shows live UPS/USPS/FedEx/etc. scan events on-site instead of sending
+    // the customer to the carrier's own website.
+    async function trackByCarrierNumber(number, carrier) {
+      document.getElementById('track-hero-text').textContent = 'Here’s the latest tracking info for this shipment.';
+      document.getElementById('track-form-card').style.display = 'none';
+      const resultEl = document.getElementById('track-result');
+      resultEl.style.display = 'block';
+      resultEl.innerHTML = `<div id="track-result-card" style="text-align:center;color:var(--text-muted);">Fetching tracking updates…</div>`;
+
+      try {
+        const params = new URLSearchParams({ number });
+        if (carrier) params.set('carrier', carrier);
+        const res = await fetch('/.netlify/functions/carrier-tracking?' + params.toString());
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Unable to fetch tracking info.');
+        resultEl.innerHTML = renderCarrierTracking(data);
+      } catch (err) {
+        resultEl.innerHTML = `<div id="track-result-card">
+          <h2 style="margin:0 0 8px;">Tracking Unavailable</h2>
+          <p style="color:var(--text-secondary);">${err.message}</p>
+        </div>`;
+      }
+    }
+
+    const searchParams = new URLSearchParams(window.location.search);
+    const shareToken = searchParams.get('t');
+    const carrierNumber = searchParams.get('number');
     if (shareToken) trackByToken(shareToken);
+    else if (carrierNumber) trackByCarrierNumber(carrierNumber, searchParams.get('carrier'));
   </script>
 </body>
 </html>
