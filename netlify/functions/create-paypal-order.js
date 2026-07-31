@@ -3,6 +3,7 @@ const { validateCart, resolveShipping, calculateTotals } = require('./_pricing')
 const { createOrder } = require('./_paypal');
 const { resolveUserId } = require('./_auth');
 const { captureException } = require('./_sentry');
+const { checkRateLimit, clientKey, tooManyRequests } = require('./_ratelimit');
 
 const supabase = createClient(
   process.env.SUPABASE_URL,
@@ -13,6 +14,14 @@ exports.handler = async (event) => {
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, body: 'Method Not Allowed' };
   }
+
+  // Mirrors create-stripe-intent: each call writes a pending_payment order row
+  // and calls PayPal's API, so it gets the same budget.
+  const rl = await checkRateLimit(supabase, clientKey(event), 'create-paypal-order', {
+    limit: 20,
+    windowSeconds: 600,
+  });
+  if (!rl.allowed) return tooManyRequests(rl.retryAfter);
 
   try {
     const { cartItems, customerName, customerEmail, customerNotes, shippingOptionId, shippingAddress, accessToken } = JSON.parse(event.body);

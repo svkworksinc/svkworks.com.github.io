@@ -3,6 +3,7 @@ const Stripe = require('stripe');
 const { validateCart, resolveShipping, calculateTotals } = require('./_pricing');
 const { resolveUserId } = require('./_auth');
 const { captureException } = require('./_sentry');
+const { checkRateLimit, clientKey, tooManyRequests } = require('./_ratelimit');
 
 const supabase = createClient(
   process.env.SUPABASE_URL,
@@ -19,6 +20,15 @@ exports.handler = async (event) => {
     console.error('SAFETY BLOCK: Stripe key is not a test key. Live payments are disabled during testing.');
     return { statusCode: 503, body: JSON.stringify({ error: 'Payment processing is in test mode only. Live keys are not permitted.' }) };
   }
+
+  // Each call creates a pending_payment order row and a Stripe PaymentIntent.
+  // Unthrottled, a script could fill the orders table with junk and hammer
+  // Stripe's API. 20/10min leaves plenty of headroom for a customer retrying.
+  const rl = await checkRateLimit(supabase, clientKey(event), 'create-stripe-intent', {
+    limit: 20,
+    windowSeconds: 600,
+  });
+  if (!rl.allowed) return tooManyRequests(rl.retryAfter);
 
   try {
     const { cartItems, customerName, customerEmail, customerNotes, shippingOptionId, shippingAddress, accessToken } = JSON.parse(event.body);

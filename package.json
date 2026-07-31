@@ -7,6 +7,8 @@
   },
   "scripts": {
     "cachebust": "node scripts/cachebust.js",
+    "image-dims": "node scripts/image-dims.js",
+    "optimize-images": "node scripts/optimize-images.js && node scripts/image-dims.js",
     "test": "node --test"
   },
   "dependencies": {
@@ -14,5 +16,8 @@
     "@supabase/supabase-js": "^2.45.0",
     "pdfkit": "^0.15.0",
     "stripe": "^14.25.0"
+  },
+  "devDependencies": {
+    "sharp": "^0.35.3"
   }
 }
