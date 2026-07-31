@@ -13,6 +13,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script src="js/auth.js?v=f9a5c12a"></script>
   <script src="js/csv-export.js"></script>
+  <script src="js/tracking.js?v=1"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
   <style>
     .order-modal-overlay {
@@ -69,6 +70,15 @@
   </style>
 </head>
 <body>
+  <datalist id="carrier-options">
+    <option value="UPS"></option>
+    <option value="USPS"></option>
+    <option value="FedEx"></option>
+    <option value="DHL"></option>
+    <option value="OnTrac"></option>
+    <option value="Canada Post"></option>
+    <option value="Amazon Logistics"></option>
+  </datalist>
   <main id="main-content">
 
     <!-- Loading -->
@@ -437,7 +447,7 @@
             </div>
             <div class="form-group">
               <label class="form-label" for="carrier-${orderId}">Carrier <span style="color:var(--text-muted);font-weight:400;">(optional)</span></label>
-              <input type="text" class="form-input" id="carrier-${orderId}" placeholder="UPS, USPS, FedEx…">
+              <input type="text" class="form-input" id="carrier-${orderId}" placeholder="UPS, USPS, FedEx…" list="carrier-options">
             </div>
           </div>
           <div class="om-error" id="ship-error-${orderId}"></div>
@@ -532,6 +542,7 @@
         <div style="display:flex;align-items:center;gap:var(--space-sm);flex-wrap:wrap;">
           <span class="order-status ${s.cls}">${s.label}</span>
           ${idLabel ? `<span class="order-id">${idLabel}</span>` : ''}
+          <span style="margin-left:auto;">${svkRenderShareLinkButton(order)}</span>
         </div>
 
         <div class="om-meta-grid">
@@ -545,7 +556,7 @@
         <div class="om-meta-grid">
           <div><div class="om-meta-label">Ship To</div><div class="om-meta-value">${[addr.address, [addr.city, addr.state, addr.zip].filter(Boolean).join(', ')].filter(Boolean).join(', ')}</div></div>
           ${order.options?.shippingLabel ? `<div><div class="om-meta-label">Shipping Method</div><div class="om-meta-value">${order.options.shippingLabel}</div></div>` : ''}
-          ${order.tracking_number ? `<div><div class="om-meta-label">Tracking</div><div class="om-meta-value">${order.tracking_number}${order.carrier ? ' (' + order.carrier + ')' : ''}</div></div>` : ''}
+          ${svkRenderTrackingRow(order)}
         </div>` : ''}
 
         ${isCheckoutOrder ? renderItemsTable(order.items) : (legacyOptLines ? `<ul class="order-options-list" style="margin-bottom:var(--space-lg);">${legacyOptLines}</ul>` : '')}

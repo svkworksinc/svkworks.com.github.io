@@ -37,7 +37,7 @@ exports.handler = async (event) => {
     // payment internals (payment_id, refund_id) are never exposed here.
     const { data: order, error } = await supabase
       .from('orders')
-      .select('order_number, status, items, options, total_price, submitted_at, tracking_number, carrier, refunded_amount, product, customer_name')
+      .select('order_number, status, items, options, total_price, submitted_at, tracking_number, carrier, refunded_amount, product, customer_name, share_token')
       .ilike('order_number', orderNumber.trim())
       .ilike('customer_email', email.trim())
       .maybeSingle();
