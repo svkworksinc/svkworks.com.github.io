@@ -91,4 +91,21 @@ async function verifyRate(rateId) {
   return res.json();
 }
 
-module.exports = { getRatesForAddress, verifyRate, isOriginConfigured, assertTestToken };
+// Live carrier tracking (UPS/USPS/FedEx/DHL/etc. via Shippo's unified
+// Tracking API) for netlify/functions/carrier-tracking.js. `carrierToken`
+// is Shippo's carrier slug (see _carrier-links.js), not our display label.
+async function trackShipment(carrierToken, trackingNumber) {
+  const key = assertTestToken();
+  if (!key) return null; // not configured — caller falls back to a carrier-site link
+
+  const res = await fetch(`${BASE_URL}/tracks/${encodeURIComponent(carrierToken)}/${encodeURIComponent(trackingNumber)}`, {
+    headers: { Authorization: `ShippoToken ${key}` },
+  });
+  if (!res.ok) {
+    const err = await res.text().catch(() => '');
+    throw new Error(`Shippo tracking lookup failed: ${res.status} ${err}`);
+  }
+  return res.json();
+}
+
+module.exports = { getRatesForAddress, verifyRate, isOriginConfigured, assertTestToken, trackShipment };
