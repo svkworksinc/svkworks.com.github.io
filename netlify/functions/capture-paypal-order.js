@@ -2,6 +2,7 @@ const { createClient } = require('@supabase/supabase-js');
 const { captureOrder } = require('./_paypal');
 const { sendInvoiceEmail } = require('./_email');
 const { markUsedPartsSold } = require('./_pricing');
+const { captureException } = require('./_sentry');
 
 const supabase = createClient(
   process.env.SUPABASE_URL,
@@ -106,6 +107,7 @@ exports.handler = async (event) => {
     };
   } catch (err) {
     console.error('capture-paypal-order error:', err);
+    await captureException(err);
     return { statusCode: 500, body: JSON.stringify({ error: err.message || 'Internal server error.' }) };
   }
 };

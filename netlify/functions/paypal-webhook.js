@@ -1,6 +1,7 @@
 const { createClient } = require('@supabase/supabase-js');
 const { sendInvoiceEmail } = require('./_email');
 const { markUsedPartsSold } = require('./_pricing');
+const { captureException } = require('./_sentry');
 
 const supabase = createClient(
   process.env.SUPABASE_URL,
@@ -82,73 +83,80 @@ exports.handler = async (event) => {
     }
   }
 
-  // Handle PAYMENT.CAPTURE.COMPLETED — fired when a PayPal payment is fully captured
-  if (payload.event_type === 'PAYMENT.CAPTURE.COMPLETED') {
-    const captureId = payload.resource?.id;
-    // custom_id is the supabaseOrderId stored when the order was created
-    const supabaseOrderId = payload.resource?.custom_id;
+  try {
+    // Handle PAYMENT.CAPTURE.COMPLETED — fired when a PayPal payment is fully captured
+    if (payload.event_type === 'PAYMENT.CAPTURE.COMPLETED') {
+      const captureId = payload.resource?.id;
+      // custom_id is the supabaseOrderId stored when the order was created
+      const supabaseOrderId = payload.resource?.custom_id;
 
-    if (!supabaseOrderId) {
-      console.log('PayPal webhook: no custom_id on capture, skipping');
-      return { statusCode: 200, body: 'OK' };
-    }
-
-    const { data: order, error } = await supabase
-      .from('orders')
-      .select('*')
-      .eq('id', supabaseOrderId)
-      .single();
-
-    if (error || !order) {
-      console.error('PayPal webhook: order not found:', supabaseOrderId);
-      return { statusCode: 200, body: 'OK' };
-    }
-
-    console.log('[paypal-webhook] Order found:', order.order_number, '— status:', order.status);
-
-    // This is a redundant safety-net path — capture-paypal-order.js normally marks the
-    // order paid synchronously during checkout. Only act if it's still pre-payment, so a
-    // late-arriving webhook event can't re-send the invoice email or clobber a status the
-    // admin has already moved forward (in_progress/shipped/etc).
-    if (order.status === 'pending_payment') {
-      // 'pending' matches the admin panel's fulfillment vocabulary (pending -> in_progress
-      // -> shipped -> complete), same as capture-paypal-order.js / stripe-webhook.js.
-      await supabase
-        .from('orders')
-        .update({
-          status: 'pending',
-          payment_id: captureId || order.payment_id,
-          payment_capture_id: captureId || order.payment_capture_id,
-        })
-        .eq('id', supabaseOrderId);
-
-      await markUsedPartsSold(supabase, order.items);
-
-      console.log('[paypal-webhook] Triggering invoice email for:', order.order_number);
-      const orderDate = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-      const opts = order.options || {};
-      try {
-        await sendInvoiceEmail({
-          customerName: order.customer_name,
-          customerEmail: order.customer_email,
-          orderNumber: order.order_number,
-          orderDate,
-          items: order.items || [],
-          subtotal: opts.subtotal,
-          shipping: opts.shipping,
-          shippingLabel: opts.shippingLabel,
-          tax: opts.tax,
-          total: order.total_price,
-          shippingAddress: opts.shippingAddress,
-          paymentMethod: 'PayPal',
-        });
-      } catch (err) {
-        console.error('Email send failed:', err.message);
+      if (!supabaseOrderId) {
+        console.log('PayPal webhook: no custom_id on capture, skipping');
+        return { statusCode: 200, body: 'OK' };
       }
-    } else {
-      console.log('[paypal-webhook] Order already processed (status:', order.status + ') — skipping email');
-    }
-  }
 
-  return { statusCode: 200, body: 'OK' };
+      const { data: order, error } = await supabase
+        .from('orders')
+        .select('*')
+        .eq('id', supabaseOrderId)
+        .single();
+
+      if (error || !order) {
+        console.error('PayPal webhook: order not found:', supabaseOrderId);
+        return { statusCode: 200, body: 'OK' };
+      }
+
+      console.log('[paypal-webhook] Order found:', order.order_number, '— status:', order.status);
+
+      // This is a redundant safety-net path — capture-paypal-order.js normally marks the
+      // order paid synchronously during checkout. Only act if it's still pre-payment, so a
+      // late-arriving webhook event can't re-send the invoice email or clobber a status the
+      // admin has already moved forward (in_progress/shipped/etc).
+      if (order.status === 'pending_payment') {
+        // 'pending' matches the admin panel's fulfillment vocabulary (pending -> in_progress
+        // -> shipped -> complete), same as capture-paypal-order.js / stripe-webhook.js.
+        await supabase
+          .from('orders')
+          .update({
+            status: 'pending',
+            payment_id: captureId || order.payment_id,
+            payment_capture_id: captureId || order.payment_capture_id,
+          })
+          .eq('id', supabaseOrderId);
+
+        await markUsedPartsSold(supabase, order.items);
+
+        console.log('[paypal-webhook] Triggering invoice email for:', order.order_number);
+        const orderDate = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+        const opts = order.options || {};
+        try {
+          await sendInvoiceEmail({
+            customerName: order.customer_name,
+            customerEmail: order.customer_email,
+            orderNumber: order.order_number,
+            orderDate,
+            items: order.items || [],
+            subtotal: opts.subtotal,
+            shipping: opts.shipping,
+            shippingLabel: opts.shippingLabel,
+            tax: opts.tax,
+            total: order.total_price,
+            shippingAddress: opts.shippingAddress,
+            paymentMethod: 'PayPal',
+          });
+        } catch (err) {
+          console.error('Email send failed:', err.message);
+        }
+      } else {
+        console.log('[paypal-webhook] Order already processed (status:', order.status + ') — skipping email');
+      }
+    }
+
+    return { statusCode: 200, body: 'OK' };
+  } catch (err) {
+    console.error('paypal-webhook error:', err);
+    await captureException(err);
+    // 500 so PayPal retries the webhook instead of silently losing the event.
+    return { statusCode: 500, body: 'Internal server error.' };
+  }
 };
