@@ -26,13 +26,15 @@ jobs:
           find . -name "*.js" -not -path "./node_modules/*" -print0 \
             | xargs -0 -n1 node --check
 
-      - name: Verify cache-busting is up to date and idempotent
+      - name: Verify build scripts are up to date and idempotent
         run: |
           set -e
           node scripts/cachebust.js
           node scripts/cachebust.js
+          node scripts/image-dims.js
+          node scripts/image-dims.js
           if ! git diff --quiet; then
-            echo "cachebust.js produced changes — either a committed ?v= hash is stale (a shared asset changed without re-running cachebust), or the script isn't idempotent."
+            echo "A build script produced changes — either committed output is stale (an asset changed without re-running the script), or a script isn't idempotent."
             git diff --stat
             exit 1
           fi

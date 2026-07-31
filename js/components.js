@@ -78,7 +78,7 @@ const SVKComponents = {
     sdkScript.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js';
     sdkScript.onload = () => {
       const authScript = document.createElement('script');
-      authScript.src = 'js/auth.js?v=63c00c7d';
+      authScript.src = 'js/auth.js?v=f9a5c12a';
       authScript.onload = () => {
         SVKAuth.init();
         SVKAuth.ready.then(() => this._updateAccountBtn());
@@ -243,5 +243,50 @@ const SVKComponents = {
     if (yearEl) {
       yearEl.textContent = new Date().getFullYear();
     }
+    this.initSubscribe();
+  },
+
+  initSubscribe() {
+    const form = document.getElementById('footer-subscribe-form');
+    if (!form) return;
+    const input = document.getElementById('footer-subscribe-email');
+    const btn = document.getElementById('footer-subscribe-btn');
+    const msg = document.getElementById('footer-subscribe-msg');
+
+    const show = (text, ok) => {
+      msg.textContent = text;
+      msg.classList.toggle('is-error', !ok);
+      msg.classList.add('is-visible');
+    };
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = (input.value || '').trim();
+      if (!email) {
+        show('Please enter your email address.', false);
+        input.focus();
+        return;
+      }
+
+      btn.disabled = true;
+      const label = btn.textContent;
+      btn.textContent = 'Signing up…';
+      try {
+        const res = await fetch('/.netlify/functions/subscribe', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, source: location.pathname }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Could not sign you up right now.');
+        form.reset();
+        show('Thanks — you\'re on the list.', true);
+      } catch (err) {
+        show(err.message, false);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = label;
+      }
+    });
   }
 };

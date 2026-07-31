@@ -1,6 +1,7 @@
 const { createClient } = require('@supabase/supabase-js');
 const { validateCart, totalWeightOz, PARCEL_DIMENSIONS_IN, SHIPPING_OPTIONS } = require('./_pricing');
 const { getRatesForAddress } = require('./_shippo');
+const { checkRateLimit, clientKey, tooManyRequests } = require('./_ratelimit');
 
 const supabase = createClient(
   process.env.SUPABASE_URL,
@@ -20,6 +21,15 @@ exports.handler = async (event) => {
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, body: 'Method Not Allowed' };
   }
+
+  // Every call here hits Shippo's API, which is metered and billed. Cap it so
+  // a scripted loop can't run up the bill. A real customer re-quoting shipping
+  // a few times while editing their address stays well under this.
+  const rl = await checkRateLimit(supabase, clientKey(event), 'get-shipping-rates', {
+    limit: 30,
+    windowSeconds: 600,
+  });
+  if (!rl.allowed) return tooManyRequests(rl.retryAfter);
 
   try {
     const { cartItems, shippingAddress } = JSON.parse(event.body);

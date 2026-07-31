@@ -1,8 +1,9 @@
 const { createClient } = require('@supabase/supabase-js');
-const { validateCart, resolveShipping, calculateTotals } = require('./_pricing');
+const { validateCart, resolveShipping, calculateTotals, resolveDiscount } = require('./_pricing');
 const { createOrder } = require('./_paypal');
 const { resolveUserId } = require('./_auth');
 const { captureException } = require('./_sentry');
+const { checkRateLimit, clientKey, tooManyRequests } = require('./_ratelimit');
 
 const supabase = createClient(
   process.env.SUPABASE_URL,
@@ -14,8 +15,16 @@ exports.handler = async (event) => {
     return { statusCode: 405, body: 'Method Not Allowed' };
   }
 
+  // Mirrors create-stripe-intent: each call writes a pending_payment order row
+  // and calls PayPal's API, so it gets the same budget.
+  const rl = await checkRateLimit(supabase, clientKey(event), 'create-paypal-order', {
+    limit: 20,
+    windowSeconds: 600,
+  });
+  if (!rl.allowed) return tooManyRequests(rl.retryAfter);
+
   try {
-    const { cartItems, customerName, customerEmail, customerNotes, shippingOptionId, shippingAddress, accessToken } = JSON.parse(event.body);
+    const { cartItems, customerName, customerEmail, customerNotes, shippingOptionId, shippingAddress, accessToken, discountCode } = JSON.parse(event.body);
 
     if (!customerName?.trim() || !customerEmail?.trim()) {
       return { statusCode: 400, body: JSON.stringify({ error: 'Name and email are required.' }) };
@@ -31,7 +40,9 @@ exports.handler = async (event) => {
     // Shipping is independently resolved/verified (see resolveShipping in _pricing.js).
     const { items, subtotal } = await validateCart(cartItems, supabase);
     const { shipping, shippingLabel } = await resolveShipping(shippingOptionId);
-    const { tax, grandTotal } = calculateTotals(subtotal, shipping, shippingAddress.state);
+    const { discount, discountCode: resolvedCode } =
+      await resolveDiscount(supabase, discountCode, subtotal);
+    const { tax, grandTotal } = calculateTotals(subtotal, shipping, shippingAddress.state, discount);
     const userId = await resolveUserId(supabase, accessToken);
 
     // Create order record in Supabase with pending_payment status
@@ -41,8 +52,10 @@ exports.handler = async (event) => {
       .insert({
         user_id: userId,
         product: items.map(i => i.name).join(', '),
-        options: { items, shippingAddress, shippingMethod: shippingOptionId, shippingLabel, subtotal, shipping, tax },
+        options: { items, shippingAddress, shippingMethod: shippingOptionId, shippingLabel, subtotal, shipping, tax, discount, discountCode: resolvedCode },
         total_price: grandTotal,
+        discount_code: resolvedCode,
+        discount_amount: discount || null,
         notes: customerNotes || '',
         status: 'pending_payment',
         payment_method: 'paypal',
@@ -68,7 +81,7 @@ exports.handler = async (event) => {
     return {
       statusCode: 200,
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ paypalOrderId: paypalOrder.id, supabaseOrderId, orderNumber, subtotal, shipping, tax, grandTotal }),
+      body: JSON.stringify({ paypalOrderId: paypalOrder.id, supabaseOrderId, orderNumber, subtotal, shipping, tax, discount, discountCode: resolvedCode, grandTotal }),
     };
   } catch (err) {
     console.error('create-paypal-order error:', err);
