@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="css/style.css">
   <link rel="icon" href="img/svk-icon.png" type="image/png">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-  <script src="js/auth.js?v=63c00c7d"></script>
+  <script src="js/auth.js?v=f9a5c12a"></script>
   <script src="js/csv-export.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
   <style>
@@ -106,6 +106,7 @@
           <div style="display:flex;align-items:center;gap:var(--space-md);">
             <a href="admin-used-parts.html" class="btn btn-ghost" style="font-size:var(--text-sm);">Used Parts</a>
             <a href="admin-parts-catalog.html" class="btn btn-ghost" style="font-size:var(--text-sm);">Parts Catalog</a>
+            <a href="admin-discounts.html" class="btn btn-ghost" style="font-size:var(--text-sm);">Discounts</a>
             <a href="invoice.html" class="btn btn-ghost" style="font-size:var(--text-sm);">Invoice Tool</a>
             <span class="badge" id="admin-user-badge"></span>
             <button class="btn btn-ghost" style="font-size:var(--text-sm);" onclick="handleAdminSignOut()">Sign Out</button>
@@ -148,6 +149,7 @@
                 placeholder="Search customer or product…"
                 style="max-width:260px;padding:0.5rem var(--space-md);">
               <button class="btn btn-outline btn-sm" onclick="handleExportOrders()">Export CSV</button>
+              <button class="btn btn-ghost btn-sm" onclick="handleExportSubscribers()">Export Subscribers</button>
             </div>
           </div>
 
@@ -289,6 +291,18 @@
         { label: 'Carrier', key: 'carrier' },
       ], `svk-orders-${new Date().toISOString().slice(0, 10)}.csv`);
     }
+
+    async function handleExportSubscribers() {
+      const subs = await SVKAuth.getNewsletterSubscribers();
+      if (!subs.length) { alert('No newsletter subscribers yet.'); return; }
+      svkExportCsv(subs, [
+        { label: 'Email', key: 'email' },
+        { label: 'Signed Up', get: s => s.created_at },
+        { label: 'Source', get: s => s.source || '' },
+      ], `svk-subscribers-${new Date().toISOString().slice(0, 10)}.csv`);
+    }
+
+    // Discount codes also get their own export on admin-discounts.html.
 
     function renderOrders() {
       const orders  = filteredOrders();

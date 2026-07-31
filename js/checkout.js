@@ -14,6 +14,11 @@ const SVKCheckout = {
   shippingOptionId: null,
   shippingOptions: [],       // live rates (or flat-rate fallback) + the international option
   shippingRateSource: null,  // 'shippo' | 'flat'
+  // Display-only mirror of the applied discount. The server re-resolves the
+  // code on every payment call, so tampering with these changes nothing.
+  discountCode: null,
+  discount: 0,
+  discountLabel: null,
   _shippingDebounceTimer: null,
   _shippingFetchToken: 0,
   _pendingShippingLabel: null,
@@ -256,20 +261,74 @@ const SVKCheckout = {
   },
 
   _bindCoupon() {
-    document.getElementById('checkout-apply-coupon-btn')?.addEventListener('click', () => {
-      const code = (document.getElementById('checkout-coupon-input')?.value || '').trim();
+    const btn = document.getElementById('checkout-apply-coupon-btn');
+    const input = document.getElementById('checkout-coupon-input');
+    if (!btn || !input) return;
+
+    const apply = async () => {
+      const code = (input.value || '').trim();
       const msg = document.getElementById('checkout-coupon-msg');
       if (!msg) return;
-      if (!code) {
+
+      const show = (text, ok) => {
         msg.style.display = 'block';
-        msg.style.color = '#f87171';
-        msg.textContent = 'Please enter a coupon code.';
+        msg.style.color = ok ? '#34d399' : '#f87171';
+        msg.textContent = text;
+      };
+
+      if (!code) {
+        this._clearDiscount();
+        show('Please enter a discount code.', false);
         return;
       }
-      msg.style.display = 'block';
-      msg.style.color = '#34d399';
-      msg.textContent = `Coupon "${code}" noted — discount codes are applied by our team when your quote is confirmed.`;
+
+      btn.disabled = true;
+      const originalLabel = btn.textContent;
+      btn.textContent = 'Checking…';
+      try {
+        const res = await fetch('/.netlify/functions/validate-discount', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ code, cartItems: SVKCart.getCart() }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Could not check that code.');
+
+        if (!data.ok) {
+          this._clearDiscount();
+          show(data.error, false);
+          return;
+        }
+
+        // The server is the authority on the amount — the value stored here is
+        // only for display. Both payment functions re-resolve the code
+        // independently, so editing this in the console changes nothing.
+        this.discountCode = data.code;
+        this.discount = data.discount;
+        this.discountLabel = data.label;
+        this._updateTotals();
+        this._saveDraft();
+        show(`${data.label} applied.`, true);
+      } catch (err) {
+        this._clearDiscount();
+        show(err.message, false);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = originalLabel;
+      }
+    };
+
+    btn.addEventListener('click', apply);
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') { e.preventDefault(); apply(); }
     });
+  },
+
+  _clearDiscount() {
+    this.discountCode = null;
+    this.discount = 0;
+    this.discountLabel = null;
+    this._updateTotals();
   },
 
   _getShippingOption() {
@@ -297,15 +356,27 @@ const SVKCheckout = {
 
     const shipping = shipOpt ? shipOpt.price : 0;
     const state = (document.getElementById('ship-state')?.value || '').trim().toUpperCase();
-    const taxBase = this.subtotal + shipping;
+
+    // Mirrors calculateTotals() in netlify/functions/_pricing.js: the discount
+    // comes off the goods before tax, is clamped to the subtotal, and never
+    // touches shipping. This is display only — the server re-derives all of it.
+    const discount = Math.min(Math.max(this.discount || 0, 0), this.subtotal);
+    const taxBase = this.subtotal - discount + shipping;
     const tax = state === 'TX' ? Math.round(taxBase * this.TX_TAX_RATE * 100) / 100 : 0;
-    const grandTotal = Math.round((this.subtotal + shipping + tax) * 100) / 100;
+    const grandTotal = Math.round((taxBase + tax) * 100) / 100;
+
+    const discRow = document.getElementById('sum-discount-row');
+    const discEl = document.getElementById('sum-discount');
+    const discLabel = document.getElementById('sum-discount-label');
+    if (discRow) discRow.style.display = discount > 0 ? '' : 'none';
+    if (discEl) discEl.textContent = '-' + fmt(discount);
+    if (discLabel) discLabel.textContent = this.discountLabel ? `Discount (${this.discountCode})` : 'Discount';
 
     if (shipEl) shipEl.textContent = shipOpt ? fmt(shipping) : 'Select method';
     if (taxEl) taxEl.textContent = fmt(tax);
     if (totalEl) totalEl.textContent = fmt(grandTotal);
 
-    return { shipping, tax, grandTotal };
+    return { shipping, tax, grandTotal, discount };
   },
 
   _getShippingAddress() {
@@ -524,6 +595,7 @@ const SVKCheckout = {
           shippingOptionId: this.shippingOptionId,
           shippingAddress,
           accessToken: this.userAccessToken,
+          discountCode: this.discountCode,
         }),
       });
       const data = await res.json();
@@ -589,6 +661,7 @@ const SVKCheckout = {
           shippingOptionId: this.shippingOptionId,
           shippingAddress,
           accessToken: this.userAccessToken,
+          discountCode: this.discountCode,
         }),
       });
       const data = await res.json();

@@ -881,6 +881,52 @@ main {
   font-size: var(--text-xl);
 }
 
+/* Newsletter signup (footer about column) */
+.footer-subscribe {
+  margin-top: var(--space-lg);
+  max-width: 340px;
+}
+.footer-subscribe-label {
+  display: block;
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  margin-bottom: var(--space-sm);
+}
+.footer-subscribe-row {
+  display: flex;
+  gap: var(--space-sm);
+}
+.footer-subscribe-row input {
+  flex: 1;
+  min-width: 0;
+  padding: 0.5rem 0.7rem;
+  font-size: var(--text-sm);
+  font-family: inherit;
+  color: var(--text-primary);
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  transition: border-color var(--transition-base);
+}
+.footer-subscribe-row input::placeholder { color: var(--text-muted); }
+.footer-subscribe-row input:focus {
+  outline: none;
+  border-color: var(--magenta);
+}
+.footer-subscribe-row .btn { flex-shrink: 0; }
+.footer-subscribe-msg {
+  font-size: var(--text-xs);
+  margin: var(--space-sm) 0 0;
+  color: var(--success);
+  /* Reserve nothing until there's something to say, so the layout doesn't
+     shift when a message appears. */
+  display: none;
+}
+.footer-subscribe-msg.is-visible { display: block; }
+.footer-subscribe-msg.is-error { color: #fca5a5; }
+
 .footer-social {
   display: flex;
   gap: var(--space-sm);

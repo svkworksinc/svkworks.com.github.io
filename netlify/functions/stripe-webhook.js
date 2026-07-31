@@ -1,7 +1,7 @@
 const { createClient } = require('@supabase/supabase-js');
 const Stripe = require('stripe');
 const { sendInvoiceEmail } = require('./_email');
-const { markUsedPartsSold } = require('./_pricing');
+const { markUsedPartsSold, consumeDiscount } = require('./_pricing');
 const { captureException } = require('./_sentry');
 
 const supabase = createClient(
@@ -71,6 +71,8 @@ exports.handler = async (event) => {
           .eq('id', supabaseOrderId);
 
         await markUsedPartsSold(supabase, order.items);
+        // Only now that payment cleared does a discount code burn a use.
+        await consumeDiscount(supabase, order.discount_code);
 
         console.log('[webhook] Triggering invoice email for:', order.order_number);
         const orderDate = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });

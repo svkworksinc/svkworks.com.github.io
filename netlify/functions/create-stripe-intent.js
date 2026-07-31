@@ -1,6 +1,6 @@
 const { createClient } = require('@supabase/supabase-js');
 const Stripe = require('stripe');
-const { validateCart, resolveShipping, calculateTotals } = require('./_pricing');
+const { validateCart, resolveShipping, calculateTotals, resolveDiscount } = require('./_pricing');
 const { resolveUserId } = require('./_auth');
 const { captureException } = require('./_sentry');
 const { checkRateLimit, clientKey, tooManyRequests } = require('./_ratelimit');
@@ -31,7 +31,7 @@ exports.handler = async (event) => {
   if (!rl.allowed) return tooManyRequests(rl.retryAfter);
 
   try {
-    const { cartItems, customerName, customerEmail, customerNotes, shippingOptionId, shippingAddress, accessToken } = JSON.parse(event.body);
+    const { cartItems, customerName, customerEmail, customerNotes, shippingOptionId, shippingAddress, accessToken, discountCode } = JSON.parse(event.body);
 
     if (!customerName?.trim() || !customerEmail?.trim()) {
       return { statusCode: 400, body: JSON.stringify({ error: 'Name and email are required.' }) };
@@ -43,11 +43,14 @@ exports.handler = async (event) => {
       return { statusCode: 400, body: JSON.stringify({ error: 'Shipping method is required.' }) };
     }
 
-    // Server-side price validation — shipping is independently resolved/verified,
-    // never trusted from the client (see resolveShipping in _pricing.js)
+    // Server-side price validation — shipping and any discount are both
+    // independently resolved/verified, never trusted from the client (see
+    // resolveShipping / resolveDiscount in _pricing.js)
     const { items, subtotal } = await validateCart(cartItems, supabase);
     const { shipping, shippingLabel } = await resolveShipping(shippingOptionId);
-    const { tax, grandTotal } = calculateTotals(subtotal, shipping, shippingAddress.state);
+    const { discount, discountCode: resolvedCode, discountCodeId } =
+      await resolveDiscount(supabase, discountCode, subtotal);
+    const { tax, grandTotal } = calculateTotals(subtotal, shipping, shippingAddress.state, discount);
     const userId = await resolveUserId(supabase, accessToken);
 
     // Create order record in Supabase
@@ -57,8 +60,10 @@ exports.handler = async (event) => {
       .insert({
         user_id: userId,
         product: items.map(i => i.name).join(', '),
-        options: { items, shippingAddress, shippingMethod: shippingOptionId, shippingLabel, subtotal, shipping, tax },
+        options: { items, shippingAddress, shippingMethod: shippingOptionId, shippingLabel, subtotal, shipping, tax, discount, discountCode: resolvedCode },
         total_price: grandTotal,
+        discount_code: resolvedCode,
+        discount_amount: discount || null,
         notes: customerNotes || '',
         status: 'pending_payment',
         payment_method: 'stripe',
@@ -108,6 +113,8 @@ exports.handler = async (event) => {
         subtotal,
         shipping,
         tax,
+        discount,
+        discountCode: resolvedCode,
         grandTotal,
       }),
     };

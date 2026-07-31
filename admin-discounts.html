@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin — Discount Codes — SVK Works</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="img/svk-icon.png" type="image/png">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="js/auth.js?v=f9a5c12a"></script>
+  <script src="js/csv-export.js"></script>
+  <style>
+    .form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md); }
+    .form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: var(--space-md); }
+    @media (max-width: 700px) { .form-row-2, .form-row-3 { grid-template-columns: 1fr; } }
+    .form-hint { display: block; font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+
+    /* .auth-card is sized for the narrow login form (max-width 440px); this is a
+       multi-column admin form and needs the full container width. */
+    .auth-card { max-width: none; }
+
+    .dc-card {
+      background: var(--bg-card); border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg); padding: var(--space-lg);
+      display: flex; align-items: flex-start; gap: var(--space-lg); flex-wrap: wrap;
+    }
+    .dc-code {
+      font-family: var(--font-mono); font-size: var(--text-lg); font-weight: var(--weight-bold);
+      color: var(--magenta); letter-spacing: 0.04em;
+    }
+    .dc-meta { font-size: var(--text-sm); color: var(--text-secondary); margin-top: 4px; }
+    .dc-sub { font-size: var(--text-xs); color: var(--text-muted); margin-top: 6px; }
+    .dc-actions { margin-left: auto; display: flex; gap: var(--space-sm); align-items: center; flex-wrap: wrap; }
+    .dc-usage {
+      font-size: var(--text-xs); color: var(--text-muted);
+      background: var(--bg-secondary); border: 1px solid var(--border-color);
+      border-radius: var(--radius-full); padding: 3px 10px;
+    }
+    .dc-expired { color: #fca5a5; }
+  </style>
+</head>
+<body>
+  <main id="main-content">
+
+    <div id="admin-loading" class="section" style="text-align:center;">
+      <div class="container">
+        <div class="spinner" style="margin:4rem auto;"></div>
+        <p class="text-secondary">Loading admin panel…</p>
+      </div>
+    </div>
+
+    <div id="admin-denied" style="display:none;text-align:center;padding:var(--space-4xl) var(--space-xl);">
+      <div style="width:72px;height:72px;border-radius:50%;background:rgba(239,68,68,0.1);border:2px solid rgba(239,68,68,0.3);display:flex;align-items:center;justify-content:center;margin:0 auto var(--space-xl);">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#fca5a5" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      </div>
+      <h2>Access Denied</h2>
+      <p style="color:var(--text-secondary);margin:var(--space-md) 0 var(--space-2xl);">This page is restricted to SVK Works administrators.<br>Sign in with an admin account to continue.</p>
+      <div style="display:flex;gap:var(--space-md);justify-content:center;">
+        <a href="login.html" class="btn btn-primary">Sign In</a>
+        <a href="index.html" class="btn btn-ghost">Go Home</a>
+      </div>
+    </div>
+
+    <div id="admin-content" style="display:none;">
+      <div style="background:var(--bg-secondary);border-bottom:1px solid var(--border-color);padding:var(--space-md) 0;position:sticky;top:0;z-index:100;">
+        <div class="container" style="display:flex;align-items:center;justify-content:space-between;gap:var(--space-md);flex-wrap:wrap;">
+          <div style="display:flex;align-items:center;gap:var(--space-md);">
+            <a href="index.html" style="color:var(--magenta);font-weight:var(--weight-bold);text-decoration:none;font-size:var(--text-lg);">SVK Works</a>
+            <span style="color:var(--border-color);">|</span>
+            <span style="font-size:var(--text-sm);color:var(--text-muted);font-weight:var(--weight-medium);">Discount Codes</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:var(--space-md);">
+            <a href="admin.html" class="btn btn-ghost" style="font-size:var(--text-sm);">Order Management</a>
+            <a href="admin-used-parts.html" class="btn btn-ghost" style="font-size:var(--text-sm);">Used Parts</a>
+            <a href="admin-parts-catalog.html" class="btn btn-ghost" style="font-size:var(--text-sm);">Parts Catalog</a>
+            <span class="badge" id="admin-user-badge"></span>
+            <button class="btn btn-ghost" style="font-size:var(--text-sm);" onclick="handleAdminSignOut()">Sign Out</button>
+          </div>
+        </div>
+      </div>
+
+      <section class="section">
+        <div class="container" style="max-width:1000px;">
+
+          <!-- Create / edit form -->
+          <div class="auth-card" style="margin-bottom:var(--space-2xl);">
+            <h2 id="dc-form-title" style="margin-bottom:var(--space-lg);">Create a Discount Code</h2>
+            <form id="dc-form">
+              <div class="form-row-2">
+                <div class="form-group">
+                  <label class="form-label" for="dc-code">Code</label>
+                  <input type="text" class="form-input" id="dc-code" placeholder="SUMMER10" required autocomplete="off" style="text-transform:uppercase;font-family:var(--font-mono);">
+                  <span class="form-hint">Customers type this at checkout. Matched case-insensitively.</span>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="dc-description">Internal note <span style="color:var(--text-muted);font-weight:400;">(optional)</span></label>
+                  <input type="text" class="form-input" id="dc-description" placeholder="Summer promo — Instagram" autocomplete="off">
+                  <span class="form-hint">Only you see this. Customers never do.</span>
+                </div>
+              </div>
+
+              <div class="form-row-3">
+                <div class="form-group">
+                  <label class="form-label" for="dc-kind">Type</label>
+                  <select class="form-select" id="dc-kind">
+                    <option value="percent">Percentage off</option>
+                    <option value="fixed">Fixed amount off</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="dc-value">Value</label>
+                  <input type="number" class="form-input" id="dc-value" min="0.01" step="0.01" placeholder="10" required>
+                  <span class="form-hint" id="dc-value-hint">Percent (e.g. 10 = 10% off)</span>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="dc-min">Minimum subtotal</label>
+                  <input type="number" class="form-input" id="dc-min" min="0" step="0.01" value="0">
+                  <span class="form-hint">0 = no minimum</span>
+                </div>
+              </div>
+
+              <div class="form-row-3">
+                <div class="form-group">
+                  <label class="form-label" for="dc-max-uses">Max uses <span style="color:var(--text-muted);font-weight:400;">(optional)</span></label>
+                  <input type="number" class="form-input" id="dc-max-uses" min="1" step="1" placeholder="Unlimited">
+                  <span class="form-hint">Counted only on paid orders</span>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="dc-starts">Starts <span style="color:var(--text-muted);font-weight:400;">(optional)</span></label>
+                  <input type="date" class="form-input" id="dc-starts">
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="dc-expires">Expires <span style="color:var(--text-muted);font-weight:400;">(optional)</span></label>
+                  <input type="date" class="form-input" id="dc-expires">
+                </div>
+              </div>
+
+              <div id="dc-error" class="auth-error" style="display:none;"></div>
+
+              <div style="display:flex;gap:var(--space-md);flex-wrap:wrap;">
+                <button type="submit" class="btn btn-primary" id="dc-submit-btn">Create Code</button>
+                <button type="button" class="btn btn-ghost" id="dc-cancel-btn" style="display:none;" onclick="resetForm()">Cancel</button>
+              </div>
+            </form>
+          </div>
+
+          <!-- List -->
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:var(--space-md);margin-bottom:var(--space-lg);flex-wrap:wrap;">
+            <h2 style="margin:0;">Existing Codes</h2>
+            <button class="btn btn-secondary btn-sm" onclick="handleExportCodes()">Export CSV</button>
+          </div>
+
+          <div id="dc-loading" class="account-empty">
+            <div class="spinner" style="margin:0 auto var(--space-md);"></div>
+            <p>Loading codes…</p>
+          </div>
+          <div id="dc-empty" class="account-empty" style="display:none;">
+            <p>No discount codes yet. Create one above.</p>
+          </div>
+          <div id="dc-list" style="display:none;flex-direction:column;gap:var(--space-md);"></div>
+
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    SVKAuth.init();
+
+    let allCodes = [];
+    let editingId = null;
+
+    const esc = s => String(s ?? '').replace(/[&<>"']/g, c => (
+      { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
+    ));
+    const money = n => '$' + Number(n || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const dateOnly = iso => iso ? new Date(iso).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : null;
+
+    document.getElementById('dc-kind').addEventListener('change', (e) => {
+      document.getElementById('dc-value-hint').textContent =
+        e.target.value === 'percent' ? 'Percent (e.g. 10 = 10% off)' : 'Dollars (e.g. 25 = $25 off)';
+    });
+
+    function showError(msg) {
+      const el = document.getElementById('dc-error');
+      el.textContent = msg;
+      el.style.display = 'block';
+    }
+    function hideError() {
+      document.getElementById('dc-error').style.display = 'none';
+    }
+
+    function resetForm() {
+      editingId = null;
+      document.getElementById('dc-form').reset();
+      document.getElementById('dc-min').value = '0';
+      document.getElementById('dc-form-title').textContent = 'Create a Discount Code';
+      document.getElementById('dc-submit-btn').textContent = 'Create Code';
+      document.getElementById('dc-cancel-btn').style.display = 'none';
+      document.getElementById('dc-code').disabled = false;
+      document.getElementById('dc-value-hint').textContent = 'Percent (e.g. 10 = 10% off)';
+      hideError();
+    }
+
+    document.getElementById('dc-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      hideError();
+
+      const code = document.getElementById('dc-code').value.trim().toUpperCase();
+      const kind = document.getElementById('dc-kind').value;
+      const value = parseFloat(document.getElementById('dc-value').value);
+      const minSubtotal = parseFloat(document.getElementById('dc-min').value) || 0;
+      const maxUsesRaw = document.getElementById('dc-max-uses').value.trim();
+      const maxUses = maxUsesRaw ? parseInt(maxUsesRaw, 10) : null;
+      const startsAt = document.getElementById('dc-starts').value || null;
+      const expiresAt = document.getElementById('dc-expires').value || null;
+      const description = document.getElementById('dc-description').value.trim();
+
+      if (!/^[A-Z0-9_-]{3,32}$/.test(code)) {
+        showError('Code must be 3–32 characters: letters, numbers, hyphens or underscores.');
+        return;
+      }
+      if (!(value > 0)) {
+        showError('Value must be greater than zero.');
+        return;
+      }
+      if (kind === 'percent' && value > 100) {
+        showError('A percentage discount can\'t exceed 100%.');
+        return;
+      }
+      if (startsAt && expiresAt && new Date(expiresAt) < new Date(startsAt)) {
+        showError('The expiry date is before the start date.');
+        return;
+      }
+
+      const btn = document.getElementById('dc-submit-btn');
+      btn.disabled = true;
+      const label = btn.textContent;
+      btn.textContent = 'Saving…';
+
+      try {
+        // Expiry is inclusive of the chosen day, so push it to end-of-day.
+        const expiresIso = expiresAt ? new Date(expiresAt + 'T23:59:59').toISOString() : null;
+        const startsIso = startsAt ? new Date(startsAt + 'T00:00:00').toISOString() : null;
+
+        const payload = {
+          code, kind, value, minSubtotal, maxUses,
+          startsAt: startsIso, expiresAt: expiresIso, description,
+        };
+
+        const { error } = editingId
+          ? await SVKAuth.updateDiscountCode(editingId, {
+              kind, value, min_subtotal: minSubtotal, max_uses: maxUses,
+              starts_at: startsIso, expires_at: expiresIso, description: description || null,
+            })
+          : await SVKAuth.saveDiscountCode(payload);
+
+        if (error) {
+          showError(/duplicate|unique/i.test(error.message)
+            ? `The code "${code}" already exists.`
+            : error.message);
+          return;
+        }
+
+        resetForm();
+        await loadCodes();
+      } finally {
+        btn.disabled = false;
+        btn.textContent = label;
+      }
+    });
+
+    function startEdit(id) {
+      const c = allCodes.find(x => x.id === id);
+      if (!c) return;
+      editingId = id;
+      document.getElementById('dc-code').value = c.code;
+      document.getElementById('dc-code').disabled = true; // renaming would orphan past orders
+      document.getElementById('dc-kind').value = c.kind;
+      document.getElementById('dc-kind').dispatchEvent(new Event('change'));
+      document.getElementById('dc-value').value = c.value;
+      document.getElementById('dc-min').value = c.min_subtotal || 0;
+      document.getElementById('dc-max-uses').value = c.max_uses ?? '';
+      document.getElementById('dc-starts').value = c.starts_at ? c.starts_at.slice(0, 10) : '';
+      document.getElementById('dc-expires').value = c.expires_at ? c.expires_at.slice(0, 10) : '';
+      document.getElementById('dc-description').value = c.description || '';
+      document.getElementById('dc-form-title').textContent = `Edit "${c.code}"`;
+      document.getElementById('dc-submit-btn').textContent = 'Save Changes';
+      document.getElementById('dc-cancel-btn').style.display = '';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    async function toggleActive(id) {
+      const c = allCodes.find(x => x.id === id);
+      if (!c) return;
+      const { error } = await SVKAuth.updateDiscountCode(id, { active: !c.active });
+      if (error) { alert('Could not update: ' + error.message); return; }
+      await loadCodes();
+    }
+
+    async function deleteCode(id) {
+      const c = allCodes.find(x => x.id === id);
+      if (!c) return;
+      const used = c.times_used > 0
+        ? `\n\nIt has been used ${c.times_used} time(s). Past orders keep their recorded discount, but the code will be gone.`
+        : '';
+      if (!confirm(`Delete "${c.code}"?${used}\n\nThis can't be undone. To stop it being used without deleting it, deactivate it instead.`)) return;
+      const { error } = await SVKAuth.deleteDiscountCode(id);
+      if (error) { alert('Could not delete: ' + error.message); return; }
+      if (editingId === id) resetForm();
+      await loadCodes();
+    }
+
+    function codeStatus(c) {
+      const now = Date.now();
+      if (!c.active) return { text: 'Inactive', cls: 'status-cancelled' };
+      if (c.starts_at && new Date(c.starts_at).getTime() > now) return { text: 'Scheduled', cls: 'status-pending' };
+      if (c.expires_at && new Date(c.expires_at).getTime() < now) return { text: 'Expired', cls: 'status-cancelled' };
+      if (c.max_uses !== null && c.times_used >= c.max_uses) return { text: 'Used up', cls: 'status-cancelled' };
+      return { text: 'Active', cls: 'status-complete' };
+    }
+
+    function renderCodes() {
+      const list = document.getElementById('dc-list');
+      const empty = document.getElementById('dc-empty');
+      document.getElementById('dc-loading').style.display = 'none';
+
+      if (!allCodes.length) {
+        list.style.display = 'none';
+        empty.style.display = 'block';
+        return;
+      }
+      empty.style.display = 'none';
+      list.style.display = 'flex';
+
+      list.innerHTML = allCodes.map(c => {
+        const s = codeStatus(c);
+        const amount = c.kind === 'percent' ? `${c.value}% off` : `${money(c.value)} off`;
+        const bits = [];
+        if (Number(c.min_subtotal) > 0) bits.push(`min ${money(c.min_subtotal)}`);
+        if (c.starts_at) bits.push(`from ${dateOnly(c.starts_at)}`);
+        if (c.expires_at) bits.push(`until ${dateOnly(c.expires_at)}`);
+        const uses = c.max_uses === null ? `${c.times_used} used` : `${c.times_used} / ${c.max_uses} used`;
+
+        return `<div class="dc-card">
+          <div style="min-width:0;">
+            <div class="dc-code">${esc(c.code)}</div>
+            <div class="dc-meta">${esc(amount)}</div>
+            ${bits.length ? `<div class="dc-sub">${esc(bits.join(' · '))}</div>` : ''}
+            ${c.description ? `<div class="dc-sub">${esc(c.description)}</div>` : ''}
+          </div>
+          <div class="dc-actions">
+            <span class="dc-usage">${esc(uses)}</span>
+            <span class="order-status ${s.cls}">${s.text}</span>
+            <button class="btn btn-ghost btn-sm" onclick="startEdit('${c.id}')">Edit</button>
+            <button class="btn btn-ghost btn-sm" onclick="toggleActive('${c.id}')">${c.active ? 'Deactivate' : 'Activate'}</button>
+            <button class="btn btn-ghost btn-sm" style="color:#fca5a5;" onclick="deleteCode('${c.id}')">Delete</button>
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    function handleExportCodes() {
+      svkExportCsv(allCodes, [
+        { label: 'Code', get: c => c.code },
+        { label: 'Type', get: c => c.kind },
+        { label: 'Value', get: c => c.value },
+        { label: 'Min Subtotal', get: c => c.min_subtotal },
+        { label: 'Times Used', get: c => c.times_used },
+        { label: 'Max Uses', get: c => c.max_uses ?? '' },
+        { label: 'Status', get: c => codeStatus(c).text },
+        { label: 'Starts', get: c => dateOnly(c.starts_at) || '' },
+        { label: 'Expires', get: c => dateOnly(c.expires_at) || '' },
+        { label: 'Note', get: c => c.description || '' },
+      ], 'svk-discount-codes.csv');
+    }
+
+    async function loadCodes() {
+      document.getElementById('dc-loading').style.display = 'block';
+      allCodes = await SVKAuth.getDiscountCodes();
+      renderCodes();
+    }
+
+    async function handleAdminSignOut() {
+      await SVKAuth.signOut();
+      window.location.href = 'login.html';
+    }
+
+    async function initAdmin() {
+      await SVKAuth.ready;
+      const session = await SVKAuth.getSession();
+      if (!session) {
+        document.getElementById('admin-loading').style.display = 'none';
+        document.getElementById('admin-denied').style.display = 'block';
+        return;
+      }
+      const admin = await SVKAuth.isAdmin();
+      if (!admin) {
+        document.getElementById('admin-loading').style.display = 'none';
+        document.getElementById('admin-denied').style.display = 'block';
+        return;
+      }
+
+      document.getElementById('admin-loading').style.display = 'none';
+      document.getElementById('admin-content').style.display = 'block';
+
+      const profile = await SVKAuth.getProfile();
+      document.getElementById('admin-user-badge').textContent = (profile?.full_name || session.user.email) + ' (admin)';
+
+      resetForm();
+      await loadCodes();
+    }
+
+    initAdmin();
+  </script>
+
+  <!-- cart.js loaded only for its shared showToast() helper -->
+  <script defer src="js/cart.js?v=8cff9968"></script>
+</body>
+</html>

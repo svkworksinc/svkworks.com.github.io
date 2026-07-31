@@ -323,6 +323,51 @@ const SVKAuth = {
   // (enforced server-side in netlify/functions/_pricing.js).
   // See netlify/supabase-parts-catalog-migration.sql.
 
+  // ---- Discount codes (admin only — RLS restricts this table to admins) ----
+
+  async getDiscountCodes() {
+    if (!this.client) return [];
+    const { data } = await this.client
+      .from('discount_codes')
+      .select('*')
+      .order('created_at', { ascending: false });
+    return data || [];
+  },
+
+  async saveDiscountCode(code) {
+    if (!this.client) return { error: { message: 'Not configured.' } };
+    return await this.client.from('discount_codes').insert({
+      code: code.code.trim().toUpperCase(),
+      kind: code.kind,
+      value: code.value,
+      min_subtotal: code.minSubtotal || 0,
+      max_uses: code.maxUses ?? null,
+      starts_at: code.startsAt || null,
+      expires_at: code.expiresAt || null,
+      description: code.description || null,
+      active: code.active !== false,
+    }).select().single();
+  },
+
+  async updateDiscountCode(id, updates) {
+    if (!this.client) return { error: { message: 'Not configured.' } };
+    return await this.client.from('discount_codes').update(updates).eq('id', id).select().single();
+  },
+
+  async deleteDiscountCode(id) {
+    if (!this.client) return { error: { message: 'Not configured.' } };
+    return await this.client.from('discount_codes').delete().eq('id', id);
+  },
+
+  async getNewsletterSubscribers() {
+    if (!this.client) return [];
+    const { data } = await this.client
+      .from('newsletter_subscribers')
+      .select('*')
+      .order('created_at', { ascending: false });
+    return data || [];
+  },
+
   async getPartsCatalog(subcategory) {
     if (!this.client) return [];
     const { data } = await this.client
