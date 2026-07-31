@@ -82,6 +82,7 @@
   <script defer src="js/cart.js?v=8cff9968"></script>
   <script defer src="js/components.js?v=e5f86304"></script>
   <script defer src="js/main.js?v=1bf74b49"></script>
+  <script defer src="js/tracking.js?v=1"></script>
   <script>
     const STATUS_LABELS = {
       pending:     { label: 'Pending Review',  cls: 'status-pending'  },
@@ -161,7 +162,7 @@
         <div class="om-meta-grid">
           <div><div class="om-meta-label">Ship To</div><div class="om-meta-value">${line}</div></div>
           ${o.shippingLabel ? `<div><div class="om-meta-label">Shipping Method</div><div class="om-meta-value">${o.shippingLabel}</div></div>` : ''}
-          ${order.tracking_number ? `<div><div class="om-meta-label">Tracking</div><div class="om-meta-value">${order.tracking_number}${order.carrier ? ' (' + order.carrier + ')' : ''}</div></div>` : ''}
+          ${svkRenderTrackingRow(order)}
         </div>`;
     }
 
