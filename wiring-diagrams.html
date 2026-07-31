@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interactive Wiring Diagrams — Standalone Harness Circuit Reference | SVK Works</title>
+  <meta name="description" content="Interactive standalone engine harness wiring diagrams. Click any circuit to see wire gauge, signal type, failure symptoms and how to test it with a multimeter. Covers 2JZ-GTE, 7M-GTE, 1UZ-FE and K-series swaps.">
+  <link rel="canonical" href="https://www.svkworks.com/wiring-diagrams.html">
+  <meta property="og:site_name" content="SVK Works">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Interactive Wiring Diagrams — SVK Works">
+  <meta property="og:description" content="Click any circuit to trace it through the harness. Wire gauge, signal ranges, fault symptoms and multimeter test procedures for standalone engine harnesses.">
+  <meta property="og:url" content="https://www.svkworks.com/wiring-diagrams.html">
+  <meta property="og:image" content="https://www.svkworks.com/img/svk-logo.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Interactive Wiring Diagrams — SVK Works">
+  <meta name="twitter:description" content="Click any circuit to trace it through the harness. Wire gauge, signal ranges, fault symptoms and multimeter test procedures.">
+  <meta name="twitter:image" content="https://www.svkworks.com/img/svk-logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="img/svk-icon.png" type="image/png">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "SVK Works Interactive Wiring Diagram Viewer",
+    "applicationCategory": "ReferenceApplication",
+    "operatingSystem": "Any modern web browser",
+    "url": "https://www.svkworks.com/wiring-diagrams.html",
+    "description": "Interactive reference for standalone engine management harness circuits. Trace any circuit through the harness and see wire gauge, signal type, expected measurements, failure symptoms and multimeter test procedures.",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "publisher": { "@type": "Organization", "name": "SVK Works", "url": "https://www.svkworks.com/" }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.svkworks.com/" },
+      { "@type": "ListItem", "position": 2, "name": "Resources", "item": "https://www.svkworks.com/resources.html" },
+      { "@type": "ListItem", "position": 3, "name": "Interactive Wiring Diagrams", "item": "https://www.svkworks.com/wiring-diagrams.html" }
+    ]
+  }
+  </script>
+  <style>
+    /* ── Layout ── */
+    .wd-layout { display: grid; grid-template-columns: minmax(0,1fr) 400px; gap: var(--space-lg); align-items: start; }
+    @media (max-width: 1100px) { .wd-layout { grid-template-columns: 1fr; } }
+
+    /* ── Toolbar ── */
+    .wd-toolbar { display: flex; gap: var(--space-sm); flex-wrap: wrap; align-items: center; margin-bottom: var(--space-md); }
+    .wd-platform-select {
+      background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md);
+      color: var(--text-primary); font-family: inherit; font-size: var(--text-sm);
+      padding: 9px 34px 9px 12px; cursor: pointer; appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23a0a0b5' stroke-width='3'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 12px center;
+    }
+    .wd-platform-select:focus { outline: none; border-color: var(--magenta); }
+    .wd-search-wrap { position: relative; flex: 1; min-width: 200px; }
+    .wd-search-wrap > svg { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-muted); pointer-events: none; }
+    .wd-search {
+      width: 100%; box-sizing: border-box; background: var(--bg-card); border: 1px solid var(--border-color);
+      border-radius: var(--radius-md); padding: 9px 12px 9px 38px; font-family: inherit;
+      font-size: var(--text-sm); color: var(--text-primary); outline: none;
+    }
+    .wd-search::placeholder { color: var(--text-muted); }
+    .wd-search:focus { border-color: var(--magenta); }
+    .wd-result-count { font-size: var(--text-xs); color: var(--text-muted); white-space: nowrap; }
+    .wd-result-count.is-empty { color: #fca5a5; }
+
+    /* ── Diagram frame ── */
+    .wd-frame {
+      background: var(--bg-card); border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg); position: relative; overflow: hidden;
+    }
+    .wd-canvas { height: 620px; background: var(--bg-primary); position: relative; }
+    @media (max-width: 700px) { .wd-canvas { height: 440px; } }
+    #wd-svg { width: 100%; height: 100%; display: block; touch-action: none; cursor: grab; }
+    #wd-svg.is-panning { cursor: grabbing; }
+    .wd-bg { pointer-events: none; }
+
+    /* Wires */
+    .wd-wire { cursor: pointer; outline: none; }
+    .wd-wire-line { transition: stroke-width .15s ease, opacity .15s ease, filter .15s ease; }
+    .wd-wire:hover .wd-wire-line { stroke-width: 3.6; filter: drop-shadow(0 0 5px currentColor); }
+    .wd-wire:focus-visible .wd-wire-line { stroke-width: 4; filter: drop-shadow(0 0 7px currentColor); }
+    .wd-wire.is-selected .wd-wire-line { stroke-width: 4.2; filter: drop-shadow(0 0 9px currentColor); }
+    .wd-wire.is-match .wd-wire-line { stroke-width: 3.4; filter: drop-shadow(0 0 6px currentColor); }
+    .wd-wire.is-dimmed .wd-wire-line { opacity: .12; }
+    .wd-wire.is-dimmed { cursor: default; }
+
+    /* Nodes */
+    .wd-node-title { font: 600 11px Inter, sans-serif; letter-spacing: .05em; }
+    .wd-pin-label { font: 400 9.5px Inter, sans-serif; fill: var(--text-muted); pointer-events: none; transition: fill .15s ease, opacity .15s ease; }
+    .wd-pin-label.is-selected { fill: var(--text-primary); font-weight: 600; }
+    .wd-pin-label.is-dimmed { opacity: .3; }
+
+    /* Zoom controls */
+    .wd-controls { position: absolute; bottom: 12px; right: 12px; display: flex; flex-direction: column; gap: 4px; z-index: 5; }
+    .wd-zoom-btn {
+      width: 34px; height: 34px; background: var(--bg-elevated); border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm); color: var(--text-secondary); display: flex; align-items: center;
+      justify-content: center; cursor: pointer; font-size: 16px; font-weight: 700; line-height: 1;
+      transition: all var(--transition-fast); padding: 0;
+    }
+    .wd-zoom-btn:hover { border-color: var(--magenta); color: var(--magenta); background: var(--magenta-subtle); }
+    #wd-zoom-level {
+      position: absolute; bottom: 14px; left: 14px; z-index: 5;
+      font-size: var(--text-xs); color: var(--text-muted); font-variant-numeric: tabular-nums;
+      background: var(--bg-elevated); border: 1px solid var(--border-color);
+      border-radius: var(--radius-full); padding: 3px 10px; pointer-events: none;
+    }
+    .wd-hint {
+      position: absolute; top: 12px; left: 14px; z-index: 5;
+      font-size: var(--text-xs); color: var(--text-muted); pointer-events: none;
+      background: var(--bg-elevated); border: 1px solid var(--border-color);
+      border-radius: var(--radius-full); padding: 3px 10px; opacity: .85;
+    }
+
+    /* Legend */
+    .wd-legend { display: flex; gap: 6px; flex-wrap: wrap; padding: 10px var(--space-md); border-top: 1px solid var(--border-color); background: var(--bg-elevated); }
+    .wd-legend-item {
+      display: inline-flex; align-items: center; gap: 6px; font-size: var(--text-xs);
+      color: var(--text-secondary); cursor: pointer; background: none;
+      border: 1px solid transparent; border-radius: var(--radius-full);
+      padding: 3px 10px 3px 6px; font-family: inherit; transition: all var(--transition-fast);
+    }
+    .wd-legend-item:hover { background: var(--bg-card); border-color: var(--border-color); }
+    .wd-legend-item.is-off { opacity: .35; }
+    .wd-legend-item.is-off .wd-legend-swatch { background: var(--text-muted) !important; }
+    .wd-legend-swatch { width: 16px; height: 4px; border-radius: 2px; flex-shrink: 0; }
+
+    /* ── Inspector ── */
+    .wd-panel { position: sticky; top: calc(var(--header-height) + var(--space-md)); }
+    @media (max-width: 1100px) { .wd-panel { position: static; } }
+    .wd-box { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); overflow: hidden; margin-bottom: var(--space-md); }
+    .wd-box-head { padding: 10px var(--space-lg); border-bottom: 1px solid var(--border-color); background: var(--bg-elevated); display: flex; align-items: center; justify-content: space-between; gap: var(--space-sm); }
+    .wd-box-head h2 { font-size: var(--text-xs); font-weight: 600; text-transform: uppercase; letter-spacing: .07em; margin: 0; color: var(--text-secondary); }
+    .wd-box-body { padding: var(--space-lg); }
+
+    .wd-empty { text-align: center; padding: var(--space-2xl) var(--space-md); color: var(--text-muted); }
+    .wd-empty svg { opacity: .25; margin-bottom: var(--space-md); }
+    .wd-empty p { font-size: var(--text-sm); margin: 0 0 var(--space-xs); }
+    .wd-empty .wd-empty-hint { font-size: var(--text-xs); opacity: .8; }
+
+    .wd-cat-tag { display: inline-flex; align-items: center; gap: 6px; font-size: var(--text-xs); font-weight: 600; text-transform: uppercase; letter-spacing: .06em; padding: 3px 10px; border-radius: var(--radius-full); margin-bottom: var(--space-md); }
+    .wd-title { font-size: var(--text-xl); font-weight: 700; line-height: 1.25; margin: 0 0 var(--space-md); }
+    .wd-specs { display: grid; grid-template-columns: auto 1fr; gap: 7px var(--space-md); margin-bottom: var(--space-lg); }
+    .wd-spec-k { font-size: var(--text-xs); color: var(--text-muted); text-transform: uppercase; letter-spacing: .05em; white-space: nowrap; padding-top: 2px; }
+    .wd-spec-v { font-size: var(--text-sm); color: var(--text-primary); font-weight: 500; }
+    .wd-spec-v .wd-sub { display: block; font-size: var(--text-xs); color: var(--text-muted); font-weight: 400; margin-top: 1px; }
+    .wd-unverified { color: var(--text-muted); font-style: italic; font-weight: 400; }
+
+    .wd-sec-label { font-size: var(--text-xs); font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: .06em; margin: var(--space-lg) 0 var(--space-sm); }
+    .wd-prose { font-size: var(--text-sm); color: var(--text-secondary); line-height: var(--leading-normal); margin: 0; }
+    .wd-faults { list-style: none; padding: 0; margin: 0; }
+    .wd-faults li { position: relative; padding-left: 20px; font-size: var(--text-sm); color: var(--text-secondary); line-height: 1.5; margin-bottom: 7px; }
+    .wd-faults li::before { content: ''; position: absolute; left: 6px; top: 8px; width: 5px; height: 5px; border-radius: 50%; background: #fbbf24; }
+    .wd-test { background: var(--bg-elevated); border-left: 2px solid var(--magenta); border-radius: 0 var(--radius-sm) var(--radius-sm) 0; padding: var(--space-md); font-size: var(--text-sm); color: var(--text-secondary); line-height: var(--leading-normal); }
+    .wd-related { list-style: none; padding: 0; margin: 0; }
+    .wd-related button {
+      display: flex; align-items: center; gap: 7px; width: 100%; text-align: left;
+      padding: 8px 0; font-size: var(--text-sm); color: var(--magenta); background: none;
+      border: none; border-bottom: 1px solid var(--border-color); cursor: pointer;
+      font-family: inherit; transition: color var(--transition-fast);
+    }
+    .wd-related li:last-child button { border-bottom: none; }
+    .wd-related button:hover { color: var(--magenta-light); }
+    .wd-related .wd-rel-swatch { width: 10px; height: 3px; border-radius: 2px; flex-shrink: 0; }
+
+    /* Verification notice */
+    .wd-notice {
+      display: flex; gap: 10px; align-items: flex-start;
+      background: rgba(251,191,36,.07); border: 1px solid rgba(251,191,36,.28);
+      border-radius: var(--radius-md); padding: var(--space-md); margin-bottom: var(--space-lg);
+    }
+    .wd-notice svg { flex-shrink: 0; color: #fbbf24; margin-top: 1px; }
+    .wd-notice p { font-size: var(--text-xs); color: var(--text-secondary); margin: 0; line-height: 1.55; }
+    .wd-notice strong { color: #fbbf24; }
+
+    /* Platform meta strip */
+    .wd-meta { display: flex; gap: var(--space-lg); flex-wrap: wrap; font-size: var(--text-xs); color: var(--text-muted); margin-bottom: var(--space-md); }
+    .wd-meta b { color: var(--text-secondary); font-weight: 500; }
+
+    @media print {
+      #header-placeholder, #footer-placeholder, .wd-toolbar, .wd-controls,
+      #wd-zoom-level, .wd-hint, .page-hero p, .wd-legend { display: none !important; }
+      .wd-layout { grid-template-columns: 1fr; }
+      .wd-canvas { height: 460px; }
+      body { background: #fff !important; color: #111 !important; }
+    }
+  </style>
+</head>
+<body>
+  <div id="header-placeholder"></div>
+
+  <main id="main-content">
+    <div class="page-hero">
+      <div class="container">
+        <div class="breadcrumb" role="navigation" aria-label="breadcrumb">
+          <a href="index.html">Home</a><span class="breadcrumb-sep" aria-hidden="true">/</span>
+          <a href="resources.html">Resources</a><span class="breadcrumb-sep" aria-hidden="true">/</span>
+          <span>Interactive Wiring Diagrams</span>
+        </div>
+        <span class="section-label">Free Tool</span>
+        <h1>Interactive Wiring Diagrams</h1>
+        <p>Click any circuit to trace it through the harness — wire gauge and current rating, expected voltages, what it looks like when it fails, and how to test it with a multimeter.</p>
+      </div>
+    </div>
+
+    <section class="section" style="padding-top:var(--space-xl);">
+      <div class="container">
+
+        <div class="wd-toolbar">
+          <label for="wd-platform" class="sr-only">Choose a platform</label>
+          <select class="wd-platform-select" id="wd-platform"></select>
+
+          <div class="wd-search-wrap">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <label for="wd-search" class="sr-only">Search circuits</label>
+            <input type="search" class="wd-search" id="wd-search" placeholder="Search circuits — try &ldquo;ground&rdquo;, &ldquo;injector&rdquo;, or &ldquo;misfire&rdquo;&hellip;" autocomplete="off">
+          </div>
+          <span class="wd-result-count" id="wd-result-count"></span>
+        </div>
+
+        <div class="wd-meta" id="wd-meta"></div>
+
+        <div class="wd-layout">
+          <!-- Diagram -->
+          <div>
+            <div class="wd-frame">
+              <!-- Controls live inside the canvas so they can never overlap the
+                   legend strip, which sits below it in normal flow. -->
+              <div class="wd-canvas">
+                <svg id="wd-svg" role="img" aria-label="Interactive wiring harness diagram"></svg>
+                <div class="wd-hint" id="wd-hint">Scroll to zoom &middot; drag to pan &middot; click a wire</div>
+                <div id="wd-zoom-level">100%</div>
+                <div class="wd-controls">
+                  <button class="wd-zoom-btn" id="wd-zoom-in" title="Zoom in (+)" aria-label="Zoom in">+</button>
+                  <button class="wd-zoom-btn" id="wd-zoom-out" title="Zoom out (−)" aria-label="Zoom out">&minus;</button>
+                  <button class="wd-zoom-btn" id="wd-zoom-fit" title="Fit to screen (F)" aria-label="Fit diagram to screen">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3M21 8V5a2 2 0 0 0-2-2h-3M16 21h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+                  </button>
+                </div>
+              </div>
+              <div class="wd-legend" id="wd-legend"></div>
+            </div>
+
+            <p style="font-size:var(--text-xs);color:var(--text-muted);margin-top:var(--space-sm);">
+              Keyboard: <b>/</b> search &middot; <b>+</b>&thinsp;/&thinsp;<b>&minus;</b> zoom &middot; <b>F</b> fit &middot; <b>Esc</b> clear &middot; <b>Tab</b> steps through circuits
+            </p>
+          </div>
+
+          <!-- Inspector -->
+          <aside class="wd-panel" aria-label="Circuit inspector">
+            <div class="wd-box">
+              <div class="wd-box-head">
+                <h2>Circuit Inspector</h2>
+                <button class="btn btn-ghost btn-sm" id="wd-copy-link" style="display:none;font-size:11px;padding:3px 9px;">Copy link</button>
+              </div>
+              <div class="wd-box-body" id="wd-inspector"></div>
+            </div>
+          </aside>
+        </div>
+
+        <!-- Reference: gauge table -->
+        <div style="margin-top:var(--space-3xl);">
+          <div class="section-header" style="margin-bottom:var(--space-lg);">
+            <span class="section-label">Reference</span>
+            <h2 style="font-size:var(--text-2xl);">Wire Gauge &amp; Current Rating</h2>
+            <p style="color:var(--text-secondary);max-width:640px;">Continuous current ratings for wire bundled inside a loom at engine-bay temperature. These are deliberately conservative — a wire run in free air will carry more, but almost nothing in a harness is in free air.</p>
+          </div>
+          <div style="overflow-x:auto;">
+            <table style="width:100%;border-collapse:collapse;min-width:520px;" id="wd-gauge-table"></table>
+          </div>
+        </div>
+
+        <!-- CTA -->
+        <div style="margin-top:var(--space-3xl);background:var(--bg-card);border:1px solid var(--border-magenta);border-radius:var(--radius-lg);padding:var(--space-2xl);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:var(--space-lg);">
+          <div>
+            <h2 style="font-size:var(--text-xl);margin:0 0 4px;">Want this harness built for you?</h2>
+            <p style="font-size:var(--text-sm);color:var(--text-secondary);margin:0;">Every circuit shown here is one we build, label and bench-test before it ships.</p>
+          </div>
+          <div style="display:flex;gap:var(--space-md);flex-wrap:wrap;">
+            <a href="#" class="btn btn-primary" id="wd-product-link">View Harnesses</a>
+            <a href="contact.html" class="btn btn-outline">Ask a Question</a>
+          </div>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <div id="footer-placeholder"></div>
+  <div id="wd-live" class="sr-only" role="status" aria-live="polite"></div>
+
+  <script defer src="components/header.js?v=c947f061"></script>
+  <script defer src="components/footer.js?v=a7276d21"></script>
+  <script defer src="js/cart.js?v=8cff9968"></script>
+  <script defer src="js/components.js?v=e5f86304"></script>
+  <script defer src="js/main.js?v=1bf74b49"></script>
+  <script defer src="data/wiring-data.js?v=2bf8c9bc"></script>
+  <script defer src="js/wiring-diagram.js?v=74b149db"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // data/wiring-data.js and js/wiring-diagram.js are deferred, so they are
+      // guaranteed to have run by DOMContentLoaded.
+      const W = SVKWiring;
+      const esc = s => W.esc(s);
+
+      /* ---- Platform picker ---- */
+      const sel = document.getElementById('wd-platform');
+      sel.innerHTML = Object.entries(WIRING_PLATFORMS)
+        .map(([id, p]) => `<option value="${id}">${esc(p.label)} — ${esc(p.engine)}</option>`).join('');
+
+      function renderMeta() {
+        const p = W.platform;
+        document.getElementById('wd-meta').innerHTML = `
+          <span><b>Chassis:</b> ${esc(p.chassis)}</span>
+          <span><b>Engine:</b> ${esc(p.engine)}</span>
+          <span><b>ECU:</b> ${esc(p.ecu)}</span>
+          <span><b>Circuits:</b> ${W.circuits.length}</span>`;
+        const link = document.getElementById('wd-product-link');
+        link.href = p.productUrl || 'harnesses.html';
+        link.textContent = `View ${p.label} Harnesses`;
+      }
+
+      /* ---- Legend ---- */
+      W.renderLegend = function () {
+        // Only show categories actually present in this platform.
+        const present = [...new Set(W.circuits.map(c => c.category))];
+        const el = document.getElementById('wd-legend');
+        const anyOff = !!W.activeCategories;
+        el.innerHTML = present.map(k => {
+          const c = CIRCUIT_CATEGORIES[k];
+          const on = !W.activeCategories || W.activeCategories.has(k);
+          const n = W.circuits.filter(x => x.category === k).length;
+          return `<button class="wd-legend-item ${on ? '' : 'is-off'}" data-cat="${k}"
+                    aria-pressed="${on}" title="${esc(c.desc)}">
+                    <span class="wd-legend-swatch" style="background:${c.color}"></span>
+                    ${esc(c.label)} <span style="opacity:.55">${n}</span>
+                  </button>`;
+        }).join('') + (anyOff
+          ? `<button class="wd-legend-item" id="wd-legend-all" style="margin-left:auto;">Show all</button>` : '');
+      };
+
+      document.getElementById('wd-legend').addEventListener('click', (e) => {
+        const btn = e.target.closest('.wd-legend-item');
+        if (!btn) return;
+        if (btn.id === 'wd-legend-all') W.showAllCategories();
+        else if (btn.dataset.cat) W.toggleCategory(btn.dataset.cat);
+      });
+
+      /* ---- Inspector ---- */
+      W.renderInspector = function (c) {
+        const box = document.getElementById('wd-inspector');
+        const copyBtn = document.getElementById('wd-copy-link');
+
+        if (!c) {
+          copyBtn.style.display = 'none';
+          box.innerHTML = `
+            <div class="wd-empty">
+              <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="display:block;margin:0 auto;">
+                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+              </svg>
+              <p>Select a circuit to inspect it.</p>
+              <p class="wd-empty-hint">Click a wire in the diagram, or use Tab and Enter.</p>
+            </div>`;
+          return;
+        }
+
+        copyBtn.style.display = '';
+        const cat = CIRCUIT_CATEGORIES[c.category];
+        const g = c.gaugeInfo;
+        const verified = W.platform.verified;
+
+        const pinRow = (label, val) => `
+          <div class="wd-spec-k">${label}</div>
+          <div class="wd-spec-v">${val}</div>`;
+
+        box.innerHTML = `
+          <span class="wd-cat-tag" style="background:${cat.color}1f;color:${cat.color};">
+            <span class="wd-legend-swatch" style="background:${cat.color};width:12px;"></span>${esc(cat.label)}
+          </span>
+          <h3 class="wd-title">${esc(c.name)}</h3>
+
+          <div class="wd-specs">
+            ${pinRow('Wire', g
+              ? `${esc(c.gauge)} <span class="wd-sub">${esc(g.awg)} &middot; ${g.amps} A continuous &middot; ${esc(g.note)}</span>`
+              : esc(c.gauge))}
+            ${pinRow('Signal', `${esc(c.signalType)}`)}
+            ${pinRow('Expected', `${esc(c.normalRange)}`)}
+            ${pinRow('Routing', `${esc(W.layout.nodes[c.from]?.label || c.from)} &rarr; ${esc(W.layout.nodes[c.to]?.label || c.to)}`)}
+            ${pinRow('ECU pin', c.ecuPin
+              ? esc(c.ecuPin)
+              : `<span class="wd-unverified">Not published${verified ? '' : ' — see note below'}</span>`)}
+          </div>
+
+          ${verified ? '' : `
+            <div class="wd-notice">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+              <p><strong>Pin numbers are not published for this platform.</strong> The circuit behaviour, wire sizing and test procedures below are general to standalone harnesses and are accurate. Pin assignments differ between ECU models even within one product family, so always confirm against your specific ECU manual before wiring.</p>
+            </div>`}
+
+          <div class="wd-sec-label">What it does</div>
+          <p class="wd-prose">${esc(c.fn)}</p>
+
+          <div class="wd-sec-label">When it fails</div>
+          <ul class="wd-faults">${(c.faults || []).map(f => `<li>${esc(f)}</li>`).join('')}</ul>
+
+          <div class="wd-sec-label">How to test it</div>
+          <div class="wd-test">${esc(c.testing)}</div>
+
+          ${(() => {
+            const rel = (c.related || []).map(id => W.circuits.find(x => x.id === id)).filter(Boolean);
+            if (!rel.length) return '';
+            return `<div class="wd-sec-label">Related circuits</div>
+              <ul class="wd-related">${rel.map(r => `
+                <li><button type="button" data-goto="${r.id}">
+                  <span class="wd-rel-swatch" style="background:${r.color}"></span>
+                  ${esc(r.name)}
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-left:auto;"><polyline points="9 18 15 12 9 6"/></svg>
+                </button></li>`).join('')}</ul>`;
+          })()}
+        `;
+      };
+
+      // Related-circuit links actually navigate (the mockup's were inert).
+      document.getElementById('wd-inspector').addEventListener('click', (e) => {
+        const btn = e.target.closest('[data-goto]');
+        if (btn) W.select(btn.dataset.goto);
+      });
+
+      document.getElementById('wd-copy-link').addEventListener('click', async () => {
+        const btn = document.getElementById('wd-copy-link');
+        try {
+          await navigator.clipboard.writeText(location.href);
+          const old = btn.textContent;
+          btn.textContent = 'Copied';
+          setTimeout(() => { btn.textContent = old; }, 1400);
+        } catch { /* clipboard unavailable — the URL bar already shows the link */ }
+      });
+
+      /* ---- Gauge reference table ---- */
+      document.getElementById('wd-gauge-table').innerHTML = `
+        <thead><tr>
+          ${['Metric', 'AWG', 'Continuous current', 'Typical use'].map(h =>
+            `<th style="text-align:left;padding:8px 12px;font-size:var(--text-xs);text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted);border-bottom:1px solid var(--border-color);">${h}</th>`).join('')}
+        </tr></thead>
+        <tbody>${Object.entries(WIRE_GAUGES).map(([k, v]) => `
+          <tr>
+            <td style="padding:9px 12px;font-size:var(--text-sm);border-bottom:1px solid var(--border-color);font-weight:500;">${esc(k)}</td>
+            <td style="padding:9px 12px;font-size:var(--text-sm);border-bottom:1px solid var(--border-color);color:var(--text-secondary);">${esc(v.awg)}</td>
+            <td style="padding:9px 12px;font-size:var(--text-sm);border-bottom:1px solid var(--border-color);color:var(--text-secondary);">${v.amps} A</td>
+            <td style="padding:9px 12px;font-size:var(--text-sm);border-bottom:1px solid var(--border-color);color:var(--text-secondary);">${esc(v.note)}</td>
+          </tr>`).join('')}</tbody>`;
+
+      /* ---- Boot ---- */
+      function boot(platformId, circuitId, push) {
+        if (!W.load(platformId)) return;
+        sel.value = platformId;
+        renderMeta();
+        W.render();
+        W.renderLegend();
+        W.applyVisualState();
+        if (circuitId && W.circuits.some(c => c.id === circuitId)) {
+          // reveal:false — a deep link shouldn't yank the page down to the
+          // panel before the reader has seen the diagram it belongs to.
+          W.select(circuitId, { push: false, reveal: false });
+          W.focusWire(circuitId, false);
+        } else {
+          W.renderInspector(null);
+        }
+        if (push) W.pushUrl(true);
+      }
+
+      const initial = W.readUrl();
+      const startPlatform = WIRING_PLATFORMS[initial.platform] ? initial.platform : Object.keys(WIRING_PLATFORMS)[0];
+      boot(startPlatform, initial.circuit, true);
+
+      sel.addEventListener('change', () => {
+        W.searchQuery = '';
+        document.getElementById('wd-search').value = '';
+        W.activeCategories = null;
+        W.selectedId = null;
+        boot(sel.value, null, false);
+        W.pushUrl();
+      });
+
+      document.getElementById('wd-search').addEventListener('input', (e) => W.setSearch(e.target.value));
+      document.getElementById('wd-zoom-in').addEventListener('click', () => W.zoomBy(1.3));
+      document.getElementById('wd-zoom-out').addEventListener('click', () => W.zoomBy(1 / 1.3));
+      document.getElementById('wd-zoom-fit').addEventListener('click', () => W.fit());
+
+      // Back/forward moves between circuits.
+      window.addEventListener('popstate', () => {
+        const s = W.readUrl();
+        if (s.platform && s.platform !== W.platformId) boot(s.platform, s.circuit, false);
+        else if (s.circuit) W.select(s.circuit, { push: false });
+        else W.clearSelection({ push: false });
+      });
+
+      // Keyboard shortcuts.
+      document.addEventListener('keydown', (e) => {
+        const typing = /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName);
+        if (e.key === 'Escape') {
+          if (typing) { e.target.blur(); return; }
+          W.clearSelection();
+          return;
+        }
+        if (typing || e.metaKey || e.ctrlKey || e.altKey) return;
+        if (e.key === '/') { e.preventDefault(); document.getElementById('wd-search').focus(); }
+        else if (e.key === '+' || e.key === '=') { e.preventDefault(); W.zoomBy(1.3); }
+        else if (e.key === '-' || e.key === '_') { e.preventDefault(); W.zoomBy(1 / 1.3); }
+        else if (e.key === 'f' || e.key === 'F') { e.preventDefault(); W.fit(); }
+      });
+
+      // The scroll/drag hint is only useful once.
+      const hint = document.getElementById('wd-hint');
+      const hideHint = () => { hint.style.transition = 'opacity .4s'; hint.style.opacity = '0'; };
+      document.getElementById('wd-svg').addEventListener('pointerdown', hideHint, { once: true });
+      document.getElementById('wd-svg').addEventListener('wheel', hideHint, { once: true, passive: true });
+    });
+  </script>
+</body>
+</html>

@@ -28,6 +28,8 @@ const ASSETS = [
   'js/search.js',
   'js/wishlist.js',
   'js/main.js',
+  'js/wiring-diagram.js',
+  'data/wiring-data.js',
   'js/cart.js',
   'js/checkout.js',
   'components/header.js',
