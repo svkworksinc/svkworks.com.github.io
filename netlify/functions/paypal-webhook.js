@@ -115,7 +115,11 @@ exports.handler = async (event) => {
       // -> shipped -> complete), same as capture-paypal-order.js / stripe-webhook.js.
       await supabase
         .from('orders')
-        .update({ status: 'pending', payment_id: captureId || order.payment_id })
+        .update({
+          status: 'pending',
+          payment_id: captureId || order.payment_id,
+          payment_capture_id: captureId || order.payment_capture_id,
+        })
         .eq('id', supabaseOrderId);
 
       await markUsedPartsSold(supabase, order.items);

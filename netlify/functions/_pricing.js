@@ -168,6 +168,20 @@ async function markUsedPartsSold(supabase, items) {
   else console.log('[markUsedPartsSold] Marked sold:', ids.join(', '));
 }
 
+// Inverse of markUsedPartsSold — releases inventory back to available when a
+// paid order containing one-off used parts is cancelled, so it can be sold
+// to someone else instead of being stuck "sold" with no buyer.
+async function releaseUsedParts(supabase, items) {
+  const ids = (items || []).filter(i => i.isUsedPart).map(i => i.id);
+  if (!ids.length) return;
+  const { error } = await supabase
+    .from('used_parts')
+    .update({ status: 'available', sold_at: null })
+    .in('id', ids);
+  if (error) console.error('[releaseUsedParts] Failed to release:', ids, error.message);
+  else console.log('[releaseUsedParts] Released back to available:', ids.join(', '));
+}
+
 // Resolves a shipping selection to an authoritative price + label.
 // shippingOptionId is either:
 //   - a flat-rate key from SHIPPING_OPTIONS (fallback path), or
@@ -213,6 +227,7 @@ module.exports = {
   calculateTotals,
   totalWeightOz,
   markUsedPartsSold,
+  releaseUsedParts,
   SHIPPING_OPTIONS,
   PRODUCT_PRICES,
   PARCEL_DIMENSIONS_IN,

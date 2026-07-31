@@ -210,13 +210,31 @@ const SVKAuth = {
     return orders.map(o => ({ ...o, _profile: profileMap[o.user_id] || {} }));
   },
 
-  async updateOrderStatus(orderId, newStatus) {
-    if (!this.client) return { error: { message: 'Not configured.' } };
-    return await this.client
-      .from('orders')
-      .update({ status: newStatus })
-      .eq('id', orderId)
-      .select();
+  // All order mutations (accept/ship/complete/cancel/edit) go through the
+  // admin-update-order Netlify function — never written directly from the
+  // client — so every change is server-verified and audit-logged. See
+  // netlify/functions/admin-update-order.js.
+  async adminUpdateOrder(orderId, action, payload = {}) {
+    const session = await this.getSession();
+    if (!session) return { error: { message: 'Not signed in.' } };
+    const res = await fetch('/.netlify/functions/admin-update-order', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ orderId, action, accessToken: session.access_token, ...payload }),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) return { error: { message: data.error || 'Request failed.' } };
+    return { data };
+  },
+
+  async getOrderEvents(orderId) {
+    if (!this.client) return [];
+    const { data } = await this.client
+      .from('order_events')
+      .select('*')
+      .eq('order_id', orderId)
+      .order('created_at', { ascending: false });
+    return data || [];
   },
 
   // ---- Used Parts ----
