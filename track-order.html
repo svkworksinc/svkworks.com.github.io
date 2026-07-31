@@ -75,6 +75,21 @@
             <div id="track-error" class="auth-error" style="display:none;"></div>
             <button type="submit" class="btn btn-primary btn-lg" style="width:100%;" id="track-submit-btn">Track Order</button>
           </form>
+
+          <div style="display:flex;align-items:center;gap:var(--space-md);margin:var(--space-xl) 0;">
+            <div style="flex:1;height:1px;background:var(--border-color);"></div>
+            <span style="color:var(--text-muted);font-size:var(--text-xs);text-transform:uppercase;letter-spacing:0.06em;">Or</span>
+            <div style="flex:1;height:1px;background:var(--border-color);"></div>
+          </div>
+
+          <form id="carrier-track-form">
+            <div class="form-group">
+              <label class="form-label" for="carrier-number">Track a Shipment by Tracking Number</label>
+              <input type="text" class="form-input" id="carrier-number" placeholder="e.g. 1ZXG9979YN92098280" required autocomplete="off">
+            </div>
+            <div id="carrier-track-error" class="auth-error" style="display:none;"></div>
+            <button type="submit" class="btn btn-outline btn-lg" style="width:100%;" id="carrier-track-submit-btn">Track Package</button>
+          </form>
         </div>
 
         <div id="track-result" style="display:none;margin-top:var(--space-2xl);"></div>
@@ -294,6 +309,16 @@
         btn.disabled = false;
         btn.textContent = 'Track Order';
       }
+    });
+
+    document.getElementById('carrier-track-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      hideError('carrier-track-error');
+      const number = document.getElementById('carrier-number').value.trim();
+      if (!number) return;
+      // Reload at the shareable /tracking?number=... URL so the address bar
+      // always reflects a link that can be bookmarked or re-sent.
+      window.location.href = '/tracking?number=' + encodeURIComponent(number);
     });
 
     // Direct shareable link — svkworks.com/tracking?t=<token>. Skips the
