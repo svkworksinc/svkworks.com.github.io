@@ -1,11 +1,13 @@
 // Google Merchant Center / Google Shopping product feed.
 // Served at /product-feed.xml (see netlify.toml redirect).
 //
-// Covers the Used Parts and Parts Catalog systems (both Supabase-backed and
-// admin-managed) — the rest of the static catalog (harnesses, connectors,
+// Covers the Used Parts and Parts Catalog systems (Supabase-backed and
+// admin-managed) plus the static connector listings from
+// data/products-data.js. The rest of the static catalog (harnesses,
 // merchandise) already has its own hand-built SEO pages and isn't included
 // here.
 const { createClient } = require('@supabase/supabase-js');
+const SVK_PRODUCTS_DATA = require('../../data/products-data.js');
 
 const supabase = createClient(
   process.env.SUPABASE_URL,
@@ -74,6 +76,27 @@ function catalogPartItem(part) {
   </item>`;
 }
 
+function connectorItem(product) {
+  const image = product.images && product.images[0];
+  if (!image || !product.page) return '';
+  const link = `${SITE_URL}/${product.page}`;
+  const imageLink = `${SITE_URL}/${encodeURI(image)}`;
+  return `
+  <item>
+    <g:id>connector-${xmlEscape(product.id)}</g:id>
+    <title>${cdata(product.name)}</title>
+    <description>${cdata(product.description || product.shortDesc || product.name)}</description>
+    <link>${xmlEscape(link)}</link>
+    <g:image_link>${xmlEscape(imageLink)}</g:image_link>
+    <g:availability>${product.inStock === false ? 'out of stock' : 'in stock'}</g:availability>
+    <g:price>${Number(product.price).toFixed(2)} USD</g:price>
+    <g:condition>new</g:condition>
+    <g:brand>SVK Works</g:brand>
+    <g:identifier_exists>no</g:identifier_exists>
+    <g:google_product_category>Vehicles &amp; Parts &gt; Vehicle Parts &amp; Accessories</g:google_product_category>
+  </item>`;
+}
+
 exports.handler = async () => {
   try {
     const [usedPartsRes, catalogPartsRes] = await Promise.all([
@@ -92,9 +115,12 @@ exports.handler = async () => {
     if (usedPartsRes.error) throw new Error(`used_parts query failed: ${usedPartsRes.error.message}`);
     if (catalogPartsRes.error) throw new Error(`parts_catalog query failed: ${catalogPartsRes.error.message}`);
 
+    const connectors = (SVK_PRODUCTS_DATA.products || []).filter((p) => p.category === 'connectors');
+
     const items = [
       ...(usedPartsRes.data || []).map(usedPartItem),
       ...(catalogPartsRes.data || []).map(catalogPartItem),
+      ...connectors.map(connectorItem),
     ].filter(Boolean).join('');
 
     const xml = `<?xml version="1.0" encoding="UTF-8"?>
