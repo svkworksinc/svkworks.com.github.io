@@ -10,6 +10,10 @@ const SVKComponents = {
   // Go to: Admin → Data Streams → select your stream → copy the Measurement ID
   GA_ID: 'G-RPE47LV27L',
 
+  // ─── Sentry error monitoring ───────────────────────────────────────────────
+  // Paste your DSN from sentry.io → Settings → Projects → [project] → Client Keys (DSN)
+  SENTRY_DSN: '',
+
   _loadAnalytics() {
     if (!this.GA_ID || this.GA_ID === 'G-XXXXXXXXXX') return; // not yet configured
     const script = document.createElement('script');
@@ -22,8 +26,20 @@ const SVKComponents = {
     window.gtag('config', this.GA_ID, { anonymize_ip: true });
   },
 
+  _loadErrorMonitoring() {
+    if (!this.SENTRY_DSN) return; // not yet configured
+    const script = document.createElement('script');
+    script.src = 'https://browser.sentry-cdn.com/8.9.2/bundle.min.js';
+    script.crossOrigin = 'anonymous';
+    script.onload = () => {
+      window.Sentry.init({ dsn: this.SENTRY_DSN, tracesSampleRate: 0 });
+    };
+    document.head.appendChild(script);
+  },
+
   load() {
     this._loadAnalytics();
+    this._loadErrorMonitoring();
     const headerEl = document.getElementById('header-placeholder');
     const footerEl = document.getElementById('footer-placeholder');
 

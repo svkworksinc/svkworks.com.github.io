@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Track Your Order | SVK Works</title>
+  <meta name="description" content="Look up your SVK Works order status by order number and email — no account required.">
+  <link rel="canonical" href="https://www.svkworks.com/track-order.html">
+  <meta property="og:site_name" content="SVK Works">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Track Your Order | SVK Works">
+  <meta property="og:description" content="Look up your SVK Works order status by order number and email.">
+  <meta property="og:url" content="https://www.svkworks.com/track-order.html">
+  <meta property="og:image" content="https://www.svkworks.com/img/svk-logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="img/svk-icon.png" type="image/png">
+  <style>
+    .om-meta-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: var(--space-lg); margin: var(--space-lg) 0 var(--space-xl);
+      padding-bottom: var(--space-xl); border-bottom: 1px solid var(--border-color);
+    }
+    .om-meta-label { font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); margin-bottom: 4px; }
+    .om-meta-value { font-size: var(--text-sm); font-weight: var(--weight-medium); }
+    .om-items table { width: 100%; border-collapse: collapse; margin-bottom: var(--space-lg); }
+    .om-items th { text-align: left; font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); padding: 6px 8px; border-bottom: 1px solid var(--border-color); }
+    .om-items td { padding: 10px 8px; font-size: var(--text-sm); border-bottom: 1px solid var(--border-color); vertical-align: top; }
+    .om-items th:nth-child(2), .om-items td:nth-child(2),
+    .om-items th:nth-child(3), .om-items td:nth-child(3),
+    .om-items th:nth-child(4), .om-items td:nth-child(4) { text-align: right; }
+    .om-item-opts { font-size: var(--text-xs); color: var(--text-muted); margin-top: 2px; }
+    .om-totals { display: flex; flex-direction: column; gap: 4px; align-items: flex-end; margin-bottom: var(--space-lg); }
+    .om-totals-row { display: flex; justify-content: space-between; gap: var(--space-xl); font-size: var(--text-sm); color: var(--text-secondary); width: 220px; max-width: 100%; }
+    .om-totals-row.total { font-size: var(--text-lg); font-weight: var(--weight-bold); color: var(--text-primary); border-top: 1px solid var(--border-color); padding-top: 6px; margin-top: 4px; }
+    #track-result-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: var(--space-2xl); }
+  </style>
+</head>
+<body>
+  <div id="header-placeholder"></div>
+
+  <main id="main-content">
+    <div class="page-hero">
+      <div class="container">
+        <div class="breadcrumb" role="navigation" aria-label="breadcrumb">
+          <a href="index.html">Home</a><span class="breadcrumb-sep" aria-hidden="true">/</span>
+          <span>Track Your Order</span>
+        </div>
+        <h1>Track Your Order</h1>
+        <p>Enter your order number and the email you used at checkout — no account needed.</p>
+      </div>
+    </div>
+
+    <section class="section">
+      <div class="container" style="max-width:640px;">
+        <div class="auth-card">
+          <form id="track-form">
+            <div class="form-group">
+              <label class="form-label" for="order-number">Order Number</label>
+              <input type="text" class="form-input" id="order-number" placeholder="SVK-ABC123" required autocomplete="off">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="track-email">Email</label>
+              <input type="email" class="form-input" id="track-email" placeholder="you@email.com" required autocomplete="email">
+            </div>
+            <div id="track-error" class="auth-error" style="display:none;"></div>
+            <button type="submit" class="btn btn-primary btn-lg" style="width:100%;" id="track-submit-btn">Track Order</button>
+          </form>
+        </div>
+
+        <div id="track-result" style="display:none;margin-top:var(--space-2xl);"></div>
+      </div>
+    </section>
+  </main>
+
+  <div id="footer-placeholder"></div>
+
+  <script defer src="components/header.js?v=d4535b34"></script>
+  <script defer src="components/footer.js?v=21590f2c"></script>
+  <script defer src="js/cart.js?v=8cff9968"></script>
+  <script defer src="js/components.js?v=2f6f4c57"></script>
+  <script defer src="js/main.js?v=999bf9e4"></script>
+  <script>
+    const STATUS_LABELS = {
+      pending:     { label: 'Pending Review',  cls: 'status-pending'  },
+      in_progress: { label: 'In Progress',     cls: 'status-progress' },
+      complete:    { label: 'Complete',        cls: 'status-complete' },
+      shipped:     { label: 'Shipped',         cls: 'status-shipped'  },
+      cancelled:   { label: 'Cancelled',       cls: 'status-cancelled'},
+    };
+    const PIPELINE_STEPS = ['Received', 'Building', 'Shipped', 'Complete'];
+    const PIPELINE_INDEX = { pending: 0, in_progress: 1, shipped: 2, complete: 3 };
+
+    function formatDate(iso) {
+      return new Date(iso).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+    }
+    function formatPrice(n) {
+      return '$' + Number(n || 0).toLocaleString();
+    }
+    function fmtMoney(n) {
+      return '$' + Number(n || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+    function paymentMethodLabel(order) {
+      if (order.options?.paymentMethod) return order.options.paymentMethod;
+      return '—';
+    }
+
+    function renderPipeline(status) {
+      if (status === 'cancelled') {
+        return `<div class="order-pipeline-cancelled">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+          Order Cancelled
+        </div>`;
+      }
+      const activeStep = PIPELINE_INDEX[status] ?? 0;
+      const steps = PIPELINE_STEPS.map((label, i) => {
+        const cls = i < activeStep ? 'done' : i === activeStep ? 'active' : '';
+        return `<div class="pipeline-step ${cls}"><div class="pipeline-dot"></div><div class="pipeline-label">${label}</div></div>`;
+      }).join('');
+      return `<div class="order-pipeline">${steps}</div>`;
+    }
+
+    function renderItemsTable(items) {
+      const rows = items.map(item => {
+        const opts = Object.entries(item.options || {})
+          .filter(([, v]) => v && v !== 'No' && !String(v).startsWith('Select'))
+          .map(([k, v]) => `${k}: ${v}`).join(' · ');
+        const qty = item.quantity || 1;
+        const price = item.price || 0;
+        return `<tr>
+          <td><div>${item.name}</div>${opts ? `<div class="om-item-opts">${opts}</div>` : ''}</td>
+          <td>${qty}</td>
+          <td>${fmtMoney(price)}</td>
+          <td>${fmtMoney(price * qty)}</td>
+        </tr>`;
+      }).join('');
+      return `<div class="om-items"><table><thead><tr><th>Item</th><th>Qty</th><th>Unit Price</th><th>Total</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+    }
+
+    function renderTotals(order) {
+      const o = order.options || {};
+      if (o.subtotal === undefined) {
+        return `<div class="om-totals"><div class="om-totals-row total"><span>Total</span><span>${formatPrice(order.total_price)}</span></div></div>`;
+      }
+      let rows = `
+        <div class="om-totals-row"><span>Subtotal</span><span>${fmtMoney(o.subtotal)}</span></div>
+        <div class="om-totals-row"><span>Shipping</span><span>${fmtMoney(o.shipping)}</span></div>`;
+      if (o.tax) rows += `<div class="om-totals-row"><span>Tax</span><span>${fmtMoney(o.tax)}</span></div>`;
+      rows += `<div class="om-totals-row total"><span>Total</span><span>${fmtMoney(order.total_price)}</span></div>`;
+      return `<div class="om-totals">${rows}</div>`;
+    }
+
+    function renderShippingInfo(order) {
+      const o = order.options || {};
+      const addr = o.shippingAddress;
+      if (!addr || !(addr.address || addr.city)) return '';
+      const line = [addr.address, [addr.city, addr.state, addr.zip].filter(Boolean).join(', ')].filter(Boolean).join(', ');
+      return `
+        <div class="om-meta-grid">
+          <div><div class="om-meta-label">Ship To</div><div class="om-meta-value">${line}</div></div>
+          ${o.shippingLabel ? `<div><div class="om-meta-label">Shipping Method</div><div class="om-meta-value">${o.shippingLabel}</div></div>` : ''}
+          ${order.tracking_number ? `<div><div class="om-meta-label">Tracking</div><div class="om-meta-value">${order.tracking_number}${order.carrier ? ' (' + order.carrier + ')' : ''}</div></div>` : ''}
+        </div>`;
+    }
+
+    function renderOrderDetail(order) {
+      const s = STATUS_LABELS[order.status] || STATUS_LABELS.pending;
+      const isCheckoutOrder = Array.isArray(order.items) && order.items.length > 0;
+
+      return `
+        <div id="track-result-card">
+          <h2 style="margin:0 0 6px;">${order.product || 'Order'}</h2>
+          <div style="display:flex;align-items:center;gap:var(--space-sm);flex-wrap:wrap;">
+            <span class="order-status ${s.cls}">${s.label}</span>
+            <span class="order-id">${order.order_number}</span>
+          </div>
+
+          <div class="om-meta-grid">
+            <div><div class="om-meta-label">Date</div><div class="om-meta-value">${formatDate(order.submitted_at)}</div></div>
+            <div><div class="om-meta-label">Total</div><div class="om-meta-value">${formatPrice(order.total_price)}</div></div>
+          </div>
+
+          ${renderShippingInfo(order)}
+
+          ${isCheckoutOrder ? renderItemsTable(order.items) : ''}
+          ${isCheckoutOrder ? renderTotals(order) : ''}
+
+          ${renderPipeline(order.status)}
+
+          ${order.status === 'cancelled' && order.refunded_amount ? `
+            <div style="background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.3);border-radius:var(--radius-md);padding:var(--space-lg);margin-top:var(--space-lg);">
+              <div style="font-weight:var(--weight-medium);color:#fca5a5;margin-bottom:4px;">Order Cancelled &amp; Refunded</div>
+              <div style="font-size:var(--text-sm);color:var(--text-secondary);">A full refund of ${formatPrice(order.refunded_amount)} was issued to your original payment method. Please allow a few business days for it to appear.</div>
+            </div>` : ''}
+        </div>`;
+    }
+
+    function showError(id, msg) {
+      const el = document.getElementById(id);
+      el.textContent = msg;
+      el.style.display = 'block';
+    }
+    function hideError(id) {
+      document.getElementById(id).style.display = 'none';
+    }
+
+    document.getElementById('track-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      hideError('track-error');
+      document.getElementById('track-result').style.display = 'none';
+
+      const orderNumber = document.getElementById('order-number').value.trim();
+      const email = document.getElementById('track-email').value.trim();
+      const btn = document.getElementById('track-submit-btn');
+      btn.disabled = true;
+      btn.textContent = 'Looking up…';
+
+      try {
+        const res = await fetch('/.netlify/functions/track-order', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ orderNumber, email }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Order not found.');
+
+        const resultEl = document.getElementById('track-result');
+        resultEl.innerHTML = renderOrderDetail(data.order);
+        resultEl.style.display = 'block';
+      } catch (err) {
+        showError('track-error', err.message);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Track Order';
+      }
+    });
+  </script>
+</body>
+</html>

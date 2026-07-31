@@ -12,6 +12,8 @@
   <link rel="icon" href="img/svk-icon.png" type="image/png">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script src="js/auth.js?v=63c00c7d"></script>
+  <script src="js/csv-export.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
   <style>
     .order-modal-overlay {
       position: fixed; inset: 0; background: rgba(0,0,0,0.7);
@@ -117,6 +119,20 @@
           <!-- Stats -->
           <div class="account-stats" id="admin-stats" style="margin-bottom:var(--space-2xl);"></div>
 
+          <!-- Analytics -->
+          <div id="admin-analytics" style="display:none;margin-bottom:var(--space-2xl);">
+            <div style="display:grid;grid-template-columns:2fr 1fr;gap:var(--space-lg);">
+              <div class="order-card">
+                <h3 style="font-size:var(--text-sm);text-transform:uppercase;letter-spacing:0.05em;color:var(--text-muted);margin-bottom:var(--space-md);">Revenue — Last 30 Days</h3>
+                <div style="position:relative;height:220px;"><canvas id="revenue-chart"></canvas></div>
+              </div>
+              <div class="order-card">
+                <h3 style="font-size:var(--text-sm);text-transform:uppercase;letter-spacing:0.05em;color:var(--text-muted);margin-bottom:var(--space-md);">Top-Selling Items</h3>
+                <div id="top-items-list"></div>
+              </div>
+            </div>
+          </div>
+
           <!-- Filter + search bar -->
           <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:var(--space-md);margin-bottom:var(--space-xl);">
             <div class="filter-tabs" id="admin-status-filter">
@@ -127,9 +143,12 @@
               <button class="filter-tab" data-status="complete">Complete</button>
               <button class="filter-tab" data-status="cancelled">Cancelled</button>
             </div>
-            <input type="search" class="form-input" id="admin-search"
-              placeholder="Search customer or product…"
-              style="max-width:260px;padding:0.5rem var(--space-md);">
+            <div style="display:flex;align-items:center;gap:var(--space-sm);">
+              <input type="search" class="form-input" id="admin-search"
+                placeholder="Search customer or product…"
+                style="max-width:260px;padding:0.5rem var(--space-md);">
+              <button class="btn btn-outline btn-sm" onclick="handleExportOrders()">Export CSV</button>
+            </div>
           </div>
 
           <!-- Orders -->
@@ -252,6 +271,23 @@
         );
       }
       return orders;
+    }
+
+    function handleExportOrders() {
+      const orders = filteredOrders();
+      if (!orders.length) { alert('No orders to export.'); return; }
+      svkExportCsv(orders, [
+        { label: 'Order Number', get: o => o.order_number || o.id },
+        { label: 'Date', get: o => o.submitted_at },
+        { label: 'Customer Name', get: o => o.customer_name || o._profile?.full_name || '' },
+        { label: 'Customer Email', get: o => o.customer_email || o._profile?.email || '' },
+        { label: 'Product', key: 'product' },
+        { label: 'Status', key: 'status' },
+        { label: 'Payment Method', get: o => paymentMethodLabel(o) },
+        { label: 'Total', key: 'total_price' },
+        { label: 'Tracking Number', key: 'tracking_number' },
+        { label: 'Carrier', key: 'carrier' },
+      ], `svk-orders-${new Date().toISOString().slice(0, 10)}.csv`);
     }
 
     function renderOrders() {
@@ -559,6 +595,7 @@
     async function refreshAndReopen(orderId) {
       allOrders = await SVKAuth.getAdminOrders();
       updateStats(allOrders);
+      refreshAnalytics(allOrders);
       renderOrders();
       if (orderId) await openOrderModal(orderId);
     }
@@ -632,6 +669,91 @@
       document.getElementById('admin-stats').style.gridTemplateColumns = 'repeat(4,1fr)';
     }
 
+    let revenueChartInstance = null;
+
+    function refreshAnalytics(orders) {
+      if (!orders.length) return;
+      document.getElementById('admin-analytics').style.display = 'block';
+      renderRevenueChart(orders);
+      renderTopItems(orders);
+    }
+
+    function renderRevenueChart(orders) {
+      const canvas = document.getElementById('revenue-chart');
+      if (!canvas || typeof Chart === 'undefined') return;
+
+      // Last 30 days, oldest first, summed by day (non-cancelled orders only).
+      const days = [];
+      const now = new Date();
+      for (let i = 29; i >= 0; i--) {
+        const d = new Date(now);
+        d.setDate(d.getDate() - i);
+        days.push(d.toISOString().slice(0, 10));
+      }
+      const totals = Object.fromEntries(days.map(d => [d, 0]));
+      orders.forEach(o => {
+        if (o.status === 'cancelled' || !o.submitted_at) return;
+        const day = o.submitted_at.slice(0, 10);
+        if (day in totals) totals[day] += Number(o.total_price) || 0;
+      });
+
+      const labels = days.map(d => new Date(d + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
+      const data = days.map(d => totals[d]);
+
+      if (revenueChartInstance) revenueChartInstance.destroy();
+      revenueChartInstance = new Chart(canvas, {
+        type: 'line',
+        data: {
+          labels,
+          datasets: [{
+            label: 'Revenue',
+            data,
+            borderColor: '#e91e8c',
+            backgroundColor: 'rgba(233,30,140,0.12)',
+            fill: true,
+            tension: 0.3,
+            pointRadius: 0,
+          }],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { ticks: { color: '#888', maxTicksLimit: 8 }, grid: { display: false } },
+            y: { ticks: { color: '#888', callback: v => '$' + v }, grid: { color: 'rgba(255,255,255,0.06)' } },
+          },
+        },
+      });
+    }
+
+    function renderTopItems(orders) {
+      const el = document.getElementById('top-items-list');
+      if (!el) return;
+
+      const tally = {};
+      orders.forEach(o => {
+        if (o.status === 'cancelled' || !Array.isArray(o.items)) return;
+        o.items.forEach(item => {
+          const key = item.name || 'Unknown item';
+          if (!tally[key]) tally[key] = { qty: 0, revenue: 0 };
+          tally[key].qty += item.quantity || 1;
+          tally[key].revenue += (item.price || 0) * (item.quantity || 1);
+        });
+      });
+
+      const ranked = Object.entries(tally).sort((a, b) => b[1].revenue - a[1].revenue).slice(0, 8);
+      if (!ranked.length) {
+        el.innerHTML = `<p style="font-size:var(--text-sm);color:var(--text-muted);">No itemized sales yet.</p>`;
+        return;
+      }
+      el.innerHTML = ranked.map(([name, stats]) => `
+        <div style="display:flex;justify-content:space-between;align-items:baseline;padding:8px 0;border-bottom:1px solid var(--border-color);">
+          <div style="font-size:var(--text-sm);">${name}<span style="color:var(--text-muted);"> × ${stats.qty}</span></div>
+          <div style="font-size:var(--text-sm);color:var(--magenta);font-weight:var(--weight-medium);">${formatPrice(stats.revenue)}</div>
+        </div>`).join('');
+    }
+
     async function handleAdminSignOut() {
       await SVKAuth.signOut();
       window.location.href = 'login.html';
@@ -666,6 +788,7 @@
       allOrders = await SVKAuth.getAdminOrders();
       document.getElementById('admin-orders-loading').style.display = 'none';
       updateStats(allOrders);
+      refreshAnalytics(allOrders);
       renderOrders();
 
       // Filter tabs

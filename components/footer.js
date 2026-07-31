@@ -44,6 +44,7 @@ const SVK_FOOTER_HTML = `
           <li><a href="/blog.html">Blog</a></li>
           <li><a href="/builds.html">Builds Gallery</a></li>
           <li><a href="/faq.html">FAQ</a></li>
+          <li><a href="/track-order.html">Track Your Order</a></li>
           <li><a href="/support.html">Support</a></li>
           <li><a href="/contact.html">Contact Us</a></li>
         </ul>

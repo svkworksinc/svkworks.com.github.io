@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run tests
+        run: npm test
+
+      - name: Syntax-check every JS file
+        run: |
+          set -e
+          find . -name "*.js" -not -path "./node_modules/*" -print0 \
+            | xargs -0 -n1 node --check
+
+      - name: Verify cache-busting is up to date and idempotent
+        run: |
+          set -e
+          node scripts/cachebust.js
+          node scripts/cachebust.js
+          if ! git diff --quiet; then
+            echo "cachebust.js produced changes — either a committed ?v= hash is stale (a shared asset changed without re-running cachebust), or the script isn't idempotent."
+            git diff --stat
+            exit 1
+          fi
