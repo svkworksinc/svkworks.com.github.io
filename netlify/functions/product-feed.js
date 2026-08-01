@@ -81,19 +81,41 @@ function connectorItem(product) {
   if (!image || !product.page) return '';
   const link = `${SITE_URL}/${product.page}`;
   const imageLink = `${SITE_URL}/${encodeURI(image)}`;
+
+  // Google matches auto parts primarily on brand + MPN when there's no GTIN
+  // (these are OEM-replacement parts, so no manufacturer barcode exists).
+  // Supplying a real identifier pair is far stronger than identifier_exists=no,
+  // which tells Google the item can't be matched to anything at all.
+  const mpn = product.mpn || `SVK-${String(product.id).toUpperCase()}`;
+
+  // Additional images (Merchant Center allows up to 10) — more imagery is a
+  // ranking/quality signal and gives Shopping more to render.
+  const extraImages = (product.images || []).slice(1, 11)
+    .map((img) => `\n    <g:additional_image_link>${xmlEscape(`${SITE_URL}/${encodeURI(img)}`)}</g:additional_image_link>`)
+    .join('');
+
+  // Free-text merchandising bullets shown on the Shopping listing.
+  const highlights = (product.highlights || [])
+    .slice(0, 10)
+    .map((h) => `\n    <g:product_highlight>${cdata(h)}</g:product_highlight>`)
+    .join('');
+
   return `
   <item>
     <g:id>connector-${xmlEscape(product.id)}</g:id>
-    <title>${cdata(product.name)}</title>
-    <description>${cdata(product.description || product.shortDesc || product.name)}</description>
+    <title>${cdata(product.feedTitle || product.name)}</title>
+    <description>${cdata(product.feedDescription || product.description || product.shortDesc || product.name)}</description>
     <link>${xmlEscape(link)}</link>
-    <g:image_link>${xmlEscape(imageLink)}</g:image_link>
+    <g:image_link>${xmlEscape(imageLink)}</g:image_link>${extraImages}
     <g:availability>${product.inStock === false ? 'out of stock' : 'in stock'}</g:availability>
     <g:price>${Number(product.price).toFixed(2)} USD</g:price>
     <g:condition>new</g:condition>
     <g:brand>SVK Works</g:brand>
-    <g:identifier_exists>no</g:identifier_exists>
-    <g:google_product_category>Vehicles &amp; Parts &gt; Vehicle Parts &amp; Accessories</g:google_product_category>
+    <g:mpn>${xmlEscape(mpn)}</g:mpn>
+    <g:identifier_exists>yes</g:identifier_exists>
+    <g:google_product_category>Vehicles &amp; Parts &gt; Vehicle Parts &amp; Accessories &gt; Vehicle Electronics &gt; Vehicle Wiring</g:google_product_category>
+    <g:product_type>${cdata(product.productType || 'Connectors')}</g:product_type>${highlights}
+    <g:shipping_weight>${Number(product.weightOz || 4)} oz</g:shipping_weight>
   </item>`;
 }
 

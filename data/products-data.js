@@ -437,19 +437,41 @@ const SVK_PRODUCTS_DATA = {
       "name": "Supra MK4 JZA80 Chassis Connector 38 Pin",
       "slug": "mk4-jza80-chassis-38pin",
       "category": "connectors",
-      "engine": "",
-      "tags": ["connectors", "parts", "oem", "toyota-oem", "mk4", "chassis", "jza80"],
+      "engine": "2JZ",
+      "tags": ["connectors", "parts", "oem", "toyota-oem", "mk4", "mkiv", "chassis", "body", "bulkhead", "jza80", "supra", "2jz", "2jz-gte", "2jz-ge", "38 pin", "38p"],
       "price": 55,
       "image": "img/connectors/Supra MK4 JZA80 - Chassis 38 Pin.jpg",
       "images": ["img/connectors/Supra MK4 JZA80 - Chassis 38 Pin.jpg"],
       "badge": "In Stock",
-      "shortDesc": "OEM-spec 38-pin chassis connector for the MK4 Supra JZA80.",
-      "description": "Factory-spec 38-pin chassis connector for the MK4 Supra (JZA80). The largest of the main chassis harness connectors. OEM Toyota compatible — correct fit, terminal sizing, and retention.",
+      // MPN: currently the SVK internal SKU. If you have the OEM / Sumitomo
+      // part number, replace it here AND in the "mpn" field of the Product
+      // schema in connectors/mk4-jza80-chassis-38pin.html.
+      "mpn": "SVK-MK4-CHAS-38P",
+      "weightOz": 4,
+      "productType": "Connectors > Toyota OEM > MK4 Supra (JZA80) > Body Connectors",
+      // Title/description used for the Google Merchant feed specifically —
+      // front-loaded with the terms buyers actually search ("38 pin", "MK4 /
+      // MKIV Supra", "body connector kit", "JZA80", "2JZ").
+      "feedTitle": "38 Pin MK4 Supra Body Connector Kit — JZA80 2JZ Chassis Harness Connector (MKIV, 1993–2002)",
+      "feedDescription": "Complete 38-pin (38P) body/chassis connector kit for the MK4 / MKIV Toyota Supra JZA80 — the largest of the three engine-to-body bulkhead connectors. Includes the connector housing plus terminals and weather seals for all 38 positions, so the connector can be pinned out fully without sourcing pins separately. OEM Toyota compatible with correct terminal sizing and retention. Fits all MK4 Supra model years 1993–2002 with 2JZ-GTE or 2JZ-GE, USDM/JDM/Euro. Ideal for chassis harness repair, restoration, or building a clean unpluggable bulkhead pass-through on a 2JZ swap. New, ships from the USA with tracking, 30-day returns.",
+      "highlights": [
+        "Complete kit — housing, terminals and seals for all 38 positions",
+        "OEM Toyota compatible — direct factory fit, no modification",
+        "Fits all MK4 Supra years 1993–2002, 2JZ-GTE and 2JZ-GE",
+        "Sealed terminals rated for engine-bay heat, vibration and moisture",
+        "Ships from the USA with tracking — 1-year workmanship warranty"
+      ],
+      "shortDesc": "Complete 38-pin body connector kit for the MK4 Supra JZA80 — housing, terminals and seals included.",
+      "description": "Complete 38-pin body/chassis connector kit for the MK4 (MKIV) Toyota Supra JZA80 — the largest of the three main engine-to-body bulkhead connectors. Supplied as a full kit with the connector housing plus terminals and weather seals for all 38 positions. OEM Toyota compatible with correct fit, terminal sizing and retention. Fits 1993–2002 with 2JZ-GTE or 2JZ-GE.",
       "specs": {
-        "Chassis": "MK4 Supra (JZA80)",
-        "Application": "Chassis Harness",
-        "Pins": "38",
-        "Type": "OEM Toyota compatible",
+        "Part Number": "SVK-MK4-CHAS-38P",
+        "Pin Count": "38",
+        "Chassis": "Toyota Supra MK4 / MKIV (JZA80)",
+        "Model Years": "1993–2002",
+        "Engines": "2JZ-GTE (turbo) and 2JZ-GE (NA)",
+        "Application": "Engine-to-body bulkhead / chassis harness",
+        "Kit Contents": "Housing, terminals and seals for all 38 positions",
+        "Type": "OEM Toyota compatible, sealed",
         "Warranty": "1-year workmanship warranty"
       },
       "options": {},
