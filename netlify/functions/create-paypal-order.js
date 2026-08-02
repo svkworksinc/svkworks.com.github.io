@@ -1,5 +1,5 @@
 const { createClient } = require('@supabase/supabase-js');
-const { validateCart, resolveShipping, calculateTotals, resolveDiscount } = require('./_pricing');
+const { validateCart, resolveShipping, calculateTotals, resolveDiscount, reserveUsedParts, releaseUsedPartsReservation } = require('./_pricing');
 const { createOrder } = require('./_paypal');
 const { resolveUserId } = require('./_auth');
 const { captureException } = require('./_sentry');
@@ -75,8 +75,31 @@ exports.handler = async (event) => {
 
     const supabaseOrderId = order.id;
 
+    // Hold any one-off used parts before the customer can pay for them —
+    // never charge for inventory someone else might also be buying right now.
+    try {
+      await reserveUsedParts(supabase, items, supabaseOrderId);
+    } catch (reserveErr) {
+      await supabase
+        .from('orders')
+        .update({ status: 'cancelled', admin_notes: reserveErr.message })
+        .eq('id', supabaseOrderId);
+      return { statusCode: 409, body: JSON.stringify({ error: reserveErr.message }) };
+    }
+
     // Create the PayPal order server-side — amount is sourced from our validated DB record, not the client
-    const paypalOrder = await createOrder(grandTotal, supabaseOrderId);
+    let paypalOrder;
+    try {
+      paypalOrder = await createOrder(grandTotal, supabaseOrderId);
+    } catch (paypalErr) {
+      const usedIds = items.filter(i => i.isUsedPart).map(i => i.id);
+      await releaseUsedPartsReservation(supabase, usedIds, supabaseOrderId);
+      await supabase
+        .from('orders')
+        .update({ status: 'cancelled', admin_notes: `PayPal order creation failed: ${paypalErr.message}` })
+        .eq('id', supabaseOrderId);
+      throw paypalErr;
+    }
 
     return {
       statusCode: 200,

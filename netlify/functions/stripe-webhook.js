@@ -1,7 +1,7 @@
 const { createClient } = require('@supabase/supabase-js');
 const Stripe = require('stripe');
 const { sendInvoiceEmail } = require('./_email');
-const { markUsedPartsSold, consumeDiscount } = require('./_pricing');
+const { markUsedPartsSold, consumeDiscount, releaseUsedPartsReservation } = require('./_pricing');
 const { captureException } = require('./_sentry');
 
 const supabase = createClient(
@@ -97,6 +97,28 @@ exports.handler = async (event) => {
         }
       } else {
         console.log('[webhook] Order already processed (status:', order.status + ') — skipping email');
+      }
+    } else if (stripeEvent.type === 'payment_intent.payment_failed' || stripeEvent.type === 'payment_intent.canceled') {
+      // Card declined, 3DS abandoned, intent expired, etc. — free the used-parts
+      // reservation immediately instead of waiting out the TTL, so the item
+      // is buyable again as soon as possible.
+      const intent = stripeEvent.data.object;
+      const supabaseOrderId = intent.metadata?.supabaseOrderId;
+      if (supabaseOrderId) {
+        const { data: order } = await supabase
+          .from('orders')
+          .select('*')
+          .eq('id', supabaseOrderId)
+          .single();
+        if (order && order.status === 'pending_payment') {
+          const usedIds = (order.items || []).filter(i => i.isUsedPart).map(i => i.id);
+          await releaseUsedPartsReservation(supabase, usedIds, supabaseOrderId);
+          await supabase
+            .from('orders')
+            .update({ status: 'cancelled', admin_notes: `Stripe: ${stripeEvent.type}` })
+            .eq('id', supabaseOrderId);
+          console.log('[webhook] Released reservation & cancelled order after', stripeEvent.type, '-', order.order_number);
+        }
       }
     }
 
