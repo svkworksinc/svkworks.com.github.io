@@ -1,8 +1,9 @@
 const { createClient } = require('@supabase/supabase-js');
 const { captureOrder } = require('./_paypal');
 const { sendInvoiceEmail } = require('./_email');
-const { markUsedPartsSold, consumeDiscount } = require('./_pricing');
+const { markUsedPartsSold, consumeDiscount, releaseUsedPartsReservation } = require('./_pricing');
 const { captureException } = require('./_sentry');
+const { checkRateLimit, clientKey, tooManyRequests } = require('./_ratelimit');
 
 const supabase = createClient(
   process.env.SUPABASE_URL,
@@ -13,6 +14,16 @@ exports.handler = async (event) => {
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, body: 'Method Not Allowed' };
   }
+
+  // Was missing while create-paypal-order.js (which this always follows)
+  // already had a budget — this endpoint calls PayPal's capture API and
+  // writes to orders, so it deserves the same protection against being
+  // hammered.
+  const rl = await checkRateLimit(supabase, clientKey(event), 'capture-paypal-order', {
+    limit: 20,
+    windowSeconds: 600,
+  });
+  if (!rl.allowed) return tooManyRequests(rl.retryAfter);
 
   try {
     const { paypalOrderId, supabaseOrderId } = JSON.parse(event.body);
@@ -37,18 +48,47 @@ exports.handler = async (event) => {
       return { statusCode: 409, body: JSON.stringify({ error: 'Order already processed.' }) };
     }
 
+    const usedIds = (order.items || []).filter(i => i.isUsedPart).map(i => i.id);
+
     // Capture payment via PayPal
-    const capture = await captureOrder(paypalOrderId);
+    let capture;
+    try {
+      capture = await captureOrder(paypalOrderId);
+    } catch (captureErr) {
+      // PayPal rejected the capture — free the reservation immediately
+      // rather than waiting out the TTL.
+      await releaseUsedPartsReservation(supabase, usedIds, supabaseOrderId);
+      await supabase
+        .from('orders')
+        .update({ status: 'cancelled', admin_notes: `PayPal capture failed: ${captureErr.message}` })
+        .eq('id', supabaseOrderId);
+      throw captureErr;
+    }
     const captureUnit = capture.purchase_units?.[0]?.payments?.captures?.[0];
 
     if (!captureUnit || capture.status !== 'COMPLETED') {
+      await releaseUsedPartsReservation(supabase, usedIds, supabaseOrderId);
+      await supabase
+        .from('orders')
+        .update({ status: 'cancelled', admin_notes: `PayPal capture incomplete: status=${capture.status}` })
+        .eq('id', supabaseOrderId);
       return { statusCode: 402, body: JSON.stringify({ error: 'Payment capture incomplete.' }) };
     }
 
-    // Verify captured amount matches our DB price — prevents price-manipulation attacks
+    // Verify captured amount matches our DB price — prevents price-manipulation attacks.
+    // Money has already moved at this point, so this is flagged for manual
+    // admin review rather than silently released back to available.
     const capturedAmount = parseFloat(captureUnit.amount.value);
     if (Math.abs(capturedAmount - order.total_price) > 0.01) {
       console.error(`Amount mismatch: captured $${capturedAmount}, expected $${order.total_price}`);
+      await releaseUsedPartsReservation(supabase, usedIds, supabaseOrderId);
+      await supabase
+        .from('orders')
+        .update({
+          status: 'cancelled',
+          admin_notes: `NEEDS REVIEW: PayPal captured $${capturedAmount} but order total was $${order.total_price}. Capture ID: ${captureUnit.id}. Verify in PayPal and refund/reconcile manually.`,
+        })
+        .eq('id', supabaseOrderId);
       return { statusCode: 422, body: JSON.stringify({ error: 'Captured amount does not match order total.' }) };
     }
 
