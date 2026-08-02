@@ -28,7 +28,7 @@
     "sku": "SVK-MK4-START-CONN",
     "offers": {
       "@type": "Offer",
-      "price": "20.00",
+      "price": "9.99",
       "priceCurrency": "USD",
       "availability": "https://schema.org/InStock",
       "url": "https://www.svkworks.com/connectors/mk4-starter-connector.html",
@@ -83,7 +83,21 @@
             <h1>Supra MK4 Starter Connector</h1>
 
             <div class="product-price-block">
-              <span class="product-price-current">$20</span>
+              <span class="product-price-current" id="price-display">$9.99</span>
+            </div>
+
+            <div class="product-option-block" style="margin-bottom:var(--space-lg);">
+              <label style="display:block;font-weight:600;margin-bottom:8px;">Wiring</label>
+              <div style="display:flex;flex-direction:column;gap:8px;">
+                <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-weight:400;">
+                  <input type="radio" name="wiring-option" value="bare" checked onchange="updateOption()">
+                  Connector Only — Crimp Your Own Terminals
+                </label>
+                <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-weight:400;">
+                  <input type="radio" name="wiring-option" value="pigtail" onchange="updateOption()">
+                  Pre-Wired Pigtail — Ready to Plug In (+$2)
+                </label>
+              </div>
             </div>
 
             <div style="display:flex;gap:var(--space-md);flex-wrap:wrap;align-items:center;margin-bottom:var(--space-lg);">
@@ -92,8 +106,8 @@
                 <input id="qty-input" type="number" value="1" min="1" max="99" style="width:52px;height:44px;border:none;border-left:1px solid var(--border-color);border-right:1px solid var(--border-color);background:var(--bg-primary);color:var(--text-primary);text-align:center;font-size:var(--text-sm);font-family:inherit;">
                 <button onclick="adjustQty(1)" style="width:40px;height:44px;background:var(--bg-secondary);border:none;color:var(--text-primary);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;">+</button>
               </div>
-              <button class="btn btn-primary" onclick="addToCart()" style="flex:1;min-width:160px;">
-                Add to Cart — $20
+              <button class="btn btn-primary" onclick="addToCart()" id="add-to-cart-btn" style="flex:1;min-width:160px;">
+                Add to Cart — $9.99
               </button>
             </div>
 
@@ -158,13 +172,32 @@
       input.value = val;
     }
 
+    const BASE_PRICE = 9.99;
+    const PIGTAIL_PRICE = 2;
+
+    function pigtailSelected() {
+      return document.querySelector('input[name="wiring-option"]:checked').value === 'pigtail';
+    }
+
+    function currentPrice() {
+      return pigtailSelected() ? BASE_PRICE + PIGTAIL_PRICE : BASE_PRICE;
+    }
+
+    function updateOption() {
+      const price = currentPrice();
+      document.getElementById('price-display').textContent = '$' + price.toFixed(2);
+      document.getElementById('add-to-cart-btn').textContent = 'Add to Cart — $' + price.toFixed(2);
+    }
+
     function addToCart() {
       const qty = Math.max(1, parseInt(document.getElementById('qty-input').value) || 1);
+      const price = currentPrice();
+      const options = pigtailSelected() ? { Wiring: 'Pre-Wired Pigtail (+$2)' } : {};
       if (typeof SVKCart !== 'undefined') {
         SVKCart.addItem(
-          { id: 'mk4-starter-connector', name: 'Supra MK4 Starter Connector', price: 20, image: 'img/connectors/Supra MK4 Starter Connector.jpg' },
+          { id: 'mk4-starter-connector', name: 'Supra MK4 Starter Connector', price, image: 'img/connectors/Supra MK4 Starter Connector.jpg' },
           qty,
-          {}
+          options
         );
       } else {
         alert('Cart is loading, please try again.');
