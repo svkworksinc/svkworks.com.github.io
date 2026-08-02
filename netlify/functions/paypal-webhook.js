@@ -1,6 +1,5 @@
 const { createClient } = require('@supabase/supabase-js');
-const { sendInvoiceEmail } = require('./_email');
-const { markUsedPartsSold, consumeDiscount } = require('./_pricing');
+const { finalizePaidOrder } = require('./_finalize');
 const { captureException } = require('./_sentry');
 
 const supabase = createClient(
@@ -108,50 +107,18 @@ exports.handler = async (event) => {
 
       console.log('[paypal-webhook] Order found:', order.order_number, '— status:', order.status);
 
-      // This is a redundant safety-net path — capture-paypal-order.js normally marks the
-      // order paid synchronously during checkout. Only act if it's still pre-payment, so a
-      // late-arriving webhook event can't re-send the invoice email or clobber a status the
-      // admin has already moved forward (in_progress/shipped/etc).
-      if (order.status === 'pending_payment') {
-        // 'pending' matches the admin panel's fulfillment vocabulary (pending -> in_progress
-        // -> shipped -> complete), same as capture-paypal-order.js / stripe-webhook.js.
-        await supabase
-          .from('orders')
-          .update({
-            status: 'pending',
-            payment_id: captureId || order.payment_id,
-            payment_capture_id: captureId || order.payment_capture_id,
-          })
-          .eq('id', supabaseOrderId);
-
-        await markUsedPartsSold(supabase, order.items);
-        // Only now that payment cleared does a discount code burn a use.
-        await consumeDiscount(supabase, order.discount_code);
-
-        console.log('[paypal-webhook] Triggering invoice email for:', order.order_number);
-        const orderDate = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-        const opts = order.options || {};
-        try {
-          await sendInvoiceEmail({
-            customerName: order.customer_name,
-            customerEmail: order.customer_email,
-            orderNumber: order.order_number,
-            orderDate,
-            items: order.items || [],
-            subtotal: opts.subtotal,
-            shipping: opts.shipping,
-            shippingLabel: opts.shippingLabel,
-            tax: opts.tax,
-            total: order.total_price,
-            shippingAddress: opts.shippingAddress,
-            paymentMethod: 'PayPal',
-          });
-        } catch (err) {
-          console.error('Email send failed:', err.message);
-        }
-      } else {
-        console.log('[paypal-webhook] Order already processed (status:', order.status + ') — skipping email');
-      }
+      // Redundant safety-net path — capture-paypal-order.js normally finalizes
+      // synchronously during checkout. Shared _finalize.js claims the order
+      // atomically, so a late-arriving webhook can't re-send emails or clobber
+      // a status the admin has already moved forward (in_progress/shipped/etc).
+      await finalizePaidOrder(supabase, order, {
+        paymentMethodLabel: 'PayPal',
+        extraUpdates: {
+          payment_id: captureId || order.payment_id,
+          payment_capture_id: captureId || order.payment_capture_id,
+        },
+        logPrefix: '[paypal-webhook]',
+      });
     }
 
     return { statusCode: 200, body: 'OK' };

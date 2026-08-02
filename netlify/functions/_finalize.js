@@ -12,7 +12,7 @@
 // 'pending_payment' and flips that status before doing anything else.
 //
 // Keeping this in one place stops the two callers from drifting apart.
-const { sendInvoiceEmail } = require('./_email');
+const { sendInvoiceEmail, sendNewOrderAdminEmail } = require('./_email');
 const { markUsedPartsSold, consumeDiscount } = require('./_pricing');
 
 /**
@@ -51,26 +51,38 @@ async function finalizePaidOrder(supabase, order, { paymentMethodLabel, extraUpd
   // Only now that payment cleared does a discount code burn a use.
   await consumeDiscount(supabase, order.discount_code);
 
-  console.log(`${logPrefix} Sending invoice email for ${order.order_number}`);
   const opts = order.options || {};
+  const orderDate = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+  const common = {
+    orderNumber: order.order_number,
+    orderDate,
+    customerName: order.customer_name,
+    customerEmail: order.customer_email,
+    items: order.items || [],
+    subtotal: opts.subtotal,
+    shipping: opts.shipping,
+    shippingLabel: opts.shippingLabel,
+    tax: opts.tax,
+    total: order.total_price,
+    shippingAddress: opts.shippingAddress,
+    paymentMethod: paymentMethodLabel,
+  };
+
+  // Both sends are independently guarded: payment has already succeeded, so
+  // neither a failed customer receipt nor a failed internal alert may fail
+  // the order — and one failing must not prevent the other from going out.
+  console.log(`${logPrefix} Sending customer invoice for ${order.order_number}`);
   try {
-    await sendInvoiceEmail({
-      customerName: order.customer_name,
-      customerEmail: order.customer_email,
-      orderNumber: order.order_number,
-      orderDate: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
-      items: order.items || [],
-      subtotal: opts.subtotal,
-      shipping: opts.shipping,
-      shippingLabel: opts.shippingLabel,
-      tax: opts.tax,
-      total: order.total_price,
-      shippingAddress: opts.shippingAddress,
-      paymentMethod: paymentMethodLabel,
-    });
+    await sendInvoiceEmail(common);
   } catch (err) {
-    // Payment already succeeded — a failed email must not fail the order.
-    console.error(`${logPrefix} Email send failed for ${order.order_number}:`, err.message);
+    console.error(`${logPrefix} Customer invoice failed for ${order.order_number}:`, err.message);
+  }
+
+  console.log(`${logPrefix} Sending admin new-order alert for ${order.order_number}`);
+  try {
+    await sendNewOrderAdminEmail({ ...common, customerNotes: order.notes });
+  } catch (err) {
+    console.error(`${logPrefix} Admin alert failed for ${order.order_number}:`, err.message);
   }
 
   return { finalized: true };

@@ -370,4 +370,112 @@ async function sendOrderStatusEmail({ customerName, customerEmail, orderNumber, 
   console.log(`[email] Status email sent for ${orderNumber}, Resend ID: ${data.id}`);
 }
 
-module.exports = { sendInvoiceEmail, sendOrderStatusEmail };
+// Internal "you have a new order" alert. Distinct from the customer's
+// confirmation: subject is scannable in an inbox, and the body leads with
+// what's needed to fulfil — what to pack, where to send it, and how to
+// reach the buyer — rather than being a receipt.
+async function sendNewOrderAdminEmail({
+  orderNumber, orderDate, customerName, customerEmail, customerNotes,
+  items, subtotal, shipping, shippingLabel, tax, total,
+  shippingAddress, paymentMethod,
+}) {
+  if (!process.env.RESEND_API_KEY) {
+    throw new Error('RESEND_API_KEY environment variable is not set');
+  }
+
+  const to = process.env.ORDER_NOTIFY_EMAIL || 'info@svkworks.com';
+  const fmtMoney = n => (n || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const list = items || [];
+  const itemCount = list.reduce((n, i) => n + (Number(i.quantity) || 1), 0);
+
+  const rows = list.map(item => {
+    const optStr = itemOptionsText(item);
+    return `
+      <tr>
+        <td style="padding:10px;border-bottom:1px solid #2a2a2a;">
+          <strong>${item.quantity} ×</strong> ${item.name}
+          ${optStr ? `<br><span style="font-size:12px;color:#888;">${optStr}</span>` : ''}
+        </td>
+        <td style="padding:10px;border-bottom:1px solid #2a2a2a;text-align:right;white-space:nowrap;">$${fmtMoney(item.lineTotal)}</td>
+      </tr>`;
+  }).join('');
+
+  const addr = shippingAddress || {};
+  const addrBlock = [
+    addr.name || customerName,
+    addr.address,
+    [addr.city, addr.state, addr.zip].filter(Boolean).join(', '),
+  ].filter(Boolean).join('<br>');
+
+  const html = `<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<body style="margin:0;padding:0;background:#0a0a0a;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
+  <div style="max-width:620px;margin:0 auto;padding:28px 20px;">
+    <div style="background:#151515;border:1px solid #2a2a2a;border-radius:12px;padding:26px 24px;">
+
+      <div style="font-size:12px;color:#e91e8c;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:6px;">New Order</div>
+      <h1 style="font-size:22px;color:#f5f5f5;margin:0 0 4px;">${orderNumber} — $${fmtMoney(total)}</h1>
+      <div style="font-size:13px;color:#888;margin-bottom:20px;">${orderDate} · ${paymentMethod} · ${itemCount} item${itemCount === 1 ? '' : 's'}</div>
+
+      <div style="font-size:12px;color:#e91e8c;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:8px;">Items to Pack</div>
+      <table style="width:100%;border-collapse:collapse;font-size:14px;color:#ddd;margin-bottom:20px;">
+        ${rows}
+        <tr>
+          <td style="padding:10px;text-align:right;color:#888;">Subtotal</td>
+          <td style="padding:10px;text-align:right;">$${fmtMoney(subtotal)}</td>
+        </tr>
+        <tr>
+          <td style="padding:2px 10px;text-align:right;color:#888;">Shipping${shippingLabel ? ` — ${shippingLabel}` : ''}</td>
+          <td style="padding:2px 10px;text-align:right;">$${fmtMoney(shipping)}</td>
+        </tr>
+        ${tax ? `<tr><td style="padding:2px 10px;text-align:right;color:#888;">Tax</td><td style="padding:2px 10px;text-align:right;">$${fmtMoney(tax)}</td></tr>` : ''}
+        <tr>
+          <td style="padding:10px;text-align:right;font-weight:700;color:#f5f5f5;border-top:1px solid #2a2a2a;">Total Paid</td>
+          <td style="padding:10px;text-align:right;font-weight:700;color:#e91e8c;border-top:1px solid #2a2a2a;">$${fmtMoney(total)}</td>
+        </tr>
+      </table>
+
+      <div style="font-size:12px;color:#e91e8c;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:8px;">Ship To</div>
+      <div style="font-size:14px;color:#ddd;line-height:1.6;margin-bottom:20px;">
+        ${addrBlock || '<span style="color:#888;">No shipping address on file</span>'}
+      </div>
+
+      <div style="font-size:12px;color:#e91e8c;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:8px;">Customer</div>
+      <div style="font-size:14px;color:#ddd;line-height:1.6;margin-bottom:20px;">
+        ${customerName || '—'}<br>
+        <a href="mailto:${customerEmail}" style="color:#e91e8c;">${customerEmail || '—'}</a>
+      </div>
+
+      ${customerNotes ? `
+      <div style="font-size:12px;color:#e91e8c;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:8px;">Customer Notes</div>
+      <div style="font-size:14px;color:#ddd;line-height:1.6;background:#101010;border:1px solid #2a2a2a;border-radius:8px;padding:12px;margin-bottom:20px;">${customerNotes}</div>` : ''}
+
+      <a href="https://www.svkworks.com/admin.html" style="display:inline-block;background:#e91e8c;color:#fff;text-decoration:none;font-weight:600;font-size:14px;padding:11px 20px;border-radius:8px;">Open Admin Panel</a>
+
+    </div>
+  </div>
+</body>
+</html>`;
+
+  const res = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${process.env.RESEND_API_KEY}` },
+    body: JSON.stringify({
+      from: 'SVK Works Orders <orders@svkworks.com>',
+      to,
+      // Replying goes straight to the buyer rather than the sending address.
+      reply_to: customerEmail || undefined,
+      subject: `New Order ${orderNumber} — $${fmtMoney(total)} (${itemCount} item${itemCount === 1 ? '' : 's'})`,
+      html,
+    }),
+  });
+  if (!res.ok) {
+    const err = await res.text();
+    throw new Error(`Resend error (admin notification): ${err}`);
+  }
+  const data = await res.json();
+  console.log(`[email] Admin new-order alert sent for ${orderNumber} to ${to}, Resend ID: ${data.id}`);
+}
+
+module.exports = { sendInvoiceEmail, sendOrderStatusEmail, sendNewOrderAdminEmail };
