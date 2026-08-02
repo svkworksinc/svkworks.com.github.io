@@ -1,6 +1,6 @@
 const { createClient } = require('@supabase/supabase-js');
 const Stripe = require('stripe');
-const { validateCart, resolveShipping, calculateTotals, resolveDiscount } = require('./_pricing');
+const { validateCart, resolveShipping, calculateTotals, resolveDiscount, reserveUsedParts, releaseUsedPartsReservation } = require('./_pricing');
 const { resolveUserId } = require('./_auth');
 const { captureException } = require('./_sentry');
 const { checkRateLimit, clientKey, tooManyRequests } = require('./_ratelimit');
@@ -81,21 +81,49 @@ exports.handler = async (event) => {
     }
     console.log(`[create-stripe-intent] Order inserted: id=${order.id} order_number=${orderNumber} supabase_project=${process.env.SUPABASE_URL}`);
 
+    // Hold any one-off used parts before we let the customer pay for them —
+    // never charge a card for inventory someone else might also be buying
+    // right now. On failure, the order never had a real payment attempt
+    // against it, so it's marked cancelled rather than left as a phantom
+    // pending_payment row.
+    try {
+      await reserveUsedParts(supabase, items, order.id);
+    } catch (reserveErr) {
+      await supabase
+        .from('orders')
+        .update({ status: 'cancelled', admin_notes: reserveErr.message })
+        .eq('id', order.id);
+      return { statusCode: 409, body: JSON.stringify({ error: reserveErr.message }) };
+    }
+
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, { apiVersion: '2023-10-16' });
-    const intent = await stripe.paymentIntents.create({
-      amount: Math.round(grandTotal * 100),
-      currency: 'usd',
-      receipt_email: customerEmail.trim().toLowerCase(),
-      description: `SVK Works Order ${orderNumber}`,
-      automatic_payment_methods: { enabled: true },
-      metadata: {
-        supabaseOrderId: order.id,
-        orderNumber,
-        customerName: customerName.trim(),
-      },
-    }, {
-      idempotencyKey: `pi-${order.id}`,
-    });
+    let intent;
+    try {
+      intent = await stripe.paymentIntents.create({
+        amount: Math.round(grandTotal * 100),
+        currency: 'usd',
+        receipt_email: customerEmail.trim().toLowerCase(),
+        description: `SVK Works Order ${orderNumber}`,
+        automatic_payment_methods: { enabled: true },
+        metadata: {
+          supabaseOrderId: order.id,
+          orderNumber,
+          customerName: customerName.trim(),
+        },
+      }, {
+        idempotencyKey: `pi-${order.id}`,
+      });
+    } catch (stripeErr) {
+      // Stripe rejected the intent — don't leave the part reserved for a
+      // checkout that never actually started.
+      const usedIds = items.filter(i => i.isUsedPart).map(i => i.id);
+      await releaseUsedPartsReservation(supabase, usedIds, order.id);
+      await supabase
+        .from('orders')
+        .update({ status: 'cancelled', admin_notes: `Stripe intent creation failed: ${stripeErr.message}` })
+        .eq('id', order.id);
+      throw stripeErr;
+    }
 
     // Store the Stripe intent ID so the webhook can find this order
     await supabase

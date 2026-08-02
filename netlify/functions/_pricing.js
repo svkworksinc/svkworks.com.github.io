@@ -153,6 +153,58 @@ function totalWeightOz(items) {
   return itemsWeight + PACKAGING_WEIGHT_OZ;
 }
 
+// How long an inventory reservation holds before it's treated as abandoned
+// and becomes claimable again. Long enough for a customer to fill out a card
+// form; short enough that a truly abandoned cart doesn't lock a one-off part
+// away from real buyers for long.
+const RESERVATION_TTL_MINUTES = 20;
+
+// Atomically holds one-off used parts for this order, via a security-definer
+// Postgres function (see netlify/supabase-used-parts-reservation-migration.sql)
+// so two concurrent checkouts can never both reserve — and therefore never
+// both pay for — the same physical item. Throws a customer-safe error naming
+// whatever couldn't be claimed; the caller should treat that as fatal for
+// the whole checkout (don't charge a card for a cart that can't be fulfilled).
+async function reserveUsedParts(supabase, items, orderId) {
+  const usedItems = (items || []).filter(i => i.isUsedPart);
+  if (!usedItems.length) return;
+
+  const ids = usedItems.map(i => i.id);
+  const { data, error } = await supabase.rpc('reserve_used_parts', {
+    p_ids: ids,
+    p_order_id: orderId,
+    p_ttl_minutes: RESERVATION_TTL_MINUTES,
+  });
+  if (error) {
+    console.error('[reserveUsedParts] RPC failed:', error.message);
+    throw new Error('Could not reserve inventory for your order — please try again.');
+  }
+
+  const reservedIds = new Set((data || []).map(row => row.id));
+  const unavailable = usedItems.filter(i => !reservedIds.has(i.id));
+
+  if (unavailable.length) {
+    // All-or-nothing: roll back whatever this call DID manage to claim
+    // rather than charge for a partial cart.
+    if (reservedIds.size) {
+      await releaseUsedPartsReservation(supabase, Array.from(reservedIds), orderId);
+    }
+    const names = unavailable.map(i => `"${i.name}"`).join(', ');
+    const verb = unavailable.length > 1 ? 'were' : 'was';
+    throw new Error(`${names} just sold and ${verb} claimed by another order. Please remove ${unavailable.length > 1 ? 'them' : 'it'} from your cart and try again.`);
+  }
+}
+
+// Releases a reservation this order holds — guarded by order id so a
+// delayed or duplicate call (e.g. a redelivered webhook) can never release
+// inventory a *different* order has since legitimately claimed.
+async function releaseUsedPartsReservation(supabase, ids, orderId) {
+  if (!ids || !ids.length) return;
+  const { error } = await supabase.rpc('release_used_parts_reservation', { p_ids: ids, p_order_id: orderId });
+  if (error) console.error('[releaseUsedPartsReservation] Failed to release:', ids, error.message);
+  else console.log('[releaseUsedPartsReservation] Released:', ids.join(', '));
+}
+
 // Marks any used parts in a paid order as sold, so they drop off the public
 // listing (RLS only shows status='available' to non-admins). Best-effort —
 // logs but doesn't throw, since this runs after payment already succeeded
@@ -313,6 +365,8 @@ module.exports = {
   resolveDiscount,
   consumeDiscount,
   totalWeightOz,
+  reserveUsedParts,
+  releaseUsedPartsReservation,
   markUsedPartsSold,
   releaseUsedParts,
   SHIPPING_OPTIONS,
