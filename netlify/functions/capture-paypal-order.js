@@ -1,7 +1,7 @@
 const { createClient } = require('@supabase/supabase-js');
 const { captureOrder } = require('./_paypal');
-const { sendInvoiceEmail } = require('./_email');
-const { markUsedPartsSold, consumeDiscount, releaseUsedPartsReservation } = require('./_pricing');
+const { releaseUsedPartsReservation } = require('./_pricing');
+const { finalizePaidOrder } = require('./_finalize');
 const { captureException } = require('./_sentry');
 const { checkRateLimit, clientKey, tooManyRequests } = require('./_ratelimit');
 
@@ -92,39 +92,17 @@ exports.handler = async (event) => {
       return { statusCode: 422, body: JSON.stringify({ error: 'Captured amount does not match order total.' }) };
     }
 
-    // Mark order paid — 'pending' matches the admin panel's fulfillment vocabulary
-    // (pending -> in_progress -> shipped -> complete) so it shows up correctly under
-    // the "Pending" filter instead of an unrecognized 'paid' status.
-    await supabase
-      .from('orders')
-      .update({ status: 'pending', payment_id: paypalOrderId, payment_capture_id: captureUnit.id })
-      .eq('id', supabaseOrderId);
-
-    await markUsedPartsSold(supabase, order.items);
-    // Only now that payment cleared does a discount code burn a use.
-    await consumeDiscount(supabase, order.discount_code);
-
-    // Send invoice email before returning — must be awaited or Netlify kills the in-flight fetch
+    // Shared with paypal-webhook.js — whichever path gets here first
+    // finalizes (marks paid, emails the customer, alerts us); the other
+    // no-ops. Emails are awaited inside, since Netlify kills in-flight
+    // fetches once the handler returns. See _finalize.js.
     const orderDate = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
     const opts = order.options || {};
-    try {
-      await sendInvoiceEmail({
-        customerName: order.customer_name,
-        customerEmail: order.customer_email,
-        orderNumber: order.order_number,
-        orderDate,
-        items: order.items || [],
-        subtotal: opts.subtotal,
-        shipping: opts.shipping,
-        shippingLabel: opts.shippingLabel,
-        tax: opts.tax,
-        total: order.total_price,
-        shippingAddress: opts.shippingAddress,
-        paymentMethod: 'PayPal',
-      });
-    } catch (err) {
-      console.error('Email send failed:', err.message);
-    }
+    await finalizePaidOrder(supabase, order, {
+      paymentMethodLabel: 'PayPal',
+      extraUpdates: { payment_id: paypalOrderId, payment_capture_id: captureUnit.id },
+      logPrefix: '[capture-paypal-order]',
+    });
 
     return {
       statusCode: 200,

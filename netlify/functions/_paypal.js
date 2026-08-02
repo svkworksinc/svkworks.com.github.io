@@ -25,7 +25,24 @@ async function getAccessToken() {
   return data.access_token;
 }
 
-async function createOrder(total, supabaseOrderId) {
+// Builds the description the buyer sees on their PayPal receipt and
+// statement. This must accurately reflect what was actually purchased —
+// a generic hardcoded label (e.g. always saying "Harness Order") is
+// misleading on a non-harness order and unhelpful in a payment dispute.
+// PayPal caps this field at 127 characters.
+function buildOrderDescription(items, orderNumber) {
+  const names = (items || []).map(i => i.name).filter(Boolean);
+  if (!names.length) return `SVK Works Order ${orderNumber}`;
+
+  let desc = names.length === 1
+    ? names[0]
+    : `${names[0]} + ${names.length - 1} more item${names.length > 2 ? 's' : ''}`;
+
+  desc = `SVK Works — ${desc} (Order ${orderNumber})`;
+  return desc.length > 127 ? `${desc.slice(0, 124)}...` : desc;
+}
+
+async function createOrder(total, supabaseOrderId, { items = [], orderNumber = '' } = {}) {
   const token = await getAccessToken();
   const res = await fetch(`${BASE_URL}/v2/checkout/orders`, {
     method: 'POST',
@@ -39,7 +56,8 @@ async function createOrder(total, supabaseOrderId) {
       purchase_units: [{
         custom_id: supabaseOrderId,
         reference_id: supabaseOrderId,
-        description: 'SVK Works Harness Order',
+        invoice_id: orderNumber || undefined,
+        description: buildOrderDescription(items, orderNumber || supabaseOrderId),
         amount: { currency_code: 'USD', value: total.toFixed(2) },
       }],
       application_context: {
