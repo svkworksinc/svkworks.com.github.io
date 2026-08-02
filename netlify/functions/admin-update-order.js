@@ -87,11 +87,9 @@ async function handleCancel(order, payload, userId, adminName) {
   const refundedAmount = Number(order.total_price) || 0;
 
   if (order.payment_method === 'stripe') {
-    // TESTING MODE — same safety gate as create-stripe-intent.js. Never issue
-    // a refund against a live Stripe key from this codebase during testing.
-    if (!process.env.STRIPE_SECRET_KEY?.startsWith('sk_test_')) {
-      console.error('SAFETY BLOCK: Stripe key is not a test key. Refunds are disabled during testing.');
-      return fail(503, 'Payment processing is in test mode only. Live keys are not permitted.');
+    if (!process.env.STRIPE_SECRET_KEY) {
+      console.error('STRIPE_SECRET_KEY is not configured.');
+      return fail(503, 'Payment processing is not configured.');
     }
     if (!order.payment_id) {
       return fail(422, 'No Stripe payment on this order to refund.');

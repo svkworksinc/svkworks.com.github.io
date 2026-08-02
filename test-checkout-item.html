@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Live Payment Test | SVK Works</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="img/svk-icon.png" type="image/png">
+</head>
+<body>
+  <div id="header-placeholder"></div>
+
+  <main id="main-content">
+    <section class="section">
+      <div class="container" style="max-width:560px;">
+        <div class="auth-card" style="text-align:center;">
+          <h1 style="margin-bottom:var(--space-md);">Live Payment Test — $0.50</h1>
+          <p style="color:var(--text-secondary);margin-bottom:var(--space-xl);">
+            Internal use only. Adds a $0.50 test item to your cart — no real
+            shipping charge, digital delivery. Use this to run one real
+            Stripe or PayPal transaction end to end after going live, then
+            delete this page and the test product entry.
+          </p>
+          <button class="btn btn-primary btn-lg" style="width:100%;" onclick="addTestItem()">
+            Add $0.50 Test Item to Cart
+          </button>
+          <p id="test-status" style="margin-top:var(--space-md);color:var(--text-muted);font-size:var(--text-sm);"></p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="footer-placeholder"></div>
+
+  <script defer src="components/header.js"></script>
+  <script defer src="components/footer.js"></script>
+  <script defer src="js/cart.js?v=4"></script>
+  <script defer src="js/components.js"></script>
+  <script>
+    function addTestItem() {
+      if (typeof SVKCart === 'undefined') {
+        document.getElementById('test-status').textContent = 'Cart is still loading — try again in a second.';
+        return;
+      }
+      SVKCart.addItem(
+        { id: 'svk-live-payment-test', name: 'Live Payment Test Item', price: 0.50, image: 'img/svk-icon.png' },
+        1,
+        {}
+      );
+      document.getElementById('test-status').textContent = 'Added. Redirecting to checkout…';
+      setTimeout(() => { window.location.href = 'checkout.html'; }, 500);
+    }
+  </script>
+</body>
+</html>
