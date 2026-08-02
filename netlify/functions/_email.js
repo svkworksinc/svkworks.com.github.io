@@ -1,6 +1,7 @@
-// TESTING MODE — set TEST_MODE=true in Netlify env vars to suppress customer emails.
-// Test orders send only to the internal BCC address so real inboxes aren't spammed.
-const TEST_MODE = process.env.TEST_MODE === 'true';
+// Customer-facing order emails. Always sent to the customer, BCC'd to
+// info@svkworks.com. (A previous TEST_MODE env flag could redirect these to
+// the internal address only — removed once live, since a misconfigured flag
+// silently meant customers never received order confirmations.)
 
 const PDFDocument = require('pdfkit');
 
@@ -286,16 +287,19 @@ async function sendInvoiceEmail({
     pdfAttachment = null;
   }
 
-  const basePayload = TEST_MODE
-    ? { from: 'SVK Works <orders@svkworks.com>', to: 'info@svkworks.com', subject: `[TEST] Order Confirmed — ${orderNumber} | SVK Works`, html }
-    : { from: 'SVK Works <orders@svkworks.com>', to: customerEmail, bcc: 'info@svkworks.com', subject: `Order Confirmed — ${orderNumber} | SVK Works`, html };
+  const basePayload = {
+    from: 'SVK Works <orders@svkworks.com>',
+    to: customerEmail,
+    bcc: 'info@svkworks.com',
+    subject: `Order Confirmed — ${orderNumber} | SVK Works`,
+    html,
+  };
 
   const emailPayload = pdfAttachment
     ? { ...basePayload, attachments: [pdfAttachment] }
     : basePayload;
 
-  const recipient = TEST_MODE ? 'info@svkworks.com' : customerEmail;
-  console.log(`[email] Sending invoice for ${orderNumber} to ${recipient}${TEST_MODE ? ' [TEST MODE — customer email suppressed]' : ''}${pdfAttachment ? ' with PDF attachment' : ' (no PDF)'}`);
+  console.log(`[email] Sending invoice for ${orderNumber} to ${customerEmail}${pdfAttachment ? ' with PDF attachment' : ' (no PDF)'}`);
 
   const res = await fetch('https://api.resend.com/emails', {
     method: 'POST',
@@ -314,7 +318,7 @@ async function sendInvoiceEmail({
 }
 
 // Simple, non-invoice status-change notifications — order cancelled/refunded,
-// or shipped with tracking. Same TEST_MODE / Resend setup as sendInvoiceEmail,
+// or shipped with tracking. Same Resend setup as sendInvoiceEmail,
 // deliberately without the PDF/line-item machinery since there's nothing to
 // itemize here.
 async function sendOrderStatusEmail({ customerName, customerEmail, orderNumber, heading, message }) {
@@ -343,12 +347,15 @@ async function sendOrderStatusEmail({ customerName, customerEmail, orderNumber, 
 </body>
 </html>`;
 
-  const payload = TEST_MODE
-    ? { from: 'SVK Works <orders@svkworks.com>', to: 'info@svkworks.com', subject: `[TEST] ${heading} — ${orderNumber} | SVK Works`, html }
-    : { from: 'SVK Works <orders@svkworks.com>', to: customerEmail, bcc: 'info@svkworks.com', subject: `${heading} — ${orderNumber} | SVK Works`, html };
+  const payload = {
+    from: 'SVK Works <orders@svkworks.com>',
+    to: customerEmail,
+    bcc: 'info@svkworks.com',
+    subject: `${heading} — ${orderNumber} | SVK Works`,
+    html,
+  };
 
-  const recipient = TEST_MODE ? 'info@svkworks.com' : customerEmail;
-  console.log(`[email] Sending "${heading}" for ${orderNumber} to ${recipient}${TEST_MODE ? ' [TEST MODE]' : ''}`);
+  console.log(`[email] Sending "${heading}" for ${orderNumber} to ${customerEmail}`);
 
   const res = await fetch('https://api.resend.com/emails', {
     method: 'POST',

@@ -237,6 +237,20 @@
       const redirectStatus = params.get('redirect_status');
       const paymentIntent   = params.get('payment_intent');
 
+      // Safety net for the Stripe flow: ask the server to finalize the order
+      // (mark it paid, send the confirmation email) rather than relying only
+      // on Stripe's webhook reaching us. The server re-verifies the payment
+      // with Stripe and no-ops if the webhook already handled it, so this is
+      // safe to fire on every successful redirect. Fire-and-forget — the
+      // confirmation UI below renders from sessionStorage either way.
+      if (paymentIntent && redirectStatus === 'succeeded') {
+        fetch('/.netlify/functions/confirm-stripe-order', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ paymentIntentId: paymentIntent }),
+        }).catch(err => console.error('Order confirmation call failed:', err));
+      }
+
       let order = null;
 
       // PayPal flow: order data in sessionStorage

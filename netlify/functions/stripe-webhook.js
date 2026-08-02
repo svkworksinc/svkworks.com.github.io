@@ -1,7 +1,7 @@
 const { createClient } = require('@supabase/supabase-js');
 const Stripe = require('stripe');
-const { sendInvoiceEmail } = require('./_email');
-const { markUsedPartsSold, consumeDiscount, releaseUsedPartsReservation } = require('./_pricing');
+const { releaseUsedPartsReservation } = require('./_pricing');
+const { finalizePaidOrder } = require('./_finalize');
 const { captureException } = require('./_sentry');
 
 const supabase = createClient(
@@ -60,43 +60,12 @@ exports.handler = async (event) => {
 
       console.log('[webhook] Order found:', order.order_number, '— status:', order.status);
 
-      // 'pending' matches the admin panel's fulfillment vocabulary (pending -> in_progress ->
-      // shipped -> complete), so a paid order shows up correctly under the "Pending" filter
-      // instead of getting stuck on an unrecognized 'paid' status.
-      if (order.status === 'pending_payment') {
-        await supabase
-          .from('orders')
-          .update({ status: 'pending' })
-          .eq('id', supabaseOrderId);
-
-        await markUsedPartsSold(supabase, order.items);
-        // Only now that payment cleared does a discount code burn a use.
-        await consumeDiscount(supabase, order.discount_code);
-
-        console.log('[webhook] Triggering invoice email for:', order.order_number);
-        const orderDate = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-        const opts = order.options || {};
-        try {
-          await sendInvoiceEmail({
-            customerName: order.customer_name,
-            customerEmail: order.customer_email,
-            orderNumber: order.order_number,
-            orderDate,
-            items: order.items || [],
-            subtotal: opts.subtotal,
-            shipping: opts.shipping,
-            shippingLabel: opts.shippingLabel,
-            tax: opts.tax,
-            total: order.total_price,
-            shippingAddress: opts.shippingAddress,
-            paymentMethod: 'Credit / Debit Card',
-          });
-        } catch (err) {
-          console.error('Email send failed:', err.message);
-        }
-      } else {
-        console.log('[webhook] Order already processed (status:', order.status + ') — skipping email');
-      }
+      // Shared with confirm-stripe-order.js — whichever path gets here first
+      // finalizes the order; the other no-ops. See _finalize.js.
+      await finalizePaidOrder(supabase, order, {
+        paymentMethodLabel: 'Credit / Debit Card',
+        logPrefix: '[webhook]',
+      });
     } else if (stripeEvent.type === 'payment_intent.payment_failed' || stripeEvent.type === 'payment_intent.canceled') {
       // Card declined, 3DS abandoned, intent expired, etc. — free the used-parts
       // reservation immediately instead of waiting out the TTL, so the item
