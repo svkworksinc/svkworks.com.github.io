@@ -1,5 +1,5 @@
 const { createClient } = require('@supabase/supabase-js');
-const { validateCart, totalWeightOz, PARCEL_DIMENSIONS_IN, SHIPPING_OPTIONS } = require('./_pricing');
+const { validateCart, totalWeightOz, PARCEL_DIMENSIONS_IN, SHIPPING_OPTIONS, isDigitalOnlyCart } = require('./_pricing');
 const { getRatesForAddress } = require('./_shippo');
 const { checkRateLimit, clientKey, tooManyRequests } = require('./_ratelimit');
 
@@ -39,6 +39,21 @@ exports.handler = async (event) => {
     }
 
     const { items } = await validateCart(cartItems, supabase);
+
+    // A digital-only cart (e.g. the live-payment test item) never has a
+    // real shipping cost — match what resolveShipping() will actually
+    // charge, so the option shown here isn't a bait-and-switch price.
+    if (isDigitalOnlyCart(items)) {
+      return {
+        statusCode: 200,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          rates: [{ id: 'digital', label: 'Digital delivery', desc: 'No shipping required', price: 0 }],
+          source: 'digital',
+        }),
+      };
+    }
+
     const weightOz = totalWeightOz(items);
 
     let rates;
