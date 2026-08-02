@@ -113,7 +113,7 @@ function connectorItem(product) {
     <g:brand>SVK Works</g:brand>
     <g:mpn>${xmlEscape(mpn)}</g:mpn>
     <g:identifier_exists>yes</g:identifier_exists>
-    <g:google_product_category>Vehicles &amp; Parts &gt; Vehicle Parts &amp; Accessories &gt; Vehicle Electronics &gt; Vehicle Wiring</g:google_product_category>
+    <g:google_product_category>Vehicles &amp; Parts &gt; Vehicle Parts &amp; Accessories</g:google_product_category>
     <g:product_type>${cdata(product.productType || 'Connectors')}</g:product_type>${highlights}
     <g:shipping_weight>${Number(product.weightOz || 4)} oz</g:shipping_weight>
   </item>`;
