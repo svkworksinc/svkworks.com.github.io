@@ -1,5 +1,5 @@
 const { createClient } = require('@supabase/supabase-js');
-const { validateCart, totalWeightOz, PARCEL_DIMENSIONS_IN, SHIPPING_OPTIONS, isDigitalOnlyCart } = require('./_pricing');
+const { validateCart, totalWeightOz, PARCEL_DIMENSIONS_IN, flatRateOptionsForWeight, isDigitalOnlyCart } = require('./_pricing');
 const { getRatesForAddress } = require('./_shippo');
 const { checkRateLimit, clientKey, tooManyRequests } = require('./_ratelimit');
 
@@ -8,8 +8,10 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
-function flatRateFallback() {
-  return Object.entries(SHIPPING_OPTIONS).map(([id, opt]) => ({
+// Weight-tiered so a small connector shows a small-parcel rate here too,
+// matching what resolveShipping() will actually charge at checkout.
+function flatRateFallback(weightOz) {
+  return Object.entries(flatRateOptionsForWeight(weightOz)).map(([id, opt]) => ({
     id,
     label: opt.label,
     desc: opt.desc,
@@ -78,7 +80,7 @@ exports.handler = async (event) => {
     }
 
     if (!rates || !rates.length) {
-      rates = flatRateFallback();
+      rates = flatRateFallback(weightOz);
       source = 'flat';
     }
 
