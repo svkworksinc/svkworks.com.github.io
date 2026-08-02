@@ -334,7 +334,7 @@ const SVK_PRODUCTS_DATA = {
     },
     {
       "id": "mk4-chassis-fusebox-connector-3pin",
-      "name": "Supra MK4 Chassis Fusebox Connector 3 Pin",
+      "name": "Supra MK4 / SC300 / SC400 Chassis Fusebox Connector 3 Pin",
       "slug": "mk4-chassis-fusebox-connector-3pin",
       "category": "connectors",
       "engine": "",
@@ -359,7 +359,7 @@ const SVK_PRODUCTS_DATA = {
     },
     {
       "id": "mk4-chassis-fusebox-connector-8pin",
-      "name": "Supra MK4 Chassis Fusebox Connector 8 Pin",
+      "name": "Supra MK4 / SC300 / SC400 Chassis Fusebox Connector 8 Pin",
       "slug": "mk4-chassis-fusebox-connector-8pin",
       "category": "connectors",
       "engine": "",
@@ -591,16 +591,16 @@ const SVK_PRODUCTS_DATA = {
     },
     {
       "id": "deutsch-dt-connector-kit",
-      "name": "MK4 Supra Firewall Plate — 61-Pin Milspec Bulkhead",
+      "name": "MKIV Supra JZA80 Firewall Plate - 61 Pin MILSPEC Autosports Connector",
       "slug": "deutsch-dt-connector-kit",
       "category": "connectors",
       "engine": "",
       "tags": ["milspec", "autosport", "connectors", "firewall", "bulkhead", "mk4", "jza80", "supra", "61-pin"],
-      "price": 95,
+      "price": 89,
       "image": "img/milspec1.jpg",
       "images": ["img/milspec1.jpg"],
       "badge": "In Stock",
-      "shortDesc": "Firewall plate for the MK4 Supra (JZA80), designed for the 61-pin Autosport/Milspec circular bulkhead connector.",
+      "shortDesc": "Firewall plate for the MKIV Supra JZA80, designed for the 61-pin MILSPEC Autosports bulkhead connector.",
       "description": "A clean, purpose-built firewall plate for the MK4 Supra (JZA80), designed to accept a 61-pin Autosport/Milspec circular bulkhead connector. Provides a single-point disconnect between the engine harness and cabin harness — eliminating bare firewall holes, grommets, and chafing risks. Used on every SVK Works mil-spec MK4 Supra harness build.",
       "specs": {
         "Fitment": "MK4 Supra (JZA80)",
