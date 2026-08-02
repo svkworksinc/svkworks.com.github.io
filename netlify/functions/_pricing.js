@@ -68,6 +68,14 @@ const PARCEL_DIMENSIONS_IN = { length: 14, width: 10, height: 5 }; // reasonable
 // testing is done.
 const DIGITAL_PRODUCT_IDS = new Set(['svk-live-payment-test']);
 
+// True when every item in a validated cart is "digital" (no real shipping).
+// Shared by resolveShipping() (the actual charge) and get-shipping-rates.js
+// (the rate-selection UI the customer sees) so both agree — otherwise a
+// customer picks a $12.95 option that then charges $0, which is confusing.
+function isDigitalOnlyCart(items) {
+  return !!(items && items.length) && items.every(i => DIGITAL_PRODUCT_IDS.has(i.id));
+}
+
 // Flat-rate shipping — used as a fallback when Shippo isn't configured or
 // its API call fails, so checkout never breaks entirely.
 const SHIPPING_OPTIONS = {
@@ -258,7 +266,7 @@ async function releaseUsedParts(supabase, items) {
 // (see DIGITAL_PRODUCT_IDS), shipping is $0 regardless of the selected
 // option, since nothing physical ships.
 async function resolveShipping(shippingOptionId, items = []) {
-  if (items.length && items.every(i => DIGITAL_PRODUCT_IDS.has(i.id))) {
+  if (isDigitalOnlyCart(items)) {
     return { shipping: 0, shippingLabel: 'Digital delivery — no shipping required' };
   }
 
@@ -387,6 +395,7 @@ module.exports = {
   resolveDiscount,
   consumeDiscount,
   totalWeightOz,
+  isDigitalOnlyCart,
   reserveUsedParts,
   releaseUsedPartsReservation,
   markUsedPartsSold,

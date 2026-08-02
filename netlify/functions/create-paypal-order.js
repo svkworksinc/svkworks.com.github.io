@@ -90,7 +90,7 @@ exports.handler = async (event) => {
     // Create the PayPal order server-side — amount is sourced from our validated DB record, not the client
     let paypalOrder;
     try {
-      paypalOrder = await createOrder(grandTotal, supabaseOrderId);
+      paypalOrder = await createOrder(grandTotal, supabaseOrderId, { items, orderNumber });
     } catch (paypalErr) {
       const usedIds = items.filter(i => i.isUsedPart).map(i => i.id);
       await releaseUsedPartsReservation(supabase, usedIds, supabaseOrderId);
