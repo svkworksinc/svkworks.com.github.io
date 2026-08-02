@@ -46,7 +46,7 @@ exports.handler = async (event) => {
     // independently resolved/verified, never trusted from the client (see
     // resolveShipping / resolveDiscount in _pricing.js)
     const { items, subtotal } = await validateCart(cartItems, supabase);
-    const { shipping, shippingLabel } = await resolveShipping(shippingOptionId);
+    const { shipping, shippingLabel } = await resolveShipping(shippingOptionId, items);
     const { discount, discountCode: resolvedCode, discountCodeId } =
       await resolveDiscount(supabase, discountCode, subtotal);
     const { tax, grandTotal } = calculateTotals(subtotal, shipping, shippingAddress.state, discount);

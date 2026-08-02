@@ -22,6 +22,13 @@ const PRODUCT_PRICES = {
   'milspec-autosport-connector': 350,
   'mk4-supra-cupholder': 45,
   'svk-tshirt': 25,
+
+  // TEMPORARY — live-payment end-to-end test item. $0.50 is the lowest
+  // amount Stripe will actually process; true $0 isn't chargeable. Ships
+  // as a "digital" item (see DIGITAL_PRODUCT_IDS below) so it doesn't
+  // carry a real shipping charge. Delete this line, its weight entry
+  // below, and its DIGITAL_PRODUCT_IDS entry once live testing is done.
+  'svk-live-payment-test': 0.50,
 };
 
 // Estimated shipped weight per item, in ounces (box + item). Used only for
@@ -48,10 +55,18 @@ const PRODUCT_WEIGHTS_OZ = {
   'milspec-autosport-connector': 16,
   'mk4-supra-cupholder': 12,
   'svk-tshirt': 8,
+  'svk-live-payment-test': 1, // TEMPORARY — see PRODUCT_PRICES
 };
 const DEFAULT_ITEM_WEIGHT_OZ = 16;
 const PACKAGING_WEIGHT_OZ = 6; // box/padding buffer added on top of item weight
 const PARCEL_DIMENSIONS_IN = { length: 14, width: 10, height: 5 }; // reasonable default box
+
+// TEMPORARY — product ids that never carry a real shipping charge (used for
+// the live-payment test item above). If every item in the cart is in this
+// set, resolveShipping() returns $0 instead of a real rate. Delete this
+// along with the PRODUCT_PRICES/PRODUCT_WEIGHTS_OZ entries above once live
+// testing is done.
+const DIGITAL_PRODUCT_IDS = new Set(['svk-live-payment-test']);
 
 // Flat-rate shipping — used as a fallback when Shippo isn't configured or
 // its API call fails, so checkout never breaks entirely.
@@ -239,7 +254,14 @@ async function releaseUsedParts(supabase, items) {
 //   - a flat-rate key from SHIPPING_OPTIONS (fallback path), or
 //   - a Shippo rate object_id (live rate path) — re-verified against Shippo,
 //     never trusting a client-supplied dollar amount.
-async function resolveShipping(shippingOptionId) {
+// `items` is optional — when every item in the cart is a "digital" product
+// (see DIGITAL_PRODUCT_IDS), shipping is $0 regardless of the selected
+// option, since nothing physical ships.
+async function resolveShipping(shippingOptionId, items = []) {
+  if (items.length && items.every(i => DIGITAL_PRODUCT_IDS.has(i.id))) {
+    return { shipping: 0, shippingLabel: 'Digital delivery — no shipping required' };
+  }
+
   if (shippingOptionId === 'international') {
     throw new Error('International orders require a manual shipping quote — please email info@svkworks.com before checking out.');
   }
