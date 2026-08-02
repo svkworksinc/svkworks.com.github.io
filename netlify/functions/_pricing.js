@@ -8,16 +8,16 @@ const PRODUCT_PRICES = {
   'mk3-2jzgte-standalone': 1350,
   'mk3-1jzgte-standalone': 1100,
   'mk3-7mgte-standalone': 950,
-  '2jz-vvti-connector': 22,
-  'mk4-2jz-ac-connector': 18,
-  'mk4-2jz-oil-pressure-connector': 18,
-  'mk4-chassis-fusebox-connector-3pin': 20,
-  'mk4-chassis-fusebox-connector-8pin': 28,
+  '2jz-vvti-connector': 9.99,
+  'mk4-2jz-ac-connector': 9.99,
+  'mk4-2jz-oil-pressure-connector': 9.99,
+  'mk4-chassis-fusebox-connector-3pin': 10.99,
+  'mk4-chassis-fusebox-connector-8pin': 20.99,
   'mk4-jza80-chassis-16pin': 38,
   'mk4-jza80-chassis-20pin': 42,
   'mk4-jza80-chassis-38pin': 55,
   'mk4-jza80-chassis-set-16-20-38pin': 115,
-  'mk4-starter-connector': 20,
+  'mk4-starter-connector': 9.99,
   'deutsch-dt-connector-kit': 95,
   'milspec-autosport-connector': 350,
   'mk4-supra-cupholder': 45,
@@ -68,6 +68,20 @@ const PARCEL_DIMENSIONS_IN = { length: 14, width: 10, height: 5 }; // reasonable
 // testing is done.
 const DIGITAL_PRODUCT_IDS = new Set(['svk-live-payment-test']);
 
+// Connectors sold at $9.99 offer a $2 pre-wired pigtail add-on. The option
+// choice travels in item.options[PIGTAIL_OPTION_KEY]; only an exact match on
+// PIGTAIL_OPTION_VALUE adds the surcharge server-side — a client-supplied
+// price is never trusted, same pattern as the rest of this file.
+const PIGTAIL_PRODUCT_IDS = new Set([
+  '2jz-vvti-connector',
+  'mk4-2jz-ac-connector',
+  'mk4-2jz-oil-pressure-connector',
+  'mk4-starter-connector',
+]);
+const PIGTAIL_OPTION_KEY = 'Wiring';
+const PIGTAIL_OPTION_VALUE = 'Pre-Wired Pigtail (+$2)';
+const PIGTAIL_PRICE = 2;
+
 // True when every item in a validated cart is "digital" (no real shipping).
 // Shared by resolveShipping() (the actual charge) and get-shipping-rates.js
 // (the rate-selection UI the customer sees) so both agree — otherwise a
@@ -77,14 +91,53 @@ function isDigitalOnlyCart(items) {
 }
 
 // Flat-rate shipping — used as a fallback when Shippo isn't configured or
-// its API call fails, so checkout never breaks entirely.
-const SHIPPING_OPTIONS = {
-  'usps-ground':    { label: 'USPS Ground Advantage', desc: '5–8 business days',  price: 12.95 },
-  'usps-priority':  { label: 'USPS Priority Mail',    desc: '2–3 business days',  price: 19.95 },
-  'ups-ground':     { label: 'UPS Ground',            desc: '3–5 business days',  price: 24.95 },
-  'ups-2day':       { label: 'UPS 2-Day Air',         desc: '2 business days',    price: 65.00 },
-  'ups-overnight':  { label: 'UPS Next Day Air',      desc: '1 business day',     price: 125.00 },
-};
+// its API call fails, so checkout never breaks entirely. Tiered by total
+// parcel weight so a single small connector (a few ounces) isn't charged
+// the same flat rate as a full harness — these are estimates for a
+// fallback path, not live carrier quotes, so sanity-check them against
+// real postage as orders come in and adjust the numbers as needed.
+const SHIPPING_TIERS = [
+  {
+    maxOz: 16, // up to ~1 lb — a single small connector plus packaging
+    options: {
+      'usps-ground':    { label: 'USPS Ground Advantage', desc: '5–8 business days',  price: 5.95 },
+      'usps-priority':  { label: 'USPS Priority Mail',    desc: '2–3 business days',  price: 8.95 },
+      'ups-ground':     { label: 'UPS Ground',            desc: '3–5 business days',  price: 9.95 },
+      'ups-2day':       { label: 'UPS 2-Day Air',         desc: '2 business days',    price: 45.00 },
+      'ups-overnight':  { label: 'UPS Next Day Air',      desc: '1 business day',     price: 85.00 },
+    },
+  },
+  {
+    maxOz: 48, // up to 3 lb — connector sets, a few small parts together
+    options: {
+      'usps-ground':    { label: 'USPS Ground Advantage', desc: '5–8 business days',  price: 8.95 },
+      'usps-priority':  { label: 'USPS Priority Mail',    desc: '2–3 business days',  price: 12.95 },
+      'ups-ground':     { label: 'UPS Ground',            desc: '3–5 business days',  price: 14.95 },
+      'ups-2day':       { label: 'UPS 2-Day Air',         desc: '2 business days',    price: 55.00 },
+      'ups-overnight':  { label: 'UPS Next Day Air',      desc: '1 business day',     price: 105.00 },
+    },
+  },
+  {
+    maxOz: Infinity, // harnesses and bulkier/multi-item orders — unchanged from before tiering existed
+    options: {
+      'usps-ground':    { label: 'USPS Ground Advantage', desc: '5–8 business days',  price: 12.95 },
+      'usps-priority':  { label: 'USPS Priority Mail',    desc: '2–3 business days',  price: 19.95 },
+      'ups-ground':     { label: 'UPS Ground',            desc: '3–5 business days',  price: 24.95 },
+      'ups-2day':       { label: 'UPS 2-Day Air',         desc: '2 business days',    price: 65.00 },
+      'ups-overnight':  { label: 'UPS Next Day Air',      desc: '1 business day',     price: 125.00 },
+    },
+  },
+];
+
+// Backward-compatible name for the heaviest tier — nothing outside this file
+// should reach for a single flat price anymore, but this keeps the export
+// stable for anything relying on the shape/keys.
+const SHIPPING_OPTIONS = SHIPPING_TIERS[SHIPPING_TIERS.length - 1].options;
+
+function flatRateOptionsForWeight(weightOz) {
+  const tier = SHIPPING_TIERS.find(t => weightOz <= t.maxOz);
+  return tier.options;
+}
 
 const TX_TAX_RATE = 0.0825; // Texas combined state (6.25%) + typical local (2%) rate
 
@@ -142,7 +195,9 @@ async function validateCart(items, supabase) {
       throw new Error(`"${catalogPart.title}" isn't available for purchase yet.`);
     }
 
-    const price = usedPart ? Number(usedPart.price) : catalogPart ? Number(catalogPart.price) : staticPrice;
+    const pigtailSelected = PIGTAIL_PRODUCT_IDS.has(item.id) && item.options?.[PIGTAIL_OPTION_KEY] === PIGTAIL_OPTION_VALUE;
+    const price = (usedPart ? Number(usedPart.price) : catalogPart ? Number(catalogPart.price) : staticPrice)
+      + (pigtailSelected ? PIGTAIL_PRICE : 0);
     // Used parts are one-off — never more than one of the same listing.
     const quantity = usedPart ? 1 : Math.max(1, Math.floor(Number(item.quantity) || 1));
     if (usedPart && Number(item.quantity) > 1) {
@@ -274,7 +329,7 @@ async function resolveShipping(shippingOptionId, items = []) {
     throw new Error('International orders require a manual shipping quote — please email info@svkworks.com before checking out.');
   }
 
-  const flatOption = SHIPPING_OPTIONS[shippingOptionId];
+  const flatOption = flatRateOptionsForWeight(totalWeightOz(items))[shippingOptionId];
   if (flatOption) {
     return { shipping: flatOption.price, shippingLabel: flatOption.label };
   }
@@ -401,7 +456,12 @@ module.exports = {
   markUsedPartsSold,
   releaseUsedParts,
   SHIPPING_OPTIONS,
+  flatRateOptionsForWeight,
   PRODUCT_PRICES,
   PARCEL_DIMENSIONS_IN,
   TX_TAX_RATE,
+  PIGTAIL_PRODUCT_IDS,
+  PIGTAIL_OPTION_KEY,
+  PIGTAIL_OPTION_VALUE,
+  PIGTAIL_PRICE,
 };
