@@ -18,7 +18,7 @@ const PRODUCT_PRICES = {
   'mk4-jza80-chassis-38pin': 55,
   'mk4-jza80-chassis-set-16-20-38pin': 115,
   'mk4-starter-connector': 9.99,
-  'deutsch-dt-connector-kit': 95,
+  'deutsch-dt-connector-kit': 89,
   'milspec-autosport-connector': 350,
   'mk4-supra-cupholder': 45,
   'svk-tshirt': 25,
