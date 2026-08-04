@@ -339,11 +339,11 @@ const SVK_PRODUCTS_DATA = {
       "category": "services",
       "engine": "",
       "tags": ["sc300", "sc400", "soarer", "z30", "jzz30", "uzz30", "climate-control", "lcd", "repair", "lexus", "toyota", "hvac"],
-      "price": 329,
+      "price": 109,
       "image": "img/SC300.jpg",
       "images": ["img/SC300.jpg", "img/SC400.jpg"],
       "badge": "Repair Service",
-      "shortDesc": "Mail-in climate control LCD repair for the 1992–2000 Lexus SC300, SC400, and Toyota Soarer Z30. Full cap replacement, optional color change, optional new LCD. Starts at $329.",
+      "shortDesc": "Mail-in climate control LCD repair for the 1992–2000 Lexus SC300, SC400, and Toyota Soarer Z30. Full cap replacement, optional color change, optional new LCD. Starts at $109.",
       "description": "Professional mail-in repair service for the climate control head unit on the 1992–2000 Lexus SC300 (JZZ30), SC400 (UZZ30), and Toyota Soarer Z30. Restores dead, dim, or flickering LCD displays. Optional backlight color change for screen, buttons, and indicator LEDs. Optional new LCD panel for cracked or pixel-damaged units. Return shipping included.",
       "specs": {
         "Vehicles": "Lexus SC300 (JZZ30), SC400 (UZZ30), Toyota Soarer Z30",
