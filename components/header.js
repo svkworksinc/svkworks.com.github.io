@@ -53,6 +53,7 @@ const SVK_HEADER_HTML = `
               <li><a href="/service-ecu-repair.html">ECU Repair</a></li>
               <li><a href="/milspec-connector.html">MILSpec Harness</a></li>
               <li><a href="/service-harness-conversion.html">Harness Conversion</a></li>
+              <li><a href="/service-sc300-sc400-climate-lcd-repair.html">SC300/SC400 Climate Control LCD Repair</a></li>
             </ul>
           </li>
           <li class="nav-item has-dropdown">
