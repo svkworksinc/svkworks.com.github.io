@@ -18,10 +18,11 @@ const PRODUCT_PRICES = {
   'mk4-jza80-chassis-38pin': 55,
   'mk4-jza80-chassis-set-16-20-38pin': 115,
   'mk4-starter-connector': 9.99,
-  'deutsch-dt-connector-kit': 95,
+  'deutsch-dt-connector-kit': 89,
   'milspec-autosport-connector': 350,
   'mk4-supra-cupholder': 45,
   'svk-tshirt': 25,
+  'sc300-sc400-climate-lcd-repair': 329,
 
   // TEMPORARY — live-payment end-to-end test item. $0.50 is the lowest
   // amount Stripe will actually process; true $0 isn't chargeable. Ships
@@ -30,6 +31,7 @@ const PRODUCT_PRICES = {
   // below, and its DIGITAL_PRODUCT_IDS entry once live testing is done.
   'svk-live-payment-test': 0.50,
 };
+
 
 // Estimated shipped weight per item, in ounces (box + item). Used only for
 // live carrier rate lookups (Shippo) — adjust these as real package weights
@@ -55,6 +57,7 @@ const PRODUCT_WEIGHTS_OZ = {
   'milspec-autosport-connector': 16,
   'mk4-supra-cupholder': 12,
   'svk-tshirt': 8,
+  'sc300-sc400-climate-lcd-repair': 0, // mail-in service — customer ships to us; return shipping is included in service price, so no outbound weight at checkout
   'svk-live-payment-test': 1, // TEMPORARY — see PRODUCT_PRICES
 };
 const DEFAULT_ITEM_WEIGHT_OZ = 16;
@@ -66,7 +69,10 @@ const PARCEL_DIMENSIONS_IN = { length: 14, width: 10, height: 5 }; // reasonable
 // set, resolveShipping() returns $0 instead of a real rate. Delete this
 // along with the PRODUCT_PRICES/PRODUCT_WEIGHTS_OZ entries above once live
 // testing is done.
-const DIGITAL_PRODUCT_IDS = new Set(['svk-live-payment-test']);
+const DIGITAL_PRODUCT_IDS = new Set([
+  'svk-live-payment-test',
+  'sc300-sc400-climate-lcd-repair', // mail-in repair service; return shipping included in price, no carrier charge at checkout
+]);
 
 // Connectors sold at $9.99 offer a $2 pre-wired pigtail add-on. The option
 // choice travels in item.options[PIGTAIL_OPTION_KEY]; only an exact match on
@@ -81,6 +87,16 @@ const PIGTAIL_PRODUCT_IDS = new Set([
 const PIGTAIL_OPTION_KEY = 'Wiring';
 const PIGTAIL_OPTION_VALUE = 'Pre-Wired Pigtail (+$2)';
 const PIGTAIL_PRICE = 2;
+
+// SC300/SC400 climate control LCD repair add-ons. Options travel in item.options;
+// server adds each surcharge only when the exact option value matches.
+const CLIMATE_LCD_PRODUCT_ID = 'sc300-sc400-climate-lcd-repair';
+const CLIMATE_LCD_OPTION_KEY = 'New LCD';
+const CLIMATE_LCD_OPTION_VALUE = 'Yes (+$45)';
+const CLIMATE_LCD_PRICE = 45;
+const CLIMATE_EXP_OPTION_KEY = 'Service Speed';
+const CLIMATE_EXP_OPTION_VALUE = 'Expedited 2-4 Business Days (+$149)';
+const CLIMATE_EXP_PRICE = 149;
 
 // True when every item in a validated cart is "digital" (no real shipping).
 // Shared by resolveShipping() (the actual charge) and get-shipping-rates.js
@@ -196,8 +212,12 @@ async function validateCart(items, supabase) {
     }
 
     const pigtailSelected = PIGTAIL_PRODUCT_IDS.has(item.id) && item.options?.[PIGTAIL_OPTION_KEY] === PIGTAIL_OPTION_VALUE;
+    const climateLcdSelected = item.id === CLIMATE_LCD_PRODUCT_ID && item.options?.[CLIMATE_LCD_OPTION_KEY] === CLIMATE_LCD_OPTION_VALUE;
+    const climateExpSelected = item.id === CLIMATE_LCD_PRODUCT_ID && item.options?.[CLIMATE_EXP_OPTION_KEY] === CLIMATE_EXP_OPTION_VALUE;
     const price = (usedPart ? Number(usedPart.price) : catalogPart ? Number(catalogPart.price) : staticPrice)
-      + (pigtailSelected ? PIGTAIL_PRICE : 0);
+      + (pigtailSelected ? PIGTAIL_PRICE : 0)
+      + (climateLcdSelected ? CLIMATE_LCD_PRICE : 0)
+      + (climateExpSelected ? CLIMATE_EXP_PRICE : 0);
     // Used parts are one-off — never more than one of the same listing.
     const quantity = usedPart ? 1 : Math.max(1, Math.floor(Number(item.quantity) || 1));
     if (usedPart && Number(item.quantity) > 1) {
