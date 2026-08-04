@@ -333,6 +333,38 @@ const SVK_PRODUCTS_DATA = {
       "page": "connectors/mk4-2jz-oil-pressure-connector.html"
     },
     {
+      "id": "sc300-sc400-climate-lcd-repair",
+      "name": "SC300 / SC400 / Soarer Climate Control LCD Repair (1992–2000 Z30)",
+      "slug": "sc300-sc400-climate-lcd-repair",
+      "category": "services",
+      "engine": "",
+      "tags": ["sc300", "sc400", "soarer", "z30", "jzz30", "uzz30", "climate-control", "lcd", "repair", "lexus", "toyota", "hvac"],
+      "price": 329,
+      "image": "img/SC300.jpg",
+      "images": ["img/SC300.jpg", "img/SC400.jpg"],
+      "badge": "Repair Service",
+      "shortDesc": "Mail-in climate control LCD repair for the 1992–2000 Lexus SC300, SC400, and Toyota Soarer Z30. Full cap replacement, optional color change, optional new LCD. Starts at $329.",
+      "description": "Professional mail-in repair service for the climate control head unit on the 1992–2000 Lexus SC300 (JZZ30), SC400 (UZZ30), and Toyota Soarer Z30. Restores dead, dim, or flickering LCD displays. Optional backlight color change for screen, buttons, and indicator LEDs. Optional new LCD panel for cracked or pixel-damaged units. Return shipping included.",
+      "specs": {
+        "Vehicles": "Lexus SC300 (JZZ30), SC400 (UZZ30), Toyota Soarer Z30",
+        "Years": "1992–2000",
+        "Standard Turnaround": "7–10 business days",
+        "Expedited Option": "+$149 for 2–4 business days",
+        "Return Shipping": "Included (contiguous US)",
+        "Warranty": "1-year workmanship warranty"
+      },
+      "options": {
+        "Screen Color": ["OEM Amber (no change)", "White", "Blue", "Green", "Red", "Purple"],
+        "Button Color": ["OEM Amber (no change)", "White", "Blue", "Green", "Red", "Purple"],
+        "Indicator Color": ["OEM Amber (no change)", "White", "Blue", "Green", "Red", "Purple"],
+        "New LCD": ["No", "Yes (+$45)"],
+        "Service Speed": ["Standard 7-10 Business Days", "Expedited 2-4 Business Days (+$149)"]
+      },
+      "inStock": true,
+      "featured": true,
+      "page": "service-sc300-sc400-climate-lcd-repair.html"
+    },
+    {
       "id": "mk4-chassis-fusebox-connector-3pin",
       "name": "Supra MK4 / SC300 / SC400 Chassis Fusebox Connector 3 Pin",
       "slug": "mk4-chassis-fusebox-connector-3pin",

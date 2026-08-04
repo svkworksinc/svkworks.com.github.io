@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
+  <!-- Repair Service pages -->
+  <url>
+    <loc>https://www.svkworks.com/service-sc300-sc400-climate-lcd-repair.html</loc>
+    <lastmod>2026-08-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
   <!-- Connector product pages -->
   <url>
     <loc>https://www.svkworks.com/connectors/2jz-vvti-connector.html</loc>
