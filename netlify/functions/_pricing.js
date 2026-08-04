@@ -22,7 +22,7 @@ const PRODUCT_PRICES = {
   'milspec-autosport-connector': 350,
   'mk4-supra-cupholder': 45,
   'svk-tshirt': 25,
-  'sc300-sc400-climate-lcd-repair': 329,
+  'sc300-sc400-climate-lcd-repair': 109,
 
   // TEMPORARY — live-payment end-to-end test item. $0.50 is the lowest
   // amount Stripe will actually process; true $0 isn't chargeable. Ships
@@ -92,11 +92,17 @@ const PIGTAIL_PRICE = 2;
 // server adds each surcharge only when the exact option value matches.
 const CLIMATE_LCD_PRODUCT_ID = 'sc300-sc400-climate-lcd-repair';
 const CLIMATE_LCD_OPTION_KEY = 'New LCD';
-const CLIMATE_LCD_OPTION_VALUE = 'Yes (+$45)';
-const CLIMATE_LCD_PRICE = 45;
+const CLIMATE_LCD_OPTION_VALUE = 'Yes (+$40)';
+const CLIMATE_LCD_PRICE = 40;
 const CLIMATE_EXP_OPTION_KEY = 'Service Speed';
 const CLIMATE_EXP_OPTION_VALUE = 'Expedited 2-4 Business Days (+$149)';
 const CLIMATE_EXP_PRICE = 149;
+const CLIMATE_INS_OPTION_KEY = 'Return Shipping Insurance';
+const CLIMATE_INS_PRICES = {
+  'Declared value $200 (+$4)': 4,
+  'Declared value $400 (+$8)': 8,
+  'Declared value $500 (+$10)': 10,
+};
 
 // True when every item in a validated cart is "digital" (no real shipping).
 // Shared by resolveShipping() (the actual charge) and get-shipping-rates.js
@@ -214,10 +220,12 @@ async function validateCart(items, supabase) {
     const pigtailSelected = PIGTAIL_PRODUCT_IDS.has(item.id) && item.options?.[PIGTAIL_OPTION_KEY] === PIGTAIL_OPTION_VALUE;
     const climateLcdSelected = item.id === CLIMATE_LCD_PRODUCT_ID && item.options?.[CLIMATE_LCD_OPTION_KEY] === CLIMATE_LCD_OPTION_VALUE;
     const climateExpSelected = item.id === CLIMATE_LCD_PRODUCT_ID && item.options?.[CLIMATE_EXP_OPTION_KEY] === CLIMATE_EXP_OPTION_VALUE;
+    const climateInsPrice = item.id === CLIMATE_LCD_PRODUCT_ID ? (CLIMATE_INS_PRICES[item.options?.[CLIMATE_INS_OPTION_KEY]] || 0) : 0;
     const price = (usedPart ? Number(usedPart.price) : catalogPart ? Number(catalogPart.price) : staticPrice)
       + (pigtailSelected ? PIGTAIL_PRICE : 0)
       + (climateLcdSelected ? CLIMATE_LCD_PRICE : 0)
-      + (climateExpSelected ? CLIMATE_EXP_PRICE : 0);
+      + (climateExpSelected ? CLIMATE_EXP_PRICE : 0)
+      + climateInsPrice;
     // Used parts are one-off — never more than one of the same listing.
     const quantity = usedPart ? 1 : Math.max(1, Math.floor(Number(item.quantity) || 1));
     if (usedPart && Number(item.quantity) > 1) {
