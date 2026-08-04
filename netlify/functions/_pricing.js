@@ -22,7 +22,7 @@ const PRODUCT_PRICES = {
   'milspec-autosport-connector': 350,
   'mk4-supra-cupholder': 45,
   'svk-tshirt': 25,
-  'sc300-sc400-climate-lcd-repair': 329,
+  'sc300-sc400-climate-lcd-repair': 109,
 
   // TEMPORARY — live-payment end-to-end test item. $0.50 is the lowest
   // amount Stripe will actually process; true $0 isn't chargeable. Ships
@@ -92,8 +92,8 @@ const PIGTAIL_PRICE = 2;
 // server adds each surcharge only when the exact option value matches.
 const CLIMATE_LCD_PRODUCT_ID = 'sc300-sc400-climate-lcd-repair';
 const CLIMATE_LCD_OPTION_KEY = 'New LCD';
-const CLIMATE_LCD_OPTION_VALUE = 'Yes (+$45)';
-const CLIMATE_LCD_PRICE = 45;
+const CLIMATE_LCD_OPTION_VALUE = 'Yes (+$40)';
+const CLIMATE_LCD_PRICE = 40;
 const CLIMATE_EXP_OPTION_KEY = 'Service Speed';
 const CLIMATE_EXP_OPTION_VALUE = 'Expedited 2-4 Business Days (+$149)';
 const CLIMATE_EXP_PRICE = 149;
