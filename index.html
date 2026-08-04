@@ -37,11 +37,11 @@
     }
   }
   </script>
-  <!-- Organization Schema -->
+  <!-- Organization / AutoPartsStore Schema -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
-    "@type": "Organization",
+    "@type": ["Organization", "AutoPartsStore"],
     "name": "SVK Works",
     "url": "https://www.svkworks.com",
     "logo": {
@@ -50,8 +50,24 @@
       "width": 281,
       "height": 281
     },
-    "description": "Custom standalone wiring harnesses for 2JZ, 1JZ, 1UZ, and more. Built to order for MK4 Supra, MK3 Supra, Lexus SC, and race applications.",
+    "image": "https://www.svkworks.com/img/svk-logo.png",
+    "description": "Custom standalone wiring harnesses and automotive services for 2JZ, 1JZ, 1UZ, and K-Series engines. Specialists in MK4 Supra, MK3 Supra, Lexus SC300, SC400, and Toyota Soarer builds.",
     "email": "info@svkworks.com",
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "email": "info@svkworks.com",
+      "contactType": "customer service",
+      "availableLanguage": "English"
+    },
+    "hasOfferCatalog": {
+      "@type": "OfferCatalog",
+      "name": "Wiring Harnesses & Automotive Services",
+      "itemListElement": [
+        { "@type": "OfferCatalog", "name": "Standalone Wiring Harnesses", "url": "https://www.svkworks.com/harnesses.html" },
+        { "@type": "OfferCatalog", "name": "Automotive Services", "url": "https://www.svkworks.com/services.html" },
+        { "@type": "OfferCatalog", "name": "OEM Connectors", "url": "https://www.svkworks.com/connectors.html" }
+      ]
+    },
     "sameAs": [
       "https://www.instagram.com/svk_works/",
       "https://www.facebook.com/profile.php?id=61580949891529"
