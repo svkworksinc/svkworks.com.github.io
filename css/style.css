@@ -583,6 +583,11 @@ main {
   padding-right: 0.25rem;
 }
 
+/* Push secondary group to the right, creating a gap from primary items */
+.nav-item:not(.nav-item--meta) + .nav-item--meta {
+  margin-left: auto;
+}
+
 .nav-link:hover {
   color: var(--magenta);
   background: var(--magenta-subtle);
