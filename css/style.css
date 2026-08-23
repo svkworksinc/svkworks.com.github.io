@@ -564,6 +564,7 @@ main {
   display: flex;
   align-items: center;
   gap: var(--space-xs);
+  flex: 1;
 }
 
 .nav-link {
