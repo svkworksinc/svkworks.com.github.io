@@ -62,6 +62,7 @@ const SVK_HEADER_HTML = `
               <li><a href="/3d-parts.html">3D Parts</a></li>
               <li><a href="/other-parts.html">Other Parts</a></li>
               <li><a href="/relay-power-kits.html">Relay &amp; Power Kits</a></li>
+              <li><a href="/used-parts.html">Used Parts</a></li>
             </ul>
           </li>
           <li class="nav-item has-dropdown">
@@ -79,7 +80,6 @@ const SVK_HEADER_HTML = `
               <li><a href="/merchandise.html">View All</a></li>
             </ul>
           </li>
-          <li class="nav-item"><a href="/used-parts.html" class="nav-link">Used Parts</a></li>
           <li class="nav-item nav-item--meta"><a href="/builds.html" class="nav-link">Builds</a></li>
           <li class="nav-item nav-item--meta"><a href="/blog.html" class="nav-link">Blog</a></li>
           <li class="nav-item nav-item--meta"><a href="/resources.html" class="nav-link">Resources</a></li>
