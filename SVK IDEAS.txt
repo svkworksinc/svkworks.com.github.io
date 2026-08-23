@@ -1,0 +1,23 @@
+Parts that can be used from other cars:
+
+Nissan/Infiniti PWM (Pulse-Width Modulation) module
+Ford Contour dual fans
+Volvo 2-Speed Fan Relay (740/850/960 series) non PWM
+Ford Taurus 3.8L / Lincoln Mark VIII Fan, single fan
+VW/Audi 2.0T / R8
+Bosch 74mm/82mm Throttle Bodies (Porsche / Audi / GM):
+120A to 180A Denso Alternators (Toyota Sequoia/Tundra/Land Cruiser)
+BMW E46/E90 Power Distribution Blocks
+Volvo V50 / S40 / C70 (and Ford Fiesta ST) Electric Power Steering (EHPS) Pump:
+Tesla / Mustang Mach-E iBooster (Bosch Electronic Brake Booster):
+Hellcat Pump TI Automotive / Walbro 450 or 525 (F90000267/274/285)
+GM / Continental Flex Fuel Sensors:
+BMW Electric Water Pumps (Pierburg CWA200 / CWA400):
+Toyota Prius Electric Water Pumps:
+Toyota Prius Electric Oil Pump
+Mazda RX-8 / Honda S2000 Digital Gauge Clusters:
+BMW Electric Active Grille Shutter Motors:
+Nissan/Infiniti Fusible Link Blocks (Battery Terminal Mounted):
+GM "Truck" Mechanical-to-Electronic Cable Converters:
+Toyota "Fusible Link" Block Holders (Lexus LS430 / GS300):
+https://www.supravworld.com/product-page/2jzgte-swap-using-stock-ge-harness-ecu-cluster-sensor-adapter-harness?currency=USD

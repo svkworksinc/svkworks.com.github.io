@@ -564,18 +564,30 @@ main {
   display: flex;
   align-items: center;
   gap: var(--space-xs);
+  flex: 1;
 }
 
 .nav-link {
   display: inline-flex;
   align-items: center;
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 0.5rem;
   font-size: var(--text-sm);
   font-weight: var(--weight-medium);
   color: #fff;
   border-radius: var(--radius-md);
   transition: all var(--transition-fast);
   white-space: nowrap;
+}
+
+.nav-item--meta .nav-link {
+  padding-left: 0.25rem;
+  padding-right: 0.25rem;
+  font-size: 0.8rem;
+}
+
+/* Push secondary group to the right, creating a gap from primary items */
+.nav-item:not(.nav-item--meta) + .nav-item--meta {
+  margin-left: auto;
 }
 
 .nav-link:hover {
