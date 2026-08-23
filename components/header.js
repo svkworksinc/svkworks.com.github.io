@@ -80,11 +80,11 @@ const SVK_HEADER_HTML = `
             </ul>
           </li>
           <li class="nav-item"><a href="/used-parts.html" class="nav-link">Used Parts</a></li>
-          <li class="nav-item"><a href="/builds.html" class="nav-link">Builds</a></li>
-          <li class="nav-item"><a href="/blog.html" class="nav-link">Blog</a></li>
-          <li class="nav-item"><a href="/resources.html" class="nav-link">Resources</a></li>
-          <li class="nav-item"><a href="/about.html" class="nav-link">About</a></li>
-          <li class="nav-item"><a href="/contact.html" class="nav-link">Contact</a></li>
+          <li class="nav-item nav-item--meta"><a href="/builds.html" class="nav-link">Builds</a></li>
+          <li class="nav-item nav-item--meta"><a href="/blog.html" class="nav-link">Blog</a></li>
+          <li class="nav-item nav-item--meta"><a href="/resources.html" class="nav-link">Resources</a></li>
+          <li class="nav-item nav-item--meta"><a href="/about.html" class="nav-link">About</a></li>
+          <li class="nav-item nav-item--meta"><a href="/contact.html" class="nav-link">Contact</a></li>
         </ul>
         <div class="nav-actions">
           <button class="nav-action-btn search-toggle" id="search-toggle" aria-label="Search">

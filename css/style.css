@@ -569,13 +569,18 @@ main {
 .nav-link {
   display: inline-flex;
   align-items: center;
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 0.75rem;
   font-size: var(--text-sm);
   font-weight: var(--weight-medium);
   color: #fff;
   border-radius: var(--radius-md);
   transition: all var(--transition-fast);
   white-space: nowrap;
+}
+
+.nav-item--meta .nav-link {
+  padding-left: 0.45rem;
+  padding-right: 0.45rem;
 }
 
 .nav-link:hover {
