@@ -564,6 +564,7 @@ main {
   display: flex;
   align-items: center;
   gap: var(--space-xs);
+  flex: 1;
 }
 
 .nav-link {
@@ -581,6 +582,7 @@ main {
 .nav-item--meta .nav-link {
   padding-left: 0.25rem;
   padding-right: 0.25rem;
+  font-size: 0.8rem;
 }
 
 /* Push secondary group to the right, creating a gap from primary items */
