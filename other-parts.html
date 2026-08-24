@@ -152,10 +152,24 @@
       render();
     });
 
+    const SVK_STATIC_OTHER_PARTS = [
+      {
+        id: 'sequoia-alternator-adapter',
+        slug: 'sequoia-alternator-adapter',
+        title: 'Sequoia / Tundra 2UZ Alternator Adapter Harness for 2JZ & 1UZ',
+        description: 'Plug-and-play adapter harness to run a Sequoia or Tundra 2UZ-FE high-output alternator on your 2JZ or 1UZ build. Connects to the stock alternator connector — no cutting, no splicing.',
+        images: ['img/alternator1.webp'],
+        price: 25,
+        status: 'available',
+        subcategory: 'other-parts',
+      }
+    ];
+
     document.addEventListener('DOMContentLoaded', async () => {
       SVKAuth.init();
       await SVKAuth.ready;
-      allOtherParts = await SVKAuth.getPartsCatalog('other-parts');
+      const catalogParts = await SVKAuth.getPartsCatalog('other-parts');
+      allOtherParts = [...SVK_STATIC_OTHER_PARTS, ...catalogParts];
       render();
     });
   </script>
