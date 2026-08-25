@@ -147,6 +147,14 @@
     <priority>0.7</priority>
   </url>
 
+  <!-- Adapter Harnesses -->
+  <url>
+    <loc>https://www.svkworks.com/sequoia-alternator-adapter.html</loc>
+    <lastmod>2026-08-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
   <!-- Relay & Power Kits -->
   <url>
     <loc>https://www.svkworks.com/fan-relay-kit.html</loc>
