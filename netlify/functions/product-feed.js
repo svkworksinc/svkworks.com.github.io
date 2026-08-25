@@ -17,9 +17,68 @@ const supabase = createClient(
 const SITE_URL = 'https://www.svkworks.com';
 
 const DEDICATED_PAGES = {
-  'fuel-pump-relay-kit': 'fuel-pump-relay-kit.html',
-  'fan-relay-kit': 'fan-relay-kit.html',
+  'fuel-pump-relay-kit':        'fuel-pump-relay-kit.html',
+  'fan-relay-kit':              'fan-relay-kit.html',
+  'sequoia-alternator-adapter': 'sequoia-alternator-adapter.html',
 };
+
+// Static products with their own dedicated pages that are not in Supabase.
+const STATIC_PRODUCTS = [
+  {
+    id: 'sequoia-alternator-adapter',
+    title: 'Sequoia / Tundra 2UZ Alternator Adapter Harness for 2JZ & 1UZ',
+    description: 'Plug-and-play adapter harness that allows the Toyota Sequoia or Tundra 2UZ-FE high-output alternator to connect to the stock 2JZ-GTE or 1UZ-FE alternator wiring connector. No cutting or splicing required. Compatible with MK4 Supra (JZA80), MK3 Supra (MA70), SC300, SC400, IS300, GS300, and any 2JZ or 1UZ swap build.',
+    link: `${SITE_URL}/sequoia-alternator-adapter.html`,
+    image: `${SITE_URL}/img/alternator1.webp`,
+    additionalImages: [
+      `${SITE_URL}/img/alternator2.webp`,
+      `${SITE_URL}/img/alternator3.webp`,
+    ],
+    price: 25.00,
+    condition: 'new',
+    mpn: 'SVK-ALT-ADAPTER-2UZ',
+    sku: 'SVK-ALT-ADAPTER-2UZ',
+    googleProductCategory: 'Vehicles &amp; Parts &gt; Vehicle Parts &amp; Accessories &gt; Electrical System Parts',
+    productType: 'Alternator Adapter Harnesses',
+    highlights: [
+      'Plug-and-play — no cutting or splicing required',
+      'Connects Sequoia/Tundra 2UZ-FE alternator to stock 2JZ or 1UZ connector',
+      'Compatible with MK4 Supra, MK3 Supra, SC300, SC400, IS300, GS300',
+      'OEM-quality terminals and weatherproof connectors',
+      'Hand-assembled and tested at SVK Works',
+    ],
+    weightOz: 3,
+  },
+];
+
+function staticProductItem(product) {
+  const extraImages = (product.additionalImages || [])
+    .map((img) => `\n    <g:additional_image_link>${xmlEscape(img)}</g:additional_image_link>`)
+    .join('');
+
+  const highlights = (product.highlights || [])
+    .slice(0, 10)
+    .map((h) => `\n    <g:product_highlight>${cdata(h)}</g:product_highlight>`)
+    .join('');
+
+  return `
+  <item>
+    <g:id>static-${xmlEscape(product.id)}</g:id>
+    <title>${cdata(product.title)}</title>
+    <description>${cdata(product.description)}</description>
+    <link>${xmlEscape(product.link)}</link>
+    <g:image_link>${xmlEscape(product.image)}</g:image_link>${extraImages}
+    <g:availability>in stock</g:availability>
+    <g:price>${Number(product.price).toFixed(2)} USD</g:price>
+    <g:condition>${xmlEscape(product.condition)}</g:condition>
+    <g:brand>SVK Works</g:brand>
+    <g:mpn>${xmlEscape(product.mpn)}</g:mpn>
+    <g:identifier_exists>yes</g:identifier_exists>
+    <g:google_product_category>${product.googleProductCategory}</g:google_product_category>
+    <g:product_type>${cdata(product.productType)}</g:product_type>${highlights}
+    <g:shipping_weight>${Number(product.weightOz || 4)} oz</g:shipping_weight>
+  </item>`;
+}
 
 function xmlEscape(str) {
   return String(str || '')
@@ -140,6 +199,7 @@ exports.handler = async () => {
     const connectors = (SVK_PRODUCTS_DATA.products || []).filter((p) => p.category === 'connectors');
 
     const items = [
+      ...STATIC_PRODUCTS.map(staticProductItem),
       ...(usedPartsRes.data || []).map(usedPartItem),
       ...(catalogPartsRes.data || []).map(catalogPartItem),
       ...connectors.map(connectorItem),
