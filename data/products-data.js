@@ -726,6 +726,19 @@ const SVK_PRODUCTS_DATA = {
       "inStock": true,
       "featured": false,
       "page": "merchandise-tshirt.html"
+    },
+    {
+      "id": "sequoia-alternator-adapter",
+      "name": "Sequoia / Tundra 2UZ Alternator Adapter Harness for 2JZ & 1UZ",
+      "slug": "sequoia-alternator-adapter",
+      "category": "other-parts",
+      "tags": ["alternator", "adapter", "2uz", "2jz", "1uz", "sequoia", "tundra", "harness"],
+      "price": 25,
+      "image": "img/alternator1.webp",
+      "images": ["img/alternator1.webp", "img/alternator2.webp", "img/alternator3.webp"],
+      "shortDesc": "Plug-and-play adapter to run a Sequoia or Tundra 2UZ-FE alternator on your 2JZ or 1UZ build.",
+      "inStock": true,
+      "page": "sequoia-alternator-adapter.html"
     }
   ],
   "categories": [
