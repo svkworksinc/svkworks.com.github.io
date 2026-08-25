@@ -203,11 +203,19 @@
               </table>
             </div>
 
-            <div style="display:flex;gap:var(--space-md);flex-wrap:wrap;margin-top:var(--space-lg);">
-              <a href="contact.html" class="btn btn-primary" style="flex:1;min-width:180px;">
-                Order Now — $25
+            <div style="display:flex;align-items:center;gap:var(--space-md);margin-top:var(--space-lg);">
+              <label for="qty-input" style="font-size:var(--text-sm);color:var(--text-secondary);white-space:nowrap;">Qty:</label>
+              <input type="number" id="qty-input" value="1" min="1" max="10" style="width:64px;padding:8px 10px;border:1px solid var(--border);border-radius:var(--radius-md);background:var(--bg-secondary);color:var(--text-primary);font-size:var(--text-sm);text-align:center;">
+            </div>
+
+            <div style="display:flex;gap:var(--space-md);flex-wrap:wrap;margin-top:var(--space-md);">
+              <button class="btn btn-primary" id="add-to-cart-btn" onclick="addToCart()" style="flex:1;min-width:180px;">
+                Add to Cart — $25
+              </button>
+              <a href="cart.html" class="btn btn-secondary" id="view-cart-btn" style="flex:1;min-width:180px;display:none;">
+                View Cart →
               </a>
-              <a href="other-parts.html" class="btn btn-secondary" style="flex:1;min-width:180px;">
+              <a href="other-parts.html" class="btn btn-secondary" id="back-btn" style="flex:1;min-width:180px;">
                 ← Back to Parts
               </a>
             </div>
@@ -218,7 +226,7 @@
             </button>
 
             <p style="font-size:var(--text-xs);color:var(--text-muted);margin-top:var(--space-md);">
-              Have a question? <a href="contact.html">Contact us</a> — we're happy to help confirm fitment for your specific build.
+              Same-day shipping on orders placed before 3 PM. <a href="contact.html">Questions?</a>
             </p>
           </div>
         </div>
@@ -309,7 +317,7 @@
             </button>
             <div class="accordion-body">
               <div class="accordion-content">
-                Click "Order Now" above or head to our <a href="contact.html">contact page</a> and drop us a message. Include your engine and chassis so we can confirm fitment for your specific build before shipping.
+                Click "Add to Cart" above to order directly. Have a question about fitment? <a href="contact.html">Contact us</a> and we'll confirm compatibility for your specific build before it ships.
               </div>
             </div>
           </div>
@@ -349,6 +357,41 @@
         t.classList.toggle('active', idx === currentSlide);
       });
     }
+
+    // Add to Cart
+    const PRODUCT = {
+      id: 'sequoia-alternator-adapter',
+      name: 'Sequoia / Tundra 2UZ Alternator Adapter Harness for 2JZ & 1UZ',
+      price: 25,
+      image: 'img/alternator1.webp',
+      type: 'product',
+    };
+
+    function updateCartBtn() {
+      if (typeof SVKCart === 'undefined') return;
+      const inCart = SVKCart.getCart().some(i => i.id === PRODUCT.id);
+      const addBtn = document.getElementById('add-to-cart-btn');
+      const viewBtn = document.getElementById('view-cart-btn');
+      const backBtn = document.getElementById('back-btn');
+      if (inCart) {
+        addBtn.textContent = 'In Cart ✓';
+        viewBtn.style.display = '';
+        backBtn.style.display = 'none';
+      } else {
+        addBtn.textContent = 'Add to Cart — $25';
+        viewBtn.style.display = 'none';
+        backBtn.style.display = '';
+      }
+    }
+
+    function addToCart() {
+      if (typeof SVKCart === 'undefined') { alert('Cart is loading, please try again.'); return; }
+      const qty = Math.max(1, parseInt(document.getElementById('qty-input').value) || 1);
+      SVKCart.addItem(PRODUCT, qty);
+      updateCartBtn();
+    }
+
+    document.addEventListener('DOMContentLoaded', updateCartBtn);
 
     // Share button
     document.getElementById('share-link-btn').addEventListener('click', () => {
