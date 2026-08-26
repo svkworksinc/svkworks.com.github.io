@@ -20,7 +20,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
   <link rel="stylesheet" href="css/style.css">
-  <link rel="preload" as="image" href="img/supraHarness1.jpg">
+  <link rel="preload" as="image" href="img/supraMK3Harness1.webp">
   <link rel="icon" href="img/svk-icon.png" type="image/png">
   <!-- Breadcrumb Schema -->
   <script type="application/ld+json">
@@ -43,7 +43,7 @@
       "@type": "Product",
       "name": "MK3 Supra 2JZ-GTE Swap Wiring Harness",
       "description": "Plug & play standalone engine wiring harness for the MK3 Toyota Supra MA70 with 2JZ-GTE swap. Compatible with Haltech, Link, MaxxECU, EMU Black. Full chassis integration — gauges, A/C, power steering.",
-      "image": ["https://www.svkworks.com/img/supraHarness1.jpg"],
+      "image": ["https://www.svkworks.com/img/supraMK3Harness1.webp"],
       "brand": { "@type": "Brand", "name": "SVK Works" },
       "sku": "SVK-MK3-2JZGTE",
       "mpn": "SVK-MK3-2JZGTE",
@@ -73,7 +73,7 @@
       "@type": "Product",
       "name": "MK3 Supra 1JZ-GTE Standalone Wiring Harness",
       "description": "Plug & play standalone engine wiring harness for the MK3 Toyota Supra MA70 with 1JZ-GTE. Compatible with Haltech, Link, MaxxECU, EMU Black. Full chassis integration.",
-      "image": ["https://www.svkworks.com/img/supraHarness1.jpg"],
+      "image": ["https://www.svkworks.com/img/supraMK3Harness1.webp"],
       "brand": { "@type": "Brand", "name": "SVK Works" },
       "sku": "SVK-MK3-1JZGTE",
       "mpn": "SVK-MK3-1JZGTE",
@@ -103,7 +103,7 @@
       "@type": "Product",
       "name": "MK3 Supra 7M-GTE Standalone Wiring Harness",
       "description": "Plug & play standalone engine wiring harness for the MK3 Toyota Supra MA70 with 7M-GTE. Compatible with Haltech, Link, MaxxECU, EMU Black. Full chassis integration.",
-      "image": ["https://www.svkworks.com/img/supraHarness1.jpg"],
+      "image": ["https://www.svkworks.com/img/supraMK3Harness1.webp"],
       "brand": { "@type": "Brand", "name": "SVK Works" },
       "sku": "SVK-MK3-7MGTE",
       "mpn": "SVK-MK3-7MGTE",
@@ -195,22 +195,28 @@
           <!-- Image Gallery -->
           <div class="product-gallery">
             <div class="product-gallery-main" id="gallery-main">
-              <img width="1400" height="1048" src="img/supraHarness1.jpg" alt="SVK MK3 Supra MA70 Engine Wiring Harness" id="product-main-image" fetchpriority="high">
+              <img width="1600" height="1782" src="img/supraMK3Harness1.webp" alt="SVK MK3 Supra MA70 Engine Wiring Harness" id="product-main-image" fetchpriority="high" style="object-fit: contain;">
               <button class="gallery-nav gallery-prev" onclick="changeSlide(-1)" aria-label="Previous image">&#10094;</button>
               <button class="gallery-nav gallery-next" onclick="changeSlide(1)" aria-label="Next image">&#10095;</button>
             </div>
-            <div class="product-gallery-thumbs" id="gallery-thumbs">
+            <div class="product-gallery-thumbs" id="gallery-thumbs" style="grid-template-columns: repeat(3, 1fr);">
               <div class="product-thumb active" onclick="goToSlide(0)">
-                <img width="1400" height="1048" src="img/supraHarness1.jpg" alt="Harness view 1" loading="lazy">
+                <img width="1600" height="1782" src="img/supraMK3Harness1.webp" alt="Harness view 1" loading="lazy">
               </div>
               <div class="product-thumb" onclick="goToSlide(1)">
-                <img width="1400" height="1048" src="img/supraHarness2.jpg" alt="Harness view 2" loading="lazy">
+                <img width="2079" height="1120" src="img/supraMK3Harness2.webp" alt="Harness view 2" loading="lazy">
               </div>
               <div class="product-thumb" onclick="goToSlide(2)">
-                <img width="1400" height="1048" src="img/supraHarness3.jpg" alt="Harness view 3" loading="lazy">
+                <img width="1504" height="1846" src="img/supraMK3Harness3.webp" alt="Harness view 3" loading="lazy">
               </div>
               <div class="product-thumb" onclick="goToSlide(3)">
-                <img width="1400" height="1048" src="img/supraHarness4.jpg" alt="Harness view 4" loading="lazy">
+                <img width="2048" height="1328" src="img/supraMK3Harness4.webp" alt="Harness view 4" loading="lazy">
+              </div>
+              <div class="product-thumb" onclick="goToSlide(4)">
+                <img width="2400" height="1600" src="img/supraMK3Harness5.webp" alt="Harness view 5" loading="lazy">
+              </div>
+              <div class="product-thumb" onclick="goToSlide(5)">
+                <img width="2400" height="1600" src="img/supraMK3Harness6.webp" alt="Harness view 6" loading="lazy">
               </div>
             </div>
           </div>
@@ -781,7 +787,7 @@
 
     // === Image Slider ===
     let currentSlide = 0;
-    const slides = ['img/supraHarness1.jpg', 'img/supraHarness2.jpg', 'img/supraHarness3.jpg', 'img/supraHarness4.jpg'];
+    const slides = ['img/supraMK3Harness1.webp', 'img/supraMK3Harness2.webp', 'img/supraMK3Harness3.webp', 'img/supraMK3Harness4.webp', 'img/supraMK3Harness5.webp', 'img/supraMK3Harness6.webp'];
 
     function changeSlide(dir) {
       currentSlide = (currentSlide + dir + slides.length) % slides.length;
