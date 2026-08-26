@@ -119,8 +119,9 @@ const SVKMain = {
       const img = galleryMain.querySelector('img');
       if (!img) return;
 
-      // Click to toggle zoom
-      galleryMain.addEventListener('click', () => {
+      // Click to toggle zoom — ignore clicks on nav buttons so arrows don't also zoom
+      galleryMain.addEventListener('click', (e) => {
+        if (e.target.closest('.gallery-nav')) return;
         galleryMain.classList.toggle('zoomed');
         if (!galleryMain.classList.contains('zoomed')) {
           img.style.transformOrigin = '50% 50%';
