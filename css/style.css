@@ -3811,6 +3811,11 @@ main {
     transform: translateX(0);
   }
 
+  /* Reset desktop right-push so meta links (Builds, Blog, etc.) stay left-aligned on mobile */
+  .nav-item:not(.nav-item--meta) + .nav-item--meta {
+    margin-left: 0;
+  }
+
   .nav-link {
     padding: 0.875rem var(--space-md);
     font-size: var(--text-base);
@@ -3847,7 +3852,8 @@ main {
   }
 
   .has-dropdown.open .dropdown {
-    max-height: 400px;
+    max-height: 360px;
+    overflow-y: auto;
   }
 
   /* Larger touch targets for dropdown links */
