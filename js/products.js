@@ -277,7 +277,8 @@ const SVKProducts = {
     const galleryMain = document.getElementById('product-gallery-main');
     const mainImg = document.getElementById('product-main-image');
     if (galleryMain && mainImg) {
-      galleryMain.addEventListener('click', () => {
+      galleryMain.addEventListener('click', (e) => {
+        if (e.target.closest('.gallery-nav')) return;
         galleryMain.classList.toggle('zoomed');
         if (!galleryMain.classList.contains('zoomed')) {
           mainImg.style.transformOrigin = '50% 50%';
