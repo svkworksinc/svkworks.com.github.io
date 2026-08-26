@@ -54,6 +54,7 @@ const SVK_HEADER_HTML = `
               <li><a href="/milspec-connector.html">MILSpec Harness</a></li>
               <li><a href="/service-harness-conversion.html">Harness Conversion</a></li>
               <li><a href="/service-sc300-sc400-climate-lcd-repair.html">SC300/SC400 Climate Control LCD Repair</a></li>
+              <li><a href="/service-mk3-fuel-hanger-conversion.html">MK3 Supra Fuel Hanger Conversion</a></li>
             </ul>
           </li>
           <li class="nav-item has-dropdown">
@@ -61,7 +62,10 @@ const SVK_HEADER_HTML = `
             <ul class="dropdown">
               <li><a href="/3d-parts.html">3D Parts</a></li>
               <li><a href="/other-parts.html">Other Parts</a></li>
+              <li><a href="/sequoia-alternator-adapter.html">Sequoia Alternator Adapter</a></li>
               <li><a href="/relay-power-kits.html">Relay &amp; Power Kits</a></li>
+              <li><a href="/fuel-pump-relay-kit.html">Fuel Pump Relay Kit</a></li>
+              <li><a href="/fan-relay-kit.html">Fan Relay Kit</a></li>
               <li><a href="/used-parts.html">Used Parts</a></li>
             </ul>
           </li>
