@@ -14,9 +14,11 @@ const SVK_SUBCATEGORIES = {
 // Items with a hand-built dedicated page (better SEO) instead of the generic
 // part.html?id= fallback. Keyed by parts_catalog.slug.
 const SVK_CATALOG_DEDICATED_PAGES = {
-  'fuel-pump-relay-kit':          'fuel-pump-relay-kit.html',
-  'fan-relay-kit':                'fan-relay-kit.html',
-  'sequoia-alternator-adapter':   'sequoia-alternator-adapter.html',
+  'fuel-pump-relay-kit':              'fuel-pump-relay-kit.html',
+  'fan-relay-kit':                    'fan-relay-kit.html',
+  'sequoia-alternator-adapter':       'sequoia-alternator-adapter.html',
+  '2jz-power-steering-delete':        '2jz-power-steering-delete.html',
+  '1uz-3uz-power-steering-delete':    '1uz-3uz-power-steering-delete.html',
 };
 
 function svkSubcategoryInfo(subcategory) {
