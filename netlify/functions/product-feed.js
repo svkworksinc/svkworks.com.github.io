@@ -17,9 +17,11 @@ const supabase = createClient(
 const SITE_URL = 'https://www.svkworks.com';
 
 const DEDICATED_PAGES = {
-  'fuel-pump-relay-kit':        'fuel-pump-relay-kit.html',
-  'fan-relay-kit':              'fan-relay-kit.html',
-  'sequoia-alternator-adapter': 'sequoia-alternator-adapter.html',
+  'fuel-pump-relay-kit':              'fuel-pump-relay-kit.html',
+  'fan-relay-kit':                    'fan-relay-kit.html',
+  'sequoia-alternator-adapter':       'sequoia-alternator-adapter.html',
+  '2jz-power-steering-delete':        '2jz-power-steering-delete.html',
+  '1uz-3uz-power-steering-delete':    '1uz-3uz-power-steering-delete.html',
 };
 
 // Static products with their own dedicated pages that are not in Supabase.
@@ -48,6 +50,60 @@ const STATIC_PRODUCTS = [
       'Hand-assembled and tested at SVK Works',
     ],
     weightOz: 3,
+  },
+  {
+    id: '2jz-power-steering-delete',
+    title: '2JZ Power Steering Delete Kit | SVK Works',
+    description: 'Complete power steering delete kit for 2JZ-GTE and 2JZ-GE engines (VVT-i and Non-VVT-i). Includes billet aluminum idler pulley, aluminum spacers, and a new accessory belt sized for the delete configuration. Keeps A/C fully functional. Bolt-on installation, no fabrication required.',
+    link: `${SITE_URL}/2jz-power-steering-delete.html`,
+    image: `${SITE_URL}/img/filler.webp`,
+    price: 89.00,
+    condition: 'new',
+    mpn: 'SVK-2JZ-PSDELETE',
+    sku: 'SVK-2JZ-PSDELETE',
+    googleProductCategory: 'Vehicles &amp; Parts &gt; Vehicle Parts &amp; Accessories &gt; Engine &amp; Engine Parts',
+    productType: 'Power Steering Delete Kits',
+    highlights: [
+      'Billet aluminum idler pulley included',
+      'Aluminum spacers and all hardware included',
+      'New accessory belt (delete length) included',
+      'A/C compressor fully retained',
+      'Fits 2JZ-GTE and 2JZ-GE — VVT-i and Non-VVT-i',
+      'Compatible with MK4 Supra, MK3 Supra, IS300, GS300, SC300, and swap builds',
+      'Bolt-on installation — no fabrication required',
+    ],
+    weightOz: 24,
+  },
+  {
+    id: '1uz-3uz-power-steering-delete',
+    title: '1UZ / 3UZ Power Steering Delete Kit | SVK Works',
+    description: 'Power steering delete kit for 1UZ-FE and 3UZ-FE engines. Includes a billet aluminum bracket, mounting bolts, and an idler pulley to replace the power steering pump. Optional accessory belt available. Keeps A/C fully functional. Bolt-on installation for SC400, SC430, LS400, LS430, GS400, GS430, and swap applications.',
+    link: `${SITE_URL}/1uz-3uz-power-steering-delete.html`,
+    image: `${SITE_URL}/img/1UZ%203UZ%20Power%20Steering%20Delete%201.webp`,
+    additionalImages: [
+      `${SITE_URL}/img/1UZ%203UZ%20Power%20Steering%20Delete%202.webp`,
+      `${SITE_URL}/img/1UZ%203UZ%20Power%20Steering%20Delete%203.webp`,
+      `${SITE_URL}/img/1UZ%203UZ%20Power%20Steering%20Delete%204.webp`,
+      `${SITE_URL}/img/1UZ%203UZ%20Power%20Steering%20Delete%205.webp`,
+      `${SITE_URL}/img/1UZ%203UZ%20Power%20Steering%20Delete%206.webp`,
+    ],
+    price: 99.00,
+    condition: 'new',
+    mpn: 'SVK-1UZ3UZ-PSDELETE',
+    sku: 'SVK-1UZ3UZ-PSDELETE',
+    googleProductCategory: 'Vehicles &amp; Parts &gt; Vehicle Parts &amp; Accessories &gt; Engine &amp; Engine Parts',
+    productType: 'Power Steering Delete Kits',
+    highlights: [
+      'Billet aluminum bracket mounts to OEM PS pump location',
+      'Idler pulley included',
+      'All mounting bolts and hardware included',
+      'Optional accessory belt available — contact for fitment',
+      'A/C compressor fully retained',
+      'Fits 1UZ-FE and 3UZ-FE engines',
+      'Compatible with SC400, SC430, LS400, LS430, GS400, GS430, and 1UZ/3UZ swap builds',
+      'Bolt-on installation — no fabrication required',
+    ],
+    weightOz: 24,
   },
 ];
 
