@@ -77,7 +77,7 @@ const STATIC_PRODUCTS = [
   {
     id: '1uz-3uz-power-steering-delete',
     title: '1UZ / 3UZ Power Steering Delete Kit | SVK Works',
-    description: 'Power steering delete kit for 1UZ-FE and 3UZ-FE engines. Includes a billet aluminum bracket, mounting bolts, and an idler pulley to replace the power steering pump. Optional accessory belt available. Keeps A/C fully functional. Bolt-on installation for SC400, LS400, GS400, and swap applications.',
+    description: 'Power steering delete kit for 1UZ-FE and 3UZ-FE engines. Includes a billet aluminum bracket, mounting bolts, and an idler pulley to replace the power steering pump. Optional accessory belt available. Keeps A/C fully functional. Bolt-on installation for SC400, SC430, LS400, LS430, GS400, GS430, and swap applications.',
     link: `${SITE_URL}/1uz-3uz-power-steering-delete.html`,
     image: `${SITE_URL}/img/1UZ%203UZ%20Power%20Steering%20Delete%201.webp`,
     additionalImages: [
@@ -100,7 +100,7 @@ const STATIC_PRODUCTS = [
       'Optional accessory belt available — contact for fitment',
       'A/C compressor fully retained',
       'Fits 1UZ-FE and 3UZ-FE engines',
-      'Compatible with SC400, LS400, GS400, and 1UZ/3UZ swap builds',
+      'Compatible with SC400, SC430, LS400, LS430, GS400, GS430, and 1UZ/3UZ swap builds',
       'Bolt-on installation — no fabrication required',
     ],
     weightOz: 24,
