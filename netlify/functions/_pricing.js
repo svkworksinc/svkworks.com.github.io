@@ -25,7 +25,7 @@ const PRODUCT_PRICES = {
   'sc300-sc400-climate-lcd-repair': 109,
   'sequoia-alternator-adapter': 25,
   '2jz-power-steering-delete': 89,
-  '1uz-3uz-power-steering-delete': 99,
+  '1uz-3uz-power-steering-delete': 190,
 
   // TEMPORARY — live-payment end-to-end test item. $0.50 is the lowest
   // amount Stripe will actually process; true $0 isn't chargeable. Ships
