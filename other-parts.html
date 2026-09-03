@@ -3,18 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Other Parts &amp; Harnesses — SVK Works</title>
-  <meta name="description" content="Lexus SC400, SC300, Honda K-series, universal swap harnesses, and connector kits by SVK Works.">
+  <title>Parts — SVK Works</title>
+  <meta name="description" content="Engine parts, alternator adapters, relay kits, and accessories for Lexus and JDM swap builds. 2JZ and 1UZ power steering delete kits, harness adapters, and more from SVK Works.">
   <link rel="canonical" href="https://www.svkworks.com/other-parts.html">
   <meta property="og:site_name" content="SVK Works">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Other Parts &amp; Harnesses — SVK Works">
-  <meta property="og:description" content="Lexus SC400, SC300, Honda K-series, universal swap harnesses, and connector kits by SVK Works.">
+  <meta property="og:title" content="Parts — SVK Works">
+  <meta property="og:description" content="Engine parts, alternator adapters, relay kits, and accessories for Lexus and JDM swap builds from SVK Works.">
   <meta property="og:url" content="https://www.svkworks.com/other-parts.html">
   <meta property="og:image" content="https://www.svkworks.com/img/svk-logo.png">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Other Parts &amp; Harnesses — SVK Works">
-  <meta name="twitter:description" content="Lexus SC400, SC300, Honda K-series, universal swap harnesses, and connector kits by SVK Works.">
+  <meta name="twitter:title" content="Parts — SVK Works">
+  <meta name="twitter:description" content="Engine parts, alternator adapters, relay kits, and accessories for Lexus and JDM swap builds from SVK Works.">
   <meta name="twitter:image" content="https://www.svkworks.com/img/svk-logo.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -29,7 +29,7 @@
     "@type": "BreadcrumbList",
     "itemListElement": [
       { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.svkworks.com/" },
-      { "@type": "ListItem", "position": 2, "name": "Other Parts", "item": "https://www.svkworks.com/other-parts.html" }
+      { "@type": "ListItem", "position": 2, "name": "Parts", "item": "https://www.svkworks.com/other-parts.html" }
     ]
   }
   </script>
@@ -42,18 +42,22 @@
       <div class="container">
         <div class="breadcrumb" role="navigation" aria-label="breadcrumb">
           <a href="index.html">Home</a><span class="breadcrumb-sep" aria-hidden="true">/</span>
-          <span>Other Parts</span>
+          <span>Parts</span>
         </div>
-        <h1>Other Parts &amp; Harnesses</h1>
-        <p>Lexus SC400/SC300, Honda K-series, universal swap harnesses, connector kits, and accessories.</p>
+        <h1>Parts</h1>
+        <p>Engine kits, alternator adapters, relay kits, and accessories for Lexus and JDM swap builds.</p>
       </div>
     </div>
 
     <section class="section">
       <div class="container">
-        <div class="filter-bar">
+        <div class="filter-bar" style="flex-direction:column;align-items:flex-start;gap:var(--space-sm);">
+          <div class="filter-tabs" id="category-filter">
+            <button class="filter-tab active" data-cat="all">All Parts</button>
+            <button class="filter-tab" data-cat="engine-parts">Engine Parts</button>
+          </div>
           <div class="filter-tabs" id="engine-filter">
-            <button class="filter-tab active" data-engine="all">All</button>
+            <button class="filter-tab active" data-engine="all">All Engines</button>
             <button class="filter-tab" data-engine="1UZ-FE">1UZ-FE</button>
             <button class="filter-tab" data-engine="2JZ-GTE">2JZ-GTE</button>
             <button class="filter-tab" data-engine="K24">K-Series</button>
@@ -94,11 +98,13 @@
   <script src="js/parts-catalog.js?v=8ac0cf30"></script>
   <script>
     let allOtherParts = [];
+    let categoryFilter = 'all';
     let engineFilter = 'all';
     let currentSort = 'default';
 
     function render() {
       let parts = allOtherParts;
+      if (categoryFilter !== 'all') parts = parts.filter(p => p.category === categoryFilter);
       if (engineFilter !== 'all') parts = parts.filter(p => p.engine === engineFilter);
       if (currentSort === 'price-asc') parts = [...parts].sort((a, b) => a.price - b.price);
       else if (currentSort === 'price-desc') parts = [...parts].sort((a, b) => b.price - a.price);
@@ -138,6 +144,15 @@
       if (typeof SVKMain !== 'undefined') SVKMain.observeAnimations();
     }
 
+    document.querySelectorAll('#category-filter .filter-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('#category-filter .filter-tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        categoryFilter = tab.dataset.cat;
+        render();
+      });
+    });
+
     document.querySelectorAll('#engine-filter .filter-tab').forEach(tab => {
       tab.addEventListener('click', () => {
         document.querySelectorAll('#engine-filter .filter-tab').forEach(t => t.classList.remove('active'));
@@ -172,6 +187,7 @@
         price: 89,
         status: 'available',
         engine: '2JZ-GTE',
+        category: 'engine-parts',
         subcategory: 'other-parts',
       },
       {
@@ -183,11 +199,20 @@
         price: 190,
         status: 'available',
         engine: '1UZ-FE',
+        category: 'engine-parts',
         subcategory: 'other-parts',
       }
     ];
 
     document.addEventListener('DOMContentLoaded', async () => {
+      const urlCat = new URLSearchParams(window.location.search).get('cat');
+      if (urlCat) {
+        categoryFilter = urlCat;
+        document.querySelectorAll('#category-filter .filter-tab').forEach(t => {
+          t.classList.toggle('active', t.dataset.cat === urlCat);
+        });
+      }
+
       SVKAuth.init();
       await SVKAuth.ready;
       const catalogParts = await SVKAuth.getPartsCatalog('other-parts');
