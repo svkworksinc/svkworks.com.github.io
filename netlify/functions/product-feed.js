@@ -87,7 +87,7 @@ const STATIC_PRODUCTS = [
       `${SITE_URL}/img/1UZ%203UZ%20Power%20Steering%20Delete%205.webp`,
       `${SITE_URL}/img/1UZ%203UZ%20Power%20Steering%20Delete%206.webp`,
     ],
-    price: 99.00,
+    price: 190.00,
     condition: 'new',
     mpn: 'SVK-1UZ3UZ-PSDELETE',
     sku: 'SVK-1UZ3UZ-PSDELETE',
