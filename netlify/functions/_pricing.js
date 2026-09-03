@@ -24,6 +24,8 @@ const PRODUCT_PRICES = {
   'svk-tshirt': 25,
   'sc300-sc400-climate-lcd-repair': 109,
   'sequoia-alternator-adapter': 25,
+  '2jz-power-steering-delete': 89,
+  '1uz-3uz-power-steering-delete': 99,
 
   // TEMPORARY — live-payment end-to-end test item. $0.50 is the lowest
   // amount Stripe will actually process; true $0 isn't chargeable. Ships
@@ -60,6 +62,8 @@ const PRODUCT_WEIGHTS_OZ = {
   'svk-tshirt': 8,
   'sc300-sc400-climate-lcd-repair': 0, // mail-in service — customer ships to us; return shipping is included in service price, so no outbound weight at checkout
   'sequoia-alternator-adapter': 3,
+  '2jz-power-steering-delete': 24,       // pulley + spacers + belt, ~1.5 lb
+  '1uz-3uz-power-steering-delete': 24,   // bracket + bolts + pulley, ~1.5 lb
   'svk-live-payment-test': 1, // TEMPORARY — see PRODUCT_PRICES
 };
 const DEFAULT_ITEM_WEIGHT_OZ = 16;
