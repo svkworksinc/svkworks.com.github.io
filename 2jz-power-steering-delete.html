@@ -15,7 +15,7 @@
   <meta property="og:image" content="https://www.svkworks.com/img/svk-logo.webp">
   <meta property="og:price:amount" content="89.00">
   <meta property="og:price:currency" content="USD">
-  <meta property="og:availability" content="instock">
+  <meta property="og:availability" content="preorder">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="2JZ Power Steering Delete Kit — Billet Pulley, Spacers &amp; Belt | SVK Works">
   <meta name="twitter:description" content="Billet aluminum idler pulley, spacers, and a new accessory belt. Keeps A/C. Fits 2JZ-GTE and 2JZ-GE (VVT-i &amp; Non-VVT-i). MK4 Supra, IS300, GS300, SC300. $89.">
@@ -23,7 +23,7 @@
   <meta name="twitter:label1" content="Price">
   <meta name="twitter:data1" content="$89.00">
   <meta name="twitter:label2" content="Availability">
-  <meta name="twitter:data2" content="In Stock">
+  <meta name="twitter:data2" content="Coming Soon">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
@@ -45,7 +45,7 @@
       "@type": "Offer",
       "priceCurrency": "USD",
       "price": "89.00",
-      "availability": "https://schema.org/InStock",
+      "availability": "https://schema.org/PreOrder",
       "url": "https://www.svkworks.com/2jz-power-steering-delete.html",
       "priceValidUntil": "2027-12-31",
       "itemCondition": "https://schema.org/NewCondition",
@@ -170,7 +170,7 @@
 
           <!-- Product Info -->
           <div class="product-info fade-in-right">
-            <span class="badge badge-success">In Stock</span>
+            <span class="badge">Coming Soon</span>
             <h1>2JZ Power Steering Delete Kit</h1>
             <p style="color:var(--text-secondary);margin-bottom:var(--space-sm);font-size:var(--text-sm);">Fits 2JZ-GTE &amp; 2JZ-GE — VVT-i and Non-VVT-i</p>
             <div class="product-price-block">
@@ -231,19 +231,11 @@
               </table>
             </div>
 
-            <div style="display:flex;align-items:center;gap:var(--space-md);margin-top:var(--space-lg);">
-              <label for="qty-input" style="font-size:var(--text-sm);color:var(--text-secondary);white-space:nowrap;">Qty:</label>
-              <input type="number" id="qty-input" value="1" min="1" max="10" style="width:64px;padding:8px 10px;border:1px solid var(--border);border-radius:var(--radius-md);background:var(--bg-secondary);color:var(--text-primary);font-size:var(--text-sm);text-align:center;">
-            </div>
-
-            <div style="display:flex;gap:var(--space-md);flex-wrap:wrap;margin-top:var(--space-md);">
-              <button class="btn btn-primary" id="add-to-cart-btn" onclick="addToCart()" style="flex:1;min-width:180px;">
-                Add to Cart — $89
+            <div style="display:flex;gap:var(--space-md);flex-wrap:wrap;margin-top:var(--space-lg);">
+              <button class="btn btn-primary" disabled style="flex:1;min-width:180px;opacity:0.5;cursor:not-allowed;">
+                Coming Soon
               </button>
-              <a href="cart.html" class="btn btn-secondary" id="view-cart-btn" style="flex:1;min-width:180px;display:none;">
-                View Cart →
-              </a>
-              <a href="other-parts.html" class="btn btn-secondary" id="back-btn" style="flex:1;min-width:180px;">
+              <a href="other-parts.html" class="btn btn-secondary" style="flex:1;min-width:180px;">
                 ← Back to Parts
               </a>
             </div>
