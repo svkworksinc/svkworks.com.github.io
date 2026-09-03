@@ -60,11 +60,10 @@ const SVK_HEADER_HTML = `
           <li class="nav-item has-dropdown">
             <a href="/other-parts.html" class="nav-link" aria-haspopup="true">Parts</a>
             <ul class="dropdown">
+              <li><a href="/other-parts.html">All Parts</a></li>
+              <li><a href="/other-parts.html?cat=engine-parts">Engine Parts</a></li>
               <li><a href="/3d-parts.html">3D Parts</a></li>
-              <li><a href="/other-parts.html">Other Parts</a></li>
               <li><a href="/sequoia-alternator-adapter.html">Sequoia Alternator Adapter</a></li>
-              <li><a href="/2jz-power-steering-delete.html">2JZ Power Steering Delete Kit</a></li>
-              <li><a href="/1uz-3uz-power-steering-delete.html">1UZ/3UZ Power Steering Delete Kit</a></li>
               <li><a href="/relay-power-kits.html">Relay &amp; Power Kits</a></li>
               <li><a href="/fuel-pump-relay-kit.html">Fuel Pump Relay Kit</a></li>
               <li><a href="/fan-relay-kit.html">Fan Relay Kit</a></li>
