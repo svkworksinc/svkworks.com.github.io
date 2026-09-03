@@ -53,6 +53,7 @@ const STATIC_PRODUCTS = [
   },
   {
     id: '2jz-power-steering-delete',
+    inStock: false,
     title: '2JZ Power Steering Delete Kit | SVK Works',
     description: 'Complete power steering delete kit for 2JZ-GTE and 2JZ-GE engines (VVT-i and Non-VVT-i). Includes billet aluminum idler pulley, aluminum spacers, and a new accessory belt sized for the delete configuration. Keeps A/C fully functional. Bolt-on installation, no fabrication required.',
     link: `${SITE_URL}/2jz-power-steering-delete.html`,
@@ -124,7 +125,7 @@ function staticProductItem(product) {
     <description>${cdata(product.description)}</description>
     <link>${xmlEscape(product.link)}</link>
     <g:image_link>${xmlEscape(product.image)}</g:image_link>${extraImages}
-    <g:availability>in stock</g:availability>
+    <g:availability>${product.inStock === false ? 'out of stock' : 'in stock'}</g:availability>
     <g:price>${Number(product.price).toFixed(2)} USD</g:price>
     <g:condition>${xmlEscape(product.condition)}</g:condition>
     <g:brand>SVK Works</g:brand>
