@@ -1,25 +1,5 @@
 User-agent: *
 Allow: /
 
-# Admin tools — staff only
-Disallow: /admin.html
-Disallow: /admin-used-parts.html
-Disallow: /admin-parts-catalog.html
-Disallow: /invoice.html
-
-# Customer-private and transactional pages — nothing here is useful in search
-# results, and several are per-order URLs that shouldn't be indexed at all.
-Disallow: /account.html
-Disallow: /login.html
-Disallow: /cart.html
-Disallow: /checkout.html
-Disallow: /order-confirmation.html
-Disallow: /track-order.html
-
-# Internal design mockups and parameterised pages with no standalone content
-Disallow: /design-
-Disallow: /search.html
-Disallow: /product.html
-
 Sitemap: https://www.svkworks.com/sitemap.xml
 Sitemap: https://www.svkworks.com/sitemap-products.xml

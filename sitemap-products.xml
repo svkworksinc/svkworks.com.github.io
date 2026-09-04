@@ -150,7 +150,21 @@
   <!-- Adapter Harnesses -->
   <url>
     <loc>https://www.svkworks.com/sequoia-alternator-adapter.html</loc>
-    <lastmod>2026-08-25</lastmod>
+    <lastmod>2026-09-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Engine Parts -->
+  <url>
+    <loc>https://www.svkworks.com/2jz-power-steering-delete.html</loc>
+    <lastmod>2026-09-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.svkworks.com/1uz-3uz-power-steering-delete.html</loc>
+    <lastmod>2026-09-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
