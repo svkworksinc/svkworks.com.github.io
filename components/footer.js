@@ -42,7 +42,7 @@ const SVK_FOOTER_HTML = `
           <li><a href="/connectors.html">Connectors</a></li>
           <li><a href="/merchandise.html">Merchandise</a></li>
           <li><a href="/used-parts.html">Used Parts</a></li>
-          <li><a href="/other-parts.html">Other Parts</a></li>
+          <li><a href="/other-parts.html">Parts</a></li>
         </ul>
       </div>
       <div class="footer-col">
@@ -63,7 +63,7 @@ const SVK_FOOTER_HTML = `
         <ul>
           <li><a href="/about.html">About SVK</a></li>
           <li><a href="/terms.html">Terms &amp; Conditions</a></li>
-          <li><a href="/terms.html#privacy">Privacy Policy</a></li>
+          <li><a href="/privacy-policy.html">Privacy Policy</a></li>
           <li><a href="/terms.html#returns">Return Policy</a></li>
           <li><a href="/terms.html#shipping">Shipping Info</a></li>
         </ul>
