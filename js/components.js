@@ -37,6 +37,33 @@ const SVKComponents = {
     document.head.appendChild(script);
   },
 
+  _initCookieConsent() {
+    if (localStorage.getItem('svk-privacy-ok') === '1') return;
+    const banner = document.createElement('div');
+    banner.id = 'svk-cookie-banner';
+    banner.setAttribute('role', 'dialog');
+    banner.setAttribute('aria-label', 'Privacy notice');
+    banner.style.cssText = [
+      'position:fixed', 'bottom:0', 'left:0', 'right:0', 'z-index:9999',
+      'background:var(--bg-card)', 'border-top:2px solid var(--border-color)',
+      'padding:14px 24px', 'display:flex', 'align-items:center',
+      'gap:20px', 'justify-content:space-between',
+      'font-size:0.875rem', 'color:var(--text-secondary)',
+      'box-shadow:0 -4px 24px rgba(0,0,0,0.18)',
+    ].join(';');
+    banner.innerHTML = `
+      <p style="margin:0;flex:1;min-width:0;">
+        We use local storage to keep your cart and <a href="/privacy-policy.html" style="color:var(--magenta);">Google Analytics</a> (anonymized) to understand site traffic.
+        <a href="/privacy-policy.html" style="color:var(--magenta);white-space:nowrap;">Privacy Policy</a>
+      </p>
+      <button id="svk-cookie-accept" style="flex-shrink:0;background:var(--magenta);color:#fff;border:none;padding:8px 22px;border-radius:6px;cursor:pointer;font-weight:600;font-size:0.875rem;">Got it</button>`;
+    document.body.appendChild(banner);
+    document.getElementById('svk-cookie-accept').addEventListener('click', () => {
+      localStorage.setItem('svk-privacy-ok', '1');
+      banner.style.display = 'none';
+    });
+  },
+
   load() {
     this._loadAnalytics();
     this._loadErrorMonitoring();
@@ -55,6 +82,7 @@ const SVKComponents = {
 
     SVKCart.updateCartCount();
     this._bootstrapAuth();
+    this._initCookieConsent();
   },
 
   _bootstrapAuth() {

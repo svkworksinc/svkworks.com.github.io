@@ -17,6 +17,7 @@ const SVK_HEADER_HTML = `
           <a href="/support.html">Support</a>
           <a href="/resources.html">Resources</a>
           <a href="/terms.html">Terms &amp; Conditions</a>
+          <a href="/privacy-policy.html">Privacy Policy</a>
         </div>
       </div>
     </div>
