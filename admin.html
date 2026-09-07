@@ -7,7 +7,8 @@
   <meta name="robots" content="noindex, nofollow">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"></noscript>
   <link rel="stylesheet" href="css/style.css">
   <link rel="icon" href="img/svk-icon.png" type="image/png">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
@@ -68,6 +69,7 @@
     details.om-edit summary { cursor: pointer; font-size: var(--text-sm); color: var(--text-muted); }
     details.om-edit[open] summary { margin-bottom: var(--space-md); }
   </style>
+  <link rel="preload" href="/img/svk-logo-by-itself-5.webp" as="image" type="image/webp" fetchpriority="high">
 </head>
 <body>
   <datalist id="carrier-options">

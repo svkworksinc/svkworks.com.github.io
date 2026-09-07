@@ -49,12 +49,12 @@
 [[headers]]
   for = "/components/*"
   [headers.values]
-    Cache-Control = "public, max-age=86400"
+    Cache-Control = "public, max-age=31536000, immutable"
 
 [[headers]]
   for = "/data/*"
   [headers.values]
-    Cache-Control = "public, max-age=86400"
+    Cache-Control = "public, max-age=31536000, immutable"
 
 # HTML pages - short cache so updates show immediately
 [[headers]]
