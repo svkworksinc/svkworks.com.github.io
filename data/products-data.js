@@ -963,7 +963,7 @@ const SVK_PRODUCTS_DATA = {
       "description": "Detailed comparison chart of year-to-year changes for the MK4 Supra",
       "category": "MK4 Supra",
       "type": "pdf",
-      "file": "resources/JZA80 Model Differences Chart.pdf",
+      "file": "resources/JZa80 - Model Differences Chart.pdf",
       "size": "0.1 MB"
     },
     {
@@ -983,6 +983,42 @@ const SVK_PRODUCTS_DATA = {
       "type": "pdf",
       "file": "resources/Toyota Connectors.pdf",
       "size": "4.8 MB"
+    },
+    {
+      "id": "1993-celica-at180-st184-ewd",
+      "title": "1993 Toyota Celica EWD (AT180 / ST184)",
+      "description": "Electrical Wiring Diagram for the 1993 Toyota Celica — covers AT180 (3S-FE) and ST184 (3S-GTE) variants",
+      "category": "Celica",
+      "type": "pdf",
+      "file": "resources/1993 Celica AT180-ST184 - EWD.pdf",
+      "size": "3.8 MB"
+    },
+    {
+      "id": "1994-celica-at202-st204-ewd",
+      "title": "1994 Toyota Celica EWD (AT202 / ST204)",
+      "description": "Electrical Wiring Diagram for the 1994 Toyota Celica — covers AT202 (3S-FE) and ST204 (3S-GTE) variants",
+      "category": "Celica",
+      "type": "pdf",
+      "file": "resources/1994 - Celica - AT202-ST204 - EWD.pdf",
+      "size": "7.2 MB"
+    },
+    {
+      "id": "2015-sienna-2gr-ewd",
+      "title": "2015 Toyota Sienna EWD (2GR-FE)",
+      "description": "Electrical Wiring Diagram for the 2015 Toyota Sienna — covers the 2GR-FE V6 engine and chassis wiring",
+      "category": "Other Toyota",
+      "type": "pdf",
+      "file": "resources/2015 2GR Sienna EWD.pdf",
+      "size": "0.3 MB"
+    },
+    {
+      "id": "xx10x-ewd-book",
+      "title": "Lexus IS / Toyota xX10x EWD Book",
+      "description": "Electrical Wiring Diagram reference book covering the Toyota/Lexus xX10x chassis family (IS200, IS300, Altezza) — part number 6747603",
+      "category": "IS300",
+      "type": "pdf",
+      "file": "resources/xX10x Electrical Wiring Diagram Book 6747603.pdf",
+      "size": "12.0 MB"
     }
 ],
   "blogs": [
