@@ -22,12 +22,12 @@ const SVK_PRODUCTS_DATA = {
         "Chassis": "MK4 Supra (JZA80)",
         "Wire Type": "TXL Cross-Linked Polyethylene",
         "Connector Type": "OEM Toyota / Deutsch",
-        "ECU Compatibility": "Haltech, Link, AEM, Motec",
+        "ECU Compatibility": "Haltech Elite, Haltech Nexus S3/R3, Link G4X, AEM Infinity, MoTeC M1/M150, MaxxECU, ECUMaster, Syvecs S6",
         "Includes": "Engine harness, ECU plug, fuse box",
         "Lead Time": "5-7 weeks"
       },
       "options": {
-        "ECU Type": ["Haltech Elite", "Link G4X", "AEM Infinity", "Motec M1", "Other"],
+        "ECU Type": ["Haltech Elite 2500", "Haltech Nexus S3", "Haltech Nexus R3", "Link G4X", "AEM Infinity", "MoTeC M1", "MoTeC M150", "MaxxECU", "ECUMaster EMU Black", "FuelTech FT550", "Syvecs S6", "Other"],
         "VVTi": ["VVTi", "Non-VVTi"]
       },
       "inStock": true,
@@ -52,11 +52,11 @@ const SVK_PRODUCTS_DATA = {
         "Chassis": "MK4 Supra (JZA80)",
         "Wire Type": "TXL Cross-Linked Polyethylene",
         "Connector Type": "OEM Toyota",
-        "ECU Compatibility": "Haltech, Link, AEM, Motec",
+        "ECU Compatibility": "Haltech Elite, Haltech Nexus S3/R3, Link G4X, AEM Infinity, MoTeC M1/M150, MaxxECU, ECUMaster, Syvecs S6",
         "Lead Time": "5-7 weeks"
       },
       "options": {
-        "ECU Type": ["Haltech Elite", "Link G4X", "AEM Infinity", "Motec M1", "Other"],
+        "ECU Type": ["Haltech Elite 2500", "Haltech Nexus S3", "Haltech Nexus R3", "Link G4X", "AEM Infinity", "MoTeC M1", "MoTeC M150", "MaxxECU", "ECUMaster EMU Black", "FuelTech FT550", "Syvecs S6", "Other"],
         "VVTi": ["VVTi", "Non-VVTi"]
       },
       "inStock": true,
@@ -81,11 +81,11 @@ const SVK_PRODUCTS_DATA = {
         "Chassis": "MK4 Supra (JZA80)",
         "Wire Type": "TXL Cross-Linked Polyethylene",
         "Connector Type": "OEM Toyota / Deutsch",
-        "ECU Compatibility": "Haltech, Link, AEM",
+        "ECU Compatibility": "Haltech Elite, Haltech Nexus S3/R3, Link G4X, AEM Infinity, MoTeC M150, MaxxECU, Syvecs S6",
         "Lead Time": "5-7 weeks"
       },
       "options": {
-        "ECU Type": ["Haltech Elite", "Link G4X", "AEM Infinity", "Other"],
+        "ECU Type": ["Haltech Elite 2500", "Haltech Nexus S3", "Haltech Nexus R3", "Link G4X", "AEM Infinity", "MoTeC M150", "MaxxECU", "Syvecs S6", "Other"],
         "VVTi": ["VVTi", "Non-VVTi"]
       },
       "inStock": true,
@@ -110,12 +110,12 @@ const SVK_PRODUCTS_DATA = {
         "Chassis": "MK3 Supra (MA70 / JZA70)",
         "Wire Type": "TXL Cross-Linked Polyethylene",
         "Connector Type": "OEM Toyota / Deutsch",
-        "ECU Compatibility": "Haltech, Link, AEM, Motec",
+        "ECU Compatibility": "Haltech Elite, Haltech Nexus S3/R3, Link G4X, AEM Infinity, MoTeC M1/M150, MaxxECU, ECUMaster, Syvecs S6",
         "Includes": "Engine harness, chassis integration, fuse box",
         "Lead Time": "5-7 weeks"
       },
       "options": {
-        "ECU Type": ["Haltech Elite", "Link G4X", "AEM Infinity", "Motec M1", "Other"],
+        "ECU Type": ["Haltech Elite 2500", "Haltech Nexus S3", "Haltech Nexus R3", "Link G4X", "AEM Infinity", "MoTeC M1", "MoTeC M150", "MaxxECU", "ECUMaster EMU Black", "FuelTech FT550", "Syvecs S6", "Other"],
         "VVTi": ["VVTi", "Non-VVTi"],
         "Extras": ["AC Integration", "Power Steering", "Cruise Control"]
       },
@@ -141,11 +141,11 @@ const SVK_PRODUCTS_DATA = {
         "Chassis": "MK3 Supra (MA70 / JZA70)",
         "Wire Type": "TXL Cross-Linked Polyethylene",
         "Connector Type": "OEM Toyota",
-        "ECU Compatibility": "Haltech, Link, AEM",
+        "ECU Compatibility": "Haltech Elite, Haltech Nexus S3/R3, Link G4X, AEM Infinity, MoTeC M150, MaxxECU, Syvecs S6",
         "Lead Time": "5-7 weeks"
       },
       "options": {
-        "ECU Type": ["Haltech Elite", "Link G4X", "AEM Infinity", "Other"],
+        "ECU Type": ["Haltech Elite 2500", "Haltech Nexus S3", "Haltech Nexus R3", "Link G4X", "AEM Infinity", "MoTeC M150", "MaxxECU", "Syvecs S6", "Other"],
         "VVTi": ["VVTi", "Non-VVTi"]
       },
       "inStock": true,
@@ -170,11 +170,11 @@ const SVK_PRODUCTS_DATA = {
         "Chassis": "MK3 Supra (MA70)",
         "Wire Type": "TXL Cross-Linked Polyethylene",
         "Connector Type": "OEM Toyota",
-        "ECU Compatibility": "Haltech, Link, AEM, Megasquirt",
+        "ECU Compatibility": "Haltech Elite, Haltech Nexus S3/R3, Link G4X, AEM Infinity, MoTeC M150, MaxxECU, Megasquirt, Syvecs S6",
         "Lead Time": "5-7 weeks"
       },
       "options": {
-        "ECU Type": ["Haltech Elite", "Link G4X", "AEM Infinity", "Megasquirt", "Other"]
+        "ECU Type": ["Haltech Elite 2500", "Haltech Nexus S3", "Haltech Nexus R3", "Link G4X", "AEM Infinity", "MoTeC M150", "MaxxECU", "Megasquirt", "Syvecs S6", "Other"]
       },
       "inStock": true,
       "featured": false,
@@ -224,7 +224,7 @@ const SVK_PRODUCTS_DATA = {
         "Chassis": "Universal / Custom",
         "Wire Type": "TXL or Raychem Spec 44",
         "Connector Type": "OEM Toyota / Sumitomo",
-        "ECU Compatibility": "Haltech, Link, MaxxECU, ECUMaster, AEM, Motec",
+        "ECU Compatibility": "Haltech Elite, Haltech Nexus S3/R3, Link G4X, AEM Infinity, MoTeC M1/M150, MaxxECU, ECUMaster, FuelTech FT550, Syvecs S6",
         "Lead Time": "5-7 weeks"
       },
       "options": {},
@@ -250,7 +250,7 @@ const SVK_PRODUCTS_DATA = {
         "Chassis": "Universal",
         "Wire Type": "TXL Cross-Linked Polyethylene",
         "Connector Type": "OEM Toyota / Deutsch",
-        "ECU Compatibility": "Haltech, Link, AEM",
+        "ECU Compatibility": "Haltech Elite, Haltech Nexus S3/R3, Link G4X, AEM Infinity, MoTeC M150, MaxxECU, Syvecs S6",
         "Lead Time": "5-7 weeks"
       },
       "options": {},
