@@ -3422,6 +3422,20 @@ main {
   transform: scale(2.5);
 }
 
+.img-magnifier {
+  position: fixed;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  border: 3px solid rgba(255,255,255,0.6);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+  background-repeat: no-repeat;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 9999;
+  display: none;
+}
+
 .product-info .section-label {
   text-align: left;
 }

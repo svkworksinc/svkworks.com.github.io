@@ -115,36 +115,152 @@ const SVKMain = {
   },
 
   initProductGallery() {
+    const isMobile = 'ontouchstart' in window;
+
     document.querySelectorAll('.product-gallery-main').forEach(galleryMain => {
       const img = galleryMain.querySelector('img');
       if (!img) return;
 
-      // Click to toggle zoom — ignore clicks on nav buttons so arrows don't also zoom
-      galleryMain.addEventListener('click', (e) => {
-        if (e.target.closest('.gallery-nav')) return;
-        galleryMain.classList.toggle('zoomed');
-        if (!galleryMain.classList.contains('zoomed')) {
-          img.style.transformOrigin = '50% 50%';
+      if (!isMobile) {
+        // Desktop: click to toggle zoom, mousemove to pan
+        galleryMain.addEventListener('click', (e) => {
+          if (e.target.closest('.gallery-nav')) return;
+          galleryMain.classList.toggle('zoomed');
+          if (!galleryMain.classList.contains('zoomed')) {
+            img.style.transformOrigin = '50% 50%';
+          }
+        });
+
+        galleryMain.addEventListener('mousemove', (e) => {
+          if (!galleryMain.classList.contains('zoomed')) return;
+          const rect = galleryMain.getBoundingClientRect();
+          const x = ((e.clientX - rect.left) / rect.width) * 100;
+          const y = ((e.clientY - rect.top) / rect.height) * 100;
+          img.style.transformOrigin = `${x}% ${y}%`;
+        });
+
+        galleryMain.addEventListener('mousedown', () => {
+          if (galleryMain.classList.contains('zoomed')) galleryMain.classList.add('grabbing');
+        });
+        galleryMain.addEventListener('mouseup', () => galleryMain.classList.remove('grabbing'));
+        galleryMain.addEventListener('mouseleave', () => {
+          galleryMain.classList.remove('grabbing');
+          if (galleryMain.classList.contains('zoomed')) img.style.transformOrigin = '50% 50%';
+        });
+      } else {
+        // Mobile: pinch-to-zoom + long-press magnifier bubble
+        let scale = 1, tx = 0, ty = 0;
+        let pinchStartDist = 0, pinchStartScale = 1;
+        let panStartX = 0, panStartY = 0, panStartTx = 0, panStartTy = 0;
+        let longPressTimer = null, longPressActive = false;
+        let lastTap = 0, touchStartX = 0, touchStartY = 0;
+        const MAG_SIZE = 150, MAG_ZOOM = 3, LONG_PRESS_MS = 400, MOVE_THRESH = 8;
+
+        let magnifier = document.getElementById('svk-img-magnifier');
+        if (!magnifier) {
+          magnifier = document.createElement('div');
+          magnifier.id = 'svk-img-magnifier';
+          magnifier.className = 'img-magnifier';
+          document.body.appendChild(magnifier);
         }
-      });
 
-      // Pan by moving the cursor while zoomed
-      galleryMain.addEventListener('mousemove', (e) => {
-        if (!galleryMain.classList.contains('zoomed')) return;
-        const rect = galleryMain.getBoundingClientRect();
-        const x = ((e.clientX - rect.left) / rect.width) * 100;
-        const y = ((e.clientY - rect.top) / rect.height) * 100;
-        img.style.transformOrigin = `${x}% ${y}%`;
-      });
+        function applyTransform(animated) {
+          img.style.transition = animated ? 'transform 0.3s ease' : 'none';
+          img.style.transform = scale === 1 ? '' : `translate(${tx}px,${ty}px) scale(${scale})`;
+        }
 
-      galleryMain.addEventListener('mousedown', () => {
-        if (galleryMain.classList.contains('zoomed')) galleryMain.classList.add('grabbing');
-      });
-      galleryMain.addEventListener('mouseup', () => galleryMain.classList.remove('grabbing'));
-      galleryMain.addEventListener('mouseleave', () => {
-        galleryMain.classList.remove('grabbing');
-        if (galleryMain.classList.contains('zoomed')) img.style.transformOrigin = '50% 50%';
-      });
+        function showMagnifier(clientX, clientY) {
+          const rect = galleryMain.getBoundingClientRect();
+          const natW = img.naturalWidth || rect.width;
+          const natH = img.naturalHeight || rect.height;
+          const cAR = rect.width / rect.height, iAR = natW / natH;
+          let rW, rH, rX, rY;
+          if (iAR > cAR) { rW = rect.width; rH = rect.width / iAR; }
+          else { rH = rect.height; rW = rect.height * iAR; }
+          rX = (rect.width - rW) / 2;
+          rY = (rect.height - rH) / 2;
+          const px = clientX - rect.left - rX;
+          const py = clientY - rect.top - rY;
+          const half = MAG_SIZE / 2;
+          magnifier.style.backgroundImage = `url('${img.src}')`;
+          magnifier.style.backgroundSize = `${rW * MAG_ZOOM}px ${rH * MAG_ZOOM}px`;
+          magnifier.style.backgroundPosition = `${half - px * MAG_ZOOM}px ${half - py * MAG_ZOOM}px`;
+          magnifier.style.left = `${clientX - half}px`;
+          magnifier.style.top = `${clientY - MAG_SIZE - 24}px`;
+          magnifier.style.display = 'block';
+        }
+
+        galleryMain.addEventListener('touchstart', (e) => {
+          if (e.target.closest('.gallery-nav')) return;
+          if (e.touches.length === 2) {
+            clearTimeout(longPressTimer);
+            longPressActive = false;
+            magnifier.style.display = 'none';
+            pinchStartDist = Math.hypot(
+              e.touches[0].clientX - e.touches[1].clientX,
+              e.touches[0].clientY - e.touches[1].clientY
+            );
+            pinchStartScale = scale;
+            e.preventDefault();
+          } else if (e.touches.length === 1) {
+            touchStartX = e.touches[0].clientX;
+            touchStartY = e.touches[0].clientY;
+            panStartX = touchStartX;
+            panStartY = touchStartY;
+            panStartTx = tx;
+            panStartTy = ty;
+            longPressTimer = setTimeout(() => {
+              longPressActive = true;
+              showMagnifier(touchStartX, touchStartY);
+            }, LONG_PRESS_MS);
+          }
+        }, { passive: false });
+
+        galleryMain.addEventListener('touchmove', (e) => {
+          if (e.target.closest('.gallery-nav')) return;
+          if (e.touches.length === 2) {
+            clearTimeout(longPressTimer);
+            const dist = Math.hypot(
+              e.touches[0].clientX - e.touches[1].clientX,
+              e.touches[0].clientY - e.touches[1].clientY
+            );
+            scale = Math.min(4, Math.max(1, pinchStartScale * (dist / pinchStartDist)));
+            if (scale === 1) { tx = 0; ty = 0; }
+            applyTransform(false);
+            e.preventDefault();
+          } else if (e.touches.length === 1) {
+            const dx = e.touches[0].clientX - touchStartX;
+            const dy = e.touches[0].clientY - touchStartY;
+            if (Math.hypot(dx, dy) > MOVE_THRESH) clearTimeout(longPressTimer);
+            if (longPressActive) {
+              showMagnifier(e.touches[0].clientX, e.touches[0].clientY);
+              e.preventDefault();
+            } else if (scale > 1) {
+              tx = panStartTx + (e.touches[0].clientX - panStartX);
+              ty = panStartTy + (e.touches[0].clientY - panStartY);
+              applyTransform(false);
+              e.preventDefault();
+            }
+          }
+        }, { passive: false });
+
+        galleryMain.addEventListener('touchend', (e) => {
+          clearTimeout(longPressTimer);
+          if (longPressActive) {
+            longPressActive = false;
+            magnifier.style.display = 'none';
+            return;
+          }
+          if (e.changedTouches.length === 1 && e.touches.length === 0) {
+            const now = Date.now();
+            if (now - lastTap < 300) {
+              scale = 1; tx = 0; ty = 0;
+              applyTransform(true);
+            }
+            lastTap = now;
+          }
+        }, { passive: true });
+      }
     });
 
     // Thumbnail switching for static pages
