@@ -823,6 +823,15 @@ const SVK_PRODUCTS_DATA = {
       "size": "2.6 MB"
     },
     {
+      "id": "1988-mr2-aw11-ewd",
+      "title": "1988 Toyota MR2 AW11 EWD",
+      "description": "Factory electrical wiring diagram for the MK1 AW11 platform (4A-GE / 4A-GZE supercharged)",
+      "category": "MR2",
+      "type": "pdf",
+      "file": "resources/1988 Toyota MR2 AW11.pdf",
+      "size": "23.4 MB"
+    },
+    {
       "id": "1991-mr2-ewd",
       "title": "1991 Toyota MR2 EWD",
       "description": "Complete Electrical Wiring Diagram for the SW20 MR2 platform",
