@@ -29,11 +29,20 @@ function svkFormatCatalogPrice(price) {
   return '$' + Number(price || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
-function svkCatalogStatusBadge(status, extraStyle) {
-  if (status === 'coming_soon') {
-    return `<span class="badge" style="background:rgba(234,179,8,0.1);color:#eab308;border-color:rgba(234,179,8,0.3);${extraStyle || ''}">Coming Soon</span>`;
+function svkCatalogStatusBadge(status, extraStyle, stockQty) {
+  const s = extraStyle || '';
+  if (status === 'coming_soon')
+    return `<span class="badge" style="background:rgba(234,179,8,0.1);color:#eab308;border-color:rgba(234,179,8,0.3);${s}">Coming Soon</span>`;
+  if (status === 'out_of_stock')
+    return `<span class="badge" style="background:rgba(239,68,68,0.1);color:#ef4444;border-color:rgba(239,68,68,0.3);${s}">Out of Stock</span>`;
+  if (status === 'back_order_only')
+    return `<span class="badge" style="background:rgba(139,92,246,0.1);color:#8b5cf6;border-color:rgba(139,92,246,0.3);${s}">Back Order Only</span>`;
+  if (status === 'limited_stock') {
+    const label = stockQty != null ? `Limited Stock — ${stockQty} left` : 'Limited Stock';
+    return `<span class="badge" style="background:rgba(249,115,22,0.1);color:#f97316;border-color:rgba(249,115,22,0.3);${s}">${label}</span>`;
   }
-  return `<span class="badge badge-success" style="${extraStyle || ''}">Available</span>`;
+  const label = stockQty != null ? `In Stock — ${stockQty}` : 'In Stock';
+  return `<span class="badge badge-success" style="${s}">${label}</span>`;
 }
 
 function svkCatalogPartUrl(part) {
@@ -64,18 +73,18 @@ async function initPartDetail(lookup) {
   document.getElementById('part-breadcrumb-title').textContent = part.title;
   document.getElementById('part-title').textContent = part.title;
   document.getElementById('part-description').textContent = part.description || '';
-  document.getElementById('part-status-badge').innerHTML = svkCatalogStatusBadge(part.status, 'font-size:13px;padding:5px 12px;');
+  document.getElementById('part-status-badge').innerHTML = svkCatalogStatusBadge(part.status, 'font-size:13px;padding:5px 12px;', part.stock_quantity);
   document.getElementById('back-link').href = sub.page;
   document.getElementById('back-link').textContent = `← Back to ${sub.label}`;
 
   const priceEl = document.getElementById('part-price');
   const btn = document.getElementById('add-to-cart-btn');
 
-  if (part.status !== 'available') {
-    priceEl.textContent = 'Coming Soon';
-    btn.textContent = 'Coming Soon';
-    btn.disabled = true;
-  } else {
+  const isPurchasable = part.status === 'available' || part.status === 'limited_stock';
+  const isOutOfStock  = part.status === 'out_of_stock';
+  const isBackOrder   = part.status === 'back_order_only';
+
+  if (isPurchasable) {
     priceEl.textContent = svkFormatCatalogPrice(part.price);
     const inCart = typeof SVKCart !== 'undefined' && SVKCart.getCart().some(i => i.id === part.id);
     if (inCart) {
@@ -96,6 +105,15 @@ async function initPartDetail(lookup) {
         initPartDetail(lookup); // re-render button state (In Cart)
       };
     }
+  } else if (isBackOrder) {
+    priceEl.textContent = svkFormatCatalogPrice(part.price);
+    btn.textContent = 'Contact to Order';
+    btn.disabled = false;
+    btn.onclick = () => { window.location.href = 'contact.html'; };
+  } else {
+    priceEl.textContent = isOutOfStock ? 'Out of Stock' : 'Coming Soon';
+    btn.textContent = isOutOfStock ? 'Out of Stock' : 'Coming Soon';
+    btn.disabled = true;
   }
 
   const images = part.images && part.images.length ? part.images : ['img/filler.webp'];
@@ -108,13 +126,14 @@ async function initPartDetail(lookup) {
       </div>`).join('')
     : '';
 
+  const seoAvailability = isPurchasable ? 'in_stock' : isOutOfStock ? 'sold_out' : isBackOrder ? 'back_order' : 'coming_soon';
   svkSyncProductSeo({
     id: part.id,
     title: part.title,
     description: part.description,
     image: images[0],
-    price: part.status === 'available' ? part.price : null,
-    availability: part.status === 'available' ? 'in_stock' : 'coming_soon',
+    price: isPurchasable || isBackOrder ? part.price : null,
+    availability: seoAvailability,
   });
   svkBindShareButton('share-link-btn');
 }
@@ -157,7 +176,7 @@ function svkSetJsonLd(data) {
   el.textContent = JSON.stringify(data);
 }
 
-// availability: 'in_stock' | 'coming_soon' | 'sold_out'
+// availability: 'in_stock' | 'coming_soon' | 'sold_out' | 'back_order'
 function svkSyncProductSeo({ id, title, description, image, price, availability, condition = 'new' }) {
   const url = window.location.origin + window.location.pathname + window.location.search;
   const desc = (description && description.trim()) || `${title} — available from SVK Works.`;
@@ -193,9 +212,10 @@ function svkSyncProductSeo({ id, title, description, image, price, availability,
   svkSetMeta('name', 'robots', availability === 'in_stock' ? 'index, follow' : 'noindex, follow');
 
   const schemaAvailability = {
-    in_stock: 'https://schema.org/InStock',
-    coming_soon: 'https://schema.org/PreOrder',
-    sold_out: 'https://schema.org/OutOfStock',
+    in_stock:     'https://schema.org/InStock',
+    coming_soon:  'https://schema.org/PreOrder',
+    sold_out:     'https://schema.org/OutOfStock',
+    back_order:   'https://schema.org/BackOrder',
   }[availability] || 'https://schema.org/OutOfStock';
 
   const jsonLd = {
