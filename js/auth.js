@@ -421,6 +421,7 @@ const SVKAuth = {
       weight_oz: part.weightOz || 16,
       images: part.images || [],
       status: part.status || 'coming_soon',
+      stock_quantity: part.stockQuantity ?? part.stock_quantity ?? null,
     }).select().single();
   },
 
