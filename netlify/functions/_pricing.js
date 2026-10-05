@@ -219,7 +219,7 @@ async function validateCart(items, supabase) {
     if (usedPart && usedPart.status !== 'available') {
       throw new Error(`"${usedPart.title}" just sold and is no longer available.`);
     }
-    if (catalogPart && catalogPart.status !== 'available') {
+    if (catalogPart && catalogPart.status !== 'available' && catalogPart.status !== 'limited_stock') {
       throw new Error(`"${catalogPart.title}" isn't available for purchase yet.`);
     }
 

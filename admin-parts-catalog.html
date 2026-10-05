@@ -111,9 +111,18 @@
                 <label class="form-label" for="pf-status">Status <span style="color:var(--magenta);">*</span></label>
                 <select class="form-input" id="pf-status">
                   <option value="coming_soon">Coming Soon</option>
-                  <option value="available">Available (purchasable)</option>
+                  <option value="available">Available</option>
+                  <option value="limited_stock">Limited Stock</option>
+                  <option value="out_of_stock">Out of Stock</option>
+                  <option value="back_order_only">Back Order Only</option>
                 </select>
               </div>
+            </div>
+
+            <div class="form-group" id="pf-stock-qty-group" style="display:none;">
+              <label class="form-label" for="pf-stock-qty">Units in Stock</label>
+              <input type="number" class="form-input" id="pf-stock-qty" min="0" step="1" placeholder="e.g. 12">
+              <span class="form-hint">Leave blank to show "In Stock" without a count. Required for Limited Stock.</span>
             </div>
 
             <div class="form-row-2">
@@ -243,6 +252,8 @@
       document.getElementById('pf-subcategory').value = '3d-parts';
       document.getElementById('pf-price').value = '';
       document.getElementById('pf-status').value = 'coming_soon';
+      document.getElementById('pf-stock-qty').value = '';
+      document.getElementById('pf-stock-qty-group').style.display = 'none';
       document.getElementById('pf-engine').value = '';
       document.getElementById('pf-weight').value = 16;
       document.getElementById('pf-slug').value = '';
@@ -262,6 +273,9 @@
       document.getElementById('pf-subcategory').value = part.subcategory;
       document.getElementById('pf-price').value = part.price;
       document.getElementById('pf-status').value = part.status;
+      document.getElementById('pf-stock-qty').value = part.stock_quantity != null ? part.stock_quantity : '';
+      document.getElementById('pf-stock-qty-group').style.display =
+        (part.status === 'available' || part.status === 'limited_stock') ? 'block' : 'none';
       document.getElementById('pf-engine').value = part.engine || '';
       document.getElementById('pf-weight').value = part.weight_oz || 16;
       document.getElementById('pf-slug').value = part.slug || '';
@@ -281,15 +295,18 @@
       const subcategory = document.getElementById('pf-subcategory').value;
       const price = parseFloat(document.getElementById('pf-price').value) || 0;
       const status = document.getElementById('pf-status').value;
+      const stockQtyRaw = document.getElementById('pf-stock-qty').value.trim();
+      const stock_quantity = stockQtyRaw !== '' ? parseInt(stockQtyRaw, 10) : null;
       const engine = document.getElementById('pf-engine').value.trim();
       const weightOz = parseInt(document.getElementById('pf-weight').value, 10) || 16;
       const slugInput = document.getElementById('pf-slug').value.trim();
       const description = document.getElementById('pf-description').value.trim();
       document.getElementById('form-error').style.display = 'none';
 
+      const needsPrice = status === 'available' || status === 'limited_stock' || status === 'back_order_only';
       if (!title) return showFormError('Enter a title.');
-      if (status === 'available' && (!price || price <= 0)) return showFormError('Enter a price for an item marked Available.');
-      if (status === 'available' && !keptImages.length && !stagedFiles.length) return showFormError('Add at least one photo for an item marked Available.');
+      if (needsPrice && (!price || price <= 0)) return showFormError('Enter a price for this status.');
+      if (needsPrice && !keptImages.length && !stagedFiles.length) return showFormError('Add at least one photo for a purchasable item.');
 
       const submitBtn = document.getElementById('pf-submit-btn');
       submitBtn.disabled = true;
@@ -308,11 +325,11 @@
         let result;
         if (editingId) {
           result = await SVKAuth.updatePartCatalogItem(editingId, {
-            title, subcategory, price, status, engine: engine || null,
+            title, subcategory, price, status, stock_quantity, engine: engine || null,
             weight_oz: weightOz, slug, description, images,
           });
         } else {
-          result = await SVKAuth.savePartCatalogItem({ title, subcategory, price, status, engine, weightOz, slug, description, images });
+          result = await SVKAuth.savePartCatalogItem({ title, subcategory, price, status, stock_quantity, engine, weightOz, slug, description, images });
         }
         if (result.error) throw new Error(result.error.message);
 
@@ -326,6 +343,11 @@
         submitBtn.disabled = false;
         submitBtn.textContent = editingId ? 'Save Changes' : 'Add Item';
       }
+    });
+
+    document.getElementById('pf-status').addEventListener('change', function() {
+      const showQty = this.value === 'available' || this.value === 'limited_stock';
+      document.getElementById('pf-stock-qty-group').style.display = showQty ? 'block' : 'none';
     });
 
     async function loadParts() {
@@ -374,11 +396,11 @@
                 </div>
               </div>
             </div>
-            <div class="order-card-right">${svkCatalogStatusBadge(part.status)}</div>
+            <div class="order-card-right">${svkCatalogStatusBadge(part.status, '', part.stock_quantity)}</div>
           </div>
           <div style="display:flex;gap:8px;margin-top:var(--space-md);flex-wrap:wrap;">
             <button class="btn btn-outline btn-sm" data-action="edit">Edit</button>
-            <button class="btn btn-outline btn-sm" data-action="toggle-status">${part.status === 'available' ? 'Mark Coming Soon' : 'Mark Available'}</button>
+            <button class="btn btn-outline btn-sm" data-action="toggle-status">${part.status === 'available' ? 'Mark Out of Stock' : 'Mark Available'}</button>
             <button class="btn btn-outline btn-sm" data-action="delete" style="color:#ef4444;border-color:rgba(239,68,68,0.3);">Delete</button>
           </div>
         </div>`;
@@ -396,7 +418,7 @@
           const id = btn.closest('.order-card').dataset.id;
           const part = allParts.find(p => p.id === id);
           if (!part) return;
-          const newStatus = part.status === 'available' ? 'coming_soon' : 'available';
+          const newStatus = part.status === 'available' ? 'out_of_stock' : 'available';
           if (newStatus === 'available' && (!part.price || part.price <= 0)) {
             alert('Set a price above 0 before marking this item Available.');
             return;
