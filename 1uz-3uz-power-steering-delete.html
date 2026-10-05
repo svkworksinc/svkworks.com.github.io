@@ -198,7 +198,7 @@
 
           <!-- Product Info -->
           <div class="product-info fade-in-right">
-            <span class="badge badge-success">In Stock</span>
+            <span class="badge badge-success" id="stock-badge">In Stock</span>
             <h1>1UZ / 3UZ Power Steering Delete Kit</h1>
             <p style="color:var(--text-secondary);margin-bottom:var(--space-sm);font-size:var(--text-sm);">Fits 1UZ-FE &amp; 3UZ-FE — SC400, SC430, LS400, LS430, GS400, GS430, and swap applications</p>
             <div class="product-price-block">
@@ -377,6 +377,8 @@
 
   <div id="footer-placeholder"></div>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="js/auth.js?v=f9a5c12a"></script>
   <script defer src="components/header.js?v=c947f061"></script>
   <script defer src="components/footer.js?v=a7276d21"></script>
   <script defer src="js/cart.js?v=8cff9968"></script>
@@ -445,7 +447,46 @@
       updateCartBtn();
     }
 
-    document.addEventListener('DOMContentLoaded', updateCartBtn);
+    document.addEventListener('DOMContentLoaded', async () => {
+      updateCartBtn();
+      // Apply stock override from Supabase if set
+      try {
+        SVKAuth.init();
+        await SVKAuth.ready;
+        const overrides = await SVKAuth.getProductStockOverrides();
+        const ov = overrides.find(r => r.product_id === PRODUCT.id);
+        if (!ov) return;
+        const badge  = document.getElementById('stock-badge');
+        const addBtn = document.getElementById('add-to-cart-btn');
+        const qty    = ov.stock_quantity;
+        if (ov.status === 'available') {
+          badge.className = 'badge badge-success';
+          badge.textContent = qty != null ? `In Stock — ${qty}` : 'In Stock';
+        } else if (ov.status === 'limited_stock') {
+          badge.className = 'badge';
+          badge.style.cssText = 'background:rgba(249,115,22,0.1);color:#f97316;border-color:rgba(249,115,22,0.3);';
+          badge.textContent = qty != null ? `Limited Stock — ${qty} left` : 'Limited Stock';
+        } else if (ov.status === 'out_of_stock') {
+          badge.className = 'badge';
+          badge.style.cssText = 'background:rgba(239,68,68,0.1);color:#ef4444;border-color:rgba(239,68,68,0.3);';
+          badge.textContent = 'Out of Stock';
+          addBtn.textContent = 'Out of Stock';
+          addBtn.disabled = true;
+          addBtn.style.opacity = '0.5';
+          addBtn.style.cursor = 'not-allowed';
+          addBtn.onclick = null;
+        } else if (ov.status === 'back_order_only') {
+          badge.className = 'badge';
+          badge.style.cssText = 'background:rgba(139,92,246,0.1);color:#8b5cf6;border-color:rgba(139,92,246,0.3);';
+          badge.textContent = 'Back Order Only';
+          addBtn.textContent = 'Contact to Order';
+          addBtn.disabled = false;
+          addBtn.style.opacity = '';
+          addBtn.style.cursor = '';
+          addBtn.onclick = () => { window.location.href = 'contact.html'; };
+        }
+      } catch (_) {}
+    });
 
     document.getElementById('share-link-btn').addEventListener('click', () => {
       navigator.clipboard.writeText(window.location.href).then(() => {
