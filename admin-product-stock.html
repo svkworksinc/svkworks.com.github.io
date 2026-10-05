@@ -28,25 +28,27 @@
       border-bottom: 1px solid var(--border-color); vertical-align: middle;
     }
     .ps-table tr:last-child td { border-bottom: none; }
-    .ps-table tr:hover td { background: var(--bg-secondary); }
+    .ps-table tr:not(.ps-section-header):hover td { background: var(--bg-secondary); }
     .ps-product-name { font-weight: var(--weight-medium); }
     .ps-product-id { font-size: var(--text-xs); color: var(--text-muted); font-family: var(--font-mono); margin-top: 2px; }
 
-    .ps-select { width: 100%; max-width: 200px; }
+    .ps-section-header td {
+      background: var(--bg-secondary); font-size: var(--text-xs); font-weight: var(--weight-bold);
+      text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-muted);
+      padding: 8px 12px; border-bottom: 1px solid var(--border-color);
+    }
+
+    .ps-select { width: 100%; max-width: 210px; }
     .ps-qty { width: 80px; }
 
-    .ps-status-available  { color: #4ade80; }
-    .ps-status-limited    { color: #f97316; }
-    .ps-status-out        { color: #ef4444; }
-    .ps-status-back_order { color: #8b5cf6; }
-
     .ps-save-btn { min-width: 72px; }
-    .ps-save-btn.saved { color: #4ade80; }
-    .ps-overridden { font-size: var(--text-xs); color: var(--text-muted); margin-top: 3px; }
+    .ps-save-btn.saved { color: #4ade80; border-color: #4ade80; }
+    .ps-note { font-size: var(--text-xs); color: var(--text-muted); margin-top: 3px; }
 
     @media (max-width: 680px) {
       .ps-table thead { display: none; }
       .ps-table tr { display: block; padding: var(--space-md) 0; border-bottom: 1px solid var(--border-color); }
+      .ps-table tr.ps-section-header { display: block; }
       .ps-table td { display: block; padding: 4px 12px; border-bottom: none; }
       .ps-select { max-width: 100%; }
     }
@@ -95,13 +97,13 @@
       </div>
 
       <section class="section">
-        <div class="container" style="max-width:900px;">
+        <div class="container" style="max-width:960px;">
 
           <div style="margin-bottom:var(--space-2xl);">
             <h1 style="font-size:var(--text-2xl);margin-bottom:var(--space-sm);">Product Stock</h1>
             <p style="color:var(--text-secondary);font-size:var(--text-sm);">
-              Set availability and stock count for harness &amp; standalone products.
-              Changes are saved to Supabase and override the default In Stock flag on every product page.
+              Set availability and stock count for all products — harnesses, parts catalog, connectors, and kits.
+              Leave "Qty" blank to show the status label without a number.
             </p>
           </div>
 
@@ -113,7 +115,7 @@
                 <tr>
                   <th>Product</th>
                   <th>Status</th>
-                  <th style="width:100px;">In Stock</th>
+                  <th style="width:96px;">Qty</th>
                   <th style="width:96px;"></th>
                 </tr>
               </thead>
@@ -125,11 +127,6 @@
             </table>
           </div>
 
-          <p style="margin-top:var(--space-lg);font-size:var(--text-xs);color:var(--text-muted);">
-            Leave "In Stock" blank to show the status without a count.
-            The count shows on the product detail page next to the status badge.
-          </p>
-
         </div>
       </section>
     </div>
@@ -137,82 +134,134 @@
   </main>
 
   <script>
-    // ---- Status label helpers ----
-    const STATUS_LABELS = {
-      available:       'In Stock / Made to Order',
-      limited_stock:   'Limited Stock',
-      out_of_stock:    'Out of Stock',
-      back_order_only: 'Back Order Only',
-    };
-    const STATUS_CLASSES = {
-      available:       'ps-status-available',
-      limited_stock:   'ps-status-limited',
-      out_of_stock:    'ps-status-out',
-      back_order_only: 'ps-status-back_order',
-    };
+    // ---- Helpers ----
 
-    function statusBadgeHtml(status) {
-      const label = STATUS_LABELS[status] || status;
-      const cls   = STATUS_CLASSES[status] || '';
-      return `<span class="${cls}">${label}</span>`;
+    function harnessSel(id, status) {
+      const opts = [
+        ['available',       'In Stock / Made to Order'],
+        ['limited_stock',   'Limited Stock'],
+        ['out_of_stock',    'Out of Stock'],
+        ['back_order_only', 'Back Order Only'],
+      ];
+      return `<select class="form-input ps-select ps-status-sel" data-id="${id}" data-kind="harness">${
+        opts.map(([v,l]) => `<option value="${v}"${status===v?' selected':''}>${l}</option>`).join('')
+      }</select>`;
+    }
+
+    function catalogSel(id, status) {
+      const opts = [
+        ['available',       'In Stock'],
+        ['limited_stock',   'Limited Stock'],
+        ['out_of_stock',    'Out of Stock'],
+        ['back_order_only', 'Back Order Only'],
+        ['coming_soon',     'Coming Soon'],
+      ];
+      return `<select class="form-input ps-select ps-status-sel" data-id="${id}" data-kind="catalog">${
+        opts.map(([v,l]) => `<option value="${v}"${status===v?' selected':''}>${l}</option>`).join('')
+      }</select>`;
+    }
+
+    function qtyInput(id, qty) {
+      return `<input type="number" class="form-input ps-qty ps-qty-inp" data-id="${id}"
+        value="${qty ?? ''}" min="0" step="1" placeholder="—">`;
+    }
+
+    function sectionRow(label) {
+      return `<tr class="ps-section-header"><td colspan="4">${label}</td></tr>`;
+    }
+
+    function productRow(id, name, idLabel, selHtml, qtyHtml, note) {
+      return `
+        <tr data-row-id="${id}">
+          <td>
+            <div class="ps-product-name">${name}</div>
+            <div class="ps-product-id">${idLabel}</div>
+          </td>
+          <td>
+            ${selHtml}
+            <div class="ps-note" id="ps-note-${id}">${note}</div>
+          </td>
+          <td>${qtyHtml}</td>
+          <td><button class="btn btn-sm btn-outline ps-save-btn" data-id="${id}" onclick="saveRow(this)">Save</button></td>
+        </tr>`;
     }
 
     // ---- Build table ----
-    async function buildTable(overrideMap) {
-      const products = (SVK_PRODUCTS_DATA.products || []).filter(p => p.price > 0);
+    async function buildTable(overrideMap, catalogParts) {
       const tbody = document.getElementById('ps-tbody');
-      if (!products.length) {
-        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:var(--space-xl);color:var(--text-muted);">No products found.</td></tr>';
-        return;
+      const rows  = [];
+
+      // ---- Section 1: Harness / standalone products ----
+      const staticProducts = (SVK_PRODUCTS_DATA.products || []).filter(p => p.price > 0);
+      if (staticProducts.length) {
+        rows.push(sectionRow('Harnesses &amp; Standalone Products'));
+        for (const p of staticProducts) {
+          const ov     = overrideMap[p.id];
+          const status = ov ? ov.status : (p.inStock ? 'available' : 'out_of_stock');
+          const qty    = ov ? (ov.stock_quantity ?? null) : null;
+          const note   = ov ? 'Override active' : `Default: ${p.inStock ? 'In Stock' : 'Contact for Availability'}`;
+          rows.push(productRow(
+            p.id, p.name, p.id,
+            harnessSel(p.id, status),
+            qtyInput(p.id, qty),
+            note
+          ));
+        }
       }
 
-      tbody.innerHTML = products.map(p => {
-        const ov      = overrideMap[p.id];
-        const status  = ov ? ov.status : (p.inStock ? 'available' : 'out_of_stock');
-        const qty     = ov ? (ov.stock_quantity ?? '') : '';
-        const overrideNote = ov
-          ? `<div class="ps-overridden">Override active</div>`
-          : `<div class="ps-overridden">Default: ${p.inStock ? 'In Stock' : 'Contact for Availability'}</div>`;
+      // ---- Section 2: Parts catalog (from Supabase) ----
+      if (catalogParts.length) {
+        // Group by subcategory for readability
+        const groups = {};
+        for (const part of catalogParts) {
+          const g = part.subcategory || 'other';
+          if (!groups[g]) groups[g] = [];
+          groups[g].push(part);
+        }
+        const groupLabels = {
+          'relay-power-kits': 'Relay &amp; Power Kits',
+          '3d-parts':         '3D Parts',
+          'other-parts':      'Other Parts',
+        };
+        for (const [grp, parts] of Object.entries(groups)) {
+          rows.push(sectionRow(groupLabels[grp] || grp));
+          for (const part of parts) {
+            rows.push(productRow(
+              part.id, part.title, part.slug || part.id,
+              catalogSel(part.id, part.status || 'coming_soon'),
+              qtyInput(part.id, part.stock_quantity ?? null),
+              `Catalog item · ${part.status || 'coming_soon'}`
+            ));
+          }
+        }
+      }
 
-        return `
-          <tr data-product-id="${p.id}">
-            <td>
-              <div class="ps-product-name">${p.name}</div>
-              <div class="ps-product-id">${p.id}</div>
-            </td>
-            <td>
-              <select class="form-input ps-select ps-status-sel" data-id="${p.id}">
-                <option value="available"       ${status === 'available'       ? 'selected' : ''}>In Stock / Made to Order</option>
-                <option value="limited_stock"   ${status === 'limited_stock'   ? 'selected' : ''}>Limited Stock</option>
-                <option value="out_of_stock"    ${status === 'out_of_stock'    ? 'selected' : ''}>Out of Stock</option>
-                <option value="back_order_only" ${status === 'back_order_only' ? 'selected' : ''}>Back Order Only</option>
-              </select>
-              ${overrideNote}
-            </td>
-            <td>
-              <input type="number" class="form-input ps-qty ps-qty-inp" data-id="${p.id}"
-                value="${qty}" min="0" step="1" placeholder="—">
-            </td>
-            <td>
-              <button class="btn btn-sm btn-outline ps-save-btn" data-id="${p.id}" onclick="saveRow('${p.id}')">Save</button>
-            </td>
-          </tr>
-        `;
-      }).join('');
+      tbody.innerHTML = rows.join('') || '<tr><td colspan="4" style="text-align:center;padding:var(--space-xl);color:var(--text-muted);">No products found.</td></tr>';
     }
 
-    async function saveRow(productId) {
-      const btn    = document.querySelector(`.ps-save-btn[data-id="${productId}"]`);
-      const selEl  = document.querySelector(`.ps-status-sel[data-id="${productId}"]`);
-      const qtyEl  = document.querySelector(`.ps-qty-inp[data-id="${productId}"]`);
+    // ---- Save ----
+    async function saveRow(btn) {
+      const id    = btn.dataset.id;
+      const selEl = document.querySelector(`.ps-status-sel[data-id="${id}"]`);
+      const qtyEl = document.querySelector(`.ps-qty-inp[data-id="${id}"]`);
+      const kind  = selEl.dataset.kind;
       const status = selEl.value;
-      const qty    = qtyEl.value !== '' ? parseInt(qtyEl.value, 10) : null;
+      const qty   = qtyEl.value !== '' ? parseInt(qtyEl.value, 10) : null;
 
       btn.textContent = 'Saving…';
       btn.disabled = true;
       document.getElementById('ps-error').style.display = 'none';
 
-      const { error } = await SVKAuth.upsertProductStockOverride(productId, status, qty);
+      let error;
+      if (kind === 'catalog') {
+        ({ error } = await SVKAuth.updatePartCatalogItem(id, {
+          status,
+          stock_quantity: qty,
+        }));
+      } else {
+        ({ error } = await SVKAuth.upsertProductStockOverride(id, status, qty));
+      }
+
       if (error) {
         document.getElementById('ps-error').textContent = 'Failed to save: ' + error.message;
         document.getElementById('ps-error').style.display = 'block';
@@ -221,12 +270,8 @@
         return;
       }
 
-      // Update the "Override active" note
-      const row = document.querySelector(`tr[data-product-id="${productId}"]`);
-      if (row) {
-        const note = row.querySelector('.ps-overridden');
-        if (note) note.textContent = 'Override active';
-      }
+      const noteEl = document.getElementById(`ps-note-${id}`);
+      if (noteEl) noteEl.textContent = kind === 'catalog' ? `Catalog item · ${status}` : 'Override active';
 
       btn.textContent = 'Saved ✓';
       btn.classList.add('saved');
@@ -264,10 +309,13 @@
       const profile = await SVKAuth.getProfile();
       document.getElementById('admin-user-badge').textContent = profile?.full_name || user.email || 'Admin';
 
-      const overrides = await SVKAuth.getProductStockOverrides();
+      const [overrides, catalogParts] = await Promise.all([
+        SVKAuth.getProductStockOverrides(),
+        SVKAuth.getAllPartsCatalogAdmin(),
+      ]);
       const overrideMap = Object.fromEntries(overrides.map(r => [r.product_id, r]));
 
-      await buildTable(overrideMap);
+      await buildTable(overrideMap, catalogParts);
 
       document.getElementById('admin-loading').style.display = 'none';
       document.getElementById('admin-content').style.display = 'block';
