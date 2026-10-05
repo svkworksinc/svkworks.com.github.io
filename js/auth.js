@@ -456,4 +456,29 @@ const SVKAuth = {
     const path = url.slice(idx + marker.length);
     await this.client.storage.from('parts-catalog').remove([path]);
   },
+
+  // ---- Product Stock Overrides (harness / static products) ----
+  // Overrides the static inStock boolean in data/products-data.js with a
+  // richer status + quantity tracked in Supabase. Admin-only writes via RLS.
+
+  async getProductStockOverrides() {
+    if (!this.client) return [];
+    const { data } = await this.client.from('product_stock_overrides').select('*');
+    return data || [];
+  },
+
+  async upsertProductStockOverride(productId, status, stockQuantity) {
+    if (!this.client) return { error: { message: 'Not configured.' } };
+    return await this.client.from('product_stock_overrides').upsert({
+      product_id: productId,
+      status,
+      stock_quantity: stockQuantity ?? null,
+      updated_at: new Date().toISOString(),
+    }, { onConflict: 'product_id' }).select().single();
+  },
+
+  async deleteProductStockOverride(productId) {
+    if (!this.client) return { error: { message: 'Not configured.' } };
+    return await this.client.from('product_stock_overrides').delete().eq('product_id', productId);
+  },
 };
