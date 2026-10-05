@@ -3,8 +3,27 @@
    Fetches and renders products from products.json
    ============================================ */
 
+function svkProductStockBadge(override, fallbackInStock) {
+  const status = override ? override.status : (fallbackInStock ? 'available' : 'out_of_stock');
+  const qty = override ? override.stock_quantity : null;
+  if (status === 'available') {
+    const label = qty != null ? `In Stock / Made to Order — ${qty}` : 'In Stock / Made to Order';
+    return `<span class="badge badge-success">${label}</span>`;
+  }
+  if (status === 'limited_stock') {
+    const label = qty != null ? `Limited Stock — ${qty} left` : 'Limited Stock';
+    return `<span class="badge" style="background:rgba(249,115,22,0.1);color:#f97316;border-color:rgba(249,115,22,0.3);">${label}</span>`;
+  }
+  if (status === 'out_of_stock')
+    return `<span class="badge" style="background:rgba(239,68,68,0.1);color:#ef4444;border-color:rgba(239,68,68,0.3);">Out of Stock</span>`;
+  if (status === 'back_order_only')
+    return `<span class="badge" style="background:rgba(139,92,246,0.1);color:#8b5cf6;border-color:rgba(139,92,246,0.3);">Back Order Only</span>`;
+  return `<span class="badge">Contact for Availability</span>`;
+}
+
 const SVKProducts = {
   data: null,
+  _stockOverrides: null,
 
   async load() {
     if (this.data) return this.data;
@@ -144,11 +163,23 @@ const SVKProducts = {
     }
   },
 
+  async loadStockOverrides() {
+    if (this._stockOverrides) return this._stockOverrides;
+    if (typeof SVKAuth === 'undefined') { this._stockOverrides = {}; return {}; }
+    await SVKAuth.ready;
+    const rows = await SVKAuth.getProductStockOverrides();
+    this._stockOverrides = Object.fromEntries(rows.map(r => [r.product_id, r]));
+    return this._stockOverrides;
+  },
+
   // Render the product detail page
-  renderProductDetail(productId) {
+  async renderProductDetail(productId) {
     const product = this.getProduct(productId);
     const container = document.getElementById('product-detail-content');
     if (!product || !container) return;
+
+    const overrides = await this.loadStockOverrides();
+    const ov = overrides[productId];
 
     document.title = `${product.name} — SVK Works`;
 
@@ -222,7 +253,7 @@ const SVKProducts = {
                 <a href="contact.html" class="btn btn-outline btn-lg">Custom Quote</a>
               </div>
               <div style="display:flex;gap:var(--space-lg);margin-top:var(--space-md);">
-                <span class="badge ${product.inStock ? 'badge-success' : ''}">${product.inStock ? 'In Stock / Made to Order' : 'Contact for Availability'}</span>
+                ${svkProductStockBadge(ov, product.inStock)}
               </div>
               ${specsHtml}
             </div>
