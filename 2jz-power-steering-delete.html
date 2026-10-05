@@ -172,7 +172,7 @@
 
           <!-- Product Info -->
           <div class="product-info fade-in-right">
-            <span class="badge">Coming Soon</span>
+            <span class="badge" id="stock-badge">Coming Soon</span>
             <h1>2JZ Power Steering Delete Kit</h1>
             <p style="color:var(--text-secondary);margin-bottom:var(--space-sm);font-size:var(--text-sm);">Fits 2JZ-GTE &amp; 2JZ-GE — VVT-i and Non-VVT-i</p>
             <div class="product-price-block">
@@ -234,7 +234,7 @@
             </div>
 
             <div style="display:flex;gap:var(--space-md);flex-wrap:wrap;margin-top:var(--space-lg);">
-              <button class="btn btn-primary" disabled style="flex:1;min-width:180px;opacity:0.5;cursor:not-allowed;">
+              <button class="btn btn-primary" id="add-to-cart-btn" disabled style="flex:1;min-width:180px;opacity:0.5;cursor:not-allowed;">
                 Coming Soon
               </button>
               <a href="other-parts.html" class="btn btn-secondary" style="flex:1;min-width:180px;">
@@ -337,6 +337,8 @@
 
   <div id="footer-placeholder"></div>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="js/auth.js?v=f9a5c12a"></script>
   <script defer src="components/header.js?v=c947f061"></script>
   <script defer src="components/footer.js?v=a7276d21"></script>
   <script defer src="js/cart.js?v=8cff9968"></script>
@@ -398,7 +400,54 @@
       updateCartBtn();
     }
 
-    document.addEventListener('DOMContentLoaded', updateCartBtn);
+    document.addEventListener('DOMContentLoaded', async () => {
+      updateCartBtn();
+      // Apply stock override from Supabase if set
+      try {
+        SVKAuth.init();
+        await SVKAuth.ready;
+        const overrides = await SVKAuth.getProductStockOverrides();
+        const ov = overrides.find(r => r.product_id === PRODUCT.id);
+        if (!ov) return;
+        const badge  = document.getElementById('stock-badge');
+        const addBtn = document.getElementById('add-to-cart-btn');
+        const qty    = ov.stock_quantity;
+        if (ov.status === 'available') {
+          badge.className = 'badge badge-success';
+          badge.style.cssText = '';
+          badge.textContent = qty != null ? `In Stock — ${qty}` : 'In Stock';
+          addBtn.disabled = false;
+          addBtn.style.opacity = '';
+          addBtn.style.cursor = '';
+          addBtn.textContent = `Add to Cart — $${PRODUCT.price}`;
+          addBtn.onclick = addToCart;
+        } else if (ov.status === 'limited_stock') {
+          badge.className = 'badge';
+          badge.style.cssText = 'background:rgba(249,115,22,0.1);color:#f97316;border-color:rgba(249,115,22,0.3);';
+          badge.textContent = qty != null ? `Limited Stock — ${qty} left` : 'Limited Stock';
+          addBtn.disabled = false;
+          addBtn.style.opacity = '';
+          addBtn.style.cursor = '';
+          addBtn.textContent = `Add to Cart — $${PRODUCT.price}`;
+          addBtn.onclick = addToCart;
+        } else if (ov.status === 'out_of_stock') {
+          badge.className = 'badge';
+          badge.style.cssText = 'background:rgba(239,68,68,0.1);color:#ef4444;border-color:rgba(239,68,68,0.3);';
+          badge.textContent = 'Out of Stock';
+          addBtn.textContent = 'Out of Stock';
+        } else if (ov.status === 'back_order_only') {
+          badge.className = 'badge';
+          badge.style.cssText = 'background:rgba(139,92,246,0.1);color:#8b5cf6;border-color:rgba(139,92,246,0.3);';
+          badge.textContent = 'Back Order Only';
+          addBtn.disabled = false;
+          addBtn.style.opacity = '';
+          addBtn.style.cursor = '';
+          addBtn.textContent = 'Contact to Order';
+          addBtn.onclick = () => { window.location.href = 'contact.html'; };
+        }
+        // coming_soon: leave as-is (disabled "Coming Soon")
+      } catch (_) {}
+    });
 
     document.getElementById('share-link-btn').addEventListener('click', () => {
       navigator.clipboard.writeText(window.location.href).then(() => {
