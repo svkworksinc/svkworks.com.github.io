@@ -739,6 +739,30 @@ const SVK_PRODUCTS_DATA = {
       "shortDesc": "Plug-and-play adapter to run a Sequoia or Tundra 2UZ-FE alternator on your 2JZ or 1UZ build.",
       "inStock": true,
       "page": "sequoia-alternator-adapter.html"
+    },
+    {
+      "id": "1uz-3uz-power-steering-delete",
+      "name": "1UZ / 3UZ Power Steering Delete Kit",
+      "category": "other-parts",
+      "engine": "1UZ-FE / 3UZ-FE",
+      "tags": ["1uz", "3uz", "power steering", "delete", "lexus"],
+      "price": 190,
+      "image": "img/1UZ%203UZ%20Power%20Steering%20Delete%201.webp",
+      "shortDesc": "Bolt-on power steering delete kit for 1UZ-FE and 3UZ-FE engines.",
+      "inStock": true,
+      "page": "1uz-3uz-power-steering-delete.html"
+    },
+    {
+      "id": "2jz-power-steering-delete",
+      "name": "2JZ Power Steering Delete Kit",
+      "category": "other-parts",
+      "engine": "2JZ-GTE / 2JZ-GE",
+      "tags": ["2jz", "power steering", "delete", "supra"],
+      "price": 89,
+      "image": "img/filler.webp",
+      "shortDesc": "Bolt-on power steering delete kit for 2JZ-GTE and 2JZ-GE engines.",
+      "inStock": false,
+      "page": "2jz-power-steering-delete.html"
     }
   ],
   "categories": [
