@@ -722,10 +722,21 @@ ECU</div>
   // Built live from the MK4 Supra page's price calculator so prices only
   // ever need updating in one place (mk4-supra.html).
   const CATALOG_SOURCE   = 'mk4-supra.html';
+  // Each page's <h1> and BASE_PRICE are read live, so base prices stay in sync.
+  const BASE_HARNESS_PAGES = [
+    'mk4-supra.html',
+    'mk3-supra.html',
+    'sc300.html',
+    '2jz-universal-harness.html',
+    '1uz-universal-harness.html',
+    'k-series-universal-harness.html',
+  ];
+  const BASE_HARNESS_DESC = 'Custom standalone engine harness — base price';
   const SKIP_GROUPS      = ['driver side', 'original chassis'];
   const SKIP_OPTION_RE   = /^(select\b|other\b|custom setup|different\b|no$|none$|coming soon)/i;
   const CUSTOM_KEY       = '__custom';
-  const FALLBACK_BASE    = { key: 'Base Harness::MK4 Supra Engine Harness', item: 'MK4 Supra Engine Harness', desc: 'Custom plug-and-play standalone harness', rate: 1450 };
+  const FALLBACK_BASE    = { key: 'Base Harness::mk4-supra.html', item: 'Supra MK4 JZA80 2JZ Engine Harness', desc: BASE_HARNESS_DESC, rate: 1450 };
+  const LEGACY_KEYS      = { 'Base Harness::MK4 Supra Engine Harness': FALLBACK_BASE.key };
 
   let CATALOG = [];                // [{ group, items: [{ key, label, item, desc, rate }] }]
   const CATALOG_BY_KEY = {};
@@ -737,20 +748,33 @@ ECU</div>
             .trim();
   }
 
-  async function loadCatalog() {
-    const res  = await fetch(CATALOG_SOURCE, { cache: 'no-cache' });
-    if (!res.ok) throw new Error('HTTP ' + res.status);
+  async function fetchPage(url) {
+    const res = await fetch(url, { cache: 'no-cache' });
+    if (!res.ok) throw new Error(url + ': HTTP ' + res.status);
     const html = await res.text();
-    const doc  = new DOMParser().parseFromString(html, 'text/html');
+    return { html, doc: new DOMParser().parseFromString(html, 'text/html') };
+  }
 
-    const baseMatch = html.match(/BASE_PRICE\s*=\s*(\d+(?:\.\d+)?)/);
-    const groups = [{ group: 'Base Harness', items: [{
-      ...FALLBACK_BASE,
-      label: FALLBACK_BASE.item,
-      rate: baseMatch ? parseFloat(baseMatch[1]) : FALLBACK_BASE.rate,
-    }] }];
+  async function loadCatalog() {
+    const pages = await Promise.allSettled(BASE_HARNESS_PAGES.map(fetchPage));
 
-    doc.querySelectorAll('.calc-group').forEach(g => {
+    const baseItems = [];
+    pages.forEach((p, i) => {
+      const url = BASE_HARNESS_PAGES[i];
+      if (p.status !== 'fulfilled') { console.error('Base harness page failed', p.reason); return; }
+      const priceMatch = p.value.html.match(/BASE_PRICE\s*=\s*(\d+(?:\.\d+)?)/);
+      const name = p.value.doc.querySelector('h1')?.textContent.replace(/\s+/g, ' ').trim();
+      if (!priceMatch || !name) { console.error('No name/BASE_PRICE found on ' + url); return; }
+      baseItems.push({ key: 'Base Harness::' + url, label: name, item: name, desc: BASE_HARNESS_DESC, rate: parseFloat(priceMatch[1]) });
+    });
+    if (!baseItems.length) throw new Error('No base harness pages could be read');
+    const groups = [{ group: 'Base Harness', items: baseItems }];
+
+    const mk4 = pages[BASE_HARNESS_PAGES.indexOf(CATALOG_SOURCE)];
+    const doc = mk4.status === 'fulfilled' ? mk4.value.doc : null;
+    if (!doc) showToast('Could not load MK4 options — base harnesses only', true);
+
+    doc?.querySelectorAll('.calc-group').forEach(g => {
       const labelEl = g.querySelector('.calc-label');
       const select  = g.querySelector('select');
       if (!labelEl || !select || select.disabled) return;
@@ -846,6 +870,7 @@ ECU</div>
     tr.dataset.row = rowCount;
     // Rows saved before the dropdown existed have no key — treat them as custom.
     if (!key && item) key = CUSTOM_KEY;
+    key = LEGACY_KEYS[key] || key;
     tr.dataset.key = key;
     tr.innerHTML = `
       <td class="col-num">${tbody.rows.length + 1}</td>
