@@ -1,7 +1,8 @@
 name: CI
 
+# Manual only: run it from the Actions tab when wanted.
 on:
-  pull_request:
+  workflow_dispatch:
 
 jobs:
   test:
