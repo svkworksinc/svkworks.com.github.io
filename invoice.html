@@ -268,7 +268,27 @@
       vertical-align: top;
     }
     .col-num    { width: 24px; color: var(--text-3); font-size: 10px; text-align: center; }
-    .col-item   { width: 22%; font-weight: 600; font-size: 11px; }
+    .col-item   { width: 32%; font-weight: 600; font-size: 11px; }
+    .col-item .item-name { display: block; }
+    .item-pick {
+      width: 100%;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      color: var(--text-2);
+      font-family: var(--font);
+      font-size: 10px;
+      font-weight: 500;
+      padding: 3px 4px;
+      margin-bottom: 3px;
+      border-radius: 4px;
+      outline: none;
+      cursor: pointer;
+      color-scheme: dark;
+    }
+    .item-pick:hover { border-color: rgba(255,255,255,0.18); }
+    .item-pick:focus { border-color: var(--border-focus); }
+    .item-pick optgroup { color: var(--magenta); font-style: normal; }
+    .item-pick option { color: var(--text); background: var(--bg-elevated); }
     .col-desc   { font-size: 10px; color: var(--text-2); }
     .col-qty    { width: 46px; text-align: right; }
     .col-rate   { width: 72px; text-align: right; }
@@ -409,6 +429,7 @@
         --magenta: #c4176f;
       }
       [contenteditable] { background: none !important; box-shadow: none !important; }
+      [contenteditable]:empty::before { content: none; }
       input { background: none !important; box-shadow: none !important; color: #111 !important; }
       input[type="date"] { color-scheme: light; }
       .inv-bottom      { background: #f9f9f9; }
@@ -591,7 +612,7 @@ ECU</div>
       </thead>
       <tbody id="line-items"></tbody>
     </table>
-    <button class="add-row-btn no-print" onclick="addRow()">
+    <button class="add-row-btn no-print" onclick="addRow({}, true)">
       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
       Add Line Item
     </button>
@@ -697,11 +718,120 @@ ECU</div>
   }
   document.addEventListener('DOMContentLoaded', initInvoiceAuth);
 
-  const DEFAULT_ROWS = [
-    { item: 'MK4 Supra Engine Harness', desc: 'Custom plug-and-play standalone harness — 2JZ-GTE', qty: 1, rate: 1450 },
-    { item: 'ECU Option',               desc: 'Haltech Elite 2500 wiring integration',              qty: 1, rate: 150  },
-    { item: 'Milspec Connector',         desc: 'Autosport connector with firewall plate',            qty: 1, rate: 350  },
-  ];
+  // ─── Item catalog ────────────────────────────────────────
+  // Built live from the MK4 Supra page's price calculator so prices only
+  // ever need updating in one place (mk4-supra.html).
+  const CATALOG_SOURCE   = 'mk4-supra.html';
+  const SKIP_GROUPS      = ['driver side', 'original chassis'];
+  const SKIP_OPTION_RE   = /^(select\b|other\b|custom setup|different\b|no$|none$|coming soon)/i;
+  const CUSTOM_KEY       = '__custom';
+  const FALLBACK_BASE    = { key: 'Base Harness::MK4 Supra Engine Harness', item: 'MK4 Supra Engine Harness', desc: 'Custom plug-and-play standalone harness', rate: 1450 };
+
+  let CATALOG = [];                // [{ group, items: [{ key, label, item, desc, rate }] }]
+  const CATALOG_BY_KEY = {};
+
+  function cleanOptionText(t) {
+    return t.replace(/\s*\(\+\$[\d,.]+\)/g, '')
+            .replace(/\s*—\s*Highly Recommended/i, '')
+            .replace(/\s+/g, ' ')
+            .trim();
+  }
+
+  async function loadCatalog() {
+    const res  = await fetch(CATALOG_SOURCE, { cache: 'no-cache' });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const html = await res.text();
+    const doc  = new DOMParser().parseFromString(html, 'text/html');
+
+    const baseMatch = html.match(/BASE_PRICE\s*=\s*(\d+(?:\.\d+)?)/);
+    const groups = [{ group: 'Base Harness', items: [{
+      ...FALLBACK_BASE,
+      label: FALLBACK_BASE.item,
+      rate: baseMatch ? parseFloat(baseMatch[1]) : FALLBACK_BASE.rate,
+    }] }];
+
+    doc.querySelectorAll('.calc-group').forEach(g => {
+      const labelEl = g.querySelector('.calc-label');
+      const select  = g.querySelector('select');
+      if (!labelEl || !select || select.disabled) return;
+
+      const labelClone = labelEl.cloneNode(true);
+      const hintEl = labelClone.querySelector('.calc-hint');
+      let hint = '';
+      if (hintEl) {
+        hintEl.querySelectorAll('a').forEach(a => a.remove());
+        hint = hintEl.textContent.replace(/[\s—-]+$/, '').trim();
+        hintEl.remove();
+      }
+      const group = labelClone.textContent.replace(/\s+/g, ' ').trim();
+      if (!group || SKIP_GROUPS.includes(group.toLowerCase())) return;
+
+      const items = [];
+      select.querySelectorAll('option').forEach(o => {
+        const raw = o.textContent.trim();
+        if (SKIP_OPTION_RE.test(raw)) return;
+        const text = cleanOptionText(raw);
+        const rate = parseFloat(o.value) || 0;
+        const isYes = /^yes$/i.test(text);
+        items.push({
+          key:   group + '::' + text,
+          label: isYes ? `Add ${group}` : text,
+          item:  group,
+          desc:  isYes ? (hint || 'Included') : text,
+          rate,
+        });
+      });
+      if (items.length) groups.push({ group, items });
+    });
+
+    CATALOG = groups;
+    groups.forEach(g => g.items.forEach(it => { CATALOG_BY_KEY[it.key] = it; }));
+  }
+
+  function buildPicker(selectedKey) {
+    const sel = document.createElement('select');
+    sel.className = 'item-pick no-print';
+    sel.title = 'Pick an item from the MK4 Supra options, or choose Custom to type your own';
+
+    const placeholder = new Option('— Pick an item —', '');
+    sel.add(placeholder);
+    CATALOG.forEach(g => {
+      const og = document.createElement('optgroup');
+      og.label = g.group;
+      g.items.forEach(it => {
+        og.appendChild(new Option(it.rate ? `${it.label} — ${fmt(it.rate)}` : it.label, it.key));
+      });
+      sel.appendChild(og);
+    });
+    sel.add(new Option('✎ Custom item (type your own)', CUSTOM_KEY));
+
+    sel.value = selectedKey && (selectedKey === CUSTOM_KEY || CATALOG_BY_KEY[selectedKey]) ? selectedKey : '';
+    sel.addEventListener('change', () => onPick(sel));
+    return sel;
+  }
+
+  function onPick(sel) {
+    const tr     = sel.closest('tr');
+    const nameEl = tr.querySelector('.item-name');
+    const descEl = tr.querySelector('.col-desc span');
+    const rateEl = tr.querySelector('.rate-input');
+    tr.dataset.key = sel.value;
+
+    if (sel.value === CUSTOM_KEY || sel.value === '') {
+      nameEl.textContent = '';
+      descEl.textContent = '';
+      rateEl.value = 0;
+      recalc();
+      if (sel.value === CUSTOM_KEY) nameEl.focus();
+      return;
+    }
+    const it = CATALOG_BY_KEY[sel.value];
+    if (!it) return;
+    nameEl.textContent = it.item;
+    descEl.textContent = it.desc;
+    rateEl.value = it.rate;
+    recalc();
+  }
 
   let rowCount = 0;
 
@@ -709,23 +839,40 @@ ECU</div>
     return '$' + Number(n).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   }
 
-  function addRow(item = '', desc = '', qty = 1, rate = 0) {
+  function addRow({ key = '', item = '', desc = '', qty = 1, rate = 0 } = {}, openPicker = false) {
     rowCount++;
     const tbody = document.getElementById('line-items');
     const tr = document.createElement('tr');
     tr.dataset.row = rowCount;
+    // Rows saved before the dropdown existed have no key — treat them as custom.
+    if (!key && item) key = CUSTOM_KEY;
+    tr.dataset.key = key;
     tr.innerHTML = `
       <td class="col-num">${tbody.rows.length + 1}</td>
-      <td class="col-item"><span contenteditable="true" data-placeholder="Item name" oninput="recalc()">${item}</span></td>
-      <td class="col-desc"><span contenteditable="true" data-placeholder="Description" oninput="recalc()">${desc}</span></td>
-      <td class="col-qty"><input class="qty-input" type="number" value="${qty}" min="0" step="1" oninput="recalc()"></td>
-      <td class="col-rate"><input class="rate-input" type="number" value="${rate}" min="0" step="0.01" oninput="recalc()"></td>
+      <td class="col-item"><span class="item-name" contenteditable="true" data-placeholder="Item name" oninput="recalc()"></span></td>
+      <td class="col-desc"><span contenteditable="true" data-placeholder="Description" oninput="recalc()"></span></td>
+      <td class="col-qty"><input class="qty-input" type="number" value="${Number(qty) || 0}" min="0" step="1" oninput="recalc()"></td>
+      <td class="col-rate"><input class="rate-input" type="number" value="${Number(rate) || 0}" min="0" step="0.01" oninput="recalc()"></td>
       <td class="col-amount" id="amt-${rowCount}">$0.00</td>
       <td class="col-del no-print"><button class="del-row-btn" onclick="removeRow(this)" title="Remove">×</button></td>
     `;
+    tr.querySelector('.item-name').textContent = item;
+    tr.querySelector('.col-desc span').textContent = desc;
+    const picker = buildPicker(key);
+    tr.querySelector('.col-item').prepend(picker);
     tbody.appendChild(tr);
     recalc();
     renumberRows();
+
+    if (openPicker) {
+      picker.focus();
+      try { picker.showPicker(); } catch (_) {}
+    }
+  }
+
+  function addCatalogRow(key) {
+    const it = CATALOG_BY_KEY[key];
+    addRow(it ? { key, item: it.item, desc: it.desc, rate: it.rate } : { ...FALLBACK_BASE, key: CUSTOM_KEY });
   }
 
   function removeRow(btn) { btn.closest('tr').remove(); recalc(); renumberRows(); }
@@ -791,7 +938,7 @@ ECU</div>
     if (!confirm('Start a new invoice? Unsaved changes will be lost.')) return;
     document.getElementById('line-items').innerHTML = '';
     rowCount = 0;
-    DEFAULT_ROWS.forEach(r => addRow(r.item, r.desc, r.qty, r.rate));
+    addCatalogRow(FALLBACK_BASE.key);
     document.getElementById('inv-number').value = nextInvoiceNumber();
     document.getElementById('inv-po').value      = '';
     document.getElementById('discount').value    = 0;
@@ -809,6 +956,7 @@ ECU</div>
   function saveInvoice() {
     const rows = [];
     document.querySelectorAll('#line-items tr').forEach(tr => rows.push({
+      key:  tr.dataset.key || '',
       item: tr.querySelector('.col-item span')?.innerText || '',
       desc: tr.querySelector('.col-desc span')?.innerText || '',
       qty:  tr.querySelector('.qty-input')?.value  || 1,
@@ -854,7 +1002,7 @@ ECU</div>
     updateStatus(sel);
     document.getElementById('line-items').innerHTML = '';
     rowCount = 0;
-    (data.rows || []).forEach(r => addRow(r.item, r.desc, r.qty, r.rate));
+    (data.rows || []).forEach(r => addRow(r));
     const els = document.querySelectorAll('[contenteditable]');
     (data.editables || []).forEach(({ i, html }) => { if (els[i]) els[i].innerHTML = html; });
     recalc();
@@ -894,8 +1042,15 @@ ECU</div>
   // Init
   setDates();
   document.getElementById('inv-number').value = nextInvoiceNumber();
-  DEFAULT_ROWS.forEach(r => addRow(r.item, r.desc, r.qty, r.rate));
-  recalc();
+  loadCatalog()
+    .catch(err => {
+      console.error('Could not load item catalog from ' + CATALOG_SOURCE, err);
+      showToast('Could not load MK4 options — custom items only', true);
+    })
+    .finally(() => {
+      addCatalogRow(FALLBACK_BASE.key);
+      recalc();
+    });
 </script>
 </body>
 </html>
