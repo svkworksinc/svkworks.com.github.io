@@ -55,7 +55,6 @@
       font-weight: 700;
       font-size: 14px;
       color: var(--magenta);
-      margin-right: auto;
       letter-spacing: -0.02em;
     }
     .status-select {
@@ -347,33 +346,136 @@
     .inv-totals {
       display: flex;
       justify-content: flex-end;
-      padding: 0 26px 10px;
+      padding: 4px 26px 14px;
     }
-    .totals-table { width: 240px; border-collapse: collapse; }
-    .totals-table td { padding: 2px 5px; font-size: 11px; }
-    .totals-table .t-label { color: var(--text-2); text-align: right; padding-right: 14px; }
-    .totals-table .t-value { text-align: right; font-weight: 500; white-space: nowrap; }
-    .totals-table .t-edit-value { text-align: right; }
-    .totals-table .t-edit-value input {
-      background: transparent;
-      border: none;
+    .totals-box { width: 300px; display: flex; flex-direction: column; gap: 1px; }
+    .t-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 3px 6px;
+      font-size: 11px;
+    }
+    .t-row > span:first-child { color: var(--text-2); display: inline-flex; align-items: center; gap: 4px; }
+    .t-row > span:last-child  { text-align: right; font-weight: 500; white-space: nowrap; }
+    .t-row input, .t-row select {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
       color: var(--text);
       font-family: var(--font);
       font-size: 11px;
-      font-weight: 500;
       text-align: right;
-      width: 72px;
-      padding: 1px 3px;
-      border-radius: 3px;
+      padding: 2px 5px;
+      border-radius: 4px;
       outline: none;
-      transition: background .15s, box-shadow .15s;
+      color-scheme: dark;
     }
-    .totals-table .t-edit-value input:hover { background: rgba(255,255,255,0.04); }
-    .totals-table .t-edit-value input:focus  { background: rgba(233,30,140,0.07); box-shadow: 0 0 0 1px var(--border-focus); }
-    .totals-divider td { border-top: 1px solid var(--border); padding-top: 5px !important; }
-    .totals-total td { font-size: 14px; font-weight: 700; padding-top: 3px; }
-    .totals-total .t-label { color: var(--text); }
-    .totals-total .t-value { color: var(--magenta); }
+    .t-row input { width: 78px; }
+    .t-row input.pct { width: 46px; padding: 1px 4px; font-size: 10px; }
+    .t-row select { text-align: left; padding: 1px 2px; font-size: 10px; cursor: pointer; }
+    .t-row input:focus, .t-row select:focus { border-color: var(--border-focus); }
+    .t-total {
+      margin-top: 4px;
+      padding: 8px 6px 6px;
+      border-top: 1px solid var(--border);
+      font-size: 15px;
+      font-weight: 700;
+    }
+    .t-total > span:first-child { color: var(--text); }
+    .t-total > span:last-child  { color: var(--magenta); font-weight: 800; }
+    .t-sub { font-size: 10.5px; padding-top: 1px; padding-bottom: 1px; }
+    .t-sub > span:first-child { color: var(--text-3); }
+    .t-sub > span:last-child  { color: var(--text-2); }
+
+    .paypal-block {
+      margin-top: 8px;
+      border: 1px solid rgba(59,130,246,0.35);
+      background: rgba(59,130,246,0.06);
+      border-radius: var(--radius-sm);
+      padding: 4px 0;
+    }
+    .paypal-block .paypal-total { font-size: 12px; font-weight: 700; }
+    .paypal-block .paypal-total > span:first-child { color: var(--blue); }
+    .paypal-block .paypal-total > span:last-child  { color: var(--blue); font-weight: 700; }
+    .paypal-block.hidden { display: none; }
+    .paypal-toggle {
+      display: flex; align-items: center; gap: 6px; justify-content: flex-end;
+      font-size: 10px; color: var(--text-3); margin-top: 6px; cursor: pointer; user-select: none;
+    }
+    .paypal-toggle input { accent-color: var(--magenta); cursor: pointer; }
+
+    .print-only { display: none; }
+
+    /* ─── Rate column ────────────────────────────────────── */
+    .money-in { display: flex; align-items: center; justify-content: flex-end; gap: 1px; }
+    .money-in .cur { color: var(--text-3); font-size: 10px; }
+
+    /* ─── Status stamp ───────────────────────────────────── */
+    .inv-stamp {
+      display: none;
+      margin: -2px 0 8px auto;
+      width: max-content;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      padding: 3px 10px;
+      border-radius: 4px;
+      border: 2px solid currentColor;
+    }
+    .inv-stamp.paid    { display: block; color: var(--green); }
+    .inv-stamp.overdue { display: block; color: var(--red); }
+
+    .toolbar-note { font-size: 10px; color: var(--text-3); margin-right: auto; white-space: nowrap; }
+
+    /* ─── Saved invoices modal ───────────────────────────── */
+    .modal-overlay {
+      position: fixed; inset: 0; z-index: 500;
+      background: rgba(0,0,0,0.65);
+      display: none; align-items: flex-start; justify-content: center;
+      padding: 60px 16px 16px;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      width: 100%; max-width: 640px; max-height: calc(100vh - 80px);
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius); box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+      display: flex; flex-direction: column; overflow: hidden;
+    }
+    .modal-head {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 16px 10px;
+    }
+    .modal-head h3 { font-size: 14px; font-weight: 700; }
+    .modal-close { background: none; border: none; color: var(--text-3); font-size: 20px; cursor: pointer; line-height: 1; }
+    .modal-close:hover { color: var(--text); }
+    .modal-search {
+      margin: 0 16px 10px;
+      background: var(--bg-elevated); border: 1px solid var(--border); color: var(--text);
+      font-family: var(--font); font-size: 12px; padding: 8px 10px; border-radius: var(--radius-sm); outline: none;
+    }
+    .modal-search:focus { border-color: var(--border-focus); }
+    .saved-list { overflow-y: auto; padding: 0 8px 10px; }
+    .saved-item {
+      display: grid; grid-template-columns: 1fr auto; gap: 4px 12px; align-items: center;
+      padding: 9px 8px; border-radius: var(--radius-sm); border-bottom: 1px solid var(--border);
+    }
+    .saved-item:hover { background: rgba(255,255,255,0.03); }
+    .saved-main { cursor: pointer; min-width: 0; }
+    .saved-title { font-size: 12px; font-weight: 700; display: flex; gap: 8px; align-items: center; }
+    .saved-meta  { font-size: 10px; color: var(--text-3); margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .saved-total { font-size: 12px; font-weight: 700; color: var(--magenta); text-align: right; }
+    .saved-actions { display: flex; gap: 4px; justify-content: flex-end; grid-column: 2; }
+    .saved-actions .btn { padding: 3px 8px; font-size: 10px; }
+    .saved-actions .btn-danger { background: none; color: var(--text-3); border: 1px solid var(--border); }
+    .saved-actions .btn-danger:hover { color: var(--red); border-color: var(--red); opacity: 1; }
+    .pill {
+      font-size: 8.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;
+      padding: 2px 6px; border-radius: 99px; border: 1px solid currentColor;
+    }
+    .pill.draft { color: var(--text-3); } .pill.sent { color: var(--blue); }
+    .pill.paid { color: var(--green); }   .pill.overdue { color: var(--red); }
+    .saved-empty { text-align: center; color: var(--text-3); padding: 30px 10px; font-size: 12px; }
 
     /* ─── Bottom ─────────────────────────────────────────── */
     .inv-bottom {
@@ -446,7 +548,14 @@
       .items-table { margin-top: 7px; }
       .items-table td { padding: 4px 5px; }
       .items-table th { padding: 3px 5px; }
-      .totals-table td { padding: 1px 4px; }
+      .t-row { padding: 1px 4px; }
+      .screen-only { display: none !important; }
+      .print-only  { display: inline !important; }
+      .t-row.is-zero { display: none !important; }
+      .is-empty { display: none !important; }
+      input::placeholder { color: transparent !important; }
+      .paypal-block { background: #f3f7ff; border-color: #bcd0f5; }
+      .inv-stamp.paid, .inv-stamp.overdue { display: block !important; }
       .inv-title   { font-size: 22px; margin-bottom: 7px; }
       .inv-logo    { height: 34px; }
     }
@@ -460,7 +569,8 @@
       input.inv-input { text-align: left; }
       .inv-items, .inv-totals, .inv-footer { padding-left: 14px; padding-right: 14px; }
       .inv-totals { justify-content: stretch; }
-      .totals-table { width: 100%; }
+      .totals-box { width: 100%; }
+      .toolbar { position: static; }
       .col-desc { display: none; }
     }
   </style>
@@ -489,35 +599,36 @@
 <div id="invoice-app" style="display:none;">
 <!-- ─── Toolbar ─────────────────────────────────────────── -->
 <div class="toolbar no-print">
-  <span class="toolbar-brand">SVK Works — Harness Invoice Tool</span>
-  <a href="product-invoice.html" class="btn btn-ghost" style="text-decoration:none;">Switch to Product Invoice</a>
+  <span class="toolbar-brand">Harness Invoice</span>
+  <span class="toolbar-note" id="draft-note"></span>
+  <a href="product-invoice.html" class="btn btn-ghost" style="text-decoration:none;">Product Invoice</a>
 
-  <select class="status-select draft" id="status-select" onchange="updateStatus(this)">
+  <select class="status-select draft" id="status-select" onchange="updateStatus(this)" title="Invoice status">
     <option value="draft">Draft</option>
     <option value="sent">Sent</option>
     <option value="paid">Paid</option>
     <option value="overdue">Overdue</option>
   </select>
 
-  <button class="btn btn-ghost" onclick="newInvoice()">
+  <button class="btn btn-ghost" onclick="newInvoice()" title="Start a blank invoice">
     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
     New
   </button>
-  <button class="btn btn-ghost" onclick="saveInvoice()">
-    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-    Save
-  </button>
-  <button class="btn btn-ghost" onclick="loadInvoice()">
+  <button class="btn btn-ghost" onclick="openSaved()" title="Open, duplicate or delete saved invoices">
     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
-    Load
+    Saved Invoices
   </button>
-  <button class="btn btn-ghost" onclick="window.print()">
+  <button class="btn btn-ghost" onclick="copyEmailSummary()" title="Copy a plain-text summary for email / DM">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+    Copy Summary
+  </button>
+  <button class="btn btn-ghost" onclick="printInvoice()" title="Print or save as PDF">
     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
     Print / PDF
   </button>
-  <button class="btn btn-ghost" onclick="copyEmailSummary()">
-    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-    Copy Summary
+  <button class="btn btn-primary" onclick="saveInvoice()" title="Save to Saved Invoices (Ctrl/Cmd + S)">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+    Save
   </button>
 </div>
 
@@ -529,13 +640,14 @@
   <div class="inv-header">
     <div class="inv-logo-block">
       <img width="400" height="139" src="/img/svk-logo.png" alt="SVK Works" class="inv-logo" onerror="this.style.display='none'">
-      <div class="company-details" contenteditable="true" data-placeholder="Address / Contact">info@svkworks.com
+      <div class="company-details" contenteditable="true" data-field="company" data-placeholder="Address / Contact">info@svkworks.com
 svkworks.com
 Instagram: @svkworks</div>
     </div>
 
     <div class="inv-meta">
       <div class="inv-title">HARNESS INVOICE</div>
+      <div class="inv-stamp" id="inv-stamp"></div>
       <div class="inv-meta-rows">
         <div class="inv-meta-row">
           <span class="inv-meta-label">Invoice #</span>
@@ -549,7 +661,7 @@ Instagram: @svkworks</div>
           <span class="inv-meta-label">Due Date</span>
           <span class="inv-meta-value"><input class="inv-input" id="inv-due" type="date"></span>
         </div>
-        <div class="inv-meta-row">
+        <div class="inv-meta-row" id="row-po">
           <span class="inv-meta-label">PO / Ref #</span>
           <span class="inv-meta-value"><input class="inv-input" id="inv-po" type="text" placeholder="Optional"></span>
         </div>
@@ -561,38 +673,35 @@ Instagram: @svkworks</div>
   <div class="inv-parties">
     <div class="party-block">
       <div class="party-label">Billed To</div>
-      <div class="party-name" contenteditable="true" data-placeholder="Customer Full Name">Customer Name</div>
-      <div class="party-details" contenteditable="true" data-placeholder="Email&#10;Phone&#10;Address">Email
-Phone</div>
+      <div class="party-name" contenteditable="true" data-field="customer" data-placeholder="Customer full name"></div>
+      <div class="party-details" contenteditable="true" data-field="customer-details" data-placeholder="Email · Phone · Address"></div>
     </div>
     <div class="party-block">
       <div class="party-label">Build / Vehicle Info</div>
-      <div class="party-name" contenteditable="true" data-placeholder="e.g. 1997 MK4 Supra JZA80">Vehicle</div>
-      <div class="party-details" contenteditable="true" data-placeholder="Engine, transmission, ECU...">Engine
-Transmission
-ECU</div>
+      <div class="party-name" contenteditable="true" data-field="vehicle" data-placeholder="Vehicle — e.g. 1997 MK4 Supra JZA80"></div>
+      <div class="party-details" contenteditable="true" data-field="build-details" id="build-details" data-placeholder="Fills in from the Engine / Transmission / ECU you pick below"></div>
     </div>
   </div>
 
   <!-- Description -->
-  <div class="inv-description">
+  <div class="inv-description" id="section-description">
     <div class="desc-label">Description</div>
-    <div class="desc-text" contenteditable="true" data-placeholder="Enter a project description, order summary, or any relevant details about this build..."></div>
+    <div class="desc-text" contenteditable="true" data-field="description" data-placeholder="Project description, order summary, or any relevant details about this build..."></div>
   </div>
 
   <!-- Details Strip -->
   <div class="inv-details">
     <div class="detail-block">
       <div class="detail-label">Lead Time</div>
-      <div class="detail-value" contenteditable="true" data-placeholder="e.g. 5–7 weeks">5–7 weeks from deposit</div>
+      <div class="detail-value" contenteditable="true" data-field="lead-time" data-placeholder="e.g. 5–7 weeks">5–7 weeks from deposit</div>
     </div>
     <div class="detail-block">
       <div class="detail-label">Build Status</div>
-      <div class="detail-value" contenteditable="true" data-placeholder="In Queue / In Progress">In Queue</div>
+      <div class="detail-value" contenteditable="true" data-field="build-status" data-placeholder="In Queue / In Progress">In Queue</div>
     </div>
     <div class="detail-block">
       <div class="detail-label">Deposit Required</div>
-      <div class="detail-value" id="deposit-display">50% — calculated below</div>
+      <div class="detail-value" id="deposit-display">—</div>
     </div>
   </div>
 
@@ -614,48 +723,72 @@ ECU</div>
     </table>
     <button class="add-row-btn no-print" onclick="addRow({}, true)">
       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-      Add Line Item
+      Add Line Item — pick from the list or type your own
     </button>
   </div>
 
   <!-- Totals -->
   <div class="inv-totals">
-    <table class="totals-table">
-      <tbody>
-        <tr>
-          <td class="t-label">Subtotal</td>
-          <td class="t-value" id="subtotal">$0.00</td>
-        </tr>
-        <tr>
-          <td class="t-label">Discount ($)</td>
-          <td class="t-edit-value"><input type="number" id="discount" value="0" min="0" step="0.01" oninput="recalc()" placeholder="0"></td>
-        </tr>
-        <tr>
-          <td class="t-label">Shipping ($)</td>
-          <td class="t-edit-value"><input type="number" id="shipping" value="0" min="0" step="0.01" oninput="recalc()" placeholder="0"></td>
-        </tr>
-        <tr>
-          <td class="t-label">Tax (%)</td>
-          <td class="t-edit-value">
-            <input type="number" id="tax-rate" value="0" min="0" max="100" step="0.01" oninput="recalc()" placeholder="0">
-            <span style="color:var(--text-3);font-size:10px;">%</span>
-          </td>
-        </tr>
-        <tr class="totals-divider"><td></td><td></td></tr>
-        <tr class="totals-total">
-          <td class="t-label">Total</td>
-          <td class="t-value" id="grand-total">$0.00</td>
-        </tr>
-        <tr>
-          <td class="t-label" style="color:var(--text-3);font-size:11px;">50% Deposit</td>
-          <td class="t-value" id="deposit-amt" style="color:var(--text-2);font-size:11px;">$0.00</td>
-        </tr>
-        <tr>
-          <td class="t-label" style="color:var(--text-3);font-size:11px;">Balance Due</td>
-          <td class="t-value" id="balance-amt" style="color:var(--text-2);font-size:11px;">$0.00</td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="totals-box">
+      <div class="t-row"><span>Subtotal</span><span id="subtotal">$0.00</span></div>
+
+      <div class="t-row" id="row-discount">
+        <span>
+          <span class="screen-only">Discount</span>
+          <select id="discount-type" class="screen-only" title="Discount in dollars or percent">
+            <option value="amount">$</option>
+            <option value="percent">%</option>
+          </select>
+          <span class="print-only" id="discount-label">Discount</span>
+        </span>
+        <span>
+          <input class="screen-only" type="number" id="discount" value="0" min="0" step="0.01">
+          <span class="print-only" id="discount-print"></span>
+        </span>
+      </div>
+
+      <div class="t-row" id="row-shipping">
+        <span>Shipping</span>
+        <span>
+          <input class="screen-only" type="number" id="shipping" value="0" min="0" step="0.01">
+          <span class="print-only" id="shipping-print"></span>
+        </span>
+      </div>
+
+      <div class="t-row" id="row-tax">
+        <span>
+          <span class="screen-only">Tax (%)</span>
+          <span class="print-only" id="tax-label">Tax</span>
+        </span>
+        <span>
+          <input class="screen-only" type="number" id="tax-rate" value="0" min="0" max="100" step="0.01">
+          <span class="print-only" id="tax-print"></span>
+        </span>
+      </div>
+
+      <div class="t-row t-total"><span>Total</span><span id="grand-total">$0.00</span></div>
+      <div class="t-row t-sub">
+        <span>Deposit
+          <span class="screen-only">(<input class="pct" type="number" id="deposit-pct" value="50" min="0" max="100" step="1">%)</span>
+          <span class="print-only" id="deposit-label"></span>
+        </span>
+        <span id="deposit-amt">$0.00</span>
+      </div>
+      <div class="t-row t-sub"><span>Balance due</span><span id="balance-amt">$0.00</span></div>
+
+      <div class="paypal-block" id="paypal-block">
+        <div class="t-row paypal-total">
+          <span>If paying with PayPal
+            <span class="screen-only">(+<input class="pct" type="number" id="paypal-fee" value="3.5" min="0" max="20" step="0.1">%)</span>
+            <span class="print-only" id="paypal-label"></span>
+          </span>
+          <span id="paypal-total">$0.00</span>
+        </div>
+        <div class="t-row t-sub"><span>PayPal deposit</span><span id="paypal-deposit">$0.00</span></div>
+        <div class="t-row t-sub"><span>PayPal balance due</span><span id="paypal-balance">$0.00</span></div>
+      </div>
+      <label class="paypal-toggle no-print"><input type="checkbox" id="show-paypal" checked> Show PayPal total on invoice</label>
+    </div>
   </div>
 
   <!-- Payment Details + Notes -->
@@ -665,40 +798,56 @@ ECU</div>
       <div class="payment-rows">
         <div class="payment-row">
           <span class="payment-key">Methods</span>
-          <span class="payment-val" contenteditable="true" data-placeholder="Zelle, PayPal, etc.">Zelle, PayPal F&amp;F, Bank Transfer</span>
+          <span class="payment-val" contenteditable="true" data-field="pay-methods" data-placeholder="Zelle, PayPal, etc.">Zelle, Bank Transfer, PayPal</span>
         </div>
         <div class="payment-row">
           <span class="payment-key">Zelle / PayPal</span>
-          <span class="payment-val" contenteditable="true" data-placeholder="your@email.com">info@svkworks.com</span>
+          <span class="payment-val" contenteditable="true" data-field="pay-email" data-placeholder="your@email.com">info@svkworks.com</span>
         </div>
         <div class="payment-row">
           <span class="payment-key">Bank / Wire</span>
-          <span class="payment-val" contenteditable="true" data-placeholder="Bank details">Contact for wire details</span>
+          <span class="payment-val" contenteditable="true" data-field="pay-bank" data-placeholder="Bank details">Contact for wire details</span>
         </div>
         <div class="payment-row">
           <span class="payment-key">Deposit Policy</span>
-          <span class="payment-val" contenteditable="true" data-placeholder="Deposit terms">50% to start, balance before shipping</span>
+          <span class="payment-val" contenteditable="true" data-field="pay-deposit" data-placeholder="Deposit terms">Deposit to start, balance before shipping</span>
         </div>
         <div class="payment-row">
           <span class="payment-key">Non-Payment</span>
-          <span class="payment-val" contenteditable="true" data-placeholder="Late payment policy">Build paused if deposit not received</span>
+          <span class="payment-val" contenteditable="true" data-field="pay-late" data-placeholder="Late payment policy">Build paused if deposit not received</span>
+        </div>
+        <div class="payment-row" id="paypal-note-row">
+          <span class="payment-key">PayPal Fee</span>
+          <span class="payment-val" id="paypal-note"></span>
         </div>
       </div>
     </div>
 
     <div>
       <div class="section-label">Notes &amp; Terms</div>
-      <div style="font-size:11px;color:var(--text-2);line-height:1.65;" contenteditable="true" data-placeholder="Notes, warranty, terms...">All harnesses are custom built to order. Lead time begins upon deposit. Tested for continuity before shipment. No returns on custom items. Warranty covers manufacturing defects for 1 year from delivery. SVK Works is not liable for installation errors or vehicle damage from improper installation.</div>
+      <div style="font-size:11px;color:var(--text-2);line-height:1.65;" contenteditable="true" data-field="notes" data-placeholder="Notes, warranty, terms...">All harnesses are custom built to order. Lead time begins upon deposit. Tested for continuity before shipment. No returns on custom items. Warranty covers manufacturing defects for 1 year from delivery. SVK Works is not liable for installation errors or vehicle damage from improper installation.</div>
     </div>
   </div>
 
   <!-- Footer -->
   <div class="inv-footer">
-    <div class="inv-footer-note" contenteditable="true" data-placeholder="Thank you note...">Thank you for choosing SVK Works — we appreciate your business.</div>
+    <div class="inv-footer-note" contenteditable="true" data-field="footer" data-placeholder="Thank you note...">Thank you for choosing SVK Works — we appreciate your business.</div>
     <div class="inv-footer-brand">svkworks.com</div>
   </div>
 
 </div>
+</div>
+
+<!-- ─── Saved invoices ───────────────────────────────────── -->
+<div class="modal-overlay no-print" id="saved-modal" onclick="if (event.target === this) closeSaved()">
+  <div class="modal" role="dialog" aria-label="Saved invoices">
+    <div class="modal-head">
+      <h3>Saved Invoices</h3>
+      <button class="modal-close" onclick="closeSaved()" aria-label="Close">×</button>
+    </div>
+    <input type="search" class="modal-search" id="saved-search" placeholder="Search by invoice #, customer or vehicle…" oninput="renderSaved()">
+    <div class="saved-list" id="saved-list"></div>
+  </div>
 </div>
 </div><!-- /#invoice-app -->
 
@@ -718,11 +867,13 @@ ECU</div>
   }
   document.addEventListener('DOMContentLoaded', initInvoiceAuth);
 
+  const $ = id => document.getElementById(id);
+
   // ─── Item catalog ────────────────────────────────────────
-  // Built live from the MK4 Supra page's price calculator so prices only
-  // ever need updating in one place (mk4-supra.html).
+  // Read live from the harness pages so prices only ever change in one place:
+  // each page's <h1> + BASE_PRICE feed "Base Harness"; mk4-supra.html's price
+  // calculator feeds every option group.
   const CATALOG_SOURCE   = 'mk4-supra.html';
-  // Each page's <h1> and BASE_PRICE are read live, so base prices stay in sync.
   const BASE_HARNESS_PAGES = [
     'mk4-supra.html',
     'mk3-supra.html',
@@ -737,6 +888,11 @@ ECU</div>
   const CUSTOM_KEY       = '__custom';
   const FALLBACK_BASE    = { key: 'Base Harness::mk4-supra.html', item: 'Supra MK4 JZA80 2JZ Engine Harness', desc: BASE_HARNESS_DESC, rate: 1450 };
   const LEGACY_KEYS      = { 'Base Harness::MK4 Supra Engine Harness': FALLBACK_BASE.key };
+  // Row groups summarised into the Build / Vehicle Info box, in this order.
+  const BUILD_INFO_GROUPS = { 'Engine': 'Engine', 'Transmission': 'Transmission', 'ECU / Standalone': 'ECU' };
+
+  const STORE_PREFIX = 'svk_invoice_';
+  const DRAFT_KEY    = 'svk_invoice_draft';
 
   let CATALOG = [];                // [{ group, items: [{ key, label, item, desc, rate }] }]
   const CATALOG_BY_KEY = {};
@@ -812,13 +968,13 @@ ECU</div>
     groups.forEach(g => g.items.forEach(it => { CATALOG_BY_KEY[it.key] = it; }));
   }
 
+  // ─── Line items ──────────────────────────────────────────
   function buildPicker(selectedKey) {
     const sel = document.createElement('select');
     sel.className = 'item-pick no-print';
-    sel.title = 'Pick an item from the MK4 Supra options, or choose Custom to type your own';
+    sel.title = 'Pick an item from the harness options, or choose Custom to type your own';
 
-    const placeholder = new Option('— Pick an item —', '');
-    sel.add(placeholder);
+    sel.add(new Option('— Pick an item —', ''));
     CATALOG.forEach(g => {
       const og = document.createElement('optgroup');
       og.label = g.group;
@@ -859,13 +1015,17 @@ ECU</div>
 
   let rowCount = 0;
 
+  const round2 = n => Math.round(n * 100) / 100;
   function fmt(n) {
-    return '$' + Number(n).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    const v = round2(Number(n) || 0);
+    const s = Math.abs(v).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    return (v < 0 ? '−$' : '$') + s;
   }
+  const num = id => parseFloat($(id).value) || 0;
 
   function addRow({ key = '', item = '', desc = '', qty = 1, rate = 0 } = {}, openPicker = false) {
     rowCount++;
-    const tbody = document.getElementById('line-items');
+    const tbody = $('line-items');
     const tr = document.createElement('tr');
     tr.dataset.row = rowCount;
     // Rows saved before the dropdown existed have no key — treat them as custom.
@@ -874,12 +1034,15 @@ ECU</div>
     tr.dataset.key = key;
     tr.innerHTML = `
       <td class="col-num">${tbody.rows.length + 1}</td>
-      <td class="col-item"><span class="item-name" contenteditable="true" data-placeholder="Item name" oninput="recalc()"></span></td>
-      <td class="col-desc"><span contenteditable="true" data-placeholder="Description" oninput="recalc()"></span></td>
-      <td class="col-qty"><input class="qty-input" type="number" value="${Number(qty) || 0}" min="0" step="1" oninput="recalc()"></td>
-      <td class="col-rate"><input class="rate-input" type="number" value="${Number(rate) || 0}" min="0" step="0.01" oninput="recalc()"></td>
+      <td class="col-item"><span class="item-name" contenteditable="true" data-placeholder="Item name"></span></td>
+      <td class="col-desc"><span contenteditable="true" data-placeholder="Description"></span></td>
+      <td class="col-qty"><input class="qty-input" type="number" value="${Number(qty) || 0}" min="0" step="1"></td>
+      <td class="col-rate">
+        <span class="money-in screen-only"><span class="cur">$</span><input class="rate-input" type="number" value="${Number(rate) || 0}" min="0" step="0.01"></span>
+        <span class="print-only rate-print"></span>
+      </td>
       <td class="col-amount" id="amt-${rowCount}">$0.00</td>
-      <td class="col-del no-print"><button class="del-row-btn" onclick="removeRow(this)" title="Remove">×</button></td>
+      <td class="col-del no-print"><button class="del-row-btn" onclick="removeRow(this)" title="Remove line">×</button></td>
     `;
     tr.querySelector('.item-name').textContent = item;
     tr.querySelector('.col-desc span').textContent = desc;
@@ -900,7 +1063,7 @@ ECU</div>
     addRow(it ? { key, item: it.item, desc: it.desc, rate: it.rate } : { ...FALLBACK_BASE, key: CUSTOM_KEY });
   }
 
-  function removeRow(btn) { btn.closest('tr').remove(); recalc(); renumberRows(); }
+  function removeRow(btn) { btn.closest('tr').remove(); recalc(); renumberRows(); scheduleDraftSave(); }
 
   function renumberRows() {
     document.querySelectorAll('#line-items tr').forEach((r, i) => {
@@ -908,39 +1071,95 @@ ECU</div>
     });
   }
 
-  function recalc() {
-    let subtotal = 0;
-    document.querySelectorAll('#line-items tr').forEach(tr => {
-      const qty  = parseFloat(tr.querySelector('.qty-input')?.value)  || 0;
-      const rate = parseFloat(tr.querySelector('.rate-input')?.value) || 0;
-      const amt  = qty * rate;
-      const cell = tr.querySelector('[id^="amt-"]');
-      if (cell) cell.textContent = fmt(amt);
-      subtotal += amt;
+  // Fill Build / Vehicle Info from the picked Engine / Transmission / ECU rows,
+  // until the user types in that box themselves.
+  function updateBuildDetails() {
+    const el = $('build-details');
+    if (el.dataset.touched === '1') return;
+    const lines = [];
+    Object.entries(BUILD_INFO_GROUPS).forEach(([group, label]) => {
+      document.querySelectorAll('#line-items tr').forEach(tr => {
+        const it = CATALOG_BY_KEY[tr.dataset.key];
+        if (it && it.item === group) lines.push(`${label}: ${it.desc}`);
+      });
     });
-    const discount = parseFloat(document.getElementById('discount').value)  || 0;
-    const shipping = parseFloat(document.getElementById('shipping').value)  || 0;
-    const taxRate  = parseFloat(document.getElementById('tax-rate').value)  || 0;
-    const taxed    = (subtotal - discount) * (taxRate / 100);
-    const total    = subtotal - discount + taxed + shipping;
-    const deposit  = total * 0.5;
-    const balance  = total - deposit;
-
-    document.getElementById('subtotal').textContent    = fmt(subtotal);
-    document.getElementById('grand-total').textContent = fmt(total);
-    document.getElementById('deposit-amt').textContent = fmt(deposit);
-    document.getElementById('balance-amt').textContent = fmt(balance);
-    document.getElementById('deposit-display').textContent = `50% = ${fmt(deposit)}`;
+    el.innerText = lines.join('\n');
   }
 
-  function updateStatus(sel) { sel.className = 'status-select ' + sel.value; }
+  // ─── Totals ──────────────────────────────────────────────
+  function totals() {
+    let subtotal = 0;
+    document.querySelectorAll('#line-items tr').forEach(tr => {
+      subtotal += (parseFloat(tr.querySelector('.qty-input').value) || 0) * (parseFloat(tr.querySelector('.rate-input').value) || 0);
+    });
+    subtotal = round2(subtotal);
+    const discountPct = $('discount-type').value === 'percent';
+    const discount   = round2(Math.min(subtotal, discountPct ? subtotal * num('discount') / 100 : num('discount')));
+    const shipping   = round2(num('shipping'));
+    const taxRate    = num('tax-rate');
+    const tax        = round2((subtotal - discount) * taxRate / 100);
+    const total      = round2(subtotal - discount + tax + shipping);
+    const depositPct = Math.min(100, Math.max(0, num('deposit-pct')));
+    const deposit    = round2(total * depositPct / 100);
+    const feePct     = Math.max(0, num('paypal-fee'));
+    const ppTotal    = round2(total * (1 + feePct / 100));
+    const ppDeposit  = round2(ppTotal * depositPct / 100);
+    return { subtotal, discount, discountPct, shipping, taxRate, tax, total, depositPct, deposit,
+             balance: round2(total - deposit), feePct, ppTotal, ppDeposit, ppBalance: round2(ppTotal - ppDeposit) };
+  }
+
+  function recalc() {
+    document.querySelectorAll('#line-items tr').forEach(tr => {
+      const qty  = parseFloat(tr.querySelector('.qty-input').value)  || 0;
+      const rate = parseFloat(tr.querySelector('.rate-input').value) || 0;
+      tr.querySelector('[id^="amt-"]').textContent = fmt(qty * rate);
+      tr.querySelector('.rate-print').textContent = fmt(rate);
+    });
+
+    const t = totals();
+    $('subtotal').textContent     = fmt(t.subtotal);
+    $('discount-label').textContent = t.discountPct ? `Discount (${num('discount')}%)` : 'Discount';
+    $('discount-print').textContent = fmt(-t.discount);
+    $('shipping-print').textContent = fmt(t.shipping);
+    $('tax-label').textContent    = `Tax (${t.taxRate}%)`;
+    $('tax-print').textContent    = fmt(t.tax);
+    $('row-discount').classList.toggle('is-zero', !t.discount);
+    $('row-shipping').classList.toggle('is-zero', !t.shipping);
+    $('row-tax').classList.toggle('is-zero', !t.tax);
+
+    $('grand-total').textContent  = fmt(t.total);
+    $('deposit-label').textContent = `(${t.depositPct}%)`;
+    $('deposit-amt').textContent  = fmt(t.deposit);
+    $('balance-amt').textContent  = fmt(t.balance);
+    $('deposit-display').textContent = `${t.depositPct}% = ${fmt(t.deposit)}`;
+
+    const showPP = $('show-paypal').checked;
+    $('paypal-block').classList.toggle('hidden', !showPP);
+    $('paypal-note-row').style.display = showPP ? '' : 'none';
+    $('paypal-label').textContent  = `(+${t.feePct}%)`;
+    $('paypal-total').textContent  = fmt(t.ppTotal);
+    $('paypal-deposit').textContent = fmt(t.ppDeposit);
+    $('paypal-balance').textContent = fmt(t.ppBalance);
+    $('paypal-note').textContent   = `PayPal payments add a ${t.feePct}% processing fee — see PayPal total`;
+
+    $('row-po').classList.toggle('is-empty', !$('inv-po').value.trim());
+    $('section-description').classList.toggle('is-empty', !fieldText('description'));
+    updateBuildDetails();
+  }
+
+  function updateStatus(sel) {
+    sel.className = 'status-select ' + sel.value;
+    const stamp = $('inv-stamp');
+    stamp.className = 'inv-stamp ' + sel.value;
+    stamp.textContent = sel.value === 'paid' ? 'PAID' : sel.value === 'overdue' ? 'OVERDUE' : '';
+  }
 
   function setDates() {
     const today = new Date(), due = new Date();
     due.setDate(today.getDate() + 30);
     const f = d => d.toISOString().split('T')[0];
-    document.getElementById('inv-date').value = f(today);
-    document.getElementById('inv-due').value  = f(due);
+    $('inv-date').value = f(today);
+    $('inv-due').value  = f(due);
   }
 
   // Unambiguous charset (no 0/O/1/I) so serials are easy to read back over phone/email.
@@ -953,97 +1172,259 @@ ECU</div>
   }
 
   function nextInvoiceNumber() {
-    let num;
-    do { num = 'SVK-' + randomSerial(6); }
-    while (localStorage.getItem('svk_invoice_' + num));
-    return num;
+    let n;
+    do { n = 'SVK-' + randomSerial(6); }
+    while (localStorage.getItem(STORE_PREFIX + n));
+    return n;
+  }
+
+  // ─── Save / load ─────────────────────────────────────────
+  const fieldEl   = name => document.querySelector(`[data-field="${name}"]`);
+  const fieldText = name => (fieldEl(name)?.innerText || '').trim();
+
+  function serializeInvoice() {
+    const rows = [...document.querySelectorAll('#line-items tr')].map(tr => ({
+      key:  tr.dataset.key || '',
+      item: tr.querySelector('.item-name').innerText,
+      desc: tr.querySelector('.col-desc span').innerText,
+      qty:  tr.querySelector('.qty-input').value,
+      rate: tr.querySelector('.rate-input').value,
+    }));
+    const fields = {};
+    document.querySelectorAll('[data-field]').forEach(el => { fields[el.dataset.field] = el.innerHTML; });
+    return {
+      v: 2,
+      number: $('inv-number').value,
+      date: $('inv-date').value,
+      due: $('inv-due').value,
+      po: $('inv-po').value,
+      status: $('status-select').value,
+      discount: $('discount').value,
+      discountType: $('discount-type').value,
+      shipping: $('shipping').value,
+      taxRate: $('tax-rate').value,
+      depositPct: $('deposit-pct').value,
+      paypalFee: $('paypal-fee').value,
+      showPaypal: $('show-paypal').checked,
+      buildTouched: $('build-details').dataset.touched === '1',
+      rows,
+      fields,
+      customer: fieldText('customer'),
+      vehicle: fieldText('vehicle'),
+      total: totals().total,
+      savedAt: new Date().toISOString(),
+    };
+  }
+
+  function applyInvoice(data) {
+    $('inv-number').value   = data.number  || nextInvoiceNumber();
+    $('inv-date').value     = data.date    || '';
+    $('inv-due').value      = data.due     || '';
+    $('inv-po').value       = data.po      || '';
+    $('discount').value     = data.discount || 0;
+    $('discount-type').value = data.discountType || 'amount';
+    $('shipping').value     = data.shipping || 0;
+    $('tax-rate').value     = data.taxRate  || 0;
+    $('deposit-pct').value  = data.depositPct ?? 50;
+    $('paypal-fee').value   = data.paypalFee ?? 3.5;
+    $('show-paypal').checked = data.showPaypal !== false;
+    const sel = $('status-select');
+    sel.value = data.status || 'draft';
+    updateStatus(sel);
+
+    $('line-items').innerHTML = '';
+    rowCount = 0;
+    (data.rows || []).forEach(r => addRow(r));
+
+    if (data.fields) {
+      Object.entries(data.fields).forEach(([name, html]) => { const el = fieldEl(name); if (el) el.innerHTML = html; });
+      $('build-details').dataset.touched = data.buildTouched ? '1' : '';
+    } else {
+      // Invoices saved before v2 stored every editable by position.
+      const els = document.querySelectorAll('[contenteditable]');
+      (data.editables || []).forEach(({ i, html }) => { if (els[i]) els[i].innerHTML = html; });
+      $('build-details').dataset.touched = '1';
+    }
+    recalc();
+  }
+
+  function resetInvoice() {
+    $('line-items').innerHTML = '';
+    rowCount = 0;
+    $('inv-number').value = nextInvoiceNumber();
+    ['inv-po'].forEach(id => $(id).value = '');
+    ['discount', 'shipping', 'tax-rate'].forEach(id => $(id).value = 0);
+    $('discount-type').value = 'amount';
+    $('deposit-pct').value = 50;
+    $('paypal-fee').value = 3.5;
+    $('show-paypal').checked = true;
+    ['customer', 'customer-details', 'vehicle', 'build-details', 'description'].forEach(f => { fieldEl(f).innerHTML = ''; });
+    $('build-details').dataset.touched = '';
+    const sel = $('status-select'); sel.value = 'draft'; updateStatus(sel);
+    setDates();
+    addCatalogRow(FALLBACK_BASE.key);
+    recalc();
   }
 
   function newInvoice() {
-    if (!confirm('Start a new invoice? Unsaved changes will be lost.')) return;
-    document.getElementById('line-items').innerHTML = '';
-    rowCount = 0;
-    addCatalogRow(FALLBACK_BASE.key);
-    document.getElementById('inv-number').value = nextInvoiceNumber();
-    document.getElementById('inv-po').value      = '';
-    document.getElementById('discount').value    = 0;
-    document.getElementById('shipping').value    = 0;
-    document.getElementById('tax-rate').value    = 0;
-    const pb = document.querySelectorAll('.party-block');
-    pb[0].querySelector('.party-name').textContent    = 'Customer Name';
-    pb[0].querySelector('.party-details').textContent = 'Email\nPhone';
-    pb[1].querySelector('.party-name').textContent    = 'Vehicle';
-    pb[1].querySelector('.party-details').textContent = 'Engine\nTransmission\nECU';
-    setDates();
-    recalc();
+    if (!confirm('Start a new invoice? Anything not saved with "Save" will be cleared.')) return;
+    resetInvoice();
+    localStorage.removeItem(DRAFT_KEY);
+    setDraftNote('');
+    showToast('New invoice started');
   }
 
   function saveInvoice() {
-    const rows = [];
-    document.querySelectorAll('#line-items tr').forEach(tr => rows.push({
-      key:  tr.dataset.key || '',
-      item: tr.querySelector('.col-item span')?.innerText || '',
-      desc: tr.querySelector('.col-desc span')?.innerText || '',
-      qty:  tr.querySelector('.qty-input')?.value  || 1,
-      rate: tr.querySelector('.rate-input')?.value || 0,
-    }));
-    const data = {
-      number: document.getElementById('inv-number').value,
-      date:   document.getElementById('inv-date').value,
-      due:    document.getElementById('inv-due').value,
-      po:     document.getElementById('inv-po').value,
-      discount: document.getElementById('discount').value,
-      shipping: document.getElementById('shipping').value,
-      taxRate:  document.getElementById('tax-rate').value,
-      status:   document.getElementById('status-select').value,
-      rows,
-      editables: [],
-    };
-    document.querySelectorAll('[contenteditable]').forEach((el, i) => {
-      data.editables.push({ i, html: el.innerHTML });
-    });
-    const key = 'svk_invoice_' + data.number;
-    localStorage.setItem(key, JSON.stringify(data));
-    localStorage.setItem('svk_last_invoice', key);
+    const data = serializeInvoice();
+    if (!data.number.trim()) { showToast('Add an invoice number first', true); return; }
+    localStorage.setItem(STORE_PREFIX + data.number, JSON.stringify(data));
+    localStorage.setItem('svk_last_invoice', STORE_PREFIX + data.number);
+    saveDraftNow();
     showToast('Saved ' + data.number);
   }
 
-  function loadInvoice() {
-    const key = prompt('Invoice number to load (e.g. SVK-7K4QXM), blank = last saved:');
-    const sk  = key ? ('svk_invoice_' + key.trim().toUpperCase()) : localStorage.getItem('svk_last_invoice');
-    if (!sk) { showToast('No saved invoice found.', true); return; }
-    const raw = localStorage.getItem(sk);
-    if (!raw) { showToast('Not found: ' + sk, true); return; }
-    const data = JSON.parse(raw);
-    document.getElementById('inv-number').value = data.number  || '';
-    document.getElementById('inv-date').value   = data.date    || '';
-    document.getElementById('inv-due').value    = data.due     || '';
-    document.getElementById('inv-po').value     = data.po      || '';
-    document.getElementById('discount').value   = data.discount || 0;
-    document.getElementById('shipping').value   = data.shipping || 0;
-    document.getElementById('tax-rate').value   = data.taxRate  || 0;
-    const sel = document.getElementById('status-select');
-    sel.value = data.status || 'draft';
-    updateStatus(sel);
-    document.getElementById('line-items').innerHTML = '';
-    rowCount = 0;
-    (data.rows || []).forEach(r => addRow(r));
-    const els = document.querySelectorAll('[contenteditable]');
-    (data.editables || []).forEach(({ i, html }) => { if (els[i]) els[i].innerHTML = html; });
+  function savedInvoices() {
+    const list = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (!k.startsWith(STORE_PREFIX) || k === DRAFT_KEY) continue;
+      try { list.push({ storeKey: k, ...JSON.parse(localStorage.getItem(k)) }); } catch (_) {}
+    }
+    return list.sort((a, b) => (b.savedAt || b.date || '').localeCompare(a.savedAt || a.date || ''));
+  }
+
+  // Old saves have no customer/total fields; derive them so the list stays useful.
+  function legacySummary(d) {
+    if (d.customer !== undefined) return d;
+    const rows = d.rows || [];
+    const sub = rows.reduce((s, r) => s + (parseFloat(r.qty) || 0) * (parseFloat(r.rate) || 0), 0);
+    const total = sub - (parseFloat(d.discount) || 0) + (parseFloat(d.shipping) || 0)
+                + (sub - (parseFloat(d.discount) || 0)) * (parseFloat(d.taxRate) || 0) / 100;
+    const tmp = document.createElement('div');
+    tmp.innerHTML = d.editables?.[1]?.html || '';
+    return { ...d, customer: tmp.innerText.trim(), vehicle: '', total };
+  }
+
+  const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+  function openSaved() {
+    $('saved-search').value = '';
+    renderSaved();
+    $('saved-modal').classList.add('open');
+    setTimeout(() => $('saved-search').focus(), 30);
+  }
+  function closeSaved() { $('saved-modal').classList.remove('open'); }
+
+  function renderSaved() {
+    const q = $('saved-search').value.trim().toLowerCase();
+    const list = savedInvoices().map(legacySummary).filter(d =>
+      !q || [d.number, d.customer, d.vehicle].some(v => (v || '').toLowerCase().includes(q)));
+    const el = $('saved-list');
+    if (!list.length) {
+      el.innerHTML = `<div class="saved-empty">${q ? 'No saved invoices match your search.' : 'No saved invoices yet. Click <strong>Save</strong> to keep one here.'}</div>`;
+      return;
+    }
+    el.innerHTML = list.map(d => {
+      const status = ['draft', 'sent', 'paid', 'overdue'].includes(d.status) ? d.status : 'draft';
+      const when = d.savedAt ? new Date(d.savedAt).toLocaleDateString() : (d.date || '');
+      const meta = [d.customer || 'No customer name', d.vehicle, when ? 'Saved ' + when : ''].filter(Boolean).join(' · ');
+      const k = esc(d.storeKey);
+      return `
+        <div class="saved-item">
+          <div class="saved-main" onclick="openSavedInvoice('${k}')">
+            <div class="saved-title">${esc(d.number)} <span class="pill ${status}">${status}</span></div>
+            <div class="saved-meta">${esc(meta)}</div>
+          </div>
+          <div class="saved-total">${fmt(d.total || 0)}</div>
+          <div class="saved-actions" style="grid-column:1 / -1;">
+            <button class="btn btn-primary" onclick="openSavedInvoice('${k}')">Open</button>
+            <button class="btn btn-ghost" onclick="duplicateSavedInvoice('${k}')" title="Copy items and terms into a new invoice with a new number">Duplicate</button>
+            <button class="btn btn-danger" onclick="deleteSavedInvoice('${k}')">Delete</button>
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  function readSaved(storeKey) {
+    try { return JSON.parse(localStorage.getItem(storeKey)); } catch (_) { return null; }
+  }
+
+  function openSavedInvoice(storeKey) {
+    const data = readSaved(storeKey);
+    if (!data) { showToast('Could not open that invoice', true); return; }
+    applyInvoice(data);
+    saveDraftNow();
+    closeSaved();
+    showToast('Opened ' + data.number);
+  }
+
+  function duplicateSavedInvoice(storeKey) {
+    const data = readSaved(storeKey);
+    if (!data) { showToast('Could not copy that invoice', true); return; }
+    applyInvoice({ ...data, number: nextInvoiceNumber(), status: 'draft', po: '' });
+    setDates();
     recalc();
-    showToast('Loaded ' + data.number);
+    saveDraftNow();
+    closeSaved();
+    showToast('Copied into new invoice ' + $('inv-number').value);
+  }
+
+  function deleteSavedInvoice(storeKey) {
+    const data = readSaved(storeKey);
+    if (!confirm(`Delete ${data?.number || 'this invoice'}? This can't be undone.`)) return;
+    localStorage.removeItem(storeKey);
+    renderSaved();
+    showToast('Deleted ' + (data?.number || ''));
+  }
+
+  // ─── Draft autosave ──────────────────────────────────────
+  let draftTimer = null;
+  function setDraftNote(text) { $('draft-note').textContent = text; }
+  function saveDraftNow() {
+    clearTimeout(draftTimer);
+    try {
+      localStorage.setItem(DRAFT_KEY, JSON.stringify(serializeInvoice()));
+      setDraftNote('Draft saved ' + new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }));
+    } catch (_) {}
+  }
+  function scheduleDraftSave() {
+    clearTimeout(draftTimer);
+    draftTimer = setTimeout(saveDraftNow, 500);
+  }
+
+  // ─── Output ──────────────────────────────────────────────
+  function printInvoice() {
+    const original = document.title;
+    const customer = fieldText('customer');
+    document.title = `SVK Works Invoice ${$('inv-number').value}${customer ? ' — ' + customer : ''}`;
+    window.addEventListener('afterprint', () => { document.title = original; }, { once: true });
+    window.print();
   }
 
   function copyEmailSummary() {
-    const num   = document.getElementById('inv-number').value;
-    const date  = document.getElementById('inv-date').value;
-    const due   = document.getElementById('inv-due').value;
-    const total = document.getElementById('grand-total').textContent;
-    const dep   = document.getElementById('deposit-amt').textContent;
-    let lines = [`Invoice ${num} | Date: ${date} | Due: ${due}`, `Total: ${total}  |  Deposit: ${dep}`, '', 'Line Items:'];
+    const t = totals();
+    const customer = fieldText('customer');
+    const lines = [
+      `SVK Works — Invoice ${$('inv-number').value}`,
+      customer ? `Customer: ${customer}` : null,
+      `Date: ${$('inv-date').value}  |  Due: ${$('inv-due').value}`,
+      '',
+      'Items:',
+    ].filter(l => l !== null);
     document.querySelectorAll('#line-items tr').forEach((tr, i) => {
-      lines.push(`  ${i+1}. ${tr.querySelector('.col-item span')?.innerText || ''}  ${tr.querySelector('[id^="amt-"]')?.textContent || ''}`);
+      const name = tr.querySelector('.item-name').innerText.trim();
+      const desc = tr.querySelector('.col-desc span').innerText.trim();
+      const qty  = parseFloat(tr.querySelector('.qty-input').value) || 0;
+      lines.push(`  ${i + 1}. ${name}${desc && desc !== name ? ' — ' + desc : ''}${qty !== 1 ? ` (x${qty})` : ''}  ${tr.querySelector('[id^="amt-"]').textContent}`);
     });
+    lines.push('');
+    if (t.discount) lines.push(`Discount: ${fmt(-t.discount)}`);
+    if (t.shipping) lines.push(`Shipping: ${fmt(t.shipping)}`);
+    if (t.tax)      lines.push(`Tax: ${fmt(t.tax)}`);
+    lines.push(`Total: ${fmt(t.total)}  |  Deposit (${t.depositPct}%): ${fmt(t.deposit)}  |  Balance: ${fmt(t.balance)}`);
+    if ($('show-paypal').checked) {
+      lines.push(`If paying with PayPal (+${t.feePct}%): ${fmt(t.ppTotal)}  |  Deposit: ${fmt(t.ppDeposit)}  |  Balance: ${fmt(t.ppBalance)}`);
+    }
     lines.push('', 'Thank you — SVK Works');
     navigator.clipboard.writeText(lines.join('\n'))
       .then(() => showToast('Summary copied!'))
@@ -1064,17 +1445,38 @@ ECU</div>
     setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 300); }, 2200);
   }
 
-  // Init
+  // ─── Wiring ──────────────────────────────────────────────
+  const invoiceEl = $('invoice');
+  invoiceEl.addEventListener('input', e => {
+    if (e.target.id === 'build-details') e.target.dataset.touched = e.target.innerText.trim() ? '1' : '';
+    recalc();
+    scheduleDraftSave();
+  });
+  invoiceEl.addEventListener('change', scheduleDraftSave);
+  $('status-select').addEventListener('change', scheduleDraftSave);
+
+  document.addEventListener('keydown', e => {
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') { e.preventDefault(); saveInvoice(); }
+    if (e.key === 'Escape') closeSaved();
+  });
+
+  // ─── Init ────────────────────────────────────────────────
   setDates();
-  document.getElementById('inv-number').value = nextInvoiceNumber();
+  $('inv-number').value = nextInvoiceNumber();
   loadCatalog()
     .catch(err => {
-      console.error('Could not load item catalog from ' + CATALOG_SOURCE, err);
-      showToast('Could not load MK4 options — custom items only', true);
+      console.error('Could not load item catalog', err);
+      showToast('Could not load harness options — custom items only', true);
     })
     .finally(() => {
-      addCatalogRow(FALLBACK_BASE.key);
-      recalc();
+      const draft = (() => { try { return JSON.parse(localStorage.getItem(DRAFT_KEY)); } catch (_) { return null; } })();
+      if (draft && draft.rows?.length) {
+        applyInvoice(draft);
+        setDraftNote('Restored your last draft');
+      } else {
+        addCatalogRow(FALLBACK_BASE.key);
+        recalc();
+      }
     });
 </script>
 </body>
