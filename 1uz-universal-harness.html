@@ -290,6 +290,20 @@
             </div>
 
             <div class="calc-group">
+              <label class="calc-label">IAT Sensor</label>
+              <select class="calc-select" id="opt-iat">
+                <option value="">Select IAT Sensor</option>
+                <option value="Haltech DTM 2 Pin IAT">Haltech DTM 2 Pin IAT</option>
+                <option value="GM 2 Pin IAT">GM 2 Pin IAT</option>
+                <option value="Bosch 2 Pin IAT">Bosch 2 Pin IAT</option>
+                <option value="AEM 2 Pin IAT">AEM 2 Pin IAT</option>
+                <option value="OEM Toyota 2 Pin IAT">OEM Toyota 2 Pin IAT</option>
+                <option value="Built into OEM MAF (no separate IAT)">Built into OEM MAF (no separate IAT)</option>
+                <option value="Other">Other (Please Specify)</option>
+              </select>
+            </div>
+
+            <div class="calc-group">
               <label class="calc-label">Knock Sensors</label>
               <select class="calc-select" id="opt-knock">
                 <option value="OEM Knock Sensor">OEM Knock Sensor</option>
@@ -429,6 +443,7 @@
         ['Fan Relay', 'opt-fanrelay'],
         ['Sensors', 'opt-sensors'],
         ['Air Fuel Metering', 'opt-afm'],
+        ['IAT Sensor',        'opt-iat'],
         ['Milspec Connector', 'opt-milspec'],
         ['Raychem DR-25 Wiring', 'opt-raychem'],
         ['Tefzel Wiring', 'opt-tefzel'],
