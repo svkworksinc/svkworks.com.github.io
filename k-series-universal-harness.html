@@ -186,7 +186,14 @@
 
             <div class="calc-group">
               <label class="calc-label">Transmission</label>
-              <input type="text" class="form-input" id="opt-trans" placeholder="e.g. K-series 6-speed, LS/VTEC, custom, etc.">
+              <select class="calc-select" id="opt-trans">
+                <option value="">Select Transmission</option>
+                <option value="K-Series 6-Speed Manual">K-Series 6-Speed Manual</option>
+                <option value="K-Series 5-Speed Manual">K-Series 5-Speed Manual</option>
+                <option value="K-Series Automatic">K-Series Automatic</option>
+                <option value="Custom - Other">Custom - Other</option>
+              </select>
+              <input type="text" class="form-input" id="opt-trans-custom" placeholder="Type your transmission" style="display:none;margin-top:8px;">
             </div>
 
             <div class="calc-group">
@@ -291,7 +298,7 @@
               <label class="calc-label">Relay Box</label>
               <select class="calc-select" id="opt-relaybox">
                 <option value="No">No</option>
-                <option value="Yes (+$120)" data-img="img/options/misc/relay-kit.webp">Yes (+$120)</option>
+                <option value="Yes (+$150)" data-img="img/options/misc/relay-kit.webp">Yes (+$150)</option>
               </select>
             </div>
 
@@ -478,6 +485,11 @@
         if (el) optionsData[label] = el.value || 'Not selected';
       });
 
+      const transCustom = document.getElementById('opt-trans-custom');
+      if (transCustom && optionsData['Transmission'] === 'Custom - Other') {
+        optionsData['Transmission'] = 'Custom - Other: ' + (transCustom.value.trim() || 'not specified');
+      }
+
       if (typeof SVKAuth !== 'undefined') {
         await SVKAuth.ready;
         const session = await SVKAuth.getSession();
@@ -517,6 +529,21 @@
       const emailEl = document.getElementById('customer-email');
       if (nameEl && !nameEl.value && profile?.full_name) nameEl.value = profile.full_name;
       if (emailEl && !emailEl.value) emailEl.value = session.user.email;
+    })();
+  </script>
+  <script>
+    // "Custom - Other" transmission reveals a box to type it in.
+    (function () {
+      var sel = document.getElementById('opt-trans');
+      var box = document.getElementById('opt-trans-custom');
+      if (!sel || !box) return;
+      function sync() {
+        var custom = (sel.options[sel.selectedIndex] || {}).text === 'Custom - Other';
+        box.style.display = custom ? '' : 'none';
+        if (custom) box.focus();
+      }
+      sel.addEventListener('change', sync);
+      sync();
     })();
   </script>
 </body>

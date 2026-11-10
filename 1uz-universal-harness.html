@@ -148,8 +148,8 @@
               <select class="calc-select" id="opt-engine">
                 <option value="">Select Engine</option>
                 <option value="1UZ-FE Non-VVTi">1UZ-FE Non-VVT-i</option>
-                <option value="1UZ-FE VVTi">1UZ-FE VVT-i (+$60)</option>
-                <option value="3UZ-FE VVTi">3UZ-FE VVT-i (+$60)</option>
+                <option value="1UZ-FE VVTi">1UZ-FE VVT-i (+$150)</option>
+                <option value="3UZ-FE VVTi">3UZ-FE VVT-i (+$150)</option>
                 <option value="Other">Other (Please Specify)</option>
               </select>
             </div>
@@ -190,7 +190,18 @@
 
             <div class="calc-group">
               <label class="calc-label">Transmission</label>
-              <input type="text" class="form-input" id="opt-trans" placeholder="e.g. CD009, R154, W58, Auto, etc.">
+              <select class="calc-select" id="opt-trans">
+                <option value="">Select Transmission</option>
+                <option value="R154">R154</option>
+                <option value="W58">W58</option>
+                <option value="V160">V160</option>
+                <option value="CD009">CD009</option>
+                <option value="T56">T56</option>
+                <option value="ZF 8HP">ZF 8HP</option>
+                <option value="Stock Auto">Stock Auto</option>
+                <option value="Custom - Other">Custom - Other</option>
+              </select>
+              <input type="text" class="form-input" id="opt-trans-custom" placeholder="Type your transmission" style="display:none;margin-top:8px;">
             </div>
 
             <div class="calc-group">
@@ -268,7 +279,7 @@
               <label class="calc-label">Relay Box</label>
               <select class="calc-select" id="opt-relaybox">
                 <option value="No">No</option>
-                <option value="Yes (+$120)" data-img="img/options/misc/relay-kit.webp">Yes (+$120)</option>
+                <option value="Yes (+$150)" data-img="img/options/misc/relay-kit.webp">Yes (+$150)</option>
               </select>
             </div>
 
@@ -454,6 +465,11 @@
         if (el) optionsData[label] = el.value || 'Not selected';
       });
 
+      const transCustom = document.getElementById('opt-trans-custom');
+      if (transCustom && optionsData['Transmission'] === 'Custom - Other') {
+        optionsData['Transmission'] = 'Custom - Other: ' + (transCustom.value.trim() || 'not specified');
+      }
+
       if (typeof SVKAuth !== 'undefined') {
         await SVKAuth.ready;
         const session = await SVKAuth.getSession();
@@ -493,6 +509,21 @@
       const emailEl = document.getElementById('customer-email');
       if (nameEl && !nameEl.value && profile?.full_name) nameEl.value = profile.full_name;
       if (emailEl && !emailEl.value) emailEl.value = session.user.email;
+    })();
+  </script>
+  <script>
+    // "Custom - Other" transmission reveals a box to type it in.
+    (function () {
+      var sel = document.getElementById('opt-trans');
+      var box = document.getElementById('opt-trans-custom');
+      if (!sel || !box) return;
+      function sync() {
+        var custom = (sel.options[sel.selectedIndex] || {}).text === 'Custom - Other';
+        box.style.display = custom ? '' : 'none';
+        if (custom) box.focus();
+      }
+      sel.addEventListener('change', sync);
+      sync();
     })();
   </script>
 </body>
