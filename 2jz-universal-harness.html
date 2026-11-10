@@ -37,7 +37,7 @@
     "offers": {
       "@type": "Offer",
       "priceCurrency": "USD",
-      "price": "1400",
+      "price": "1450",
       "priceValidUntil": "2027-12-31",
       "availability": "https://schema.org/InStock",
       "url": "https://www.svkworks.com/2jz-universal-harness.html",
@@ -240,7 +240,18 @@
 
             <div class="calc-group">
               <label class="calc-label">Transmission</label>
-              <input type="text" class="form-input" id="opt-trans" placeholder="e.g. R154, W58, V160, CD009, T56, auto…">
+              <select class="calc-select" id="opt-trans">
+                <option value="">Select Transmission</option>
+                <option value="R154">R154</option>
+                <option value="W58">W58</option>
+                <option value="V160">V160 (+$35)</option>
+                <option value="CD009">CD009 (+$35)</option>
+                <option value="T56">T56 (+$35)</option>
+                <option value="ZF 8HP">ZF 8HP — Must select MaxxECU — Includes Shifter Wiring (+$350)</option>
+                <option value="Stock Auto">Stock Auto</option>
+                <option value="Custom - Other">Custom - Other</option>
+              </select>
+              <input type="text" class="form-input" id="opt-trans-custom" placeholder="Type your transmission" style="display:none;margin-top:8px;">
             </div>
 
             <div class="calc-group">
@@ -310,6 +321,18 @@
             </div>
 
             <div class="calc-group">
+              <label class="calc-label">IAT Sensor</label>
+              <select class="calc-select" id="opt-iat">
+                <option value="">Select IAT Sensor</option>
+                <option value="Haltech DTM 2 Pin IAT" data-img="img/options/iat/haltech-dtm-2pin.webp">Haltech DTM 2 Pin IAT</option>
+                <option value="GM 2 Pin IAT" data-img="img/options/iat/gm-2pin.webp">GM 2 Pin IAT</option>
+                <option value="Bosch 2 Pin IAT" data-img="img/options/iat/bosch-2pin.webp">Bosch 2 Pin IAT</option>
+                <option value="Built into OEM MAF (no separate IAT)">Built into OEM MAF (no separate IAT)</option>
+                <option value="Other">Other (Please Specify)</option>
+              </select>
+            </div>
+
+            <div class="calc-group">
               <label class="calc-label">Boost Solenoid</label>
               <select class="calc-select" id="opt-boost">
                 <option value="No">No</option>
@@ -337,7 +360,7 @@
               <label class="calc-label">Relay Box</label>
               <select class="calc-select" id="opt-relaybox">
                 <option value="No">No</option>
-                <option value="Yes (+$120)" data-img="img/options/misc/relay-kit.webp">Yes (+$120)</option>
+                <option value="Yes (+$150)" data-img="img/options/misc/relay-kit.webp">Yes (+$150)</option>
               </select>
             </div>
 
@@ -412,7 +435,7 @@
 
               <div style="background:linear-gradient(135deg,rgba(233,30,140,0.08),rgba(233,30,140,0.04));border:1px solid rgba(233,30,140,0.25);border-radius:var(--radius-md);padding:var(--space-md);margin-bottom:var(--space-md);text-align:center;">
                 <div style="font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px;">Estimated Build Price</div>
-                <div id="calc-total" style="font-size:30px;font-weight:700;color:var(--magenta);letter-spacing:0.01em;">$1,400</div>
+                <div id="calc-total" style="font-size:30px;font-weight:700;color:var(--magenta);letter-spacing:0.01em;">$1,450</div>
                 <div style="font-size:11px;color:var(--text-muted);margin-top:4px;">Updates as you select options · final price confirmed at quote</div>
               </div>
 
@@ -530,7 +553,7 @@
     const quoteNumber = 'SVK-Q-' + Math.random().toString(36).toUpperCase().slice(2, 10);
     document.getElementById('quote-number').textContent = quoteNumber;
 
-    const BASE_PRICE = 1400;
+    const BASE_PRICE = 1450;
     function calculateTotal() {
       let total = BASE_PRICE;
       document.querySelectorAll('.calc-select').forEach(sel => {
@@ -565,6 +588,7 @@
         ['Wideband O2',            'opt-wideband'],
         ['IACV / TPS / DBW',       'opt-throttle'],
         ['Air Fuel Metering',      'opt-afm'],
+        ['IAT Sensor',             'opt-iat'],
         ['Boost Solenoid',         'opt-boost'],
         ['Relay Box',              'opt-relaybox'],
         ['Fan Relay',              'opt-fanrelay'],
@@ -583,6 +607,11 @@
         if (el) optionsData[label] = el.value || 'Not selected';
       });
 
+      const transCustom = document.getElementById('opt-trans-custom');
+      if (transCustom && optionsData['Transmission'] === 'Custom - Other') {
+        optionsData['Transmission'] = 'Custom - Other: ' + (transCustom.value.trim() || 'not specified');
+      }
+
       if (typeof SVKAuth !== 'undefined') {
         await SVKAuth.ready;
         const session = await SVKAuth.getSession();
@@ -599,7 +628,7 @@
       let body = 'SVK 2JZ-GTE / 2JZ-GE Universal Harness Build Request\n';
       body += '=============================================\n\n';
       body += 'Quote Reference: ' + quoteNumber + '\n';
-      body += 'Base Price: $1,400\n';
+      body += 'Base Price: $1,450\n';
       body += 'Estimated Build Price: ' + (document.getElementById('calc-total')?.textContent || 'N/A') + '\n\n';
       body += 'Selected Options:\n';
       Object.entries(optionsData).forEach(([k, v]) => { body += '  - ' + k + ': ' + v + '\n'; });
@@ -622,6 +651,21 @@
       const emailEl = document.getElementById('customer-email');
       if (nameEl && !nameEl.value && profile?.full_name) nameEl.value = profile.full_name;
       if (emailEl && !emailEl.value) emailEl.value = session.user.email;
+    })();
+  </script>
+  <script>
+    // "Custom - Other" transmission reveals a box to type it in.
+    (function () {
+      var sel = document.getElementById('opt-trans');
+      var box = document.getElementById('opt-trans-custom');
+      if (!sel || !box) return;
+      function sync() {
+        var custom = (sel.options[sel.selectedIndex] || {}).text === 'Custom - Other';
+        box.style.display = custom ? '' : 'none';
+        if (custom) box.focus();
+      }
+      sel.addEventListener('change', sync);
+      sync();
     })();
   </script>
 </body>

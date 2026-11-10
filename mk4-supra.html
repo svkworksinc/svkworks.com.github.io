@@ -372,7 +372,7 @@
               <label class="calc-label">Transmission
                 <span class="calc-hint">Note: 8HP wiring comes with transmision and shifter connectors<a href="8hp-transmission.html" style="color:var(--magenta);">Learn more about ZF 8HP support &rarr;</a></span>
               </label>
-              <select class="calc-select price-option">
+              <select class="calc-select price-option" id="opt-trans">
                 <option value="0">Select Transmission</option>
                 <option value="0" data-img="img/options/transmission/r154.webp">R154</option>
                 <option value="0" data-img="img/options/transmission/w58.webp">W58</option>
@@ -381,8 +381,9 @@
                 <option value="35" data-img="img/options/transmission/cd009.webp">CD009 (+$35)</option>
                 <option value="35" data-img="img/options/transmission/t56.webp">T56 (+$35)</option>
                 <option value="0" data-img="img/options/transmission/stock-auto.webp">Stock Auto — Must Select Dual ECU Setup or EMU Pro under ECU</option>
-                <option value="0">Custom Setup (Please Specify in Email)</option>
+                <option value="0">Custom - Other</option>
               </select>
+              <input type="text" class="form-input" id="opt-trans-custom" placeholder="Type your transmission" style="display:none;margin-top:8px;">
             </div>
 
             <div class="calc-group">
@@ -487,6 +488,18 @@
                 <option value="0">OEM 5-pin 2JZ VVT-i MAF Sensor</option>
                 <option value="0">Internal MAP Sensor on Standalone</option>
                 <option value="0">External MAP Sensor</option>
+              </select>
+            </div>
+
+            <div class="calc-group">
+              <label class="calc-label">IAT Sensor</label>
+              <select class="calc-select price-option">
+                <option value="0">Select IAT Sensor</option>
+                <option value="0" data-img="img/options/iat/haltech-dtm-2pin.webp">Haltech DTM 2 Pin IAT</option>
+                <option value="0" data-img="img/options/iat/gm-2pin.webp">GM 2 Pin IAT</option>
+                <option value="0" data-img="img/options/iat/bosch-2pin.webp">Bosch 2 Pin IAT</option>
+                <option value="0">Built into OEM MAF (no separate IAT)</option>
+                <option value="0">Other (Please Specify)</option>
               </select>
             </div>
 
@@ -747,6 +760,11 @@
         optionsData[label] = o.options[o.selectedIndex].text;
       });
 
+      const transCustom = document.getElementById('opt-trans-custom');
+      if (transCustom && optionsData['Transmission'] === 'Custom - Other') {
+        optionsData['Transmission'] = 'Custom - Other: ' + (transCustom.value.trim() || 'not specified');
+      }
+
       // Save to Supabase if user is signed in
       if (typeof SVKAuth !== 'undefined') {
         await SVKAuth.ready;
@@ -808,6 +826,21 @@
         t.classList.toggle('active', idx === currentSlide);
       });
     }
+  </script>
+  <script>
+    // "Custom - Other" transmission reveals a box to type it in.
+    (function () {
+      var sel = document.getElementById('opt-trans');
+      var box = document.getElementById('opt-trans-custom');
+      if (!sel || !box) return;
+      function sync() {
+        var custom = (sel.options[sel.selectedIndex] || {}).text === 'Custom - Other';
+        box.style.display = custom ? '' : 'none';
+        if (custom) box.focus();
+      }
+      sel.addEventListener('change', sync);
+      sync();
+    })();
   </script>
 </body>
 </html>
