@@ -884,6 +884,9 @@ Instagram: @svkworks</div>
   ];
   const BASE_HARNESS_DESC = 'Custom standalone engine harness — base price';
   const SKIP_GROUPS      = ['driver side', 'original chassis'];
+  // Option groups the MK4 calculator lacks: group name → page to read it from.
+  const EXTRA_GROUPS = { 'Relay Box': '1uz-universal-harness.html', 'Fan Relay': '1uz-universal-harness.html' };
+  const EXTRA_GROUPS_AFTER = 'Fuel Pump Setup';
   const SKIP_OPTION_RE   = /^(select\b|other\b|custom\b|different\b|no$|none$|coming soon)/i;
   const CUSTOM_KEY       = '__custom';
   const FALLBACK_BASE    = { key: 'Base Harness::mk4-supra.html', item: 'Supra MK4 JZA80 2JZ Engine Harness', desc: BASE_HARNESS_DESC, rate: 1450 };
@@ -911,57 +914,97 @@ Instagram: @svkworks</div>
     return { html, doc: new DOMParser().parseFromString(html, 'text/html') };
   }
 
+  // Option price: numeric value (MK4/MK3/SC300 calculators) or "+$N" in the
+  // option text (universal-harness calculators).
+  function optionPrice(o) {
+    const v = parseFloat(o.value);
+    if (!isNaN(v) && String(v) === o.value.trim()) return v;
+    const m = o.textContent.match(/\+\$([\d,]+(?:\.\d+)?)/);
+    return m ? parseFloat(m[1].replace(/,/g, '')) : 0;
+  }
+
+  function parseGroup(g) {
+    const labelEl = g.querySelector('.calc-label');
+    const select  = g.querySelector('select');
+    if (!labelEl || !select || select.disabled) return null;
+
+    const labelClone = labelEl.cloneNode(true);
+    const hintEl = labelClone.querySelector('.calc-hint');
+    let hint = '';
+    if (hintEl) {
+      hintEl.querySelectorAll('a').forEach(a => a.remove());
+      hint = hintEl.textContent.replace(/[\s—-]+$/, '').trim();
+      hintEl.remove();
+    }
+    const group = labelClone.textContent.replace(/\s+/g, ' ').trim();
+    if (!group || SKIP_GROUPS.includes(group.toLowerCase())) return null;
+
+    const items = [];
+    select.querySelectorAll('option').forEach(o => {
+      const raw = o.textContent.trim();
+      if (SKIP_OPTION_RE.test(raw)) return;
+      const text = cleanOptionText(raw);
+      const isYes = /^yes$/i.test(text);
+      items.push({
+        key:   group + '::' + text,
+        label: isYes ? `Add ${group}` : text,
+        item:  group,
+        desc:  isYes ? (hint || 'Included') : text,
+        rate:  optionPrice(o),
+      });
+    });
+    return items.length ? { group, items } : null;
+  }
+
+  // One Base Harness entry per page, or one per engine choice when that
+  // page's Engine Variant options carry a surcharge (e.g. 1UZ vs 3UZ VVT-i).
+  function baseHarnessItems(url, page) {
+    const priceMatch = page.html.match(/BASE_PRICE\s*=\s*(\d+(?:\.\d+)?)/);
+    const name = page.doc.querySelector('h1')?.textContent.replace(/\s+/g, ' ').trim();
+    if (!priceMatch || !name) { console.error('No name/BASE_PRICE found on ' + url); return []; }
+    const base = parseFloat(priceMatch[1]);
+    const plain = { key: 'Base Harness::' + url, label: name, item: name, desc: BASE_HARNESS_DESC, rate: base };
+
+    const engine = page.doc.getElementById('opt-engine');
+    const engineOpts = engine ? [...engine.options].filter(o => !SKIP_OPTION_RE.test(o.textContent.trim())) : [];
+    if (!engineOpts.some(o => optionPrice(o) > 0)) return [plain];
+
+    let plainKeyUsed = false;
+    return engineOpts.map(o => {
+      const extra = optionPrice(o);
+      const variant = cleanOptionText(o.textContent);
+      const label = `${name} — ${variant}`;
+      const useBaseKey = extra === 0 && !plainKeyUsed;
+      if (useBaseKey) plainKeyUsed = true;
+      return { key: useBaseKey ? plain.key : `${plain.key}::${o.value}`, label, item: label, desc: BASE_HARNESS_DESC, rate: base + extra };
+    });
+  }
+
   async function loadCatalog() {
     const pages = await Promise.allSettled(BASE_HARNESS_PAGES.map(fetchPage));
-
-    const baseItems = [];
+    const pageByUrl = {};
     pages.forEach((p, i) => {
-      const url = BASE_HARNESS_PAGES[i];
-      if (p.status !== 'fulfilled') { console.error('Base harness page failed', p.reason); return; }
-      const priceMatch = p.value.html.match(/BASE_PRICE\s*=\s*(\d+(?:\.\d+)?)/);
-      const name = p.value.doc.querySelector('h1')?.textContent.replace(/\s+/g, ' ').trim();
-      if (!priceMatch || !name) { console.error('No name/BASE_PRICE found on ' + url); return; }
-      baseItems.push({ key: 'Base Harness::' + url, label: name, item: name, desc: BASE_HARNESS_DESC, rate: parseFloat(priceMatch[1]) });
+      if (p.status === 'fulfilled') pageByUrl[BASE_HARNESS_PAGES[i]] = p.value;
+      else console.error('Harness page failed', p.reason);
     });
+
+    const baseItems = BASE_HARNESS_PAGES.flatMap(url => pageByUrl[url] ? baseHarnessItems(url, pageByUrl[url]) : []);
     if (!baseItems.length) throw new Error('No base harness pages could be read');
     const groups = [{ group: 'Base Harness', items: baseItems }];
 
-    const mk4 = pages[BASE_HARNESS_PAGES.indexOf(CATALOG_SOURCE)];
-    const doc = mk4.status === 'fulfilled' ? mk4.value.doc : null;
+    const doc = pageByUrl[CATALOG_SOURCE]?.doc;
     if (!doc) showToast('Could not load MK4 options — base harnesses only', true);
+    doc?.querySelectorAll('.calc-group').forEach(g => { const pg = parseGroup(g); if (pg) groups.push(pg); });
 
-    doc?.querySelectorAll('.calc-group').forEach(g => {
-      const labelEl = g.querySelector('.calc-label');
-      const select  = g.querySelector('select');
-      if (!labelEl || !select || select.disabled) return;
-
-      const labelClone = labelEl.cloneNode(true);
-      const hintEl = labelClone.querySelector('.calc-hint');
-      let hint = '';
-      if (hintEl) {
-        hintEl.querySelectorAll('a').forEach(a => a.remove());
-        hint = hintEl.textContent.replace(/[\s—-]+$/, '').trim();
-        hintEl.remove();
-      }
-      const group = labelClone.textContent.replace(/\s+/g, ' ').trim();
-      if (!group || SKIP_GROUPS.includes(group.toLowerCase())) return;
-
-      const items = [];
-      select.querySelectorAll('option').forEach(o => {
-        const raw = o.textContent.trim();
-        if (SKIP_OPTION_RE.test(raw)) return;
-        const text = cleanOptionText(raw);
-        const rate = parseFloat(o.value) || 0;
-        const isYes = /^yes$/i.test(text);
-        items.push({
-          key:   group + '::' + text,
-          label: isYes ? `Add ${group}` : text,
-          item:  group,
-          desc:  isYes ? (hint || 'Included') : text,
-          rate,
-        });
-      });
-      if (items.length) groups.push({ group, items });
+    // Groups the MK4 calculator doesn't have, taken from another harness page.
+    let insertAt = groups.findIndex(g => g.group === EXTRA_GROUPS_AFTER) + 1 || groups.length;
+    Object.entries(EXTRA_GROUPS).forEach(([name, url]) => {
+      if (groups.some(g => g.group === name)) return;
+      const src = pageByUrl[url]?.doc;
+      const el = src && [...src.querySelectorAll('.calc-group')].find(g => parseGroup(g)?.group === name);
+      const pg = el && parseGroup(el);
+      if (!pg) { console.error(`Option group "${name}" not found on ${url}`); return; }
+      groups.splice(insertAt++, 0, pg);
     });
 
     CATALOG = groups;
@@ -979,7 +1022,7 @@ Instagram: @svkworks</div>
       const og = document.createElement('optgroup');
       og.label = g.group;
       g.items.forEach(it => {
-        og.appendChild(new Option(it.rate ? `${it.label} — ${fmt(it.rate)}` : it.label, it.key));
+        og.appendChild(new Option(it.label, it.key));
       });
       sel.appendChild(og);
     });
