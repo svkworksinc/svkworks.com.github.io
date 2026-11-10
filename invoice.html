@@ -887,7 +887,7 @@ Instagram: @svkworks</div>
   // Option groups the MK4 calculator lacks: group name → page to read it from.
   const EXTRA_GROUPS = { 'Relay Box': '1uz-universal-harness.html', 'Fan Relay': '1uz-universal-harness.html' };
   const EXTRA_GROUPS_AFTER = 'Fuel Pump Setup';
-  const SKIP_OPTION_RE   = /^(select\b|other\b|custom\b|different\b|no$|none$|coming soon)/i;
+  const SKIP_OPTION_RE   = /^(select\b|other\b|different\b|no$|none$|coming soon)/i;
   const CUSTOM_KEY       = '__custom';
   const FALLBACK_BASE    = { key: 'Base Harness::mk4-supra.html', item: 'Supra MK4 JZA80 2JZ Engine Harness', desc: BASE_HARNESS_DESC, rate: 1450 };
   const LEGACY_KEYS      = { 'Base Harness::MK4 Supra Engine Harness': FALLBACK_BASE.key };
@@ -1054,6 +1054,14 @@ Instagram: @svkworks</div>
     descEl.textContent = it.desc;
     rateEl.value = it.rate;
     recalc();
+    if (/^custom\b/i.test(it.desc)) {
+      descEl.focus();
+      const range = document.createRange();
+      range.selectNodeContents(descEl);
+      const selection = window.getSelection();
+      selection.removeAllRanges();
+      selection.addRange(range);
+    }
   }
 
   let rowCount = 0;
@@ -1123,7 +1131,7 @@ Instagram: @svkworks</div>
     Object.entries(BUILD_INFO_GROUPS).forEach(([group, label]) => {
       document.querySelectorAll('#line-items tr').forEach(tr => {
         const it = CATALOG_BY_KEY[tr.dataset.key];
-        if (it && it.item === group) lines.push(`${label}: ${it.desc}`);
+        if (it && it.item === group) lines.push(`${label}: ${tr.querySelector('.col-desc span').innerText.trim() || it.desc}`);
       });
     });
     el.innerText = lines.join('\n');
