@@ -106,7 +106,7 @@ const SVKComponents = {
     sdkScript.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js';
     sdkScript.onload = () => {
       const authScript = document.createElement('script');
-      authScript.src = 'js/auth.js?v=f9a5c12a';
+      authScript.src = 'js/auth.js?v=9acf6d49';
       authScript.onload = () => {
         SVKAuth.init();
         SVKAuth.ready.then(() => this._updateAccountBtn());

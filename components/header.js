@@ -45,6 +45,17 @@ const SVK_HEADER_HTML = `
             </ul>
           </li>
           <li class="nav-item has-dropdown">
+            <a href="/electronics.html" class="nav-link" aria-haspopup="true">Electronics</a>
+            <ul class="dropdown">
+              <li><a href="/electronics.html#svk-link">SVK Link</a></li>
+              <li><a href="/electronics.html#svk-dashflow">SVK DashFlow</a></li>
+              <li><a href="/electronics.html#svk-psp">SVK PSP</a></li>
+              <li><a href="/service-ecu-repair.html">ECU Repair</a></li>
+              <li><a href="/service-sc300-sc400-climate-lcd-repair.html">SC300/SC400 Climate Control LCD Repair</a></li>
+              <li><a href="/electronics.html">View All</a></li>
+            </ul>
+          </li>
+          <li class="nav-item has-dropdown">
             <a href="/services.html" class="nav-link" aria-haspopup="true">Services</a>
             <ul class="dropdown">
               <li><a href="/service-custom-harness.html">Custom Harness Design</a></li>
