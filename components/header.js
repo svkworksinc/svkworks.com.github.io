@@ -48,9 +48,10 @@ const SVK_HEADER_HTML = `
             <a href="/electronics.html" class="nav-link" aria-haspopup="true">Electronics</a>
             <ul class="dropdown">
               <li><a href="/electronics.html#svk-pulse">SVK Pulse</a></li>
-              <li><a href="/electronics.html#svk-link">SVK Link</a></li>
+              <li><a href="/electronics.html#svk-speedlink">SVK SpeedLink</a></li>
               <li><a href="/electronics.html#svk-psp">SVK PSP</a></li>
               <li><a href="/electronics.html#svk-obdii">SVK OBDII</a></li>
+              <li><a href="/electronics.html#svk-psp-bundle">SVK PSP Bundle</a></li>
               <li><a href="/service-ecu-repair.html">ECU Repair</a></li>
               <li><a href="/service-sc300-sc400-climate-lcd-repair.html">SC300/SC400 Climate Control LCD Repair</a></li>
               <li><a href="/electronics.html">View All</a></li>
