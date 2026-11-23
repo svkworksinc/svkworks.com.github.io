@@ -47,7 +47,7 @@ const SVK_HEADER_HTML = `
           <li class="nav-item has-dropdown">
             <a href="/electronics.html" class="nav-link" aria-haspopup="true">Electronics</a>
             <ul class="dropdown">
-              <li><a href="/electronics.html#svk-dashflow">SVK DashFlow</a></li>
+              <li><a href="/electronics.html#svk-pulse">SVK Pulse</a></li>
               <li><a href="/electronics.html#svk-link">SVK Link</a></li>
               <li><a href="/electronics.html#svk-psp">SVK PSP</a></li>
               <li><a href="/electronics.html#svk-obdii">SVK OBDII</a></li>
